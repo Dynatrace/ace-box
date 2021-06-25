@@ -37,3 +37,8 @@ variable "ssh_keys" {
     public  = "./key.pub"
   }
 }
+
+variable "custom_domain" {
+  description = "Set to overwrite custom domain"
+  default     = ""
+}

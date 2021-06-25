@@ -96,7 +96,7 @@ resource "aws_instance" "acebox" {
     inline = [
         "tr -d '\\015' < /home/${var.acebox_user}/install.sh > /home/${var.acebox_user}/install_fixed.sh",
         "chmod +x /home/${var.acebox_user}/install_fixed.sh",
-        "/home/${var.acebox_user}/install_fixed.sh ${self.public_ip} ${var.acebox_user}"
+        "/home/${var.acebox_user}/install_fixed.sh --ip=${self.public_ip} --user=${var.acebox_user} --custom-domain=${var.custom_domain}"
       ]
   }
 

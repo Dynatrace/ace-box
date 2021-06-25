@@ -85,7 +85,7 @@ resource "google_compute_instance" "acebox" {
     inline = [
         "tr -d '\\015' < /home/${var.acebox_user}/install.sh > /home/${var.acebox_user}/install_fixed.sh",
         "chmod +x /home/${var.acebox_user}/install_fixed.sh",
-        "/home/${var.acebox_user}/install_fixed.sh ${self.network_interface.0.access_config.0.nat_ip} ${var.acebox_user}"
+        "/home/${var.acebox_user}/install_fixed.sh  --ip=${self.network_interface.0.access_config.0.nat_ip} --user=${var.acebox_user} --custom-domain=${var.custom_domain}"
       ]
   }
 }

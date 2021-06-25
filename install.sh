@@ -3,21 +3,64 @@
 # This script will be triggered by Terraform as part of the provisioning process.
 # It can also be triggered manually on a VM.
 
+
+print_help() {
+    echo "Usage: "
+    echo "./install.sh"
+    echo "  arguments:"
+    echo "    -i= | --ip=               public IP of VM (required)"
+    echo "    -u= | --user=             non-root user for configuration (required)"
+    echo "    -d= | --custom-domain=    (Opt) custom domain"
+}
+
+ip=""
+non_root_user=""
+custom_domain=""
+use_custom_domain="false"
+
+for i in "$@"; do
+  case $i in
+    -i=*|--ip=*)
+      ip="${i#*=}"
+      shift # past argument=value
+      ;;
+    -u=*|--user=*)
+      non_root_user="${i#*=}"
+      shift # past argument=value
+      ;;
+    -d=*|--custom-domain=*)
+      custom_domain="${i#*=}"
+      shift # past argument=value
+      ;;
+    *)
+      # unknown option
+      ;;
+  esac
+done
+
 set -euo pipefail
-if [ -z "$1" ]
-then
-    echo "Argument 1 containing public IP missing"
-    exit;
-fi 
 
-if [ -z "$2" ]
-then
-    echo "Argument 2 containing the non_root_user is missing"
-    exit;
-fi 
+if [[ "$ip" = "" ]]; then
+    echo "No IP Address specified"
+    print_help
+    exit 1
+fi
 
-echo "Public IP address: $1"
-echo "Non-root user: $2"
+if [[ "$non_root_user" = "" ]]; then
+    echo "No non-root user specified"
+    print_help
+    exit 1
+fi
+
+if [[ "$custom_domain" != "" ]]; then
+    use_custom_domain="true"
+fi
+
+
+echo "Public IP address: $ip"
+echo "Non-root user: $non_root_user"
+echo "Use Custom domain: $custom_domain"
+echo "Custom domain: $use_custom_domain"
 
 export DEBIAN_FRONTEND=noninteractive
 
@@ -42,4 +85,5 @@ sudo mkdir /vagrant
 sudo cp -R ~/ace-box/microk8s/* /vagrant
 
 echo "INIT - Run Ansible Playbook"
-ansible-playbook -vv /vagrant/ansible/initial.yml --extra-vars "public_ip=$1 acebox_provisioner=terraform non_root_user=$2"
+ansible-playbook -vv /vagrant/ansible/initial.yml --extra-vars "public_ip=$ip acebox_provisioner=terraform non_root_user=$non_root_user use_custom_domain=$use_custom_domain custom_domain=$custom_domain"
+

@@ -4,6 +4,11 @@
   vars_files:
     - ../config.yml
   vars:     
+    non_root_user:                    "{{ non_root_user | default('vagrant')}}"
+    public_ip:                        "{{ public_ip }}"
+    use_custom_domain:                "{{ use_custom_domain }}"
+    custom_domain:                    "{{ custom_domain }}"
+    acebox_provisioner:               "{{ acebox_provisioner | default('vagrant')}}"
     acebox_mode:                      "{{ acebox['features']['mode'] | default('training') }}"
     feature_activegate:               "{{ acebox['features']['activegate'] | default(false) }}"
     feature_oneagent:                 "{{ acebox['features']['oneagent'] | default(true) }}"
@@ -70,6 +75,12 @@
   - set_fact:
       acebox_provisioner: "vagrant"
     when: acebox_provisioner is not defined
+
+  - debug: var=use_custom_domain
+    tags:
+      - always
+  
+  - debug: var=custom_domain
     tags:
       - always
 
@@ -83,7 +94,14 @@
   - name: Set Ingress Domain - Terraform
     set_fact:
       ingress_domain: "{{ public_ip }}.{{ microk8s_domain_ext }}"
-    when: acebox_provisioner == "terraform"
+    when: acebox_provisioner == "terraform" and use_custom_domain == "false"
+    tags:
+      - always
+
+  - name: Set Ingress Domain - Terraform - Custom Domain
+    set_fact:
+      ingress_domain: "{{ custom_domain }}"
+    when: acebox_provisioner == "terraform" and use_custom_domain == "true"
     tags:
       - always
 

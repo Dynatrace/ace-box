@@ -32,3 +32,8 @@ variable "associate_public_ip_address" {
   description = "Whether to associate a public IP address with an instance in a VPC"
   default = false
 }
+
+variable "custom_domain" {
+  description = "Set to overwrite custom domain"
+  default     = ""
+}

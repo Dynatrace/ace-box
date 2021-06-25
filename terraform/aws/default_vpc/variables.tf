@@ -19,3 +19,8 @@ variable "acebox_user" {
   description = "Initial user when ace-box is created"
   default     = "ubuntu"
 }
+
+variable "custom_domain" {
+  description = "Set to overwrite custom domain"
+  default     = ""
+}

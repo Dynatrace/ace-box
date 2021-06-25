@@ -35,3 +35,8 @@ variable "azure_instance_size" {
   description = "Azure VM Instance type"
   default = "Standard_A4m_v2"
 }
+
+variable "custom_domain" {
+  description = "Set to overwrite custom domain"
+  default     = ""
+}
