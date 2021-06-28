@@ -83,12 +83,25 @@ resource "aws_instance" "acebox" {
     destination = "~/install.sh"
   }
 
+}
+
+resource "null_resource" "provisioner" {
+
+  connection {
+    host        = aws_instance.acebox.private_ip
+    type        = "ssh"
+    user        = var.acebox_user
+    private_key = tls_private_key.acebox_key.private_key_pem
+  }
+
+  depends_on = [aws_route53_record.ace_box, aws_instance.acebox]
+
   provisioner "remote-exec" {
     inline = [
         "tr -d '\\015' < /home/${var.acebox_user}/install.sh > /home/${var.acebox_user}/install_fixed.sh",
         "chmod +x /home/${var.acebox_user}/install_fixed.sh",
-        "/home/${var.acebox_user}/install_fixed.sh --ip=${self.private_ip} --user=${var.acebox_user} --custom-domain=${var.custom_domain}"
+        "/home/${var.acebox_user}/install_fixed.sh --ip=${aws_instance.acebox.private_ip} --user=${var.acebox_user} --custom-domain=${var.custom_domain}"
       ]
   }
-
+    
 }
