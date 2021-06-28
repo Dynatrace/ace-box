@@ -1,5 +1,5 @@
 output "acebox_dashboard" {
-  value = "http://dashboard.${google_compute_instance.acebox.network_interface[0].access_config[0].nat_ip}.nip.io using dynatrace:dynatrace to log in"
+  value = (var.custom_domain != "" ? "http://dashboard.${var.custom_domain}" : "http://dashboard.${google_compute_instance.acebox.network_interface[0].access_config[0].nat_ip}.nip.io")
 }
 
 output "acebox_ip" {

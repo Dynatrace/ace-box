@@ -1,6 +1,5 @@
 output "acebox_dashboard" {
-  description = "Public IPs assigned to the EC2 instance"
-  value = "http://dashboard.${aws_eip.acebox_eip.public_ip}.nip.io"
+  value = (var.custom_domain != "" ? "http://dashboard.${var.custom_domain}" : "http://dashboard.${aws_instance.acebox.public_ip}.nip.io")
 }
 
 output "acebox_ip" {
