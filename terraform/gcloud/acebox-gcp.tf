@@ -81,11 +81,25 @@ resource "google_compute_instance" "acebox" {
     destination = "~/install.sh"
   }
 
+}
+
+resource "null_resource" "provisioner" {
+
+  connection {
+    host        = google_compute_instance.acebox.network_interface.0.access_config.0.nat_ip
+    type        = "ssh"
+    user        = var.acebox_user
+    private_key = file(var.ssh_keys["private"])
+  }
+
+  depends_on = [google_dns_record_set.ace_box, google_compute_instance.acebox]
+
   provisioner "remote-exec" {
     inline = [
         "tr -d '\\015' < /home/${var.acebox_user}/install.sh > /home/${var.acebox_user}/install_fixed.sh",
         "chmod +x /home/${var.acebox_user}/install_fixed.sh",
-        "/home/${var.acebox_user}/install_fixed.sh  --ip=${self.network_interface.0.access_config.0.nat_ip} --user=${var.acebox_user} --custom-domain=${var.custom_domain}"
+        "/home/${var.acebox_user}/install_fixed.sh  --ip=${google_compute_instance.acebox.network_interface.0.access_config.0.nat_ip} --user=${var.acebox_user} --custom-domain=${var.custom_domain}"
       ]
   }
+
 }

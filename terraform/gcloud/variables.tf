@@ -42,3 +42,8 @@ variable "custom_domain" {
   description = "Set to overwrite custom domain"
   default     = ""
 }
+
+variable "managed_zone_name" {
+  description = "Name of GCP managed zone"
+  default     = ""
+}
