@@ -1,7 +1,4 @@
-# Using Terraform to spin up a ACE-BOX Cloud 
-
-Since the ACE-BOX uses Ansible underneath for configuration management and deploying services, it is also possible to use Terraform for the provisioning.
-At the moment, GCP and Azure are supported with a ready-made Terraform config.
+# GCP
 
 ## Requirements
 
@@ -64,7 +61,7 @@ A GCP account is needed.
 
 This terraform script supports the use of custom domains via Cloud DNS.
 
-1. Ensure your access key can create DNS records in the target Cloud DNS managed zone.
+1. Ensure your service account can create DNS records in the target Cloud DNS managed zone.
 
 1. Add the following values to the `terraform.tfvars` file:
 

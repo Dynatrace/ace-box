@@ -1,7 +1,4 @@
-# Using Terraform to spin up a ACE-BOX Cloud 
-
-Since the ACE-BOX uses Ansible underneath for configuration management and deploying services, it is also possible to use Terraform for the provisioning.
-At the moment, GCP and Azure are supported with a ready-made Terraform config.
+# Azure
 
 ## Requirements
 
