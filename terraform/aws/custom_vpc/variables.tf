@@ -26,7 +26,7 @@ variable "vpc_tags" {
   default = {
     Terraform  = "true"
     GithubRepo  = "ace-box"
-    GithubOrg   = "dynatrace-ace"
+    GithubOrg   = "dynatrace"
   }
 }
 
