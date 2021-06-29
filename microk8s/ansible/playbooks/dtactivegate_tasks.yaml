@@ -25,7 +25,6 @@
     block: |
       [connectivity]
       dnsEntryPoint = http://{{ ansible_facts.fqdn }}:9999
-
 - name: ActiveGate - Restart ActiveGate service
   service:
     name: dynatracegateway
