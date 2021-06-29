@@ -12,5 +12,5 @@ resource "aws_route53_record" "ace_box" {
   name    = "*.${var.custom_domain}"
   type    = "A"
   ttl     = "300"
-  records = [aws_instance.acebox.public_ip]
+  records = [aws_instance.acebox.private_ip]
 }
