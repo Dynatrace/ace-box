@@ -70,7 +70,7 @@
 - debug: var=keptn_bridge_user
 
 - name: Keptn - Create secret dynatrace
-  shell: /snap/bin/microk8s.kubectl -n keptn create secret generic dynatrace --from-literal="DT_TENANT={{ dynatrace_tenant_nohttps }}" --from-literal="DT_API_TOKEN={{ dynatrace_api_token }}"  --from-literal="DT_PAAS_TOKEN={{ dynatrace_api_token }}" --from-literal="KEPTN_API_URL=http://keptn.{{ ingress_domain }}/api" --from-literal="KEPTN_API_TOKEN={{ keptn_api_token }}" --from-literal="KEPTN_BRIDGE_URL=http://keptn.{{ ingress_domain }}/bridge"
+  shell: /snap/bin/microk8s.kubectl -n keptn create secret generic dynatrace --from-literal="DT_TENANT={{ dynatrace_tenant_nohttps }}" --from-literal="DT_API_TOKEN={{ dynatrace_api_token }}"  --from-literal="DT_PAAS_TOKEN={{ dynatrace_api_token }}" --from-literal="KEPTN_API_URL={{ custom_domain_protocol }}://keptn.{{ ingress_domain }}/api" --from-literal="KEPTN_API_TOKEN={{ keptn_api_token }}" --from-literal="KEPTN_BRIDGE_URL={{ custom_domain_protocol }}://keptn.{{ ingress_domain }}/bridge"
 
 - name: Keptn - Install Dynatrace service
   shell: "/snap/bin/microk8s.kubectl apply -f https://raw.githubusercontent.com/keptn-contrib/dynatrace-service/{{ keptn_dynatrace_service_version }}/deploy/service.yaml -n keptn"
@@ -86,5 +86,5 @@
 
 - name: Keptn - Authenticate CLI
   become_user: "{{ non_root_user }}"
-  shell: "/usr/local/bin/keptn auth --api-token {{ keptn_api_token }} --endpoint http://keptn.{{ ingress_domain }}/api"
+  shell: "/usr/local/bin/keptn auth --api-token {{ keptn_api_token }} --endpoint {{ custom_domain_protocol }}://keptn.{{ ingress_domain }}/api"
 
