@@ -8,7 +8,7 @@
     public_ip:                        "{{ public_ip }}"
     use_custom_domain:                "{{ use_custom_domain }}"
     custom_domain:                    "{{ custom_domain }}"
-    custom_domain_protocol:           "{{ custom_domain_protocol | default('http')}}"
+    custom_domain_protocol:           "{{ acebox['config']['microk8s']['domain_protocol'] | default('http') }}"
     acebox_provisioner:               "{{ acebox_provisioner | default('vagrant')}}"
     acebox_mode:                      "{{ acebox['features']['mode'] | default('training') }}"
     feature_activegate:               "{{ acebox['features']['activegate'] | default(false) }}"
