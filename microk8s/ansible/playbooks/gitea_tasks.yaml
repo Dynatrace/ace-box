@@ -6,7 +6,7 @@
     - git
 
 - set_fact:
-    gitea_domain: "{{ custom_domain_protocol }}://gitea.{{ ingress_domain }}"
+    gitea_domain: "gitea.{{ ingress_domain }}"
   when: 
   tags:
     - git
@@ -75,7 +75,7 @@
 # The wait is needed as sometimes the API is not up even though Gitea deployment is ready
 - name: Gitea - Wait for API to be up
   uri:
-    url: "{{ gitea_domain }}/api/v1/admin/orgs?access_token={{ gitea_access_token }}"
+    url: "{{ custom_domain_protocol }}://{{ gitea_domain }}/api/v1/admin/orgs?access_token={{ gitea_access_token }}"
     status_code: 200
     validate_certs: no
   register: result
