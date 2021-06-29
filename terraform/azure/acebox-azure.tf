@@ -153,13 +153,25 @@ resource "azurerm_linux_virtual_machine" "acebox" {
     source      = "${path.module}/../../install.sh"
     destination = "~/install.sh"
   }
+}
+
+resource "null_resource" "provisioner" {
+
+  connection {
+    host        = azurerm_public_ip.acebox_publicip.ip_address
+    type        = "ssh"
+    user        = var.acebox_user
+    private_key = file(var.ssh_keys["private"])
+  }
+
+  depends_on = [azurerm_dns_a_record.ace_box, azurerm_linux_virtual_machine.acebox]
 
   provisioner "remote-exec" {
     inline = [
         "tr -d '\\015' < /home/${var.acebox_user}/install.sh > /home/${var.acebox_user}/install_fixed.sh",
         "chmod +x /home/${var.acebox_user}/install_fixed.sh",
-        "/home/${var.acebox_user}/install_fixed.sh --ip=${self.public_ip_address} --user=${var.acebox_user} --custom-domain=${var.custom_domain}"
+        "/home/${var.acebox_user}/install_fixed.sh --ip=${azurerm_public_ip.acebox_publicip.ip_address} --user=${var.acebox_user} --custom-domain=${var.custom_domain}"
       ]
   }
-}
 
+}

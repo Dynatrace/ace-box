@@ -1,5 +1,5 @@
 output "acebox_dashboard" {
-  value = (var.custom_domain != "" ? "http://dashboard.${var.custom_domain}" : "http://dashboard.${azurerm_public_ip.acebox_publicip.ip_address}..nip.io")
+  value = (var.custom_domain != "" ? "http://dashboard.${var.custom_domain}" : "http://dashboard.${azurerm_public_ip.acebox_publicip.ip_address}.nip.io")
 }
 
 output "acebox_ip" {
