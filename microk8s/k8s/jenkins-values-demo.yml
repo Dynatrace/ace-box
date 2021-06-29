@@ -29,7 +29,7 @@ controller:
     - name: GIT_DOMAIN
       value: GIT_DOMAIN_PLACEHOLDER
     - name: GIT_PROTOCOL
-      value: http
+      value: GIT_PROTOCOL_PLACEHOLDER
     - name: DOCKER_REGISTRY_URL
       value: DOCKER_REGISTRY_URL_PLACEHOLDER
     - name: DT_TENANT_URL
