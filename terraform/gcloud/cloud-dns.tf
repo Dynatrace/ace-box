@@ -5,5 +5,5 @@ resource "google_dns_record_set" "ace_box" {
   name         = "*.${var.custom_domain}"
   type         = "A"
   rrdatas      = [google_compute_instance.acebox.network_interface[0].access_config[0].nat_ip]
-  ttl          = 600
+  ttl          = 300
 }
