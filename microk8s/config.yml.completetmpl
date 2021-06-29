@@ -32,6 +32,7 @@ acebox:
       keptn_lib_url: "https://github.com/keptn-sandbox/keptn-jenkins-library.git"
     microk8s:
       domain_ext: "nip.io"      # defaults to xip.io, set to nip.io in case of stability issues
+      domain_protocol: "https"  # change to https if you have an external LB that does SSL termination. Ingress records stay on http always!
       addons: "dns storage registry ingress "
     git:
       version: "1.11.6"         # version of gitea to install, defaults to 1.11.6
