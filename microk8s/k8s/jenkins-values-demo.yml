@@ -14,7 +14,8 @@ controller:
     # tls:    
     # - hosts:    
     #   - JENKINS_INGRESS_PLACEHOLDER
-    #   secretName: jenkins.local-tls 
+    #   secretName: jenkins.local-tls
+  jenkinsUrlProtocol: INGRESS_PROTOCOL_PLACEHOLDER
   containerEnv:
     - name: GITHUB_USER_EMAIL
       value: GITHUB_USER_EMAIL_PLACEHOLDER

@@ -77,6 +77,7 @@
     -e "s|SYNTH_NODE_ID_PLACEHOLDER||" 
     -e "s|KUBE_BEARER_TOKEN_PLACEHOLDER||"  
     -e "s|INGRESS_DOMAIN_PLACEHOLDER|{{ ingress_domain }}|"
+    -e "s|INGRESS_PROTOCOL_PLACEHOLDER|{{ custom_domain_protocol }}|" 
     /vagrant/k8s/jenkins-values.yml > /vagrant/k8s/jenkins-values-gen.yml
   when: jenkins_setcreds == true and acebox_mode == 'training'
   tags:
@@ -138,6 +139,7 @@
     -e "s|SYNTH_NODE_ID_PLACEHOLDER|{{ dt_node_id | default('') }}|"  
     -e "s|KUBE_BEARER_TOKEN_PLACEHOLDER|{{ kube_bearer_token | default('')}}|" 
     -e "s|INGRESS_DOMAIN_PLACEHOLDER|{{ ingress_domain }}|" 
+    -e "s|INGRESS_PROTOCOL_PLACEHOLDER|{{ custom_domain_protocol }}|" 
     /vagrant/k8s/jenkins-values-demo.yml > /vagrant/k8s/jenkins-values-gen.yml
   when: acebox_mode == 'demo'
   tags:
