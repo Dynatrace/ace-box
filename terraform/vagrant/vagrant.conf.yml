@@ -1,0 +1,6 @@
+acebox:
+  specs:
+    cpu: 5                      # number of cpu vcores - only for local (vagrant) deployments
+    mem: 12288                  # memory assignment in MB - only for local (vagrant) deployments
+    priv_ip: "192.168.50.10"    # private IP - only for local (vagrant) deployments
+    disk: "60GB"                # disk size - only for local (vagrant) deployments

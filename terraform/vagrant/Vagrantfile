@@ -15,7 +15,7 @@ else
 end
 
 require 'yaml'
-vmconfig = YAML.load_file('config.yml')
+vmconfig = YAML.load_file('vagrant.conf.yml')
 
 Vagrant.configure("2") do |config|
     config.vm.box = "ubuntu/bionic64"
@@ -29,24 +29,17 @@ Vagrant.configure("2") do |config|
       c.vm.network "private_network", ip: vmconfig["acebox"]["specs"]["priv_ip"]
       c.disksize.size = vmconfig["acebox"]["specs"]["disk"]
 
-      config.vm.provision "shell", inline: "sudo apt-get update -y"
-      config.vm.provision "shell", inline: "sudo apt-get upgrade -y"
-      config.vm.provision "shell", inline: "sudo apt-get install python3.8 python3-pip -y"
-      config.vm.provision "shell", inline: "python3.8 -m pip install --upgrade pip -q"
-      config.vm.provision "shell", inline: "python3.8 -m pip install ansible -q"
-      
-      c.vm.provision "ansible_local" do |ansible|
-        ansible.install = false
-        ansible.become = true
-        ansible.playbook = "ansible/initial.yml"
-        # ansible.verbose = true # enable to get more logging
-        ansible.compatibility_mode = "2.0"
-        ansible.extra_vars = {
-          ansible_python_interpreter: "auto",
-          acebox_provisioner: "vagrant",
-          non_root_user: "vagrant"
-        }
-      end
+      # Copy user dir
+      config.vm.provision "file", source: "../../user-skel", destination: "$HOME"
+      config.vm.provision "file", source: "./ace-box.conf.yml", destination: "$HOME/ace-box.conf.yml"
+
+      # Run prepare script
+      config.vm.provision "shell", inline: "chmod +x prepare.sh"
+      config.vm.provision "shell", inline: "./prepare.sh --ingress-domain=#{vmconfig["acebox"]["specs"]["priv_ip"]}.nip.io --ingress-protocol=http"
+
+      # Run install script
+      config.vm.provision "shell", inline: "chmod +x install.sh"
+      config.vm.provision "shell", inline: "./install.sh"
 
       c.vm.provider "virtualbox" do |pr|
         pr.memory = vmconfig["acebox"]["specs"]["mem"]
@@ -54,6 +47,6 @@ Vagrant.configure("2") do |config|
         pr.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
       end
 
-      c.vm.post_up_message = "Please open http://dashboard.#{vmconfig["acebox"]["specs"]["priv_ip"]}.#{vmconfig["acebox"]["config"]["microk8s"]["domain_ext"]} and use links"
+      c.vm.post_up_message = "Please open http://dashboard.#{vmconfig["acebox"]["specs"]["priv_ip"]}.nip.io and use links"
     end
   end 
