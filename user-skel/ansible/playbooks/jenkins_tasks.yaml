@@ -1,0 +1,122 @@
+- name: Jenkins - Retrieve Gitea access token
+  shell: /snap/bin/microk8s.kubectl -n ace get secret gitea-admin -o jsonpath='{.data.access_token}' | base64 -d
+  register: gitea_access_token_raw
+  tags:
+    - jenkins
+
+- set_fact:
+    gitea_access_token: "{{ gitea_access_token_raw.stdout }}"
+  tags:
+    - jenkins
+
+- name: Jenkins - Retrieve Gitea domain
+  shell: /snap/bin/microk8s.kubectl -n ace get secret gitea-admin -o jsonpath='{.data.gitea_domain}' | base64 -d
+  register: gitea_domain_raw
+  tags:
+    - jenkins
+
+- set_fact:
+    gitea_domain: "{{ gitea_domain_raw.stdout }}"
+  tags:
+    - jenkins
+
+- name: Jenkins - Retrieve Dynatrace Operator bearer token
+  shell: "/snap/bin/microk8s.kubectl get secret $(kubectl get sa dynatrace-kubernetes-monitoring -o jsonpath='{.secrets[0].name}' -n dynatrace) -o jsonpath='{.data.token}' -n dynatrace | base64 --decode"
+  register: kube_bearer_token_raw
+  tags:
+    - jenkins
+
+- set_fact:
+    kube_bearer_token: "{{  kube_bearer_token_raw.stdout }}"
+  tags:
+    - jenkins
+
+- name: Jenkins - Retrieve Keptn API token
+  shell: /snap/bin/microk8s.kubectl get secret keptn-api-token -n keptn -ojsonpath={.data.keptn-api-token} | base64 --decode
+  register: keptn_api_token_raw
+  tags:
+    - jenkins
+
+- set_fact:
+    keptn_api_token: "{{ keptn_api_token_raw.stdout }}"
+  tags:
+    - jenkins
+
+- name: Jenkins - Retrieve registry nodeport
+  shell: /snap/bin/microk8s.kubectl get svc registry -n container-registry -o jsonpath='{.spec.ports[0].nodePort}'
+  register: registry_port_raw
+  tags:
+    - jenkins
+
+- set_fact:
+    registry_port: "{{ registry_port_raw.stdout }}"
+  tags:
+    - jenkins
+
+- set_fact:
+    jenkins_keptn_endpoint: "{{ ingress_protocol }}://keptn.{{ ingress_domain }}/api"
+  tags:
+    - jenkins
+
+- set_fact:
+    jenkins_keptn_bridge: "{{ ingress_protocol }}://keptn.{{ ingress_domain }}/bridge"
+  tags:
+    - jenkins
+
+- name: Jenkins - Get all DT Synthetic nodes
+  uri:
+    url: "{{ dynatrace_tenant_url }}/api/v1/synthetic/nodes"
+    method: GET
+    headers:
+      Content-Type: "application/json"
+      Authorization: "Api-token {{ dynatrace_api_token }}"
+    return_content: no
+    status_code: 200, 201, 204
+  register: nodesresponse
+  when: acebox_mode == 'demo'
+  until: nodesresponse.json | json_query("nodes[?hostname=='{{ ansible_facts.fqdn }}'].entityId")
+  retries: 15
+  delay: 10
+  tags:
+    - jenkins
+
+- name: Jenkins - Set DT Synthetic node entityId
+  set_fact:
+    dt_node_id: "{{ item }}"
+  loop: "{{ nodesresponse.json | json_query(synthetic_nodes_query) }}"
+  vars:
+    synthetic_nodes_query: "nodes[?hostname=='{{ ansible_facts.fqdn }}'].entityId"
+  when: item != ""
+  tags:
+    - jenkins
+
+- name: Jenkins - Template Helm values file
+  ansible.builtin.template:
+    src: /home/{{ non_root_user }}/k8s/jenkins-values.yml.j2
+    dest: /home/{{ non_root_user }}/k8s/jenkins-values.yml
+    owner: root
+    group: root
+    mode: '0644'
+  tags:
+    - jenkins
+
+- name: Jenkins - Allow jenkins to admin k8s
+  shell: /snap/bin/microk8s.kubectl create clusterrolebinding jenkins --clusterrole cluster-admin --serviceaccount=jenkins:ace
+  ignore_errors: yes
+  tags:
+    - jenkins
+
+- name: Jenkins - Install jenkins
+  become_user: "{{ non_root_user }}"
+  shell: /snap/bin/helm upgrade -i -f /home/{{ non_root_user }}/k8s/jenkins-values.yml --version {{ jenkins_helm_chart_version }} --namespace ace jenkins jenkins/jenkins --wait --timeout 600s
+  ignore_errors: yes
+  tags:
+    - jenkins
+
+- name: Jenkins - Uninstall jenkins
+  become_user: "{{ non_root_user }}"
+  shell: /snap/bin/helm uninstall --namespace ace jenkins
+  ignore_errors: yes
+  tags:
+    - never
+    - jenkins_uninstall

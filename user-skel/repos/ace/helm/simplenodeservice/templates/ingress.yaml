@@ -1,0 +1,25 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    meta.helm.sh/release-name: {{ .Release.Name }}
+    kubernetes.io/ingress.class: public
+  labels:
+    app: {{ .Chart.Name }}
+    version: {{ .Values.version }}
+    app.kubernetes.io/managed-by: Helm
+    chart: {{ .Chart.Name }}
+    heritage: Helm
+    release: {{ .Release.Name }}
+  name: {{ .Release.Name }}
+spec:
+  rules:
+  - host: {{ .Chart.Name }}.{{ .Release.Namespace }}.{{ .Values.domain }}
+    http:
+      paths:
+      - backend:
+          serviceName: {{ .Release.Name }}
+          servicePort: 80
+        path: /
+        pathType: ImplementationSpecific

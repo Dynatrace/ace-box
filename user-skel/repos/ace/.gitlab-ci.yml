@@ -1,0 +1,125 @@
+include:
+  - remote: 'https://gitlab.com/dynatrace-ace/keptn-gitlab-library/-/raw/master/jmeter_run_test.yaml'
+  #- remote: 'https://gitlab.com/dynatrace-ace/keptn-gitlab-library/-/raw/master/keptn_eval.yaml'
+  - remote: 'https://gitlab.com/dynatrace-ace/dynatrace-gitlab-library/-/raw/master/dynatrace_event.yaml'
+  #- remote: 'https://gitlab.com/dynatrace-ace/keptn-gitlab-library/-/raw/master/keptn_init.yaml'
+
+variables:
+  DT_APPLICATION_RELEASE_VERSION: "v1.0.0"
+  DT_APPLICATION_BUILD_VERSION: "1.0.0"
+  DT_APPLICATION_NAME: "simplenode-app"
+  DT_APPLICATION_ENVIRONMENT: "simplenode-gitlab-staging"
+  DOMAIN: "35.187.177.100.nip.io"
+
+stages:
+  - init
+  - deploy
+  - test
+  - eval
+
+prepare_keptn:
+  #extends: .keptn_init
+  image: dynatraceace/keptn-gitlab-runner:2.1
+  stage: init
+  environment:
+    name: test
+  variables: 
+    KEPTN_PROJECT: simplenode-gitlab
+    KEPTN_SERVICE: simplenodeservice
+    KEPTN_STAGE: staging
+    KEPTN_SOURCE: gitlab
+    KEPTN_MONITORING: dynatrace
+  script:
+    - /keptn/keptn_init.sh
+  artifacts:
+    paths: 
+    - keptn.init.json
+
+deployment:
+  image: dtzar/helm-kubectl
+  stage: deploy
+  script:
+    - >
+      helm upgrade --install simplenode-gitlab-staging helm/simplenodeservice 
+      --set image="dynatraceace/simplenodeservice:$DT_APPLICATION_BUILD_VERSION"
+      --set domain="$DOMAIN" 
+      --set version="$DT_APPLICATION_RELEASE_VERSION"
+      --set build_version="$DT_APPLICATION_BUILD_VERSION" 
+      --namespace "$DT_APPLICATION_ENVIRONMENT" --create-namespace 
+      --wait
+  environment:
+    name: test
+
+# dynatrace_info_event:
+#   extends: .dynatrace_event
+#   stage: deploy
+#   variables:
+#     DESCRIPTION: "An INFO event"
+#     CUSTOM_PROPERTIES: '{"label1":"foo","label2":"bar"}'
+#     EVENT_TYPE: "CUSTOM_INFO"
+#     TITLE: "My Event Title"
+
+# dynatrace_deploy_event:
+#   extends: .dynatrace_event
+#   stage: deploy
+#   variables:
+#     DESCRIPTION: "A DEPLOY event"
+#     CUSTOM_PROPERTIES: '{"label1":"foo","label2":"bar"}'
+#     EVENT_TYPE: "CUSTOM_DEPLOYMENT"
+#     DEPLOYMENT_NAME: "simplenode_gitlab"
+#     DEPLOYMENT_VERSION: "1.0.0"
+#     REMEDIATION_ACTION: "http://google.com"
+
+# dynatrace_annotation_event:
+#   extends: .dynatrace_event
+#   stage: deploy
+#   variables:
+#     DESCRIPTION: "An ANNOTATION event"
+#     CUSTOM_PROPERTIES: '{"label1":"foo","label2":"bar"}'
+#     EVENT_TYPE: "CUSTOM_ANNOTATION"
+#     ANNOTATION_TYPE: "My Custom annotation"
+#     ANNOTATION_DESCRIPTION: "I want to annotate something"
+  
+# dynatrace_config_event:
+#   extends: .dynatrace_event
+#   stage: deploy
+#   variables:
+#     DESCRIPTION: "A CONFIG event"
+#     CUSTOM_PROPERTIES: '{"label1":"foo","label2":"bar"}'
+#     EVENT_TYPE: "CUSTOM_CONFIGURATION"
+#     CONFIGURATION: "I Set Something to 1"
+#     ORIGINAL: "It was 0" 
+
+run-tests:
+  extends: .run-jmeter
+  before_script: 
+    - echo $(date --utc +%FT%T.000Z) > keptn.test.starttime
+  after_script: 
+    - echo $(date --utc +%FT%T.000Z) > keptn.test.endtime
+  stage: test   
+  environment:
+    name: test
+  variables: 
+    # SERVER_URL: "simplenodeservice.simplenode-gitlab-staging.35.187.177.100.nip.io"
+    SERVER_URL: 'simplenodeservice."$DT_APPLICATION_ENVIRONMENT"."$DOMAIN"'
+    SERVER_PORT: 80
+    VUCOUNT: 2
+    LOOPCOUNT: 100
+    THINKTIME: 100
+    TEST_FILE: jmeter/simplenodeservice_load.jmx
+  artifacts:
+    paths:
+    - keptn.test.starttime
+    - keptn.test.endtime
+
+quality_gate:
+  #extends: .keptn_evaluation
+  image: dynatraceace/keptn-gitlab-runner:2.1
+  stage: eval
+  environment:
+    name: test
+  # variables: 
+  #   KEPTN_LABELS: [{"DT_APPLICATION_RELEASE_VERSION":""},{"DT_APPLICATION_BUILD_VERSION":""},{"DT_APPLICATION_ENVIRONMENT":""},{"DT_APPLICATION_NAME":""}]
+  script:
+    - export KEPTN_LABELS='[{"DT_APPLICATION_RELEASE_VERSION":"'${DT_APPLICATION_RELEASE_VERSION}'"},{"DT_APPLICATION_BUILD_VERSION":"'${DT_APPLICATION_BUILD_VERSION}'"},{"DT_APPLICATION_ENVIRONMENT":"'${DT_APPLICATION_ENVIRONMENT}'"},{"DT_APPLICATION_NAME":"'${DT_APPLICATION_NAME}'"}]'
+    - /keptn/keptn_eval.sh

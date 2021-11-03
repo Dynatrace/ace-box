@@ -1,0 +1,21 @@
+- name: Cert Manager - Add repo
+  become_user: "{{ non_root_user }}"
+  shell: /snap/bin/helm repo add jetstack https://charts.jetstack.io
+
+- name: Cert Manager - Add Namespace
+  shell: /snap/bin/microk8s.kubectl create namespace cert-manager
+  ignore_errors: yes
+
+- name: Cert Manager - Add CRD
+  shell: /snap/bin/microk8s.kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v1.2.0/cert-manager.crds.yaml
+  
+- name: Cert Manager - Install cert-manager
+  become_user: "{{ non_root_user }}"
+  shell: /snap/bin/helm upgrade --install cert-manager --namespace cert-manager jetstack/cert-manager --version v1.2.0
+
+- name: Gitea - Wait for cert-manager to be ready
+  shell: /snap/bin/microk8s.kubectl -n cert-manager rollout status deployment cert-manager-webhook
+
+- name: Cert Manager - Apply Letsencrypt YAML
+  shell: /snap/bin/microk8s.kubectl apply -f /home/{{ non_root_user }}/k8s/letsencrypt.yml
+  ignore_errors: yes

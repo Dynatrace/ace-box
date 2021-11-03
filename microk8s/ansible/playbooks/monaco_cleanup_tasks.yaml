@@ -1,7 +1,0 @@
-- name: Monaco - Clean Dynatrace Environment
-  shell:
-    cmd: /usr/local/bin/monaco -e=/vagrant/monaco/environments.yaml /vagrant/monaco/projects_delete
-  environment:
-    DT_ENV_URL: "{{ dynatrace['tenant'] }}"
-    DT_API_TOKEN: "{{ dynatrace['apitoken'] }}"
-    

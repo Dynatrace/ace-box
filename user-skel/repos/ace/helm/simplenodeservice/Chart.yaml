@@ -1,0 +1,4 @@
+apiVersion: v1
+description: Simplenode Service for ACE demo
+name: simplenodeservice
+version: 1

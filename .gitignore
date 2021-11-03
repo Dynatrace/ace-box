@@ -2,7 +2,7 @@
 .DS_Store
 
 # Vagrant stuff
-*/.vagrant/
+**/.vagrant/**
 microk8s/*.log
 *config.yml
 
@@ -41,7 +41,7 @@ override.tf.json
 *_override.tf.json
 *tfplan*
 *.terraform.lock.hcl
+**/ace-box.conf.yml
 
 # Nodejs
 *.env*
-
