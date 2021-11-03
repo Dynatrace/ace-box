@@ -32,7 +32,11 @@
           "value": {
             "context": "CONTEXTLESS",
             "key": "environment",
+<<<<<<< HEAD
             "value": "staging"
+=======
+            "value": "{{ .environment }}"
+>>>>>>> a49ee91 (Rename user home folder template)
           },
           "negate": false
         }

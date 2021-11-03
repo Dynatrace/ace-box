@@ -1,0 +1,60 @@
+#- name: "Dynatrace OneAgent 1 - Enable Dynatrace OneAgent helm repo"
+#  become_user: vagrant
+#  shell: /snap/bin/helm repo add dynatrace https://raw.githubusercontent.com/Dynatrace/helm-charts/master/repos/stable
+
+#- name: "Dynatrace OneAgent 2 - Create Dynatrace namespace"
+#  shell: /snap/bin/microk8s.kubectl create ns dynatrace
+#  ignore_errors: yes
+
+#- name: "Dynatrace OneAgent 3 - Install Dynatrace One-Agent Operator"
+#  become_user: vagrant
+#  shell: /snap/bin/helm install dynatrace-oneagent-operator dynatrace/dynatrace-oneagent-operator -n dynatrace --set platform="kubernetes",oneagent.apiUrl="{{ dynatrace_tenant_url }}/api",secret.apiToken="{{ dynatrace_api_token }}",secret.paasToken="{{ dynatrace_paas_token }}"
+
+# - name: "Dynatrace Operator 1 - Download"
+#   get_url:
+#     url: "https://github.com/dynatrace/dynatrace-operator/releases/latest/download/install.sh"
+#     dest: "/home/{{ non_root_user }}/install_dtoperator.sh"
+#     mode: +x
+#     timeout: 300
+
+# - name: "Dynatrace Operator 2 - Install"
+#   shell:
+#     cmd: "sh /home/{{ non_root_user }}/install_dtoperator.sh --api-url {{ dynatrace['tenant'] }}/api --api-token {{ dynatrace['apitoken'] }} --paas-token {{ dynatrace['paastoken'] }} --enable-app-log-access --skip-ssl-verification --enable-k8s-monitoring" 
+
+- name: "Dynatrace OneAgent 1 - Create Dynatrace namespace"
+  shell: 
+    cmd: "/snap/bin/microk8s.kubectl create ns dynatrace"
+  ignore_errors: yes
+
+- name: "Dynatrace OneAgent 2 - Create CRD"
+  shell: 
+    cmd: "/snap/bin/microk8s.kubectl apply -f https://github.com/Dynatrace/dynatrace-operator/releases/download/{{ dynatrace_operator_version }}/kubernetes.yaml"
+  ignore_errors: yes
+
+- name: "Dynatrace OneAgent 3 - Create Secret"
+  shell: 
+    cmd: "/snap/bin/microk8s.kubectl -n dynatrace create secret generic dynakube --from-literal=\"apiToken={{ dynatrace['apitoken'] }}\" --from-literal=\"paasToken={{ dynatrace['paastoken'] }}\""
+  ignore_errors: yes
+
+- name: Dynatrace OneAgent 4 - Set Environment
+  ansible.builtin.template:
+    src: /vagrant/k8s/dynakube.yaml.j2
+    dest: /vagrant/k8s/dynakube.yaml
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: "Dynatrace OneAgent 5 - Apply CR"
+  shell: 
+    cmd: "/snap/bin/microk8s.kubectl apply -f /vagrant/k8s/dynakube.yaml"
+  ignore_errors: yes
+
+- name: "Dynatrace Operator 6 - Get bearer token " 
+  shell: 
+    cmd: "/snap/bin/microk8s.kubectl get secret $(kubectl get sa dynatrace-kubernetes-monitoring -o jsonpath='{.secrets[0].name}' -n dynatrace) -o jsonpath='{.data.token}' -n dynatrace | base64 --decode"
+  register: token_raw
+
+- set_fact:
+    kube_bearer_token: "{{  token_raw.stdout }}"
+
+- debug: var=kube_bearer_token

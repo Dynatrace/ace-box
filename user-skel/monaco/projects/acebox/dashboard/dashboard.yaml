@@ -1,0 +1,5 @@
+config: 
+    - acebox: "dashboard.json"
+  
+acebox:
+    - name: "ACE Dashboard"

@@ -1,0 +1,26 @@
+{
+    "dashboardMetadata": {
+      "name": "{{ .name }}",
+      "shared": true,
+      "owner": "admin",
+      "dashboardFilter": null
+    },
+    "tiles": [
+      {
+        "name": "Markdown",
+        "tileType": "MARKDOWN",
+        "configured": true,
+        "bounds": {
+          "top": 0,
+          "left": 0,
+          "width": 988,
+          "height": 646
+        },
+        "tileFilter": {
+          "timeframe": null,
+          "managementZone": null
+        },
+        "markdown": "# Welcome to the ACE-BOX Dashboard\n\n## Supporting Services\n* Jenkins: [http://jenkins.{{ .Env.INGRESS_DOMAIN }}](http://jenkins.{{ .Env.INGRESS_DOMAIN }}) \n * User: {{ .Env.JENKINS_USER }}\n * Password: {{ .Env.JENKINS_PASSWORD }}\n* Gitea: [http://gitea.{{ .Env.INGRESS_DOMAIN }}](http://gitea.{{ .Env.INGRESS_DOMAIN }}) \n * User: {{ .Env.GITEA_USER }}\n * Password: {{ .Env.GITEA_PASSWORD }}\n * Personal Access Token: {{ .Env.GITEA_PAT }}\n* Keptn API: [http://keptn.{{ .Env.INGRESS_DOMAIN }}/api](http://keptn.{{ .Env.INGRESS_DOMAIN }}/api) \n * API Token: {{ .Env.KEPTN_API_TOKEN }}\n* Keptn Bridge: [http://keptn.{{ .Env.INGRESS_DOMAIN }}/bridge](http://jenkins.{{ .Env.INGRESS_DOMAIN }}/bridge) \n * User: {{ .Env.KEPTN_BRIDGE_USER }}\n * Password: {{ .Env.KEPTN_BRIDGE_PASSWORD }}\n* Gitlab: [http://gitlab.gitlab.{{ .Env.INGRESS_DOMAIN }}](http://gitlab.gitlab.{{ .Env.INGRESS_DOMAIN }}) \n * User: {{ .Env.GITLAB_USER }}\n * Password: {{ .Env.GITLAB_PASSWORD }}"
+      }
+    ]
+  }

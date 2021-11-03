@@ -1,0 +1,4 @@
+apiVersion: v1
+description: ACE-box dashboard
+name: dashboard
+version: 1

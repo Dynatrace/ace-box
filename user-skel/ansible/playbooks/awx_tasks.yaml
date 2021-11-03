@@ -1,0 +1,70 @@
+- name: AWX - Install Operator
+  become_user: "{{ non_root_user }}"
+  shell: helm upgrade --install --wait awx-operator /home/{{ non_root_user }}/helm-charts/awx-operator
+  tags:
+    - awx
+
+- set_fact:
+    awx_hostname: "awx.{{ ingress_domain }}"
+  tags:
+    - awx
+    - awx_output
+
+- name: AWX - Install AWX
+  become_user: "{{ non_root_user }}"
+  shell: helm upgrade --install --wait awx /home/{{ non_root_user }}/helm-charts/awx --namespace awx --create-namespace --set ingress.hosts[0].host="{{ awx_hostname }}"
+  tags:
+    - awx
+
+- name: AWX - Retrieve URL
+  set_fact:
+    awx_url: "http://{{ awx_hostname }}"
+  tags:
+    - awx_output
+
+- name: AWX - Retrieve admin username
+  set_fact:
+    awx_admin_username: "admin"
+  tags:
+    - awx_output
+
+- name: AWX - Retrieve admin password
+  shell: /snap/bin/microk8s.kubectl -n awx get secret awx-admin-password -o jsonpath='{.data.password}' | base64 -d
+  register: awx_admin_password_raw
+  tags:
+    - awx_output
+
+- set_fact:
+    awx_admin_password: "{{ awx_admin_password_raw.stdout }}"
+  tags:
+    - awx_output
+
+- debug:
+    msg:
+      - "AWX URL: {{ awx_url }}"
+      - "AWX admin username: {{ awx_admin_username }}"
+      - "AWX admin password: {{ awx_admin_password }}"
+  tags:
+    - awx_output
+
+
+- name: AWX - Uninstall AWX
+  become_user: "{{ non_root_user }}"
+  shell: helm delete awx --namespace awx
+  tags:
+    - never
+    - awx_uninstall
+
+- name: AWX - Uninstall Operator
+  become_user: "{{ non_root_user }}"
+  shell: helm delete awx-operator
+  tags:
+    - never
+    - awx_uninstall
+
+- name: AWX - Delete namespace
+  shell: kubectl delete namespace awx
+  tags:
+    - never
+    - awx_uninstall
+    

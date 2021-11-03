@@ -1,0 +1,26 @@
+- name: Gitlab - Add helm repo
+  become_user: "{{ non_root_user }}"
+  shell: /snap/bin/helm repo add gitlab https://charts.gitlab.io/ && helm repo update
+
+- set_fact:
+    gitlab_domain: "gitlab.{{ ingress_domain }}"
+
+- name: Gitlab - Set placeholders
+  shell: >
+    sed 
+    -e "s|DOMAIN_PLACEHOLDER|{{ gitlab_domain }}|"  
+    /home/{{ non_root_user }}/k8s/gitlab-values.yml > /home/{{ non_root_user }}/k8s/gitlab-values-gen.yml
+
+- name: Gitlab - Install using helm
+  become_user: "{{ non_root_user }}"
+  shell: /snap/bin/helm install gitlab gitlab/gitlab -f /home/{{ non_root_user }}/k8s/gitlab-values-gen.yml --create-namespace --namespace gitlab
+  ignore_errors: yes
+
+- name: "Gitlab - Extract generated password for root user"
+  shell: /snap/bin/microk8s.kubectl -n gitlab get secret gitlab-gitlab-initial-root-password -ojsonpath='{.data.password}' | base64 -d
+  register: gitlab_root_password_raw
+
+- set_fact:
+    gitlab_root_password: "{{  gitlab_root_password_raw.stdout }}"
+
+- debug: var=gitlab_root_password

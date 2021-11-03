@@ -1,0 +1,73 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+   name: dynatrace
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: activegate
+  namespace: dynatrace
+  name: activegate
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: activegate
+  template:
+    metadata:
+      labels:
+        app: activegate
+    spec:
+      containers:
+      - image: REGISTRY_PLACEHOLDER/linux/activegate:latest
+        env: 
+        - name: DT_CAPABILITIES
+          value: "kubernetes_monitoring,MSGrouter"
+        imagePullPolicy: IfNotPresent       
+        name: activegate
+        ports:
+        - containerPort: 9999
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            scheme: HTTPS
+            path: "/rest/state"
+            port: 9999
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          failureThreshold: 2
+        startupProbe:
+          httpGet:
+              path: "/rest/health"
+              port: 9999
+          failureThreshold: 20
+          periodSeconds: 5
+        readinessProbe:
+          httpGet:
+            scheme: HTTPS
+            path: "/rest/health"
+            port: 9999
+          initialDelaySeconds: 30
+          periodSeconds: 15
+          failureThreshold: 3
+      imagePullSecrets:
+      - name: dt-environment-registry
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: activegate
+  namespace: dynatrace
+  name: activegate
+spec:
+  ports:
+  - name: http
+    port: 9999
+    protocol: TCP
+    targetPort: 9999
+  selector:
+    app: activegate
