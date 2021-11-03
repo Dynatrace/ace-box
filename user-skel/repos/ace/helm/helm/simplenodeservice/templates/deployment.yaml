@@ -36,14 +36,6 @@ spec:
           value: {{ .Values.dt_tags }}
         - name: DT_CUSTOM_PROP
           value: {{ .Values.dt_custom_prop }}
-        - name: DT_RELEASE_VERSION
-          value: "{{ .Values.version }}"
-        - name: DT_RELEASE_BUILD_VERSION
-          value: "{{ .Values.build_version }}"
-        - name: DT_RELEASE_PRODUCT
-          value: "simplenode-app"
-        - name: DT_RELEASE_STAGE
-          value: "{{ .Release.Namespace }}"
         resources:
           limits:
             cpu: 200m

@@ -4,17 +4,17 @@ dtCreds: dynatrace
 attachRules:
   tagRule:
   - meTypes:
-    - PROCESS_GROUP_INSTANCE
+    - SERVICE
     tags:
+    - context: ENVIRONMENT
+      key: DT_APPLICATION_RELEASE_VERSION
+      value: $LABEL.DT_APPLICATION_RELEASE_VERSION
     - context: ENVIRONMENT
       key: DT_APPLICATION_BUILD_VERSION
       value: $LABEL.DT_APPLICATION_BUILD_VERSION
-    - context: KUBERNETES
-      key: app.kubernetes.io/name
-      value: $SERVICE
-    - context: KUBERNETES
-      key: app.kubernetes.io/part-of
+    - context: ENVIRONMENT
+      key: DT_APPLICATION_ENVIRONMENT
+      value: $LABEL.DT_APPLICATION_ENVIRONMENT
+    - context: ENVIRONMENT
+      key: DT_APPLICATION_NAME
       value: $LABEL.DT_APPLICATION_NAME
-    - context: KUBERNETES
-      key: app.kubernetes.io/component
-      value: api

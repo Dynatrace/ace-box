@@ -25,44 +25,30 @@ pipeline {
         label 'kubegit'
     }
     stages {
-        // stage('Update production artefact') {
-        //     steps {
-        //         script {
-        //             env.DT_CUSTOM_PROP = readMetaData() + " " + generateDynamicMetaData()
-        //             env.DT_TAGS = readTags()
-        //         }
-        //         container('kubectl') {
-        //             sh "sed -e \"s|DOMAIN_PLACEHOLDER|${env.INGRESS_DOMAIN}|\" \
-        //             -e \"s|CONTAINER_IMAGE_PLACEHOLDER|${env.CONTAINER_IMAGE}|\" \
-        //             -e \"s|ENVIRONMENT_PLACEHOLDER|production|\" \
-        //             -e \"s|IMAGE_PLACEHOLDER|`kubectl -n staging get deployment -o jsonpath='{.items[*].spec.template.spec.containers[0].image}' --field-selector=metadata.name=${env.APP_NAME}`|\" \
-        //             -e \"s|VERSION_PLACEHOLDER|${env.ART_VERSION}|\" \
-        //             -e \"s|BUILD_PLACEHOLDER|${env.ART_VERSION}|\" \
-        //             -e \"s|DT_TAGS_PLACEHOLDER|${env.DT_TAGS}|\" \
-        //             -e \"s|DT_CUSTOM_PROP_PLACEHOLDER|${env.DT_CUSTOM_PROP}|\" \
-        //             helm/simplenodeservice/values.yaml > helm/simplenodeservice/values-gen.yaml"
-        //         }
-        //         container('helm') {
-        //             sh "cat helm/simplenodeservice/values-gen.yaml"
-        //             sh "helm upgrade -i simplenodeservice-production helm/simplenodeservice -f helm/simplenodeservice/values-gen.yaml --namespace production --wait"
-        //         }
-        //     }
-        // }   
-        stage('Deploy via Helm') {
+        stage('Update production artefact') {
             steps {
-                checkout scm
+                script {
+                    env.DT_CUSTOM_PROP = readMetaData() + " " + generateDynamicMetaData()
+                    env.DT_TAGS = readTags()
+                }
+                container('kubectl') {
+                    sh "sed -e \"s|DOMAIN_PLACEHOLDER|${env.INGRESS_DOMAIN}|\" \
+                    -e \"s|CONTAINER_IMAGE_PLACEHOLDER|${env.CONTAINER_IMAGE}|\" \
+                    -e \"s|ENVIRONMENT_PLACEHOLDER|production|\" \
+                    -e \"s|IMAGE_PLACEHOLDER|`kubectl -n staging get deployment -o jsonpath='{.items[*].spec.template.spec.containers[0].image}' --field-selector=metadata.name=${env.APP_NAME}`|\" \
+                    -e \"s|VERSION_PLACEHOLDER|${env.ART_VERSION}|\" \
+                    -e \"s|BUILD_PLACEHOLDER|${env.ART_VERSION}|\" \
+                    -e \"s|DT_TAGS_PLACEHOLDER|${env.DT_TAGS}|\" \
+                    -e \"s|DT_CUSTOM_PROP_PLACEHOLDER|${env.DT_CUSTOM_PROP}|\" \
+                    helm/simplenodeservice/values.yaml > helm/simplenodeservice/values-gen.yaml"
+                }
                 container('helm') {
-                    sh "helm upgrade --install simplenodeservice-staging helm/simplenodeservice \
-                    --set image=${env.CONTAINER_IMAGE} \
-                    --set domain=${env.INGRESS_DOMAIN} \
-                    --set version=${env.BUILD}.0.0 \
-                    --set build_version=${env.ART_VERSION} \
-                    --namespace production --create-namespace \
-                    --wait"
+                    sh "cat helm/simplenodeservice/values-gen.yaml"
+                    sh "helm upgrade -i simplenodeservice-production helm/simplenodeservice -f helm/simplenodeservice/values-gen.yaml --namespace production --wait"
                 }
             }
         }
-        stage('Dynatrace deployment event') {
+        stage('DT send deploy event') {
             steps {
                 script {
                     sh "sleep 120"
