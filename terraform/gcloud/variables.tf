@@ -12,7 +12,7 @@ variable "gcloud_cred_file" {
 
 variable "name_prefix" {
   description = "Prefix to distinguish the instance"
-  default = "ace-box-cloud"
+  default     = "ace-box-cloud"
 }
 
 variable "acebox_size" {
@@ -32,12 +32,12 @@ variable "acebox_os" {
 
 variable "private_ssh_key" {
   description = "Path of where to store private key on current module directory"
-  default = "./key"
+  default     = "./key"
 }
 
 variable "custom_domain" {
   description = "Set to overwrite custom domain"
-  default     = ""
+  default     = "nip.io"
 }
 
 variable "managed_zone_name" {
@@ -48,4 +48,16 @@ variable "managed_zone_name" {
 variable "disk_size" {
   description = "Size of disk that will be available to ace-box instance"
   default     = "60"
+}
+
+variable "dt_tenant" {
+
+}
+
+variable "dt_api_token" {
+
+}
+
+variable "dt_paas_token" {
+
 }

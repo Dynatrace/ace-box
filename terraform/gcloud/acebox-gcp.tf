@@ -37,9 +37,9 @@ resource "tls_private_key" "acebox_key" {
   rsa_bits  = 4096
 }
 
-resource "local_file" "acebox_pem" { 
-  filename = "${path.module}/${var.private_ssh_key}"
-  content = tls_private_key.acebox_key.private_key_pem
+resource "local_file" "acebox_pem" {
+  filename        = "${path.module}/${var.private_ssh_key}"
+  content         = tls_private_key.acebox_key.private_key_pem
   file_permission = 400
 }
 
@@ -76,44 +76,20 @@ resource "google_compute_instance" "acebox" {
     user        = var.acebox_user
     private_key = tls_private_key.acebox_key.private_key_pem
   }
-
-  provisioner "remote-exec" {
-    inline = ["sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y"]
-  }
-
-  provisioner "remote-exec" {
-    inline = ["mkdir ~/ace-box/"]
-  }
-
-  provisioner "file" {
-    source      = "${path.module}/../../microk8s"
-    destination = "~/ace-box/"
-  }
-
-  provisioner "file" {
-    source      = "${path.module}/../../install.sh"
-    destination = "~/install.sh"
-  }
-
 }
 
-resource "null_resource" "provisioner" {
+# Provision ACE-Box
+module "provisioner" {
+  source = "../modules/ace-box-provisioner"
 
-  connection {
-    host        = google_compute_instance.acebox.network_interface.0.access_config.0.nat_ip
-    type        = "ssh"
-    user        = var.acebox_user
-    private_key = tls_private_key.acebox_key.private_key_pem
-  }
-
-  depends_on = [google_dns_record_set.ace_box, google_compute_instance.acebox]
-
-  provisioner "remote-exec" {
-    inline = [
-        "tr -d '\\015' < /home/${var.acebox_user}/install.sh > /home/${var.acebox_user}/install_fixed.sh",
-        "chmod +x /home/${var.acebox_user}/install_fixed.sh",
-        "/home/${var.acebox_user}/install_fixed.sh  --ip=${google_compute_instance.acebox.network_interface.0.access_config.0.nat_ip} --user=${var.acebox_user} --custom-domain=${var.custom_domain}"
-      ]
-  }
-
+  host        = google_compute_instance.acebox.network_interface.0.access_config.0.nat_ip
+  user        = var.acebox_user
+  private_key = tls_private_key.acebox_key.private_key_pem
+  config_file_config = templatefile("${path.module}/ace-box.conf.yml.tpl", {
+    dt_tenant     = var.dt_tenant
+    dt_api_token  = var.dt_api_token
+    dt_paas_token = var.dt_paas_token
+  })
+  ingress_domain   = "${google_compute_instance.acebox.network_interface.0.access_config.0.nat_ip}.${var.custom_domain}"
+  ingress_protocol = "http"
 }
