@@ -1,0 +1,31 @@
+- name: Microk8s - Install microk8s
+  become: true
+  command: snap install microk8s --classic --channel="{{ microk8s_release_channel }}" 
+  args:
+    creates: /snap/bin/microk8s.kubectl
+  
+- name: "Microk8s - Add {{ non_root_user }} to microk8s group"
+  become: true
+  command: "usermod -a -G microk8s {{ non_root_user }}"
+
+- name: Microk8s - Alias to kubectl
+  shell: snap alias microk8s.kubectl kubectl
+
+- name: Microk8s - Wait for microk8s to be ready
+  shell: /snap/bin/microk8s.status --wait-ready
+
+- name: "Microk8s - Enable addons {{ microk8s_addons }}"
+  shell: "/snap/bin/microk8s.enable {{ microk8s_addons }}"
+
+- name: Microk8s - Start microk8s
+  shell: /snap/bin/microk8s.start
+
+- name: Microk8s - Wait for microk8s to be ready
+  shell: /snap/bin/microk8s.status --wait-ready
+
+- name: Microk8s - Add namespaces
+  block:
+    - copy:
+        src: namespaces.yml
+        dest: /tmp/namespaces.yml
+    - shell: /snap/bin/microk8s.kubectl apply -f /tmp/namespaces.yml

@@ -1,0 +1,3 @@
+- name: Gitea - Uninstall using helm
+  become_user: "{{ non_root_user }}"
+  shell: /snap/bin/helm --namespace {{ gitea_namespace }} delete gitea

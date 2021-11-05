@@ -1,0 +1,4 @@
+- name: Set non_root_user
+  set_fact:
+    non_root_user: "{{ lookup('env','USER') }}"
+  when: non_root_user is not defined

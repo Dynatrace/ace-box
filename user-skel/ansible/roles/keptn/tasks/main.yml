@@ -1,0 +1,44 @@
+- name: Keptn - Download Keptn CLI
+  unarchive:
+    src: "https://github.com/keptn/keptn/releases/download/{{ keptn_version }}/keptn-{{ keptn_version }}-linux-amd64.tar.gz"
+    dest: /tmp
+    remote_src: yes
+    mode: +x
+
+- name: Keptn - Rename CLI
+  become: true
+  shell: "cp /tmp/keptn-{{ keptn_version }}-linux-amd64 /usr/local/bin/keptn"
+
+# - name: Keptn - Export KUBECONFIG
+#   become_user: "{{ non_root_user }}"
+#   block:
+#     - shell: /snap/bin/microk8s.config > /tmp/keptn-kube-config
+#     - shell: export KUBECONFIG=/tmp/keptn-kube-config
+
+- name: Keptn - Install via CLI
+  become_user: "{{ non_root_user }}"
+  shell: keptn install -y
+
+- name: Keptn - Template ingress file
+  ansible.builtin.template:
+    src: keptn-ingress.yml.j2
+    dest: /tmp/keptn-ingress.yml
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Keptn - Apply ingress
+  shell: "/snap/bin/microk8s.kubectl -n {{ keptn_namespace }} apply -f /tmp/keptn-ingress.yml"
+
+- name: Keptn - Source Keptn secrets
+  include: roles/keptn/tasks/source-secret.yml
+
+- name: Keptn - Authenticate CLI
+  become_user: "{{ non_root_user }}"
+  shell: "/usr/local/bin/keptn auth --api-token {{ keptn_api_token }} --endpoint {{ ingress_protocol }}://{{ keptn_ingress_domain }}/api"
+
+- name: Keptn - Install JMeter service
+  include: roles/keptn/tasks/jmeter-service.yml
+
+- name: Keptn - Install Dynatrace service
+  include: roles/keptn/tasks/dynatrace-service.yml

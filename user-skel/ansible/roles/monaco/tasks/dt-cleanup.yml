@@ -1,0 +1,6 @@
+- name: Monaco - Cleanup Dynatrace Environment
+  shell:
+    cmd: /usr/local/bin/monaco -e=/home/{{ non_root_user }}/monaco/environments.yaml /home/{{ non_root_user }}/monaco/projects_delete
+  environment:
+    DT_ENV_URL: "{{ dynatrace['tenant'] }}"
+    DT_API_TOKEN: "{{ dynatrace['apitoken'] }}"

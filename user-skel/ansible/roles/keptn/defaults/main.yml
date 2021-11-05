@@ -1,0 +1,5 @@
+---
+keptn_version: "0.10.0"
+keptn_dynatrace_service_version: "0.17.1"
+keptn_namespace: "keptn"
+keptn_ingress_domain: "keptn.{{ ingress_domain }}"

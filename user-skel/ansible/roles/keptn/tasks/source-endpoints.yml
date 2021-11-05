@@ -1,0 +1,8 @@
+- name: Keptn - Source host
+  block:
+    - shell: /snap/bin/microk8s.kubectl -n {{ keptn_namespace }} get ingress keptn-ingress -o jsonpath='{.spec.rules[0].host}'
+      register: keptn_ingress_domain_raw
+    - set_fact:
+        keptn_ingress_domain: "{{ keptn_ingress_domain_raw.stdout }}"
+        keptn_endpoint: "{{ ingress_protocol }}://{{ keptn_ingress_domain_raw.stdout }}/api"
+        keptn_bridge: "{{ ingress_protocol }}://{{ keptn_ingress_domain_raw.stdout }}/bridge"

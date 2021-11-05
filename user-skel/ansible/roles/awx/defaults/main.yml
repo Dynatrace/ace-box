@@ -1,0 +1,5 @@
+---
+awx_ingress_domain: "awx.{{ ingress_domain }}"
+awx_operator_version: "0.12.0"
+awx_admin_username: "admin"
+# awx_admin_password: "" # A secret will be created automatically. Password can be retrieved by running $ kubectl -n awx get secret awx-admin-password -o jsonpath='{.data.password}' | base64 -d

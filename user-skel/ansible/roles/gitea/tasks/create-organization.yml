@@ -1,0 +1,10 @@
+- name: "Gitea - Check if org {{ gitea_org }} exists"
+  uri:
+    url: "{{ ingress_protocol }}://{{ gitea_domain }}/api/v1/orgs/{{ gitea_org }}?access_token={{ gitea_access_token }}"
+    validate_certs: no
+    status_code: [200, 201, 404]
+  register: org_result
+
+- name: "Gitea - Create org {{ gitea_org }}"
+  shell: "curl -k -d '{\"full_name\":\"{{ gitea_org }}\", \"visibility\":\"public\", \"username\":\"{{ gitea_org }}\"}' -H \"Content-Type: application/json\" -X POST \"{{ ingress_protocol }}://{{ gitea_domain }}/api/v1/orgs?access_token={{ gitea_access_token }}\""
+  when: org_result.status != 200

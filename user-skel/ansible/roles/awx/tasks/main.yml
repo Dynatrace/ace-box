@@ -1,0 +1,7 @@
+- name: AWX - Install Operator
+  become_user: "{{ non_root_user }}"
+  shell: helm upgrade --install --wait awx-operator /home/{{ non_root_user }}/helm-charts/awx-operator
+
+- name: AWX - Install AWX
+  become_user: "{{ non_root_user }}"
+  shell: helm upgrade --install --wait awx /home/{{ non_root_user }}/helm-charts/awx --namespace awx --create-namespace --set ingress.hosts[0].host="{{ awx_ingress_domain }}"

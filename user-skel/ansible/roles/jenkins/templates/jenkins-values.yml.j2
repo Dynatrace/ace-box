@@ -1,0 +1,992 @@
+controller:
+  tag: {{ jenkins_version }}
+  adminPassword: "dynatrace"
+  numExecutors: 2
+  ingress:
+    enabled: true
+    hostName: jenkins.{{ ingress_domain }}
+    # certManager: true
+    annotations:
+      kubernetes.io/ingress.class: public
+    #   cert-manager.io/issuer: "letsencrypt-staging"
+    #   ingress.kubernetes.io/secure-backends: true
+    #   kubernetes.io/tls-acme: true
+    # tls:    
+    # - hosts:    
+    #   - jenkins.{{ ingress_domain }}
+    #   secretName: jenkins.local-tls
+  jenkinsUrlProtocol: {{ ingress_protocol }}
+  containerEnv:
+    - name: GITHUB_USER_EMAIL
+      value: {{ 'ace@dynatrace.com' if acebox_mode == 'demo' else '' }}
+    - name: GITHUB_ORGANIZATION
+      value: {{ 'ace' if acebox_mode == 'demo' else '' }}
+    - name: GITHUB_USER_NAME
+      value: {{ 'dynatrace' if acebox_mode == 'demo' else '' }}
+    - name: GITHUB_PERSONAL_ACCESS_TOKEN
+      value: {{ gitea_access_token if acebox_mode == 'demo' else '' }}
+    - name: GIT_REPO
+      value: {{ 'ace' if acebox_mode == 'demo' else '' }}
+    - name: GIT_DOMAIN
+      value: {{ gitea_domain if acebox_mode == 'demo' else '' }}
+    - name: GIT_PROTOCOL
+      value: {{ ingress_protocol if acebox_mode == 'demo' else '' }}
+    - name: DOCKER_REGISTRY_URL
+      value: localhost:{{ registry_port }}
+    - name: DT_TENANT_URL
+      value: {{ '' if jenkins_setcreds != true and acebox_mode == 'training' else dynatrace['tenant'] }}
+    - name: DT_API_TOKEN
+      value: {{ '' if jenkins_setcreds != true and acebox_mode == 'training' else dynatrace['apitoken'] }}
+    - name: DT_SYNTHETIC_LOCATION
+      value: {{ dynatrace_synthetic_location_id | default('') if acebox_mode == 'demo' else '' }}
+    - name: KEPTN_ENDPOINT
+      value: {{ keptn_endpoint if acebox_mode == 'demo' else '' }}
+    - name: KEPTN_BRIDGE
+      value: {{ keptn_bridge if acebox_mode == 'demo' else '' }}
+    - name: KEPTN_API_TOKEN
+      value: {{ keptn_api_token | default('') if acebox_mode == 'demo' else '' }}
+    - name: SYNTH_NODE_ID
+      value: "{{ dt_node_id | default('') if acebox_mode == 'demo' else '' }}"
+    - name: KUBE_BEARER_TOKEN
+      value: {{ kube_bearer_token | default('') if acebox_mode == 'demo' else '' }}
+    - name: INGRESS_DOMAIN
+      value: {{ ingress_domain }}
+    - name: ACE_LIB
+      value: {{ jenkins_ace_lib_url if acebox_mode == 'demo' else '' }}
+    - name: KEPTN_LIB
+      value: {{ jenkins_keptn_lib_url if acebox_mode == 'demo' else '' }}
+  installPlugins:
+    - command-launcher:1.6
+    - kubernetes:1.30.0
+    - kubernetes-credentials-provider:0.18-1
+    - workflow-job:2.41
+    - workflow-aggregator:2.6
+    - credentials-binding:1.25
+    - git:4.7.2
+    - google-oauth-plugin:1.0.5
+    - google-source-plugin:0.4
+    - performance:3.19
+    - github-branch-source:2.10.4
+    - job-dsl:1.77
+    - pipeline-build-step:2.13
+    - docker-plugin:1.2.2
+    - blueocean:1.24.7
+    - configuration-as-code:1.51
+    - http_request:1.9.0
+    - pipeline-utility-steps:2.8.0
+    - ansible:1.1
+    - gitea:1.2.1
+  installLatestPlugins: false
+  JCasC:
+    enabled: true
+    defaultConfig: true
+    configScripts:
+      jenkins-settings: |
+        jenkins:
+          agentProtocols:
+          - "JNLP4-connect"
+          - "Ping"
+          systemMessage: Welcome to the ACE BOX CI\CD server.  This Jenkins is configured and managed 'as code'.
+          globalNodeProperties:
+          - envVars:
+              env:
+              - key: "DOCKER_REGISTRY_URL"
+                value: ${DOCKER_REGISTRY_URL} #Load from Environment Variable
+              - key: "GITHUB_USER_EMAIL"
+                value: ${GITHUB_USER_EMAIL} #Load from Environment Variable
+              - key: "GITHUB_ORGANIZATION"
+                value: ${GITHUB_ORGANIZATION} #Load from Environment Variable
+              - key: "GIT_REPO"
+                value: ${GIT_REPO} #Load from Environment Variable
+              - key: "GIT_DOMAIN"
+                value: ${GIT_DOMAIN} #Load from Environment Variable
+              - key: "GIT_PROTOCOL"
+                value: ${GIT_PROTOCOL} #Load from Environment Variable
+              - key: "DT_TENANT_URL"
+                value: ${DT_TENANT_URL} #Load from Environment Variable
+              - key: "DT_API_TOKEN"
+                value: ${DT_API_TOKEN} #Load from Environment Variable
+              - key: "DT_SYNTHETIC_LOCATION"
+                value: ${DT_SYNTHETIC_LOCATION} #Load from Environment Variable
+              - key: "KEPTN_ENDPOINT"
+                value: ${KEPTN_ENDPOINT} #Load from Environment Variable
+              - key: "KEPTN_BRIDGE"
+                value: ${KEPTN_BRIDGE} #Load from Environment Variable
+              - key: "KEPTN_API_TOKEN"
+                value: ${KEPTN_API_TOKEN} #Load from Environment Variable
+              - key: "ACE_LIB"
+                value: ${ACE_LIB} #Load from Environment Variable
+              - key: "KEPTN_LIB"
+                value: ${KEPTN_LIB} #Load from Environment Variable
+              - key: "SYNTH_NODE_ID"
+                value: ${SYNTH_NODE_ID} #Load from Environment Variable
+              - key: "KUBE_BEARER_TOKEN"
+                value: ${KUBE_BEARER_TOKEN} #Load from Environment Variable
+              - key: "INGRESS_DOMAIN"
+                value: ${INGRESS_DOMAIN} #Load from Environment Variable
+          clouds:
+          - kubernetes:
+              containerCapStr: "10"
+              jenkinsTunnel: "jenkins-agent:50000"
+              jenkinsUrl: "http://jenkins:8080"
+              maxRequestsPerHostStr: "32"
+              name: "kubernetes"
+              namespace: "ace"
+              serverUrl: "https://kubernetes.default"
+              templates:
+              - containers:
+                - args: "cat"
+                  command: "/bin/sh -c"
+                  envVars:
+                  - envVar:
+                      key: "JENKINS_URL"
+                      value: "http://jenkins.ace.svc.cluster.local:8080"
+                  image: "jenkinsci/jnlp-slave"
+                  livenessProbe:
+                    failureThreshold: 0
+                    initialDelaySeconds: 0
+                    periodSeconds: 0
+                    successThreshold: 0
+                    timeoutSeconds: 0
+                  name: "jenkins-slave"
+                  resourceLimitCpu: "512m"
+                  resourceLimitMemory: "512Mi"
+                  resourceRequestCpu: "512m"
+                  resourceRequestMemory: "512Mi"
+                  workingDir: "/home/jenkins"
+                id: "99124a5d-8561-4dd2-a48c-72bc4e6515d9"
+                label: "jenkins-slave"
+                name: "jenkins-slave"
+                nodeUsageMode: NORMAL
+                serviceAccount: "default"
+                slaveConnectTimeout: 300
+                slaveConnectTimeoutStr: "300"
+                yamlMergeStrategy: "override"
+              - containers:
+                - args: "cat"
+                  command: "/bin/sh -c"
+                  image: "maven:3.3.9-jdk-8-alpine"
+                  livenessProbe:
+                    failureThreshold: 0
+                    initialDelaySeconds: 0
+                    periodSeconds: 0
+                    successThreshold: 0
+                    timeoutSeconds: 0
+                  name: "maven"
+                  ttyEnabled: true
+                  workingDir: "/home/jenkins/agent"
+                - args: "cat"
+                  command: "/bin/sh -c"
+                  image: "docker:rc"
+                  livenessProbe:
+                    failureThreshold: 0
+                    initialDelaySeconds: 0
+                    periodSeconds: 0
+                    successThreshold: 0
+                    timeoutSeconds: 0
+                  name: "docker"
+                  ttyEnabled: true
+                  workingDir: "/home/jenkins/agent"
+                - args: "cat"
+                  command: "/bin/sh -c"
+                  image: "lachlanevenson/k8s-kubectl:v1.18.0"
+                  livenessProbe:
+                    failureThreshold: 0
+                    initialDelaySeconds: 0
+                    periodSeconds: 0
+                    successThreshold: 0
+                    timeoutSeconds: 0
+                  name: "kubectl"
+                  ttyEnabled: true
+                  workingDir: "/home/jenkins/agent"
+                - args: "cat"
+                  command: "/bin/sh -c"
+                  image: "dynatraceace/jmeter-runner:release-v5.4.1"
+                  livenessProbe:
+                    failureThreshold: 0
+                    initialDelaySeconds: 0
+                    periodSeconds: 0
+                    successThreshold: 0
+                    timeoutSeconds: 0
+                  name: "jmeter"
+                  ttyEnabled: true
+                  workingDir: "/home/jenkins/agent"
+                - args: "cat"
+                  command: "/bin/sh -c"
+                  image: "dynatraceacm/apline-curl"
+                  livenessProbe:
+                    failureThreshold: 0
+                    initialDelaySeconds: 0
+                    periodSeconds: 0
+                    successThreshold: 0
+                    timeoutSeconds: 0
+                  name: "curl"
+                  ttyEnabled: true
+                  workingDir: "/home/jenkins/agent"
+                - args: "cat"
+                  command: "/bin/sh -c"
+                  image: "alpine/helm:3.5.2"
+                  livenessProbe:
+                    failureThreshold: 0
+                    initialDelaySeconds: 0
+                    periodSeconds: 0
+                    successThreshold: 0
+                    timeoutSeconds: 0
+                  name: "helm"
+                  ttyEnabled: true
+                  workingDir: "/home/jenkins/agent"
+                id: "84ff7d6d-d00f-4819-b2e8-ef2f7a79105a"
+                idleMinutes: 10
+                idleMinutesStr: "10"
+                label: "maven"
+                name: "maven-docker-k8s-jmeter"
+                nodeUsageMode: NORMAL
+                slaveConnectTimeout: 300
+                slaveConnectTimeoutStr: "300"
+                volumes:
+                - hostPathVolume:
+                    hostPath: "/var/run/docker.sock"
+                    mountPath: "/var/run/docker.sock"
+                - persistentVolumeClaim:
+                    claimName: "maven-repo"
+                    mountPath: "/root/.m2/repository"
+                    readOnly: false
+                yamlMergeStrategy: "override"
+              - containers:
+                - args: "cat"
+                  command: "/bin/sh -c"
+                  image: "alpine/git"
+                  livenessProbe:
+                    failureThreshold: 0
+                    initialDelaySeconds: 0
+                    periodSeconds: 0
+                    successThreshold: 0
+                    timeoutSeconds: 0
+                  name: "git"
+                  ttyEnabled: true
+                  workingDir: "/home/jenkins/agent"
+                - args: "cat"
+                  command: "/bin/sh -c"
+                  image: "dynatraceace/jmeter-runner:release-v5.4.1"
+                  livenessProbe:
+                    failureThreshold: 0
+                    initialDelaySeconds: 0
+                    periodSeconds: 0
+                    successThreshold: 0
+                    timeoutSeconds: 0
+                  name: "jmeter"
+                  ttyEnabled: true
+                  workingDir: "/home/jenkins/agent"
+                id: "dbffc10e-ee05-4d04-b88b-0d4eeffa0397"
+                label: "git"
+                name: "Git"
+                nodeUsageMode: NORMAL
+                slaveConnectTimeout: 300
+                slaveConnectTimeoutStr: "300"
+                yamlMergeStrategy: "override"
+              - containers:
+                - args: "cat"
+                  command: "/bin/sh -c"
+                  image: "node:8"
+                  livenessProbe:
+                    failureThreshold: 0
+                    initialDelaySeconds: 0
+                    periodSeconds: 0
+                    successThreshold: 0
+                    timeoutSeconds: 0
+                  name: "nodejs"
+                  ttyEnabled: true
+                  workingDir: "/home/jenkins/agent"
+                - args: "cat"
+                  command: "/bin/sh -c"
+                  image: "docker:rc"
+                  livenessProbe:
+                    failureThreshold: 0
+                    initialDelaySeconds: 0
+                    periodSeconds: 0
+                    successThreshold: 0
+                    timeoutSeconds: 0
+                  name: "docker"
+                  ttyEnabled: true
+                  workingDir: "/home/jenkins/agent"
+                id: "a4f51512-c02c-4e63-99b7-2e2a27ddb5b2"
+                idleMinutes: 10
+                idleMinutesStr: "10"
+                label: "nodejs"
+                name: "nodejs"
+                nodeUsageMode: NORMAL
+                slaveConnectTimeout: 300
+                slaveConnectTimeoutStr: "300"
+                volumes:
+                - hostPathVolume:
+                    hostPath: "/var/run/docker.sock"
+                    mountPath: "/var/run/docker.sock"
+                yamlMergeStrategy: "override"
+              - containers:
+                - args: "cat"
+                  command: "/bin/sh -c"
+                  image: "dynatraceacm/gobuilder"
+                  livenessProbe:
+                    failureThreshold: 0
+                    initialDelaySeconds: 0
+                    periodSeconds: 0
+                    successThreshold: 0
+                    timeoutSeconds: 0
+                  name: "gobuilder"
+                  ttyEnabled: true
+                  workingDir: "/home/jenkins/agent"
+                - args: "cat"
+                  command: "/bin/sh -c"
+                  image: "docker:rc"
+                  livenessProbe:
+                    failureThreshold: 0
+                    initialDelaySeconds: 0
+                    periodSeconds: 0
+                    successThreshold: 0
+                    timeoutSeconds: 0
+                  name: "docker"
+                  ttyEnabled: true
+                  workingDir: "/home/jenkins/agent"
+                - args: "cat"
+                  command: "/bin/sh -c"
+                  image: "lachlanevenson/k8s-kubectl:v1.18.0"
+                  livenessProbe:
+                    failureThreshold: 0
+                    initialDelaySeconds: 0
+                    periodSeconds: 0
+                    successThreshold: 0
+                    timeoutSeconds: 0
+                  name: "kubectl"
+                  ttyEnabled: true
+                  workingDir: "/home/jenkins/agent"
+                - args: "cat"
+                  command: "/bin/sh -c"
+                  image: "dynatraceace/jmeter-runner:release-v5.4.1"
+                  livenessProbe:
+                    failureThreshold: 0
+                    initialDelaySeconds: 0
+                    periodSeconds: 0
+                    successThreshold: 0
+                    timeoutSeconds: 0
+                  name: "jmeter"
+                  ttyEnabled: true
+                  workingDir: "/home/jenkins/agent"
+                - args: "cat"
+                  command: "/bin/sh -c"
+                  image: "dynatraceacm/apline-curl"
+                  livenessProbe:
+                    failureThreshold: 0
+                    initialDelaySeconds: 0
+                    periodSeconds: 0
+                    successThreshold: 0
+                    timeoutSeconds: 0
+                  name: "curl"
+                  ttyEnabled: true
+                  workingDir: "/home/jenkins/agent"
+                id: "dc22e422-5dd6-4e22-8ae2-8c429ece5f0e"
+                label: "golang2"
+                name: "golang2"
+                nodeUsageMode: NORMAL
+                slaveConnectTimeout: 300
+                slaveConnectTimeoutStr: "300"
+                volumes:
+                - hostPathVolume:
+                    hostPath: "/var/run/docker.sock"
+                    mountPath: "/var/run/docker.sock"
+                yamlMergeStrategy: "override"
+              - containers:
+                - args: "cat"
+                  command: "/bin/sh -c"
+                  image: "dynatraceace/monaco-runner:release-v1.6.0"
+                  livenessProbe:
+                    failureThreshold: 0
+                    initialDelaySeconds: 0
+                    periodSeconds: 0
+                    successThreshold: 0
+                    timeoutSeconds: 0
+                  name: "monaco"
+                  ttyEnabled: true
+                  workingDir: "/home/jenkins/agent"
+                id: "c532d3f2-9c84-4074-9cf6-70dcb4fb28bf"
+                label: "monaco-runner"
+                name: "monaco-runner"
+                yamlMergeStrategy: "override"
+              - containers:
+                - args: "cat"
+                  command: "/bin/sh -c"
+                  image: "lachlanevenson/k8s-kubectl:v1.18.0"
+                  livenessProbe:
+                    failureThreshold: 0
+                    initialDelaySeconds: 0
+                    periodSeconds: 0
+                    successThreshold: 0
+                    timeoutSeconds: 0
+                  name: "kubectl"
+                  ttyEnabled: true
+                  workingDir: "/home/jenkins/agent"
+                id: "b37f18fd-eb24-4bbf-9298-f85a7a8c6998"
+                label: "kubectl"
+                name: "kubectl"
+                yamlMergeStrategy: "override"
+              - containers:
+                - args: "cat"
+                  command: "/bin/sh -c"
+                  image: "dynatraceace/ace-cicd-tools:v2.0"
+                  livenessProbe:
+                    failureThreshold: 0
+                    initialDelaySeconds: 0
+                    periodSeconds: 0
+                    successThreshold: 0
+                    timeoutSeconds: 0
+                  name: "ace"
+                  ttyEnabled: true
+                  workingDir: "/home/jenkins/agent"
+                id: "576eed6b-a0bb-463e-b08f-fcbc676cb004"
+                label: "ace"
+                name: "ace-cicd-tools"
+                slaveConnectTimeout: 300
+                slaveConnectTimeoutStr: "300"
+                yamlMergeStrategy: "override"
+              - containers:
+                - args: "cat"
+                  command: "/bin/sh -c"
+                  image: "lachlanevenson/k8s-kubectl:v1.18.0"
+                  livenessProbe:
+                    failureThreshold: 0
+                    initialDelaySeconds: 0
+                    periodSeconds: 0
+                    successThreshold: 0
+                    timeoutSeconds: 0
+                  name: "kubectl"
+                  ttyEnabled: true
+                  workingDir: "/home/jenkins/agent"
+                - args: "cat"
+                  command: "/bin/sh -c"
+                  image: "alpine/git"
+                  livenessProbe:
+                    failureThreshold: 0
+                    initialDelaySeconds: 0
+                    periodSeconds: 0
+                    successThreshold: 0
+                    timeoutSeconds: 0
+                  name: "git"
+                  ttyEnabled: true
+                  workingDir: "/home/jenkins/agent"
+                - args: "cat"
+                  command: "/bin/sh -c"
+                  image: "dynatraceace/jmeter-runner:release-v5.4.1"
+                  livenessProbe:
+                    failureThreshold: 0
+                    initialDelaySeconds: 0
+                    periodSeconds: 0
+                    successThreshold: 0
+                    timeoutSeconds: 0
+                  name: "jmeter"
+                  ttyEnabled: true
+                  workingDir: "/home/jenkins/agent"
+                - args: "cat"
+                  command: "/bin/sh -c"
+                  image: "alpine/helm:3.5.2"
+                  livenessProbe:
+                    failureThreshold: 0
+                    initialDelaySeconds: 0
+                    periodSeconds: 0
+                    successThreshold: 0
+                    timeoutSeconds: 0
+                  name: "helm"
+                  ttyEnabled: true
+                  workingDir: "/home/jenkins/agent"
+                - args: "cat"
+                  command: "/bin/sh -c"
+                  image: "dynatraceacm/apline-curl"
+                  livenessProbe:
+                    failureThreshold: 0
+                    initialDelaySeconds: 0
+                    periodSeconds: 0
+                    successThreshold: 0
+                    timeoutSeconds: 0
+                  name: "curl"
+                  ttyEnabled: true
+                  workingDir: "/home/jenkins/agent"
+                id: "9fe3bc5f-5537-4d6b-8652-4960ea920539"
+                label: "kubegit"
+                name: "kubegit"
+                nodeUsageMode: NORMAL
+                slaveConnectTimeout: 300
+                slaveConnectTimeoutStr: "300"
+                yamlMergeStrategy: "override"
+              - containers:
+                - args: "cat"
+                  command: "/bin/sh -c"
+                  image: "alpine/helm:3.5.2"
+                  livenessProbe:
+                    failureThreshold: 0
+                    initialDelaySeconds: 0
+                    periodSeconds: 0
+                    successThreshold: 0
+                    timeoutSeconds: 0
+                  name: "helm"
+                  ttyEnabled: true
+                  workingDir: "/home/jenkins/agent"
+                id: "884387ac-af70-4a41-9526-a77f017326de"
+                label: "helm"
+                name: "helm"
+                yamlMergeStrategy: "override"
+        credentials:
+          system:
+            domainCredentials:
+              - credentials:
+                - usernamePassword:
+                    username: ${GITHUB_USER_NAME} #Load from Environment Variable
+                    password: ${GITHUB_PERSONAL_ACCESS_TOKEN} #Load from Environment Variable
+                    description: "Github Credentials for ACE"
+                    id: "git-creds-ace"
+                    scope: GLOBAL
+{% if acebox_mode == 'demo' %}
+                - personalAccessTokenImpl:
+                    id: "gitea"
+                    scope: GLOBAL
+                    token: "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+{% endif %}
+{% if acebox_mode == 'demo' %}
+        unclassified:
+          giteaServers:
+            servers:
+            - credentialsId: "gitea"
+              displayName: "gitea-ace-box"
+              manageHooks: true
+              serverUrl: "${GIT_PROTOCOL}://${GIT_DOMAIN}"
+          globalLibraries:
+            libraries:
+            - name: "keptn-library"
+              retriever:
+                modernSCM:
+                  scm:
+                    git:
+                      remote: "${KEPTN_LIB}"
+                      traits:
+                      - "gitBranchDiscovery"
+            - name: "ace"
+              retriever:
+                modernSCM:
+                  scm:
+                    git:
+                      remote: "${ACE_LIB}"
+                      traits:
+                      - "gitBranchDiscovery"
+            - name: "jenkinstest"
+              retriever:
+                modernSCM:
+                  scm:
+                    git:
+                      remote: "https://github.com/dynatrace-ace/jenkins-test-library"
+                      traits:
+                      - "gitBranchDiscovery"
+{% endif %}
+        jobs:
+          - script: >
+              folder('ace-demo')
+          - script: >
+              pipelineJob('ace-demo/1. Build') {
+                parameters {
+                  choiceParam('BUILD', ['1','2','3','4'], 'Select the build you want to deploy (affects application behavior, github.com/grabnerandi/simplenodeservice for more details)')
+                }
+                definition {
+                  cpsScm {
+                    scriptPath('jenkins/build.Jenkinsfile')
+                    scm {
+                      git {
+                          remote { 
+                            url('${GIT_PROTOCOL}://${GIT_DOMAIN}/${GITHUB_ORGANIZATION}/${GIT_REPO}')
+                            credentials('git-creds-ace')
+                          }
+                          branch('*/master')
+                      }
+                    }
+                    lightweight()
+                  }
+                }
+              }
+          - script: >
+              pipelineJob('ace-demo/2. Deploy') {
+                parameters {
+                  stringParam('APP_NAME', 'simplenodeservice', 'The name of the service to deploy.')
+                  stringParam('TAG_STAGING', '', 'The image of the service to deploy.')
+                  stringParam('BUILD', '', 'The version of the service to deploy.')
+                  stringParam('ART_VERSION', '', 'The artefact version and hash to deploy.')
+                }
+                definition {
+                  cpsScm {
+                    scriptPath('jenkins/deployStaging.Jenkinsfile')
+                    scm {
+                      git {
+                          remote { 
+                            url('${GIT_PROTOCOL}://${GIT_DOMAIN}/${GITHUB_ORGANIZATION}/${GIT_REPO}')
+                            credentials('git-creds-ace')
+                          }
+                          branch('*/master')
+                      }
+                    }
+                    lightweight()
+                  }
+                }
+              }
+          - script: >
+              pipelineJob('ace-demo/3. Test') {
+                parameters {
+                  stringParam('APP_NAME', 'simplenodeservice', 'The name of the service to deploy.')
+                  stringParam('BUILD', '', 'The version of the service to deploy.')
+                  stringParam('ART_VERSION', '', 'The artefact version and hash to deploy.')
+                }
+                definition {
+                  cpsScm {
+                    scriptPath('jenkins/test.Jenkinsfile')
+                    scm {
+                      git {
+                          remote { 
+                            url('${GIT_PROTOCOL}://${GIT_DOMAIN}/${GITHUB_ORGANIZATION}/${GIT_REPO}')
+                            credentials('git-creds-ace')
+                          }
+                          branch('*/master')
+                      }
+                    }
+                    lightweight()
+                  }
+                }
+              }
+          - script: >
+              pipelineJob('ace-demo/4. Deploy production') {
+                parameters {
+                  stringParam('APP_NAME', 'simplenodeservice', 'The name of the service to deploy.')
+                  stringParam('TAG_STAGING', '', 'The image of the service to deploy.')
+                  stringParam('BUILD', '', 'The version of the service to deploy.')
+                  stringParam('ART_VERSION', '', 'The artefact version and hash to deploy.')
+                }
+                definition {
+                  cpsScm {
+                    scriptPath('jenkins/deployProd.Jenkinsfile')
+                    scm {
+                      git {
+                          remote { 
+                            url('${GIT_PROTOCOL}://${GIT_DOMAIN}/${GITHUB_ORGANIZATION}/${GIT_REPO}')
+                            credentials('git-creds-ace')
+                          }
+                          branch('*/master')
+                      }
+                    }
+                    lightweight()
+                  }
+                }
+              }
+{% if acebox_mode == 'demo' %}
+          - script: >
+              pipelineJob('ace-demo/Monitoring as Code') {
+                definition {
+                  cpsScm {
+                    scriptPath('jenkins/mac.Jenkinsfile')
+                    scm {
+                      git {
+                          remote { 
+                            url('${GIT_PROTOCOL}://${GIT_DOMAIN}/${GITHUB_ORGANIZATION}/${GIT_REPO}')
+                            credentials('git-creds-ace')
+                          }
+                          branch('*/master')
+                      }
+                    }
+                    lightweight()
+                  }
+                }
+              }
+{% endif %}              
+{% if acebox_mode == 'demo' %}
+          - script: >
+              folder('monaco-gitops-demo')
+          - script: >
+              pipelineJob('monaco-gitops-demo/Monaco - Application Onboarding') {
+                parameters {
+                  stringParam('MON_PROJECT_NAME', '', 'The name of the Monaco project to onboard.')
+                  stringParam('MON_APP_NAME', 'simplenodeservice', 'The name of the application to onboard.')
+                  stringParam('MON_ENDPOINT', 'https://dynatrace.com', 'The application URL for UEM.')
+                  stringParam('MON_UEM_COVERAGE', '75', 'UEM coverage percentage.')
+                  booleanParam('MON_SKIP_APP', false, 'Skip the creation of the application')
+                  stringParam('MON_NAMESPACE', 'simplenode-staging', 'Which kubernetes namespace the application is running in.')
+                  stringParam('MON_WEB_CHECK', 'https://dynatrace.com', 'Which URL you want to create a HTTP monitor against')
+                  booleanParam('MON_SKIP_WEB_CHECK', false, 'Skip the deployment of the HTTP monitor')
+                }
+                definition {
+                  cpsScm {
+                    scriptPath('onboarding.Jenkinsfile')
+                    scm {
+                      git {
+                          remote { 
+                            url('${GIT_PROTOCOL}://${GIT_DOMAIN}/${GITHUB_ORGANIZATION}/monaco')
+                            credentials('git-creds-ace')
+                          }
+                          branch('*/master')
+                      }
+                    }
+                    lightweight()
+                  }
+                }
+              }
+          - script: >
+              folder('monaco-hot')
+          - script: >
+              pipelineJob('monaco-hot/Exercise 2 - Apply all') {
+                definition {
+                  cpsScm {
+                    scriptPath('jenkins/exercise-two.Jenkinsfile')
+                    scm {
+                      git {
+                          remote { 
+                            url('${GIT_PROTOCOL}://${GIT_DOMAIN}/monaco-hot/monaco-hot')
+                            credentials('git-creds-ace')
+                          }
+                          branch('*/master')
+                      }
+                    }
+                    lightweight()
+                  }
+                }
+              }
+          - script: >
+              pipelineJob('monaco-hot/Exercise 4 - Update config') {
+                definition {
+                  cpsScm {
+                    scriptPath('jenkins/exercise-four.Jenkinsfile')
+                    scm {
+                      git {
+                          remote { 
+                            url('${GIT_PROTOCOL}://${GIT_DOMAIN}/monaco-hot/monaco-hot')
+                            credentials('git-creds-ace')
+                          }
+                          branch('*/master')
+                      }
+                    }
+                    lightweight()
+                  }
+                }
+              }
+          - script: >
+              pipelineJob('monaco-hot/Exercise 5 - Onboard app') {
+                parameters {
+                  choiceParam('Environment', ['Staging','Production'], '')
+                  stringParam('App_Name', 'demo-app', 'The name of the service to deploy.')
+                  stringParam('Application_URL_pattern', 'demo.app/v1/', 'The version of the service to deploy.')
+                  stringParam('Kubernetes_Namespace', 'demo-app-staging', 'The image of the service to deploy.')
+                  stringParam('Health_check_url', 'https://dynatrace.com', 'The version of the service to deploy.')
+                  booleanParam('Skip_synthetic_monitor_deployment', false, 'Skip the deployment of the HTTP monitor')
+                }
+                definition {
+                  cpsScm {
+                    scriptPath('jenkins/exercise-five.Jenkinsfile')
+                    scm {
+                      git {
+                          remote { 
+                            url('${GIT_PROTOCOL}://${GIT_DOMAIN}/monaco-hot/monaco-hot')
+                            credentials('git-creds-ace')
+                          }
+                          branch('*/master')
+                      }
+                    }
+                    lightweight()
+                  }
+                }
+              }
+          - script: >
+              pipelineJob('monaco-hot/Exercise 7 - Linking configuration') {
+                definition {
+                  cpsScm {
+                    scriptPath('jenkins/exercise-seven.Jenkinsfile')
+                    scm {
+                      git {
+                          remote { 
+                            url('${GIT_PROTOCOL}://${GIT_DOMAIN}/monaco-hot/monaco-hot')
+                            credentials('git-creds-ace')
+                          }
+                          branch('*/master')
+                      }
+                    }
+                    lightweight()
+                  }
+                }
+              }
+          - script: >
+              folder('quality-gates-hot')
+          - script: >
+              pipelineJob('quality-gates-hot/0_Prepare Environment') {
+                definition {
+                  cpsScm {
+                    scriptPath('env/prepEnv.Jenkinsfile')
+                    scm {
+                      git {
+                          remote { 
+                            url('${GIT_PROTOCOL}://${GIT_DOMAIN}/quality-gates-hot/carts')
+                            credentials('git-creds-ace')
+                          }
+                          branch('*/master')
+                      }
+                    }
+                    lightweight()
+                  }
+                }
+              }
+          - script: >
+              pipelineJob('quality-gates-hot/k8s-deploy-staging') {
+                  properties {
+                    disableConcurrentBuilds()  
+                  }
+                  parameters {
+                    stringParam('APP_NAME', '', 'The name of the service to deploy.')
+                    stringParam('TAG_STAGING', '', 'The image of the service to deploy.')
+                    stringParam('VERSION', '', 'The version of the service to deploy.')
+                  }
+                  definition {
+                    cpsScm {
+                      scriptPath('Jenkinsfile')
+                      scm {
+                        git {
+                            remote { 
+                              url('${GIT_PROTOCOL}://${GIT_DOMAIN}/quality-gates-hot/k8s-deploy-staging.git') 
+                              credentials('git-creds-ace')
+                            }
+                            branch('*/master')
+                        }
+                      }
+                      lightweight()
+                    }
+                  }
+                }
+          - script: >
+              multibranchPipelineJob('quality-gates-hot/carts') {
+                branchSources {
+                  git {
+                    id('carts')
+                    remote('${GIT_PROTOCOL}://${GIT_DOMAIN}/quality-gates-hot/carts.git')
+                  }
+                }
+              }
+          - script: >
+              pipelineJob('quality-gates-hot/create-release-branch') {
+                  parameters {
+                    stringParam('SERVICE', 'carts', 'Name of the service')
+                  }
+                  definition {
+                    cpsScm {
+                      scriptPath('Jenkinsfile')
+                      scm {
+                        git {
+                            remote { 
+                              url('${GIT_PROTOCOL}://${GIT_DOMAIN}/quality-gates-hot/jenkins-release-branch.git')
+                              credentials('git-creds-ace')
+                            }
+                            branch('*/master')
+                        }
+                      }
+                      lightweight()
+                    }
+                  }
+                }
+          - script: >
+              folder('ace-demo-canary')
+          - script: >
+              pipelineJob('ace-demo-canary/1. Build images') {
+                definition {
+                  cpsScm {
+                    scriptPath('jenkins/01_build_images.Jenkinsfile')
+                    scm {
+                      git {
+                          remote { 
+                            url('${GIT_PROTOCOL}://${GIT_DOMAIN}/auto-remediation/ace-demo-canary')
+                            credentials('git-creds-ace')
+                          }
+                          branch('*/master')
+                      }
+                    }
+                    lightweight()
+                  }
+                }
+              }
+          - script: >
+              pipelineJob('ace-demo-canary/2. Monaco') {
+                definition {
+                  cpsScm {
+                    scriptPath('jenkins/02_monaco.Jenkinsfile')
+                    scm {
+                      git {
+                          remote { 
+                            url('${GIT_PROTOCOL}://${GIT_DOMAIN}/auto-remediation/ace-demo-canary')
+                            credentials('git-creds-ace')
+                          }
+                          branch('*/master')
+                      }
+                    }
+                    lightweight()
+                  }
+                }
+              }
+          - script: >
+              pipelineJob('ace-demo-canary/3. Deploy') {
+                parameters {
+                  stringParam('IMAGE_NAME', 'ace/simplenodeservice', 'The image name of the service to deploy.')
+                  stringParam('IMAGE_TAG', '', 'The image tag of the service to deploy.')
+                  stringParam('CANARY_WEIGHT', '0', 'Weight of traffic that will be routed to service.')
+                  booleanParam('IS_CANARY', false, 'Is canary version of service?')
+                }
+                definition {
+                  cpsScm {
+                    scriptPath('jenkins/03_deploy.Jenkinsfile')
+                    scm {
+                      git {
+                          remote { 
+                            url('${GIT_PROTOCOL}://${GIT_DOMAIN}/auto-remediation/ace-demo-canary')
+                            credentials('git-creds-ace')
+                          }
+                          branch('*/master')
+                      }
+                    }
+                    lightweight()
+                  }
+                }
+              }
+          - script: >
+              pipelineJob('ace-demo-canary/4. Generate Load') {
+                definition {
+                  cpsScm {
+                    scriptPath('jenkins/04_generate_load.Jenkinsfile')
+                    scm {
+                      git {
+                          remote { 
+                            url('${GIT_PROTOCOL}://${GIT_DOMAIN}/auto-remediation/ace-demo-canary')
+                            credentials('git-creds-ace')
+                          }
+                          branch('*/master')
+                      }
+                    }
+                    lightweight()
+                  }
+                }
+              }
+          - script: >
+              pipelineJob('ace-demo-canary/5. Shift traffic') {
+                parameters {
+                  stringParam('CANARY_WEIGHT', '0', 'Weight of traffic that will be routed to service.')
+                  stringParam('REMEDIATION_URL', '0', 'Remediation script to call if canary release fails.')
+                }
+                definition {
+                  cpsScm {
+                    scriptPath('jenkins/05_canary.Jenkinsfile')
+                    scm {
+                      git {
+                          remote { 
+                            url('${GIT_PROTOCOL}://${GIT_DOMAIN}/auto-remediation/ace-demo-canary')
+                            credentials('git-creds-ace')
+                          }
+                          branch('*/master')
+                      }
+                    }
+                    lightweight()
+                  }
+                }
+              }
+{% endif %}

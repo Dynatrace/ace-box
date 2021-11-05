@@ -1,0 +1,52 @@
+- name: Gitea - Add helm repo
+  become_user: "{{ non_root_user }}"
+  shell: /snap/bin/helm repo add gitea-charts https://dl.gitea.io/charts/ && helm repo update
+
+- name: Gitea - Template values file
+  ansible.builtin.template:
+    src: gitea-values.yml.j2
+    dest: /tmp/gitea-values.yml
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Gitea - Install using helm
+  become_user: "{{ non_root_user }}"
+  shell: /snap/bin/helm upgrade --install gitea gitea-charts/gitea -f /tmp/gitea-values.yml --create-namespace --namespace {{ gitea_namespace }} --wait
+
+- name: Gitea - Wait for API to be up
+  uri:
+    url: "{{ ingress_protocol }}://{{ gitea_domain }}/api/v1/version"
+    user: "{{ gitea_username }}"
+    password: "{{ gitea_password }}"
+    force_basic_auth: yes
+    validate_certs: no
+    status_code: 200
+  register: result
+  until: result.status == 200
+  retries: 300
+  delay: 1
+
+- name: Gitea - Create admin user access token
+  uri:
+    url: "{{ ingress_protocol }}://{{ gitea_domain }}/api/v1/users/{{ gitea_username }}/tokens"
+    user: "{{ gitea_username }}"
+    password: "{{ gitea_password }}"
+    method: POST
+    body_format: form-urlencoded
+    body:
+      name: "{{ gitea_username }}"
+    force_basic_auth: yes
+    validate_certs: no
+    status_code: 201
+  register: post_token_result
+  # no_log: true
+
+- set_fact:
+    gitea_access_token: "{{ post_token_result.json.sha1 }}"
+
+- name: Gitea - Delete Gitea secret
+  include: roles/gitea/tasks/delete-secret.yml
+
+- name: Gitea - Create Gitea secret
+  include: roles/gitea/tasks/create-secret.yml

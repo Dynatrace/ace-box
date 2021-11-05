@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: keptn-ingress
+  annotations: 
+    kubernetes.io/ingress.class: public
+spec:
+  rules:
+  - host: "{{ keptn_ingress_domain }}"
+    http:
+      paths:
+      - backend:
+          serviceName: api-gateway-nginx
+          servicePort: 80
+        path: /
+        pathType: ImplementationSpecific

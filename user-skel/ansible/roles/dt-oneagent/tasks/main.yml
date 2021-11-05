@@ -1,0 +1,27 @@
+- name: "Dynatrace OneAgent 1 - Create Dynatrace namespace"
+  shell: 
+    cmd: "/snap/bin/microk8s.kubectl create ns dynatrace"
+  ignore_errors: yes
+
+- name: "Dynatrace OneAgent 2 - Create CRD"
+  shell: 
+    cmd: "/snap/bin/microk8s.kubectl apply -f https://github.com/Dynatrace/dynatrace-operator/releases/{{ dt_operator_release }}/download/kubernetes.yaml"
+  ignore_errors: yes
+
+- name: "Dynatrace OneAgent 3 - Create Secret"
+  shell: 
+    cmd: "/snap/bin/microk8s.kubectl -n dynatrace create secret generic dynakube --from-literal=\"apiToken={{ dynatrace['apitoken'] }}\" --from-literal=\"paasToken={{ dynatrace['paastoken'] }}\""
+  ignore_errors: yes
+
+- name: Dynatrace OneAgent 4 - Set Environment
+  ansible.builtin.template:
+    src: dynakube.yaml.j2
+    dest: /tmp/dynakube.yaml
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: "Dynatrace OneAgent 5 - Apply CR"
+  shell: 
+    cmd: "/snap/bin/microk8s.kubectl apply -f /tmp/dynakube.yaml"
+  ignore_errors: yes

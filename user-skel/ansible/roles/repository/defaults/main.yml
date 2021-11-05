@@ -1,0 +1,3 @@
+---
+gitlab_domain: "gitlab.{{ ingress_domain }}"
+gitea_domain: "gitea.{{ ingress_domain }}"

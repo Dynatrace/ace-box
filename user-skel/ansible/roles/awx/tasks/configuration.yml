@@ -1,0 +1,514 @@
+- name: AWX - Wait for API to be up
+  uri:
+    url: "{{ ingress_protocol }}://{{ awx_ingress_domain }}/api/v2/ping"
+    status_code: 200
+    validate_certs: no
+  register: result
+  until: result.status == 200
+  retries: 60
+  delay: 5
+
+- name: AWX - Retrieve admin password
+  shell: /snap/bin/microk8s.kubectl -n awx get secret awx-admin-password -o jsonpath='{.data.password}' | base64 -d
+  register: awx_admin_password_raw
+
+- set_fact:
+    awx_admin_password: "{{ awx_admin_password_raw.stdout }}"
+
+- name: AWX - Source Gitea secrets
+  include_role:
+    name: gitea
+    tasks_from: source-secret
+
+- name: AWX - Retrieve Gitea URL
+  set_fact:
+    gitea_url: "{{ ingress_protocol }}://gitea.{{ ingress_domain }}"
+
+- name: AWX - Retrieve Gitea org
+  set_fact:
+    gitea_org: "auto-remediation"
+
+- name: AWX - Retrieve Gitea repo
+  set_fact:
+    gitea_repo: "ace-demo-canary-awx"
+
+- name: AWX - Retrieve Jenkins URL
+  set_fact:
+    jenkins_url: "http://jenkins.{{ ingress_domain }}"
+
+# Credentials config
+
+- set_fact:
+    awx_credential_type_name_dt: "Dynatrace API Token"
+
+- set_fact:
+    awx_credential_name_dt: "{{ dynatrace_tenant_url }} API Token"
+
+- name: Create Dynatrace API token credential type
+  uri:
+    url: "{{ ingress_protocol }}://{{ awx_ingress_domain }}/api/v2/credential_types/"
+    user: "{{ awx_admin_username }}"
+    password: "{{ awx_admin_password }}"
+    force_basic_auth: yes
+    validate_certs: false
+    method: POST
+    status_code: [200, 201, 204]
+    headers:
+      Content-Type: "application/json"
+    body:
+      name: "{{ awx_credential_type_name_dt }}"
+      description: ''
+      kind: cloud
+      namespace:
+      managed_by_tower: false
+      inputs: 
+        fields:
+        - id: dt_api_token
+          type: string
+          label: Dynatrace API Token
+          secret: true
+        required:
+        - dt_api_token
+      injectors:
+        extra_vars:
+          DYNATRACE_API_TOKEN: "{{ '{{' }} dt_api_token {{ '}}' }}"
+    body_format: json
+  register: credential_type_result
+  until: credential_type_result.status == 200 or credential_type_result.status == 201 or credential_type_result.status == 204
+  retries: 10
+  delay: 1
+
+- name: Create Dynatrace API token credential
+  uri:
+    url: "{{ ingress_protocol }}://{{ awx_ingress_domain }}/api/v2/credentials/"
+    user: "{{ awx_admin_username }}"
+    password: "{{ awx_admin_password }}"
+    force_basic_auth: yes
+    validate_certs: false
+    method: POST
+    status_code: [200, 201, 204]
+    headers:
+      Content-Type: "application/json"
+    body:
+      name: "{{ awx_credential_name_dt }}"
+      kind: cloud
+      organization: 1
+      credential_type: "{{ credential_type_result.json.id }}"
+      inputs:
+        dt_api_token: "{{ dynatrace_api_token }}"
+    body_format: json
+  register: dt_credential_result
+  until: dt_credential_result.status == 200 or dt_credential_result.status == 201 or dt_credential_result.status == 204
+  retries: 10
+  delay: 1
+
+- set_fact:
+    gitea_credential_type_name: "Source Control"
+
+- set_fact:
+    gitea_credential_name: "{{ ingress_protocol }}://gitea.{{ ingress_domain }} Credentials"
+
+- name: AWX - Get SCM credential type
+  uri:
+    url: "{{ ingress_protocol }}://{{ awx_ingress_domain }}/api/v2/credential_types/?name={{ gitea_credential_type_name | urlencode() }}"
+    user: "{{ awx_admin_username }}"
+    password: "{{ awx_admin_password }}"
+    force_basic_auth: yes
+    validate_certs: false
+    method: GET
+    status_code: [200]
+    headers:
+      Content-Type: "application/json"
+  register: gitea_credential_type_result
+
+- name: AWX - Create Gitea token credential
+  when: gitea_credential_type_result.json.count == 1
+  uri:
+    url: "{{ ingress_protocol }}://{{ awx_ingress_domain }}/api/v2/credentials/"
+    user: "{{ awx_admin_username }}"
+    password: "{{ awx_admin_password }}"
+    force_basic_auth: yes
+    validate_certs: false
+    method: POST
+    status_code: [200, 201, 204]
+    headers:
+      Content-Type: "application/json"
+    body:
+      name: "{{ gitea_credential_name }}"
+      kind: scm
+      organization: 1
+      credential_type: "{{ gitea_credential_type_result.json.results[0].id }}"
+      inputs:
+        password: "{{ gitea_password }}"
+        username: "{{ gitea_username }}"
+    body_format: json
+  register: gitea_credential_result
+  until: gitea_credential_result.status == 200 or gitea_credential_result.status == 201 or gitea_credential_result.status == 204
+  retries: 10
+  delay: 1
+
+- name: Create remediation project
+  uri:
+    url: "{{ ingress_protocol }}://{{ awx_ingress_domain }}/api/v2/projects/"
+    user: "{{ awx_admin_username }}"
+    password: "{{ awx_admin_password }}"
+    force_basic_auth: yes
+    validate_certs: false
+    method: POST
+    status_code: [200, 201, 204]
+    headers:
+      Content-Type: "application/json"
+    body:
+      name: self-healing
+      description: ''
+      scm_type: git
+      scm_url: "{{ gitea_url }}/{{ gitea_org }}/{{ gitea_repo }}"
+      scm_branch: master
+      scm_clean: true
+      scm_delete_on_update: false
+      credential: "{{ gitea_credential_result.json.id }}"
+      timeout: 0
+      organization: 1
+      scm_update_on_launch: false
+      scm_update_cache_timeout: 10
+    body_format: json
+  register: project_result
+  until: project_result.status == 200 or project_result.status == 201 or project_result.status == 204
+  retries: 10
+  delay: 1
+
+- name: Wait for project to be on successful state
+  uri:
+    url: "{{ ingress_protocol }}://{{ awx_ingress_domain }}/api/v2/projects/{{ project_result.json.id }}"
+    user: "{{ awx_admin_username }}"
+    password: "{{ awx_admin_password }}"
+    force_basic_auth: yes
+    validate_certs: false
+    method: GET
+    status_code: [200, 201, 204]
+    headers:
+      Content-Type: "application/json"
+  register: project_object
+  until: project_object.json.status == "successful"
+  retries: 10
+  delay: 2
+  ignore_errors: yes
+
+- name: Retrigger project on fail
+  uri:
+    url: "{{ ingress_protocol }}://{{ awx_ingress_domain }}/api/v2/projects/{{ project_result.json.id }}/update/"
+    user: "{{ awx_admin_username }}"
+    password: "{{ awx_admin_password }}"
+    force_basic_auth: yes
+    validate_certs: false
+    method: POST
+    status_code: [200, 201, 202, 204]
+  register: project_retrigger_result
+- name: Wait for project to be on successful state
+  uri:
+    url: "{{ ingress_protocol }}://{{ awx_ingress_domain }}/api/v2/projects/{{ project_result.json.id }}"
+    user: "{{ awx_admin_username }}"
+    password: "{{ awx_admin_password }}"
+    force_basic_auth: yes
+    validate_certs: false
+    method: GET
+    status_code: [200, 201, 204]
+    headers:
+      Content-Type: "application/json"
+  register: project_object
+  until: project_object.json.status == "successful"
+  retries: 5
+  delay: 2
+- name: AWX - Retrieve Jenkins Crumb
+  uri:
+    url: "{{ jenkins_url }}/crumbIssuer/api/json"
+    user: "{{ jenkins_user }}"
+    password: "{{ jenkins_password }}"
+    force_basic_auth: yes
+    validate_certs: false
+    method: GET
+    status_code: [200, 201, 204]
+    return_content: yes
+    headers:
+      Content-Type: "application/json"
+  register: jenkins_crumb_raw
+- name: AWX - Generate Jenkins API token
+  uri:
+    url: "{{ jenkins_url }}/user/admin/descriptorByName/jenkins.security.ApiTokenProperty/generateNewToken"
+    user: "{{ jenkins_user }}"
+    password: "{{ jenkins_password }}"
+    force_basic_auth: yes
+    validate_certs: false
+    method: POST
+    status_code: [200, 201, 204]
+    return_content: yes
+    headers:
+      Cookie: "{{ jenkins_crumb_raw.cookies_string }}"
+      Jenkins-Crumb: "{{ jenkins_crumb_raw.json.crumb }}"
+    body_format: form-urlencoded
+    body:
+      newTokenName: "ace-demo-canary-AWX-{{ ansible_date_time.iso8601 }}"
+  register: jenkins_token_raw
+
+- set_fact:
+    jenkins_api_token: "{{ jenkins_token_raw.json.data.tokenValue }}"
+
+- name: Create remediation inventory
+  uri:
+    url: "{{ ingress_protocol }}://{{ awx_ingress_domain }}/api/v2/inventories/"
+    user: "{{ awx_admin_username }}"
+    password: "{{ awx_admin_password }}"
+    force_basic_auth: yes
+    validate_certs: false
+    method: POST
+    status_code: [200, 201, 204]
+    return_content: yes
+    headers:
+      Content-Type: "application/json"
+    body:
+      name: inventory
+      description: ''
+      organization: 1
+      variables: |
+        ---
+        tenant: {{ dynatrace_tenant_url }}
+        commentuser: Ansible Playbook
+        tower_user: {{ awx_admin_username }}
+        tower_password: {{ awx_admin_password }}
+        jenkins_user: {{ jenkins_user }}
+        jenkins_token: {{ jenkins_api_token }}
+        dtcommentapiurl: "{{ '{{' }} tenant {{ '}}' }}/api/v1/problem/details/{{ '{{' }} pid {{ '}}' }}/comments?Api-Token={{ '{{' }} DYNATRACE_API_TOKEN {{ '}}' }}"
+        dteventapiurl: "{{ '{{' }} tenant {{ '}}' }}/api/v1/events/?Api-Token={{ '{{' }} DYNATRACE_API_TOKEN {{ '}}' }}"
+    body_format: json
+  register: inventory_result
+  until: inventory_result.status == 200 or inventory_result.status == 201 or inventory_result.status == 204
+  retries: 10
+  delay: 1
+
+- name: Create remediation template
+  uri:
+    url: "{{ ingress_protocol }}://{{ awx_ingress_domain }}/api/v2/job_templates/"
+    user: "{{ awx_admin_username }}"
+    password: "{{ awx_admin_password }}"
+    force_basic_auth: yes
+    validate_certs: false
+    method: POST
+    status_code: [200, 201, 204]
+    return_content: yes
+    headers:
+      Content-Type: "application/json"
+    body:
+      name: 'remediation'
+      job_type: run
+      inventory: "{{ inventory_result.json.id }}"
+      project: "{{ project_result.json.id }}"
+      playbook: playbooks/remediation.yaml
+      verbosity: 0
+      ask_variables_on_launch: true
+    body_format: json
+  register: remediation_template_result
+  until: remediation_template_result.status == 200 or remediation_template_result.status == 201 or remediation_template_result.status == 204
+  retries: 10
+  delay: 1
+
+- set_fact:
+    remediation_template_url: "{{ ingress_protocol }}://{{ awx_ingress_domain }}/#/templates/job_template/{{ remediation_template_result.json.id }}"
+
+- name: AWX - Add remediation URL to meta configmap
+  shell: /snap/bin/microk8s.kubectl -n awx patch configmap awx-meta -p '{"data":{"remediation_template_url":"{{ remediation_template_url }}"}}'
+
+- set_fact:
+    jenkins_project_folder_shift_traffic: "ace-demo-canary"
+
+- set_fact:
+    jenkins_pipeline_name_shift_traffic: "5. Shift traffic"
+
+- set_fact:
+    jenkins_pipeline_url_shift_traffic: "{{ jenkins_url }}/job/{{ jenkins_project_folder_shift_traffic | urlencode() }}/job/{{ jenkins_pipeline_name_shift_traffic | urlencode() }}/build?delay=0sec"
+
+- name: Create reset canary release template
+  uri:
+    url: "{{ ingress_protocol }}://{{ awx_ingress_domain }}/api/v2/job_templates/"
+    user: "{{ awx_admin_username }}"
+    password: "{{ awx_admin_password }}"
+    force_basic_auth: yes
+    validate_certs: false
+    method: POST
+    status_code: [200, 201, 204]
+    return_content: yes
+    headers:
+      Content-Type: "application/json"
+    body:
+      name: 'canary-reset'
+      job_type: run
+      inventory: "{{ inventory_result.json.id }}"
+      project: "{{ project_result.json.id }}"
+      playbook: playbooks/canary.yaml
+      verbosity: 0
+      ask_variables_on_launch: false
+      job_tags: canary_reset
+      extra_vars: |
+        ---
+        jenkins_url: '{{ jenkins_pipeline_url_shift_traffic }}'
+        remediation_url: ''
+    body_format: json
+  register: canary_reset_template_result
+  until: canary_reset_template_result.status == 200 or canary_reset_template_result.status == 201 or canary_reset_template_result.status == 204
+  retries: 10
+  delay: 1
+- name: Create ramp up canary release template
+  uri:
+    url: "{{ ingress_protocol }}://{{ awx_ingress_domain }}/api/v2/job_templates/"
+    user: "{{ awx_admin_username }}"
+    password: "{{ awx_admin_password }}"
+    force_basic_auth: yes
+    validate_certs: false
+    method: POST
+    status_code: [200, 201, 204]
+    return_content: yes
+    headers:
+      Content-Type: "application/json"
+    body:
+      name: 'canary'
+      job_type: run
+      inventory: "{{ inventory_result.json.id }}"
+      project: "{{ project_result.json.id }}"
+      playbook: playbooks/canary.yaml
+      verbosity: 0
+      ask_variables_on_launch: true
+      skip_tags: canary_reset
+      extra_vars: |
+        ---
+        jenkins_url: '{{ jenkins_pipeline_url_shift_traffic }}'
+        remediation_url: '{{ ingress_protocol }}://{{ awx_ingress_domain }}/api/v2/job_templates/{{ canary_reset_template_result.json.id }}/launch/'
+    body_format: json
+  register: start_ramp_up_template_result
+  until: start_ramp_up_template_result.status == 200 or start_ramp_up_template_result.status == 201 or start_ramp_up_template_result.status == 204
+  retries: 10
+  delay: 1
+- name: Assign Dynatrace API Token credential to all templates
+  uri:
+    url: "{{ ingress_protocol }}://{{ awx_ingress_domain }}/api/v2/job_templates/{{ item }}/credentials/"
+    user: "{{ awx_admin_username }}"
+    password: "{{ awx_admin_password }}"
+    force_basic_auth: yes
+    validate_certs: false
+    method: POST
+    status_code: [200, 201, 204]
+    return_content: yes
+    headers:
+      Content-Type: "application/json"
+    body:
+      '{ "id" : {{ dt_credential_result.json.id | int }} }'
+    body_format: json
+  with_items:
+    - "{{ remediation_template_result.json.id }}"
+    - "{{ canary_reset_template_result.json.id }}"
+    - "{{ start_ramp_up_template_result.json.id }}"
+  register: assign_dt_token_result
+  until: assign_dt_token_result.status == 200 or assign_dt_token_result.status == 201 or assign_dt_token_result.status == 204
+  retries: 10
+  delay: 1
+- name: print remediation template id
+  debug:
+    msg: "Ansible has been configured successfully! Copy the following URL to set it as an Ansible Job URL in the Dynatrace notification settings: {{ remediation_template_url }}"
+
+#  Unconfig
+
+# - name: Get Dynatrace API token credential
+#   uri:
+#     url: "{{ ingress_protocol }}://{{ awx_ingress_domain }}/api/v2/credentials/?name={{ awx_credential_name_dt | urlencode() }}"
+#     user: "{{ awx_admin_username }}"
+#     password: "{{ awx_admin_password }}"
+#     force_basic_auth: yes
+#     validate_certs: false
+#     method: GET
+#     status_code: [200]
+#     headers:
+#       Content-Type: "application/json"
+#   register: dt_credential_result
+#   tags:
+#     - never
+#     - awx_unconfig
+
+# - name: Delete Dynatrace API token credential
+#   when: dt_credential_result.json.count == 1
+#   uri:
+#     url: "{{ ingress_protocol }}://{{ awx_ingress_domain }}/api/v2/credentials/{{ dt_credential_result.json.results[0].id }}/"
+#     user: "{{ awx_admin_username }}"
+#     password: "{{ awx_admin_password }}"
+#     force_basic_auth: yes
+#     validate_certs: false
+#     method: DELETE
+#     status_code: [200, 201, 204]
+#     headers:
+#       Content-Type: "application/json"
+#   tags:
+#     - never
+#     - awx_unconfig
+
+# - name: Get Dynatrace API token credential type
+#   uri:
+#     url: "{{ ingress_protocol }}://{{ awx_ingress_domain }}/api/v2/credential_types/?name={{ awx_credential_type_name_dt | urlencode() }}"
+#     user: "{{ awx_admin_username }}"
+#     password: "{{ awx_admin_password }}"
+#     force_basic_auth: yes
+#     validate_certs: false
+#     method: GET
+#     status_code: [200]
+#     headers:
+#       Content-Type: "application/json"
+#   register: credential_type_result
+#   tags:
+#     - never
+#     - awx_unconfig
+
+# - name: Delete Dynatrace API token credential type
+#   when: credential_type_result.json.count == 1
+#   uri:
+#     url: "{{ ingress_protocol }}://{{ awx_ingress_domain }}/api/v2/credential_types/{{ credential_type_result.json.results[0].id }}/"
+#     user: "{{ awx_admin_username }}"
+#     password: "{{ awx_admin_password }}"
+#     force_basic_auth: yes
+#     validate_certs: false
+#     method: DELETE
+#     status_code: [200, 201, 204]
+#     headers:
+#       Content-Type: "application/json"
+#   tags:
+#     - never
+#     - awx_unconfig
+
+# - name: AWX Unconfig - Get Gitea credential
+#   uri:
+#     url: "{{ ingress_protocol }}://{{ awx_ingress_domain }}/api/v2/credentials/?name={{ gitea_credential_name | urlencode() }}"
+#     user: "{{ awx_admin_username }}"
+#     password: "{{ awx_admin_password }}"
+#     force_basic_auth: yes
+#     validate_certs: false
+#     method: GET
+#     status_code: [200]
+#     headers:
+#       Content-Type: "application/json"
+#   register: gitea_credential_result
+#   ignore_errors: yes
+#   tags:
+#     - never
+#     - awx_unconfig
+
+# - name: AWX Unconfig - Delete Gitea credential
+#   when: gitea_credential_result.json.count == 1
+#   uri:
+#     url: "{{ ingress_protocol }}://{{ awx_ingress_domain }}/api/v2/credentials/{{ gitea_credential_result.json.results[0].id }}/"
+#     user: "{{ awx_admin_username }}"
+#     password: "{{ awx_admin_password }}"
+#     force_basic_auth: yes
+#     validate_certs: false
+#     method: DELETE
+#     status_code: [200, 201, 204]
+#     headers:
+#       Content-Type: "application/json"
+#   ignore_errors: yes
+#   tags:
+#     - never
+#     - awx_unconfig

@@ -1,0 +1,71 @@
+- name: Jenkins - Source Gitea secrets
+  include_role:
+    name: gitea
+    tasks_from: source-secret
+
+- name: Jenkins - Source Keptn secrets
+  include_role:
+    name: keptn
+    tasks_from: source-secret
+
+- name: Jenkins - Source Keptn host
+  include_role:
+    name: keptn
+    tasks_from: source-endpoints
+
+- name: Jenkins - Retrieve Dynatrace Operator bearer token
+  shell: "/snap/bin/microk8s.kubectl get secret $(kubectl get sa dynatrace-kubernetes-monitoring -o jsonpath='{.secrets[0].name}' -n dynatrace) -o jsonpath='{.data.token}' -n dynatrace | base64 --decode"
+  register: kube_bearer_token_raw
+
+- set_fact:
+    kube_bearer_token: "{{  kube_bearer_token_raw.stdout }}"
+
+- name: Jenkins - Retrieve registry nodeport
+  shell: /snap/bin/microk8s.kubectl get svc registry -n container-registry -o jsonpath='{.spec.ports[0].nodePort}'
+  register: registry_port_raw
+
+- set_fact:
+    registry_port: "{{ registry_port_raw.stdout }}"
+
+- name: Jenkins - Get all DT Synthetic nodes
+  uri:
+    url: "{{ dynatrace_tenant_url }}/api/v1/synthetic/nodes"
+    method: GET
+    headers:
+      Content-Type: "application/json"
+      Authorization: "Api-token {{ dynatrace_api_token }}"
+    return_content: no
+    status_code: 200, 201, 204
+  register: nodesresponse
+  when: acebox_mode == 'demo'
+  until: nodesresponse.json | json_query("nodes[?hostname=='{{ ansible_facts.fqdn }}'].entityId")
+  retries: 15
+  delay: 10
+
+- name: Jenkins - Set DT Synthetic node entityId
+  set_fact:
+    dt_node_id: "{{ item }}"
+  loop: "{{ nodesresponse.json | json_query(synthetic_nodes_query) }}"
+  vars:
+    synthetic_nodes_query: "nodes[?hostname=='{{ ansible_facts.fqdn }}'].entityId"
+  when: item != ""
+
+- name: Jenkins - Template Helm values file
+  ansible.builtin.template:
+    src: jenkins-values.yml.j2
+    dest: /tmp/jenkins-values.yml
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Jenkins - Allow jenkins to admin k8s
+  shell: /snap/bin/microk8s.kubectl create clusterrolebinding jenkins --clusterrole cluster-admin --serviceaccount=jenkins:ace
+  ignore_errors: yes
+
+- name: Jenkins - Install jenkins
+  become_user: "{{ non_root_user }}"
+  shell: >
+    /snap/bin/helm upgrade --install -f /tmp/jenkins-values.yml 
+    --version {{ jenkins_helm_chart_version }} 
+    --namespace ace jenkins jenkins/jenkins --wait --timeout 10m
+  ignore_errors: yes

@@ -1,0 +1,37 @@
+- name: Install apt packages
+  apt:
+    name: "{{ packages }}"
+    state: present
+    update_cache: yes
+  vars:
+    packages:
+    - snapd
+    - parted
+    - docker.io
+    - python3-jmespath
+    - ntp
+    - vim
+
+- name: Disable swap and resize disk
+  become: true
+  shell: "swapoff -a && sed -i '/swap/d' /etc/fstab && parted /dev/sda rm 2 && growpart /dev/sda 1 && resize2fs /dev/sda1"
+  args:
+    removes: /dev/sda2
+
+- name: Install snap core
+  become: true
+  command: snap install core
+
+- name: "Add {{ non_root_user }} to docker group"
+  become: true
+  command: "usermod -a -G docker {{ non_root_user }}"
+
+- name: Chmod 777 to docker socker
+  become: true
+  file:
+    path: /var/run/docker.sock
+    mode: '0777'
+
+- name: iptables - Allow forwarding
+  become: true
+  shell: iptables -P FORWARD ACCEPT

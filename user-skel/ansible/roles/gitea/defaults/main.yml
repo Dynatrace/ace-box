@@ -1,0 +1,7 @@
+---
+gitea_version: "1.14.6"
+gitea_domain: "gitea.{{ ingress_domain }}"
+gitea_username: "dynatrace"
+gitea_password: "dynatrace"
+gitea_email: "ace@dynatrace.com"
+gitea_namespace: "gitea"

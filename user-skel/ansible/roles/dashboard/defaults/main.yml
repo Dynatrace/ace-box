@@ -1,0 +1,4 @@
+---
+dashboard_user: "dynatrace"
+dashboard_password: "dynatrace"
+dashboard_namespace: "ace"

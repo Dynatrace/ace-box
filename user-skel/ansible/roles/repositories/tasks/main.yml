@@ -1,0 +1,51 @@
+- name: "Git - Set globals"
+  become_user: "{{ non_root_user }}"
+  shell: |
+    git config --global user.name {{ git_global_user_name }}
+    git config --global user.email {{ git_global_user_email }}
+
+- name: Source Gitea secrets
+  include_role:
+    name: gitea
+    tasks_from: source-secret
+
+- name: Source Gitlab secrets
+  include_role:
+    name: gitlab
+    tasks_from: source-secret
+
+- name: Create Gitea organizations
+  include_role:
+    name: gitea
+    tasks_from: create-organization
+  vars:
+    gitea_org: "{{ item }}"
+  loop:
+    - ace
+    - monaco-hot
+    - quality-gates-hot
+    - auto-remediation
+
+- name: Create and push repositories
+  include_role:
+    name: repository
+  vars:
+    repo_src: "{{ item.repo_src }}"
+    push_to_gitlab: "{{ item.push_to_gitlab }}"
+    gitlab_group: "{{ item.gitlab_group | default('root') }}"
+    gitlab_repo: "{{ item.repo_target }}"
+    push_to_gitea: "{{ item.push_to_gitea }}"
+    gitea_org: "{{ item.gitea_org }}"
+    gitea_repo: "{{ item.repo_target }}"
+  loop:
+     - { repo_target: 'ace', repo_src: '/home/{{ non_root_user }}/repos/ace', push_to_gitlab: true, push_to_gitea: true, gitea_org: 'ace' }
+     - { repo_target: 'docs', repo_src: '/home/{{ non_root_user }}/repos/docs', push_to_gitlab: true, push_to_gitea: true, gitea_org: 'ace' }
+     - { repo_target: 'monaco', repo_src: '/home/{{ non_root_user }}/repos/monaco', push_to_gitlab: false, push_to_gitea: true, gitea_org: 'ace' }
+     - { repo_target: 'monaco-hot', repo_src: '/home/{{ non_root_user }}/repos/monaco-hot', push_to_gitlab: false, push_to_gitea: true, gitea_org: 'monaco-hot' }
+     - { repo_target: 'carts', repo_src: '/home/{{ non_root_user }}/repos/quality-gates-hot/carts', push_to_gitlab: false, push_to_gitea: true, gitea_org: 'quality-gates-hot' }
+     - { repo_target: 'k8s-deploy-staging', repo_src: '/home/{{ non_root_user }}/repos/quality-gates-hot/k8s-deploy-staging', push_to_gitlab: false, push_to_gitea: true, gitea_org: 'quality-gates-hot' }
+     - { repo_target: 'jenkins-release-branch', repo_src: '/home/{{ non_root_user }}/repos/quality-gates-hot/jenkins-release-branch', push_to_gitlab: false, push_to_gitea: true, gitea_org: 'quality-gates-hot' }
+     - { repo_target: 'lab-guides', repo_src: '/home/{{ non_root_user }}/repos/quality-gates-hot/lab-guides', push_to_gitlab: false, push_to_gitea: true, gitea_org: 'quality-gates-hot' }
+     - { repo_target: 'ace-demo-canary', repo_src: '/home/{{ non_root_user }}/repos/auto-remediation/ace-demo-canary', push_to_gitlab: false, push_to_gitea: true, gitea_org: 'auto-remediation' }
+     - { repo_target: 'ace-demo-canary-awx', repo_src: '/home/{{ non_root_user }}/repos/auto-remediation/ace-demo-canary-awx', push_to_gitlab: false, push_to_gitea: true, gitea_org: 'auto-remediation' }
+     - { repo_target: 'ace-demo-canary-docs', repo_src: '/home/{{ non_root_user }}/repos/auto-remediation/ace-demo-canary-docs', push_to_gitlab: false, push_to_gitea: true, gitea_org: 'auto-remediation' }

@@ -1,0 +1,27 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    meta.helm.sh/release-name: {{ .Chart.Name }}
+    meta.helm.sh/release-namespace: ace
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: basic-auth
+    nginx.ingress.kubernetes.io/auth-realm: dashboard
+    kubernetes.io/ingress.class: {{ .Values.ingress.class }}
+  labels:
+    app: {{ .Chart.Name }}
+    app.kubernetes.io/managed-by: Helm
+    chart: {{ .Chart.Name }}
+    heritage: Helm
+    release: {{ .Chart.Name }}
+  name: {{ .Chart.Name }}
+spec:
+  rules:
+  - host: {{ .Chart.Name }}.{{ .Values.domain }}
+    http:
+      paths:
+      - backend:
+          serviceName: {{ .Chart.Name }}
+          servicePort: 80
+        path: /
+        pathType: ImplementationSpecific

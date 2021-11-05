@@ -1,0 +1,8 @@
+---
+jenkins_setcreds: true
+jenkins_helm_chart_version: "3.3.18"
+jenkins_version: "2.277.4"
+jenkins_ace_lib_url: "https://github.com/dynatrace-ace/dynatrace-jenkins-library.git"
+jenkins_keptn_lib_url: "https://github.com/keptn-sandbox/keptn-jenkins-library.git"
+jenkins_user: "admin" #not used for configuring jenkins
+jenkins_password: "dynatrace" #not used for configuring jenkins

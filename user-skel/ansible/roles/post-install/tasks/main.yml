@@ -1,0 +1,6 @@
+- name: Print some dashboard config
+  debug:
+    msg:
+      - "Dashboard URL: {{ ingress_protocol }}://dashboard.{{ ingress_domain }}"
+      - "Dashboard username: {{ dashboard_user }}"
+      - "Dashboard password: {{ dashboard_password }}"

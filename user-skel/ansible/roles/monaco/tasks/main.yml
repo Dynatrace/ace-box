@@ -1,0 +1,9 @@
+- name: Monaco - Download
+  get_url:
+    url: "https://github.com/dynatrace-oss/dynatrace-monitoring-as-code/releases/download/{{ monaco_version }}/monaco-linux-amd64"
+    dest: "/usr/local/bin/monaco"
+    mode: +x
+    timeout: 300
+
+- name: Monaco - Cleanup obsolete ACE-Box resources
+  include: roles/monaco/tasks/dt-cleanup.yml

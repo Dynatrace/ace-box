@@ -1,0 +1,81 @@
+- name: Dashboard - Encrpyt http basic auth password
+  set_fact:
+    password_encrypted: "{{ dashboard_password | password_hash('md5') }}"
+
+- name: Dashboard - Encode http basic auth credentials
+  set_fact:
+    authb64encoded: "{{ [dashboard_user, password_encrypted] | join(':') | b64encode }}"
+
+- name: Dashboard - Source Gitea secrets
+  include_role:
+    name: gitea
+    tasks_from: source-secret
+
+- name: Dashboard - Source Gitlab secrets
+  include_role:
+    name: gitlab
+    tasks_from: source-secret
+
+- name: Dashboard - Source Keptn secrets
+  include_role:
+    name: keptn
+    tasks_from: source-secret
+
+- name: Dashboard - Source Keptn host
+  include_role:
+    name: keptn
+    tasks_from: source-endpoints
+
+# Legacy
+
+- name: "AWXS - Extract generated credentials for AWX admin user"
+  shell: /snap/bin/microk8s.kubectl -n awx get secret awx-admin-password -ojsonpath='{.data.password}' | base64 -d
+  register: awx_admin_password_raw
+
+- set_fact:
+    awx_admin_password: "{{  awx_admin_password_raw.stdout }}"
+
+# /Legacy
+
+- name: Copy Helm chart
+  copy:
+    src: helm-chart/
+    dest: /tmp/dashboard-helm-chart/
+
+- name: Run ace dashboard
+  become_user: "{{ non_root_user }}"
+  shell: >
+    /snap/bin/helm upgrade -i ace-dashboard /home/{{ non_root_user }}/helm-charts/dashboard --namespace {{ dashboard_namespace }}
+    --set domain={{ ingress_domain }}
+    --set authb64encoded={{ authb64encoded }}
+    --set image=dynatraceace/ace-box-dashboard:1.0.0
+    --set env.SIMPLENODEAPP_URL_STAGING={{ ingress_protocol }}://simplenodeservice.staging.{{ ingress_domain }}
+    --set env.SIMPLENODEAPP_URL_PRODUCTION={{ ingress_protocol }}://simplenodeservice.production.{{ ingress_domain }}
+    --set env.SIMPLENODEAPP_URL_CANARY={{ ingress_protocol }}://simplenodeservice.canary.{{ ingress_domain }}
+    --set env.JENKINS_URL={{ ingress_protocol }}://jenkins.{{ ingress_domain }}
+    --set env.JENKINS_USER={{ jenkins_user | default('N/A') }}
+    --set env.JENKINS_PASSWORD={{ jenkins_password | default('N/A') }}
+    --set env.GITEA_URL={{ ingress_protocol }}://gitea.{{ ingress_domain }}
+    --set env.GITEA_USER={{ gitea_username | default('N/A') }}
+    --set env.GITEA_PASSWORD={{ gitea_password | default('N/A') }}
+    --set env.GITEA_PAT={{ gitea_access_token | default('N/A') }}
+    --set env.GITLAB_URL={{ ingress_protocol }}://gitlab.gitlab.{{ ingress_domain }}
+    --set env.GITLAB_USER={{ gitlab_username | default('N/A') }}
+    --set env.GITLAB_PASSWORD={{ gitlab_password | default('N/A') }}
+    --set env.AWX_URL={{ ingress_protocol }}://awx.{{ ingress_domain }}
+    --set env.AWX_USER={{ awx_admin_username | default('N/A') }}
+    --set env.AWX_PASSWORD={{ awx_admin_password | default('N/A') }}
+    --set env.KEPTN_API_URL={{ keptn_endpoint }}
+    --set env.KEPTN_API_TOKEN={{ keptn_api_token | default('N/A') }}
+    --set env.KEPTN_BRIDGE_URL={{ keptn_bridge }}
+    --set env.KEPTN_BRIDGE_USER={{ keptn_bridge_user | default('N/A') }}
+    --set env.KEPTN_BRIDGE_PASSWORD={{ keptn_bridge_password | default('N/A') }}
+    --set env.DT_TENANT_URL={{ dynatrace_tenant_url | default('N/A') }}
+
+# TBD: Source from secret
+    # --set envSecrets.GITEA_USER.name=gitea-admin
+    # --set envSecrets.GITEA_USER.key=git_user
+    # --set envSecrets.GITEA_PASSWORD.name=gitea-admin
+    # --set envSecrets.GITEA_PASSWORD.key=git_password
+    # --set envSecrets.GITEA_PAT.name=gitea-admin
+    # --set envSecrets.GITEA_PAT.key=access_token
