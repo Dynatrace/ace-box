@@ -45,7 +45,7 @@
 - name: Run ace dashboard
   become_user: "{{ non_root_user }}"
   shell: >
-    /snap/bin/helm upgrade -i ace-dashboard /home/{{ non_root_user }}/helm-charts/dashboard --namespace {{ dashboard_namespace }}
+    /snap/bin/helm upgrade -i ace-dashboard /tmp/dashboard-helm-chart --namespace {{ dashboard_namespace }}
     --set domain={{ ingress_domain }}
     --set authb64encoded={{ authb64encoded }}
     --set image=dynatraceace/ace-box-dashboard:1.0.0
