@@ -76,6 +76,7 @@ def ace(
   
   target_options = {
     'all': True,
+    'microk8s': True,
     'gitea': True,
     'gitlab': True,
     'dynatrace': True,
@@ -84,6 +85,7 @@ def ace(
     'monaco': True,
     'jenkins': True,
     'dashboard': True,
+    'awx': True,
   }
 
   available_target_options = [target for target in list(target_options) if target_options[target]]
