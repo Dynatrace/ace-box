@@ -1,4 +1,7 @@
 ---
 activegate_download_location: "/tmp/Dynatrace-ActiveGate-Linux-x86-latest.sh"
+<<<<<<< HEAD
 activegate_uninstall_script_location: "/opt/dynatrace/gateway/uninstall.sh"
 synthetic_nodes_query: "nodes[?hostname=='{{ ansible_facts.fqdn }}'].entityId"
+=======
+>>>>>>> 4a688d6 (migrate Ansible tasks to roles)

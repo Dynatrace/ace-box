@@ -16,7 +16,16 @@
   rescue:
     - name: "'set-url' gitea"
       shell: "cd {{ repo_src }} && git remote set-url gitea {{ ingress_protocol }}://{{ gitea_username }}:{{ gitea_password }}@{{ gitea_domain }}/{{ gitea_org }}/{{ gitea_repo }}"
+<<<<<<< HEAD
   when: feature_gitea and push_to_gitea
+=======
+  when: push_to_gitea
+
+- name: Repository - Publish {{ gitea_org }}/{{ gitea_repo }} to Gitea
+  become_user: "{{ non_root_user }}"
+  shell: "cd {{ repo_src }} && git push gitea master"
+  when: push_to_gitea
+>>>>>>> 4a688d6 (migrate Ansible tasks to roles)
 
 - name: Repository - Add remote Gitlab {{ gitlab_group }}/{{ gitlab_repo }}
   become_user: "{{ non_root_user }}"
@@ -26,6 +35,7 @@
   rescue:
     - name: "'set-url' gitlab"
       shell: "cd {{ repo_src }} && git remote set-url gitlab {{ ingress_protocol }}://{{ gitlab_username }}:{{ gitlab_password }}@{{ gitlab_domain }}/{{ gitlab_group }}/{{ gitlab_repo }}.git"
+<<<<<<< HEAD
   when: feature_gitlab and push_to_gitlab
 
 - name: Repository - Publish {{ gitea_org }}/{{ gitea_repo }} to Gitea
@@ -33,9 +43,16 @@
   shell: "cd {{ repo_src }} && git push gitea master"
   when: feature_gitea and push_to_gitea
   ignore_errors: yes
+=======
+  when: push_to_gitlab
+>>>>>>> 4a688d6 (migrate Ansible tasks to roles)
 
 - name: Repository - Publish {{ gitlab_group }}/{{ gitlab_repo }}.git to Gitlab
   become_user: "{{ non_root_user }}"
   shell: "cd {{ repo_src }} && git push gitlab master"
+<<<<<<< HEAD
   when: feature_gitlab and push_to_gitlab
   ignore_errors: yes
+=======
+  when: push_to_gitlab
+>>>>>>> 4a688d6 (migrate Ansible tasks to roles)

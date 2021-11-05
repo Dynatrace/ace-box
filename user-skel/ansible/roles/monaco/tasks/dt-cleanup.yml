@@ -2,5 +2,10 @@
   shell:
     cmd: /usr/local/bin/monaco -e=/home/{{ non_root_user }}/monaco/environments.yaml /home/{{ non_root_user }}/monaco/projects_delete
   environment:
+<<<<<<< HEAD
     DT_ENV_URL: "{{ dynatrace_tenant_url }}"
     DT_API_TOKEN: "{{ dynatrace_api_token }}"
+=======
+    DT_ENV_URL: "{{ dynatrace['tenant'] }}"
+    DT_API_TOKEN: "{{ dynatrace['apitoken'] }}"
+>>>>>>> 4a688d6 (migrate Ansible tasks to roles)

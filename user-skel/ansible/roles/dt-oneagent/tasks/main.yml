@@ -1,13 +1,19 @@
 - name: "Dynatrace OneAgent 1 - Create Dynatrace namespace"
   shell: 
+<<<<<<< HEAD
     cmd: "/snap/bin/microk8s.kubectl create namespace {{ dt_operator_namespace }}"
   ignore_errors: yes
   when: feature_oneagent
+=======
+    cmd: "/snap/bin/microk8s.kubectl create ns dynatrace"
+  ignore_errors: yes
+>>>>>>> 4a688d6 (migrate Ansible tasks to roles)
 
 - name: "Dynatrace OneAgent 2 - Create CRD"
   shell: 
     cmd: "/snap/bin/microk8s.kubectl apply -f https://github.com/Dynatrace/dynatrace-operator/releases/{{ dt_operator_release }}/download/kubernetes.yaml"
   ignore_errors: yes
+<<<<<<< HEAD
   when: feature_oneagent
 
 - name: "Dynatrace OneAgent 3 - Create Secret"
@@ -15,6 +21,13 @@
     cmd: "/snap/bin/microk8s.kubectl -n {{ dt_operator_namespace }} create secret generic dynakube --from-literal=\"apiToken={{ dynatrace_api_token }}\" --from-literal=\"paasToken={{ dynatrace_paas_token }}\""
   ignore_errors: yes
   when: feature_oneagent
+=======
+
+- name: "Dynatrace OneAgent 3 - Create Secret"
+  shell: 
+    cmd: "/snap/bin/microk8s.kubectl -n dynatrace create secret generic dynakube --from-literal=\"apiToken={{ dynatrace['apitoken'] }}\" --from-literal=\"paasToken={{ dynatrace['paastoken'] }}\""
+  ignore_errors: yes
+>>>>>>> 4a688d6 (migrate Ansible tasks to roles)
 
 - name: Dynatrace OneAgent 4 - Set Environment
   ansible.builtin.template:
@@ -23,6 +36,7 @@
     owner: root
     group: root
     mode: '0644'
+<<<<<<< HEAD
   when: feature_oneagent
 
 - name: "Dynatrace OneAgent 5 - Apply CR"
@@ -33,3 +47,10 @@
   register: dynakube_result
   until: dynakube_result is not failed
   when: feature_oneagent
+=======
+
+- name: "Dynatrace OneAgent 5 - Apply CR"
+  shell: 
+    cmd: "/snap/bin/microk8s.kubectl apply -f /tmp/dynakube.yaml"
+  ignore_errors: yes
+>>>>>>> 4a688d6 (migrate Ansible tasks to roles)

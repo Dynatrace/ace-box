@@ -2,13 +2,21 @@ apiVersion: dynatrace.com/v1alpha1
 kind: DynaKube
 metadata:
   name: dynakube
+<<<<<<< HEAD
   # namespace: dynatrace
+=======
+  namespace: dynatrace
+>>>>>>> 4a688d6 (migrate Ansible tasks to roles)
 spec:
   # Dynatrace apiUrl including the `/api` path at the end.
   # For SaaS, set `YOUR_ENVIRONMENT_ID` to your environment ID.
   # For Managed, change the apiUrl address.
   # For instructions on how to determine the environment ID and how to configure the apiUrl address, see https://www.dynatrace.com/support/help/reference/dynatrace-concepts/environment-id/.
+<<<<<<< HEAD
   apiUrl: "{{ dynatrace_tenant_url }}/api"
+=======
+  apiUrl: "{{ dynatrace['tenant'] }}/api"
+>>>>>>> 4a688d6 (migrate Ansible tasks to roles)
 
   # name of secret holding `apiToken` and `paasToken`
   # if unset, name of custom resource is used

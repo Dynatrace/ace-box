@@ -1,5 +1,8 @@
 ---
 gitlab_username: "root"
 gitlab_namespace: "gitlab"
+<<<<<<< HEAD
 gitlab_group_name: "ace"
 feature_gitlab: false
+=======
+>>>>>>> 4a688d6 (migrate Ansible tasks to roles)

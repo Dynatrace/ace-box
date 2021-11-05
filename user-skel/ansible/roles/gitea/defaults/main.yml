@@ -5,4 +5,7 @@ gitea_username: "dynatrace"
 gitea_password: "dynatrace"
 gitea_email: "ace@dynatrace.com"
 gitea_namespace: "gitea"
+<<<<<<< HEAD
 feature_gitea: true
+=======
+>>>>>>> 4a688d6 (migrate Ansible tasks to roles)

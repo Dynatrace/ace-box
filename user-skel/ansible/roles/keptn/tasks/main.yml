@@ -4,11 +4,15 @@
     dest: /tmp
     remote_src: yes
     mode: +x
+<<<<<<< HEAD
   when: feature_keptn
+=======
+>>>>>>> 4a688d6 (migrate Ansible tasks to roles)
 
 - name: Keptn - Rename CLI
   become: true
   shell: "cp /tmp/keptn-{{ keptn_version }}-linux-amd64 /usr/local/bin/keptn"
+<<<<<<< HEAD
   when: feature_keptn
 
 - name: Keptn - Install via Helm
@@ -19,6 +23,18 @@
     --repo="https://storage.googleapis.com/keptn-installer" 
     --wait --timeout 10m
   when: feature_keptn
+=======
+
+# - name: Keptn - Export KUBECONFIG
+#   become_user: "{{ non_root_user }}"
+#   block:
+#     - shell: /snap/bin/microk8s.config > /tmp/keptn-kube-config
+#     - shell: export KUBECONFIG=/tmp/keptn-kube-config
+
+- name: Keptn - Install via CLI
+  become_user: "{{ non_root_user }}"
+  shell: keptn install -y
+>>>>>>> 4a688d6 (migrate Ansible tasks to roles)
 
 - name: Keptn - Template ingress file
   ansible.builtin.template:
@@ -27,6 +43,7 @@
     owner: root
     group: root
     mode: '0644'
+<<<<<<< HEAD
   when: feature_keptn
 
 - name: Keptn - Apply ingress
@@ -36,10 +53,19 @@
 - name: Keptn - Source Keptn secrets
   include: roles/keptn/tasks/source-secret.yml
   when: feature_keptn
+=======
+
+- name: Keptn - Apply ingress
+  shell: "/snap/bin/microk8s.kubectl -n {{ keptn_namespace }} apply -f /tmp/keptn-ingress.yml"
+
+- name: Keptn - Source Keptn secrets
+  include: roles/keptn/tasks/source-secret.yml
+>>>>>>> 4a688d6 (migrate Ansible tasks to roles)
 
 - name: Keptn - Authenticate CLI
   become_user: "{{ non_root_user }}"
   shell: "/usr/local/bin/keptn auth --api-token {{ keptn_api_token }} --endpoint {{ ingress_protocol }}://{{ keptn_ingress_domain }}/api"
+<<<<<<< HEAD
   when: feature_keptn
 
 - name: Keptn - Install JMeter service
@@ -49,3 +75,11 @@
 - name: Keptn - Install Dynatrace service
   include: roles/keptn/tasks/dynatrace-service.yml
   when: feature_keptn
+=======
+
+- name: Keptn - Install JMeter service
+  include: roles/keptn/tasks/jmeter-service.yml
+
+- name: Keptn - Install Dynatrace service
+  include: roles/keptn/tasks/dynatrace-service.yml
+>>>>>>> 4a688d6 (migrate Ansible tasks to roles)

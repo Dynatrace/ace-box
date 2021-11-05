@@ -16,15 +16,32 @@
 - name: Gitea - Wait for cert-manager to be ready
   shell: /snap/bin/microk8s.kubectl -n cert-manager rollout status deployment cert-manager-webhook
 
+<<<<<<< HEAD
 <<<<<<< HEAD:user-skel/ansible/roles/cert-manager/tasks/main.yml
+=======
+<<<<<<<< HEAD:user-skel/ansible/roles/cert-manager/tasks/main.yml
+========
+<<<<<<< HEAD:user-skel/ansible/roles/cert-manager/tasks/main.yml
+>>>>>>>> 4a688d6 (migrate Ansible tasks to roles):user-skel/ansible/playbooks/cert_manager_tasks.yaml
+>>>>>>> 4a688d6 (migrate Ansible tasks to roles)
 - name: Cert Manager - Create Letsencrypt resources
   block:
     - copy:
         src: letsencrypt.yml
         dest: /tmp/letsencrypt.yml
+<<<<<<< HEAD
+=======
+<<<<<<<< HEAD:user-skel/ansible/roles/cert-manager/tasks/main.yml
+    - shell: /snap/bin/microk8s.kubectl apply -f /tmp/letsencrypt.yml
+========
+>>>>>>> 4a688d6 (migrate Ansible tasks to roles)
     - shell: /snap/bin/microk8s.kubectl apply -f /tmp/letsencrypt.yml
 =======
 - name: Cert Manager - Apply Letsencrypt YAML
   shell: /snap/bin/microk8s.kubectl apply -f /home/{{ non_root_user }}/k8s/letsencrypt.yml
   ignore_errors: yes
 >>>>>>> a49ee91 (Rename user home folder template):user-skel/ansible/playbooks/cert_manager_tasks.yaml
+<<<<<<< HEAD
+=======
+>>>>>>>> 4a688d6 (migrate Ansible tasks to roles):user-skel/ansible/playbooks/cert_manager_tasks.yaml
+>>>>>>> 4a688d6 (migrate Ansible tasks to roles)

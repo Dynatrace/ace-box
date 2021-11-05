@@ -1,3 +1,6 @@
 ---
 dt_operator_release: "latest"
+<<<<<<< HEAD
 dt_operator_namespace: "dynatrace"
+=======
+>>>>>>> 4a688d6 (migrate Ansible tasks to roles)

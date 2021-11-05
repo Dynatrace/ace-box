@@ -107,11 +107,14 @@
 
 - set_fact:
     gitea_credential_name: "{{ ingress_protocol }}://gitea.{{ ingress_domain }} Credentials"
+<<<<<<< HEAD:user-skel/ansible/playbooks/awx_config_tasks.yaml
 <<<<<<< HEAD:user-skel/ansible/roles/awx/tasks/configure.yml
 =======
   tags:
     - always
 >>>>>>> a49ee91 (Rename user home folder template):user-skel/ansible/playbooks/awx_config_tasks.yaml
+=======
+>>>>>>> 4a688d6 (migrate Ansible tasks to roles):user-skel/ansible/roles/awx/tasks/configuration.yml
 
 - name: AWX - Get SCM credential type
   uri:

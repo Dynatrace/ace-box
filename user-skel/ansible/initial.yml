@@ -5,8 +5,6 @@
   vars_files:
     - ../ace-box.conf.yml
   vars:
-    # ingress_protocol:           "{{ acebox['config']['microk8s']['domain_protocol'] | default('http') }}"
-    # acebox_provisioner:               "{{ acebox_provisioner | default('vagrant')}}"
     acebox_mode:                      "{{ acebox['features']['mode'] | default('training') }}"
     feature_activegate:               "{{ acebox['features']['activegate'] | default(false) }}"
     feature_oneagent:                 "{{ acebox['features']['oneagent'] | default(true) }}"
@@ -18,249 +16,82 @@
     feature_gitlab:                   "{{ acebox['features']['gitlab'] | default(false) }}"
     feature_activegatekube:           "{{ acebox['features']['activegatekube'] | default(false) }}"
     feature_awx:                      "{{ acebox['features']['awx'] | default(false) }}"
+
     dynatrace_tenant_url:             "{{ dynatrace['tenant'] }}" 
     dynatrace_paas_token:             "{{ dynatrace['paastoken'] }}"
     dynatrace_api_token:              "{{ dynatrace['apitoken'] }}"
-    dynatrace_operator_version:       "{{ acebox['config']['dynatrace']['operator_version'] | default('v0.3.0') }}"
-    jenkins_setcreds:                 "{{ acebox['config']['jenkins']['setcreds'] | default(true) }}"
-    jenkins_helm_chart_version:       "{{ acebox['config']['jenkins']['helm_chart_version'] | default('3.3.18') }}"
-    jenkins_version:                  "{{ acebox['config']['jenkins']['version'] | default('2.277.4') }}"
-    jenkins_ace_lib_url:              "{{ acebox['config']['jenkins']['ace_lib_url'] | default('https://github.com/dynatrace-ace/dynatrace-jenkins-library.git') }}"
-    jenkins_keptn_lib_url:            "{{ acebox['config']['jenkins']['ace_lib_url'] | default('https://github.com/keptn-sandbox/keptn-jenkins-library.git') }}"
-    jenkins_user:                     "admin" #not used for configuring jenkins
-    jenkins_password:                 "dynatrace" #not used for configuring jenkins
-    keptn_version:                        "{{ acebox['config']['keptn']['version'] | default('0.10.0')}}"
-    keptn_dynatrace_service_version:      "{{ acebox['config']['keptn']['dynatrace_service_version'] | default('0.17.1')}}"
-    microk8s_addons:            "{{ acebox['config']['microk8s']['addons'] | default('dns storage registry ingress ') }}"
-    microk8s_domain_ext:        "{{ acebox['config']['microk8s']['domain_ext'] | default('nip.io') }}"
-    microk8s_release_channel:   "{{ acebox['config']['microk8s']['release_channel'] | default('1.21/stable') }}"
-    git_user:                   "{{ (((acebox | default({})).config | default({}) ).git | default({}) ).user | default('dynatrace') }}"
-    git_password:               "{{ (((acebox | default({})).config | default({}) ).git | default({}) ).password | default('dynatrace') }}"
-    git_email:                  "{{ (((acebox | default({})).config | default({}) ).git | default({}) ).email | default('ace@ace.ace') }}"
-    git_org:                    "{{ (((acebox | default({})).config | default({}) ).git | default({}) ).org | default('ace') }}"
-    git_repo:                   "{{ (((acebox | default({})).config | default({}) ).git | default({}) ).repo | default('ace') }}"
-    #gitea_version:               "{{ acebox.config.git.version | default('1.11.6') }}"
-    gitea_version:               "{{ (((acebox | default({})).config | default({}) ).git | default({}) ).version |default('1.14.6') }}"
-    #gitea_version:               "{{ acebox|json_query('config.git.version') | default('1.11.6') }}"
-    activegate_download_location: "{{ acebox['config']['activegate']['download_location'] | default('/tmp/Dynatrace-ActiveGate-Linux-x86-latest.sh') }}"
-    monaco_download_version: "v1.5.0"
-    dashboard_user: "{{ (((acebox | default({})).config | default({}) ).dashboard | default({}) ).user | default('dynatrace') }}"
-    dashboard_password: "{{ (((acebox | default({})).config | default({}) ).dashboard | default({}) ).password | default('dynatrace') }}"
-    awx_operator_version: "0.12.0"
-    awx_admin_username: "admin"
-    # awx_admin_password: "" # A secret will be created automatically. Password can be retrieved by running $ kubectl -n awx get secret awx-admin-password -o jsonpath='{.data.password}' | base64 -d
-  tasks:
-  - name: Set default Variables
-    set_fact:
-      non_root_user: "{{ lookup('env','USER') }}"
-    when: non_root_user is not defined
+  roles:
+  - role: common
     tags:
       - always
-
-  - set_fact:
-      public_ip: "n/a"
-    when: public_ip is not defined
+  - role: init
     tags:
-      - always
-
-  # - set_fact:
-  #     acebox_provisioner: "vagrant"
-  #   when: acebox_provisioner is not defined
-  #   tags:
-  #     - always
-
-  - set_fact:
-      use_custom_domain: false
-    when: use_custom_domain is not defined
-    tags:
-      - always
-
-  - set_fact:
-      custom_domain: "n/a"
-    when: use_custom_domain is not defined or custom_domain is not defined
-    tags:
-      - always
-
-  # - name: Set Ingress Domain - Vagrant
-  #   set_fact:
-  #     ingress_domain: "{{ acebox['specs']['priv_ip'] | default('192.168.50.10')}}.{{ microk8s_domain_ext }}"
-  #   when: acebox_provisioner == "vagrant"
-  #   tags:
-  #     - always
-
-  # - name: Set Ingress Domain - Terraform
-  #   set_fact:
-  #     ingress_domain: "{{ public_ip }}.{{ microk8s_domain_ext }}"
-  #   when: acebox_provisioner == "terraform" and use_custom_domain == "false"
-  #   tags:
-  #     - always
-
-  # - name: Set Ingress Domain - Terraform - Custom Domain
-  #   set_fact:
-  #     ingress_domain: "{{ custom_domain }}"
-  #   when: acebox_provisioner == "terraform" and use_custom_domain == "true"
-  #   tags:
-  #     - always
-
-  - debug: var=ingress_domain
-    tags:
-      - always
-
-  - debug: var=ingress_protocol
-    tags:
-      - test
-
-  - name: Init install tasks
-    include_tasks: playbooks/init_tasks.yaml
-    args:
-      apply:
-        tags:
-          - init
-    tags:
+      - never
       - init
-
-  - name: Install and configure microk8s
-    include_tasks: playbooks/microk8s_tasks.yaml
-    args:
-      apply:
-        tags:
-          - k8s
+      # - quality_gates # use cases
+      # - auto_remediation # use cases
+      - all
+  - role: microk8s
     tags:
-      - k8s
-
-  - name: Install and configure helm
-    include_tasks: playbooks/helm.yaml
-    args:
-      apply:
-        tags:
-          - k8s
+      - never
+      - microk8s
+      - all
+  - role: helm
     tags:
-      - k8s
-
-  - name: Install Monaco
-    include_tasks: playbooks/monaco_tasks.yaml
-    when: acebox_mode == "demo"
+      - never
+      - helm
+      - all
+  - role: dt-activegate
     tags:
+      - never
+      - dynatrace
+      - all
+  - role: dt-oneagent
+    tags:
+      - never
+      - dynatrace
+      - all
+  - role: gitea
+    tags:
+      - never
+      - gitea
+      - all
+  - role: gitlab
+    tags:
+      - never
+      - gitlab
+      - all
+  - role: repositories
+    tags:
+      - never
+      - repositories
+      - all
+  - role: monaco
+    tags:
+      - never
       - monaco
-      - monaco_uninstall
-      - dt_core
-  
-  - name: Clean Up Dynatrace
-    include_tasks: playbooks/monaco_cleanup_tasks.yaml
-    when: acebox_mode == "demo"
-    args:
-      apply:
-        tags:
-          - dt_core
+      - all
+  - role: keptn
     tags:
-      - dt_core
-  
-  - name: Install and configure Dynatrace ActiveGate
-    include_tasks: playbooks/dtactivegate_tasks.yaml
-    when: feature_activegate or acebox_mode == "demo"
-    args:
-      apply:
-        tags:
-          - dt_core
-    tags:
-      - dt_core
-  
-  - name: Install and configure Dynatrace OneAgent
-    include_tasks: playbooks/dtoneagent_tasks.yaml
-    when: feature_oneagent or acebox_mode == "demo"
-    args:
-      apply:
-        tags:
-          - dt_core
-    tags:
-      - dt_core
-
-  # - name: Install and configure cert-manager
-  #   include_tasks: playbooks/cert_manager_tasks.yaml
-  #   when: feature_cert_manager or acebox_provisioner == "terraform"
-  #   args:
-  #     apply:
-  #       tags:
-  #         - k8s
-  #   tags:
-  #     - k8s
-  
-  - name: Install and configure Gitlab
-    include_tasks: playbooks/gitlab_tasks.yaml
-    when: feature_gitlab
-    args:
-      apply:
-        tags:
-          - git
-    tags:
-      - git
-
-  - name: Install and configure Gitea
-    include_tasks: playbooks/gitea_tasks.yaml
-    when: feature_gitea or acebox_mode == "demo"
-    tags:
-      - git
-      - git_uninstall
-
-  - name: Install and configure Keptn
-    include_tasks: playbooks/keptn_tasks.yaml
-    when: feature_keptn or acebox_mode == "demo"
-    args:
-      apply:
-        tags:
-          - keptn
-    tags:
+      - never
       - keptn
-
-  - name: Install and configure jenkins
-    include_tasks: playbooks/jenkins_tasks.yaml
-    when: feature_jenkins or acebox_mode == "demo"
+      - all
+  - role: jenkins
     tags:
+      - never
       - jenkins
-      - jenkins_uninstall
-  
-  - name: Configure Dynatrace
-    include_tasks: playbooks/monaco_config_tasks.yaml
-    when: acebox_mode == "demo"
-    args:
-      apply:
-        tags:
-          - monaco
+      - all
+  - role: awx
     tags:
-      - monaco
-
-  - name: Install AWX
-    include_tasks: playbooks/awx_tasks.yaml
-    when: feature_awx
-    tags:
+      - never
       - awx
-      - awx_uninstall
-      - awx_output
-
-  - name: Configure AWX
-    include_tasks: playbooks/awx_config_tasks.yaml
-    when: feature_awx
+      # - all
+  - role: dashboard
     tags:
-      - awx_config
-      - awx_unconfig
-
-  - name: Create ACE Dashboard
-    include_tasks: playbooks/dashboard_tasks.yaml
-    when: feature_dashboard or acebox_mode == "demo"
-    args:
-      apply:
-        tags:
-          - dashboard
-    tags:
+      - never
       - dashboard
-
-  - name: Post install tasks
-    include_tasks: playbooks/postinstall_tasks.yaml
-    args:
-      apply:
-        tags:
-          - init
-          - post_install
+      - all
+  - role: post-install
     tags:
-      - init
-      - post_install
+      - never
+      - all

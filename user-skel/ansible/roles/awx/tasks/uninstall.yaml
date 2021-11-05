@@ -1,0 +1,11 @@
+- name: AWX - Uninstall AWX
+  become_user: "{{ non_root_user }}"
+  shell: helm delete awx --namespace awx
+
+- name: AWX - Uninstall Operator
+  become_user: "{{ non_root_user }}"
+  shell: helm delete awx-operator
+
+- name: AWX - Delete namespace
+  shell: kubectl delete namespace awx
+    
