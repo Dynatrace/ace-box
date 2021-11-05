@@ -28,7 +28,7 @@ resource "null_resource" "provisioner_home_dir" {
   }
 }
 
-resource "null_resource" "provisioner_prepare" {
+resource "null_resource" "provisioner_init" {
   connection {
     host        = local.host
     type        = local.type
@@ -40,13 +40,13 @@ resource "null_resource" "provisioner_prepare" {
 
   provisioner "remote-exec" {
     inline = [
-      "chmod +x /home/${local.user}/prepare.sh",
-      "/home/${local.user}/prepare.sh --ingress-domain=${local.ingress_domain} --ingress-protocol=${local.ingress_protocol}"
+      "chmod +x /home/${local.user}/init.sh",
+      "/home/${local.user}/init.sh"
     ]
   }
 }
 
-resource "null_resource" "provisioner_install" {
+resource "null_resource" "provisioner_ace_prepare" {
   connection {
     host        = local.host
     type        = local.type
@@ -54,12 +54,32 @@ resource "null_resource" "provisioner_install" {
     private_key = local.private_key
   }
 
-  depends_on = [null_resource.provisioner_home_dir, null_resource.provisioner_prepare]
+  depends_on = [null_resource.provisioner_home_dir, null_resource.provisioner_init]
 
   provisioner "remote-exec" {
     inline = [
-      "chmod +x /home/${local.user}/install.sh",
-      "/home/${local.user}/install.sh"
+      "export ACE_INGRESS_DOMAIN=${local.ingress_domain}",
+      "export ACE_INGRESS_PROTOCOL=${local.ingress_protocol}",
+      "export ACE_ANSIBLE_WORKDIR=/home/${local.user}/ansible/",
+      "ace prepare --force",
+    ]
+  }
+}
+
+resource "null_resource" "provisioner_ace_install" {
+  connection {
+    host        = local.host
+    type        = local.type
+    user        = local.user
+    private_key = local.private_key
+  }
+
+  depends_on = [null_resource.provisioner_home_dir, null_resource.provisioner_init, null_resource.provisioner_ace_prepare]
+
+  provisioner "remote-exec" {
+    inline = [
+      "export ACE_ANSIBLE_WORKDIR=/home/${local.user}/ansible/",
+      "ace install all",
     ]
   }
 }
