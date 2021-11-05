@@ -1,0 +1,160 @@
+#!/usr/bin/env python
+
+import os
+import logging
+import subprocess
+
+import click
+
+cli_version = '0.0.1'
+default_ansible_workdir = os.path.expanduser('~/ansible/')
+
+def set_log_level(
+  verbosity,
+):
+  """Helper method to set log level."""
+  if verbosity > 1:
+    logging.basicConfig(level=logging.DEBUG)
+  elif verbosity == 1:
+    logging.basicConfig(level=logging.INFO)
+
+  return
+
+
+def write_hosts_file(
+  hosts_file_path,
+  ingress_domain,
+  ingress_protocol,
+):
+  """Helper method to write Ansible hosts file."""
+  logging.debug('Creating hosts file...')
+  file = open(hosts_file_path, 'w')
+  file.write(f'localhost ingress_domain={ingress_domain} ingress_protocol={ingress_protocol}\n')
+  file.close()
+  logging.info('Successfully created hosts file...')
+  return
+
+
+@click.command()
+@click.argument('action', nargs=-1)
+@click.option('-v', '--verbose', count=True, help='Prints additional debug messages.')
+@click.option('--ingress-domain', help='Please enter your public domain. If not set you\'ll be prompted during "prepare".')
+@click.option('--ingress-protocol', help='Please enter the protocol you\'re using. If not set you\'ll be prompted during "prepare".')
+@click.option('--ansible-workdir', help='Please enter the directory of ACE-Box\'s initial.yml. If not set you\'ll be prompted during "prepare".')
+@click.option('-f', '--force', is_flag=True, help='Overwrites any confirmation prompts.')
+@click.version_option(version=cli_version)
+def ace(
+  action,
+  verbose,
+  ingress_domain,
+  ingress_protocol,
+  ansible_workdir,
+  force,
+):
+  """This tool...
+  
+  ACTION can start with "prepare", "install" or "delete" and can be followed by a target, e.g. "all", "microk8s", ...
+
+  For example:
+
+  $ ace prepare
+  > ...
+
+  $ ace install all
+  > ...
+  """
+
+  # If verbose flag is provided, log level will be set to DEBUG
+  set_log_level(verbose)
+
+  action_options = {
+    'prepare': True,
+    'install': True,
+  }
+
+  available_action_options = [action for action in list(action_options) if action_options[action]]
+  
+  target_options = {
+    'all': True,
+    'gitea': True,
+    'gitlab': True,
+    'dynatrace': True,
+    'repositories': True,
+    'keptn': True,
+    'monaco': True,
+    'jenkins': True,
+    'dashboard': True,
+  }
+
+  available_target_options = [target for target in list(target_options) if target_options[target]]
+
+  if action[0] == 'prepare' and action_options['prepare']:
+    logging.info('Preparing ACE-Box...')
+
+    if not ingress_domain:
+      ingress_domain = click.prompt('Please enter your public domain', default='127.0.0.1.nip.io')
+
+    if not ingress_protocol:
+      ingress_protocol = click.prompt('Please enter the protocol', default='http')
+
+    if not ansible_workdir:
+      ansible_workdir = click.prompt('Please enter Ansible work dir', default=default_ansible_workdir)
+
+    if os.path.exists(ansible_workdir):
+      hosts_file_path = os.path.join(os.path.expanduser(ansible_workdir), 'hosts')
+
+      if os.path.exists(hosts_file_path):
+        if force:
+          overwrite_hosts_file = True
+        else:
+          overwrite_hosts_file = click.confirm(f'{hosts_file_path} already exists. Are you sure you want to overwrite it?')
+
+        if overwrite_hosts_file:
+          write_hosts_file(
+            hosts_file_path,
+            ingress_domain,
+            ingress_protocol,
+          )
+
+          click.echo(f'All set! You can now install components.')
+        else:
+          logging.debug(f'overwrite_hosts_file: {overwrite_hosts_file} was chosen.')
+          click.echo(f'Chose not to overwrite hosts file. Exiting...')
+
+      else:
+        write_hosts_file(
+          hosts_file_path,
+          ingress_domain,
+          ingress_protocol,
+        )
+
+        click.echo(f'All set! You can now install components.')
+
+    else:
+      logging.error(f'Path {ansible_workdir} doesn\'t exists!')
+
+  elif action[0] == 'install' and action_options['install']:
+    if len(action) < 2:
+      logging.warning(f'No target set, please provide one of {available_target_options}')
+    elif len(action) == 2 and action[1] in available_target_options:
+      tag = action[1]
+      logging.info(f'Installing ACE-Box ({tag})...')
+
+      if not ansible_workdir:
+        ansible_workdir = click.prompt('Please enter Ansible work dir', default=default_ansible_workdir)
+
+      subprocess.run(f'ansible-playbook -vv -i hosts initial.yml --tags "{tag}"', cwd=ansible_workdir, shell=True, check=True)
+
+      click.echo("You're welcome!")
+
+    else:
+      logging.warning(f'Unknown option "{action[1]}", please provide one of {available_target_options}')
+      # click.echo(...)
+
+  else:
+    logging.warning(f'Unknown option "{action[0]}", please provide one of {available_action_options}')
+    # click.echo(...)
+
+
+if __name__ == '__main__':
+  ace(auto_envvar_prefix='ACE')
