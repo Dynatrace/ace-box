@@ -9,15 +9,13 @@
   become: true
   shell: "cp /tmp/keptn-{{ keptn_version }}-linux-amd64 /usr/local/bin/keptn"
 
-# - name: Keptn - Export KUBECONFIG
-#   become_user: "{{ non_root_user }}"
-#   block:
-#     - shell: /snap/bin/microk8s.config > /tmp/keptn-kube-config
-#     - shell: export KUBECONFIG=/tmp/keptn-kube-config
-
-- name: Keptn - Install via CLI
+- name: Keptn - Install via Helm
   become_user: "{{ non_root_user }}"
-  shell: keptn install -y
+  shell: >
+    /snap/bin/helm upgrade --install keptn keptn --version={{ keptn_version }} 
+    --namespace {{ keptn_namespace }} --create-namespace 
+    --repo="https://storage.googleapis.com/keptn-installer" 
+    --wait --timeout 10m
 
 - name: Keptn - Template ingress file
   ansible.builtin.template:
