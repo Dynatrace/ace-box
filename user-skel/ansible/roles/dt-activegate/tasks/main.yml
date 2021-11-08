@@ -25,28 +25,8 @@
     name: dynatracegateway
     state: restarted
 
-- name: ActiveGate - Get all Synthetic nodes
-  uri:
-    url: "{{ dynatrace_tenant_url }}/api/v1/synthetic/nodes"
-    method: GET
-    headers:
-      Content-Type: "application/json"
-      Authorization: "Api-token {{ dynatrace_api_token }}"
-    return_content: no
-    status_code: 200, 201, 204
-  register: nodesresponse
-  when: acebox_mode == 'demo'
-  until: nodesresponse.json | json_query("nodes[?hostname=='{{ ansible_facts.fqdn }}'].entityId")
-  retries: 15
-  delay: 10
-
-- name: ActiveGate - Set synthetic node entityId
-  set_fact:
-    dt_node_id: "{{ item }}"
-  loop: "{{ nodesresponse.json | json_query(synthetic_nodes_query) }}"
-  vars:
-    synthetic_nodes_query: "nodes[?hostname=='{{ ansible_facts.fqdn }}'].entityId"
-  when: acebox_mode == 'demo' and item != ""
+- name: ActiveGate - Get node id
+  include: roles/dt-activegate/tasks/source-node-id.yml
 
 - name: ActiveGate - Restart Docker service
   service:
