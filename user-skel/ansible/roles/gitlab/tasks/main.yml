@@ -1,6 +1,7 @@
 - name: Gitlab - Add helm repo
   become_user: "{{ non_root_user }}"
   shell: /snap/bin/helm repo add gitlab https://charts.gitlab.io/ && helm repo update
+  when: feature_gitlab
 
 - name: Gitlab - Template values file
   ansible.builtin.template:
@@ -9,10 +10,12 @@
     owner: root
     group: root
     mode: '0644'
+  when: feature_gitlab
 
 - name: Gitlab - Install using helm
   become_user: "{{ non_root_user }}"
   shell: /snap/bin/helm upgrade --install gitlab gitlab/gitlab -f /tmp/gitlab-values.yml --create-namespace --namespace {{ gitlab_namespace }} --wait --timeout 10m
+  when: feature_gitlab
 
 - name: Gitlab - Wait for API to be up
   uri:
@@ -26,3 +29,4 @@
   until: result.status == 200
   retries: 300
   delay: 1
+  when: feature_gitlab

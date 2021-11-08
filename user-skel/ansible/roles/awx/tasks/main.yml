@@ -2,16 +2,20 @@
   copy:
     src: awx-operator-helm-chart/
     dest: /tmp/awx-operator-helm-chart/
+  when: feature_awx
 
 - name: AWX - Install Operator
   become_user: "{{ non_root_user }}"
   shell: helm upgrade --install --wait awx-operator /tmp/awx-operator-helm-chart
+  when: feature_awx
 
 - name: AWX - Copy Operator Helm chart
   copy:
     src: awx-helm-chart/
     dest: /tmp/awx-helm-chart/
+  when: feature_awx
 
 - name: AWX - Install AWX
   become_user: "{{ non_root_user }}"
   shell: helm upgrade --install --wait awx /tmp/awx-helm-chart --namespace awx --create-namespace --set ingress.hosts[0].host="{{ awx_ingress_domain }}"
+  when: feature_awx

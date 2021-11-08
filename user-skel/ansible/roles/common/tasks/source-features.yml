@@ -1,0 +1,51 @@
+---
+- name: Set feature_activegate
+  set_fact:
+    feature_activegate: "{{ acebox['features']['activegate'] | default(feature_activegate_default) }}"
+
+- name: Set feature_oneagent
+  set_fact:
+    feature_oneagent: "{{ acebox['features']['oneagent'] | default(feature_oneagent_default) }}"
+
+- name: Set feature_gitea
+  set_fact:
+    feature_gitea: "{{ acebox['features']['gitea'] | default(feature_gitea_default) }}"
+
+- name: Set feature_gitlab
+  set_fact:
+    feature_gitlab: "{{ acebox['features']['gitlab'] | default(feature_gitlab_default) }}"
+
+- name: Set feature_jenkins
+  set_fact:
+    feature_jenkins: "{{ acebox['features']['jenkins'] | default(feature_jenkins_default) }}"
+
+- name: Set feature_dashboard
+  set_fact:
+    feature_dashboard: "{{ acebox['features']['dashboard'] | default(feature_dashboard_default) }}"
+
+- name: Set feature_keptn
+  set_fact:
+    feature_keptn: "{{ acebox['features']['keptn'] | default(feature_keptn_default) }}"
+
+# - name: Set feature_cert_manager
+#   set_fact:
+#     feature_cert_manager: "{{ acebox['features']['cert_manager'] | default(feature_cert_manager_default) }}"
+
+# - name: Set feature_activegatekube
+#   set_fact:
+#     feature_activegatekube: "{{ acebox['features']['activegatekube'] | default(feature_activegatekube_default) }}"
+
+- name: Set feature_awx
+  set_fact:
+    feature_awx: "{{ acebox['features']['awx'] | default(feature_awx_default) }}"
+
+# Modes
+- name: Set demo features
+  set_fact:
+    feature_activegate: true
+    feature_oneagent: true
+    feature_gitea: true
+    feature_jenkins: true
+    feature_dashboard: true
+    feature_keptn: true
+  when: acebox_mode == "demo"

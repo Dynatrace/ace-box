@@ -1,0 +1,11 @@
+---
+feature_activegate_default: false
+feature_oneagent_default: true
+feature_gitea_default: false
+feature_jenkins_default: false
+feature_dashboard_default: false
+feature_keptn_default: false
+feature_cert_manager_default: false
+feature_gitlab_default: false
+feature_activegatekube_default: false
+feature_awx_default: false

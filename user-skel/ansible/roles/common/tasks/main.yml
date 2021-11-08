@@ -2,3 +2,6 @@
   set_fact:
     non_root_user: "{{ lookup('env','USER') }}"
   when: non_root_user is not defined
+
+- name: Set feature flags
+  include: roles/common/tasks/source-features.yml

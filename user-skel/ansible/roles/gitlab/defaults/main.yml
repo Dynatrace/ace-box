@@ -1,3 +1,4 @@
 ---
 gitlab_username: "root"
 gitlab_namespace: "gitlab"
+feature_gitlab: false

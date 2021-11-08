@@ -6,17 +6,6 @@
     - ../ace-box.conf.yml
   vars:
     acebox_mode:                      "{{ acebox['features']['mode'] | default('training') }}"
-    feature_activegate:               "{{ acebox['features']['activegate'] | default(false) }}"
-    feature_oneagent:                 "{{ acebox['features']['oneagent'] | default(true) }}"
-    feature_gitea:                    "{{ acebox['features']['gitea'] | default(false) }}"
-    feature_jenkins:                  "{{ acebox['features']['jenkins'] | default(true) }}"
-    feature_dashboard:                "{{ acebox['features']['dashboard'] | default(false) }}"
-    feature_keptn:                    "{{ acebox['features']['keptn'] | default(false) }}"
-    feature_cert_manager:             "{{ acebox['features']['cert_manager'] | default(false) }}"
-    feature_gitlab:                   "{{ acebox['features']['gitlab'] | default(false) }}"
-    feature_activegatekube:           "{{ acebox['features']['activegatekube'] | default(false) }}"
-    feature_awx:                      "{{ acebox['features']['awx'] | default(false) }}"
-
     dynatrace_tenant_url:             "{{ dynatrace['tenant'] }}" 
     dynatrace_paas_token:             "{{ dynatrace['paastoken'] }}"
     dynatrace_api_token:              "{{ dynatrace['apitoken'] }}"
@@ -85,8 +74,6 @@
     tags:
       - never
       - init
-      # - quality_gates # use cases
-      # - auto_remediation # use cases
       - all
   - role: microk8s
     tags:
@@ -142,7 +129,7 @@
     tags:
       - never
       - awx
-      # - all
+      - all
   - role: dashboard
     tags:
       - never

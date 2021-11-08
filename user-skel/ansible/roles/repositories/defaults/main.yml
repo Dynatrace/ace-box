@@ -1,3 +1,5 @@
 ---
 git_global_user_name: "dynatrace"
 git_global_user_email: "ace@dynatrace.com"
+feature_gitea: true
+feature_gitlab: false

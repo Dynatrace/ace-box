@@ -1,6 +1,7 @@
 - name: Gitea - Add helm repo
   become_user: "{{ non_root_user }}"
   shell: /snap/bin/helm repo add gitea-charts https://dl.gitea.io/charts/ && helm repo update
+  when: feature_gitea
 
 - name: Gitea - Template values file
   ansible.builtin.template:
@@ -9,10 +10,12 @@
     owner: root
     group: root
     mode: '0644'
+  when: feature_gitea
 
 - name: Gitea - Install using helm
   become_user: "{{ non_root_user }}"
   shell: /snap/bin/helm upgrade --install gitea gitea-charts/gitea -f /tmp/gitea-values.yml --create-namespace --namespace {{ gitea_namespace }} --wait
+  when: feature_gitea
 
 - name: Gitea - Wait for API to be up
   uri:
@@ -26,6 +29,7 @@
   until: result.status == 200
   retries: 300
   delay: 1
+  when: feature_gitea
 
 - name: Gitea - Create admin user access token
   uri:
@@ -41,12 +45,16 @@
     status_code: 201
   register: post_token_result
   # no_log: true
+  when: feature_gitea
 
 - set_fact:
     gitea_access_token: "{{ post_token_result.json.sha1 }}"
+  when: feature_gitea
 
 - name: Gitea - Delete Gitea secret
   include: roles/gitea/tasks/delete-secret.yml
+  when: feature_gitea
 
 - name: Gitea - Create Gitea secret
   include: roles/gitea/tasks/create-secret.yml
+  when: feature_gitea

@@ -4,10 +4,12 @@
     dest: /tmp
     remote_src: yes
     mode: +x
+  when: feature_keptn
 
 - name: Keptn - Rename CLI
   become: true
   shell: "cp /tmp/keptn-{{ keptn_version }}-linux-amd64 /usr/local/bin/keptn"
+  when: feature_keptn
 
 - name: Keptn - Install via Helm
   become_user: "{{ non_root_user }}"
@@ -16,6 +18,7 @@
     --namespace {{ keptn_namespace }} --create-namespace 
     --repo="https://storage.googleapis.com/keptn-installer" 
     --wait --timeout 10m
+  when: feature_keptn
 
 - name: Keptn - Template ingress file
   ansible.builtin.template:
@@ -24,19 +27,25 @@
     owner: root
     group: root
     mode: '0644'
+  when: feature_keptn
 
 - name: Keptn - Apply ingress
   shell: "/snap/bin/microk8s.kubectl -n {{ keptn_namespace }} apply -f /tmp/keptn-ingress.yml"
+  when: feature_keptn
 
 - name: Keptn - Source Keptn secrets
   include: roles/keptn/tasks/source-secret.yml
+  when: feature_keptn
 
 - name: Keptn - Authenticate CLI
   become_user: "{{ non_root_user }}"
   shell: "/usr/local/bin/keptn auth --api-token {{ keptn_api_token }} --endpoint {{ ingress_protocol }}://{{ keptn_ingress_domain }}/api"
+  when: feature_keptn
 
 - name: Keptn - Install JMeter service
   include: roles/keptn/tasks/jmeter-service.yml
+  when: feature_keptn
 
 - name: Keptn - Install Dynatrace service
   include: roles/keptn/tasks/dynatrace-service.yml
+  when: feature_keptn

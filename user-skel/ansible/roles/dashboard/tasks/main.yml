@@ -1,39 +1,47 @@
 - name: Dashboard - Encrpyt http basic auth password
   set_fact:
     password_encrypted: "{{ dashboard_password | password_hash('md5') }}"
+  when: feature_dashboard
 
 - name: Dashboard - Encode http basic auth credentials
   set_fact:
     authb64encoded: "{{ [dashboard_user, password_encrypted] | join(':') | b64encode }}"
+  when: feature_dashboard
 
 - name: Dashboard - Source Gitea secrets
   include_role:
     name: gitea
     tasks_from: source-secret
+  when: feature_dashboard
 
 - name: Dashboard - Source Gitlab secrets
   include_role:
     name: gitlab
     tasks_from: source-secret
+  when: feature_dashboard
 
 - name: Dashboard - Source Keptn secrets
   include_role:
     name: keptn
     tasks_from: source-secret
+  when: feature_dashboard
 
 - name: Dashboard - Source Keptn host
   include_role:
     name: keptn
     tasks_from: source-endpoints
+  when: feature_dashboard
 
 # Legacy
 
 - name: "AWXS - Extract generated credentials for AWX admin user"
   shell: /snap/bin/microk8s.kubectl -n awx get secret awx-admin-password -ojsonpath='{.data.password}' | base64 -d
   register: awx_admin_password_raw
+  when: feature_dashboard
 
 - set_fact:
     awx_admin_password: "{{  awx_admin_password_raw.stdout }}"
+  when: feature_dashboard
 
 # /Legacy
 
@@ -41,6 +49,7 @@
   copy:
     src: helm-chart/
     dest: /tmp/dashboard-helm-chart/
+  when: feature_dashboard
 
 - name: Run ace dashboard
   become_user: "{{ non_root_user }}"
@@ -59,7 +68,7 @@
     --set env.GITEA_USER={{ gitea_username | default('N/A') }}
     --set env.GITEA_PASSWORD={{ gitea_password | default('N/A') }}
     --set env.GITEA_PAT={{ gitea_access_token | default('N/A') }}
-    --set env.GITLAB_URL={{ ingress_protocol }}://gitlab.gitlab.{{ ingress_domain }}
+    --set env.GITLAB_URL={{ ingress_protocol }}://gitlab.{{ ingress_domain }}
     --set env.GITLAB_USER={{ gitlab_username | default('N/A') }}
     --set env.GITLAB_PASSWORD={{ gitlab_password | default('N/A') }}
     --set env.AWX_URL={{ ingress_protocol }}://awx.{{ ingress_domain }}
@@ -71,6 +80,7 @@
     --set env.KEPTN_BRIDGE_USER={{ keptn_bridge_user | default('N/A') }}
     --set env.KEPTN_BRIDGE_PASSWORD={{ keptn_bridge_password | default('N/A') }}
     --set env.DT_TENANT_URL={{ dynatrace_tenant_url | default('N/A') }}
+  when: feature_dashboard
 
 # TBD: Source from secret
     # --set envSecrets.GITEA_USER.name=gitea-admin

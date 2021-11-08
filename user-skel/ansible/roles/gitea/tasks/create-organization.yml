@@ -4,7 +4,8 @@
     validate_certs: no
     status_code: [200, 201, 404]
   register: org_result
+  when: feature_gitea
 
 - name: "Gitea - Create org {{ gitea_org }}"
   shell: "curl -k -d '{\"full_name\":\"{{ gitea_org }}\", \"visibility\":\"public\", \"username\":\"{{ gitea_org }}\"}' -H \"Content-Type: application/json\" -X POST \"{{ ingress_protocol }}://{{ gitea_domain }}/api/v1/orgs?access_token={{ gitea_access_token }}\""
-  when: org_result.status != 200
+  when: feature_gitea and org_result.status != 200

@@ -6,11 +6,13 @@
     timeout: 300
     headers:
       Authorization: "Api-token {{ dynatrace_paas_token }}"
+  when: feature_activegate and not "{{ activegate_download_location }}" is exists
 
 - name: ActiveGate - Install synthetic-enabled ActiveGate
   shell:
     cmd: DYNATRACE_SYNTHETIC_AUTO_INSTALL=true /bin/sh "{{ activegate_download_location }}" --enable-synthetic
     creates: /opt/dynatrace/synthetic/uninstall.sh
+  when: feature_activegate
 
 - name: ActiveGate - Update dnsEntryPoint on custom.properties
   blockinfile:
@@ -19,11 +21,13 @@
     block: |
       [connectivity]
       dnsEntryPoint = http://{{ ansible_facts.fqdn }}:9999
+  when: feature_activegate
 
 - name: ActiveGate - Restart ActiveGate service
   service:
     name: dynatracegateway
     state: restarted
+  when: feature_activegate
 
 - name: ActiveGate - Get node id
   include: roles/dt-activegate/tasks/source-node-id.yml
@@ -32,3 +36,4 @@
   service:
     name: docker
     state: restarted
+  when: feature_activegate

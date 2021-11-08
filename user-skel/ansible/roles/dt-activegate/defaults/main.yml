@@ -1,2 +1,3 @@
 ---
 activegate_download_location: "/tmp/Dynatrace-ActiveGate-Linux-x86-latest.sh"
+synthetic_nodes_query: "nodes[?hostname=='{{ ansible_facts.fqdn }}'].entityId"

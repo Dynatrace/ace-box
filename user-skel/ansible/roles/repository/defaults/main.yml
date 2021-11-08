@@ -1,3 +1,5 @@
 ---
 gitlab_domain: "gitlab.{{ ingress_domain }}"
 gitea_domain: "gitea.{{ ingress_domain }}"
+feature_gitea: true
+feature_gitlab: false

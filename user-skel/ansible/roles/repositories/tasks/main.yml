@@ -8,11 +8,13 @@
   include_role:
     name: gitea
     tasks_from: source-secret
+  when: feature_gitea
 
 - name: Source Gitlab secrets
   include_role:
     name: gitlab
     tasks_from: source-secret
+  when: feature_gitlab
 
 - name: Create Gitea organizations
   include_role:
@@ -25,6 +27,7 @@
     - monaco-hot
     - quality-gates-hot
     - auto-remediation
+  when: feature_gitea
 
 - name: Create and push repositories
   include_role:
@@ -49,3 +52,4 @@
      - { repo_target: 'ace-demo-canary', repo_src: '/home/{{ non_root_user }}/repos/auto-remediation/ace-demo-canary', push_to_gitlab: false, push_to_gitea: true, gitea_org: 'auto-remediation' }
      - { repo_target: 'ace-demo-canary-awx', repo_src: '/home/{{ non_root_user }}/repos/auto-remediation/ace-demo-canary-awx', push_to_gitlab: false, push_to_gitea: true, gitea_org: 'auto-remediation' }
      - { repo_target: 'ace-demo-canary-docs', repo_src: '/home/{{ non_root_user }}/repos/auto-remediation/ace-demo-canary-docs', push_to_gitlab: false, push_to_gitea: true, gitea_org: 'auto-remediation' }
+  when: feature_gitea or feature_gitlab
