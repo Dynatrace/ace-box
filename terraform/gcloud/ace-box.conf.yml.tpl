@@ -6,7 +6,6 @@ dynatrace:
 acebox:
   features:
     mode: "demo"
-    gitlab: true
   config:
     git:
     keptn:
