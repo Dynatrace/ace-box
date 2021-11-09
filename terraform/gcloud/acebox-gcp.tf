@@ -13,7 +13,7 @@ resource "google_compute_firewall" "acebox-https" {
     ports    = ["443", "16443"]
   }
 
-  target_tags = ["${var.name_prefix}-${random_id.uuid.hex}"]
+  target_tags   = ["${var.name_prefix}-${random_id.uuid.hex}"]
   source_ranges = ["0.0.0.0/0"]
 }
 
@@ -27,7 +27,7 @@ resource "google_compute_firewall" "acebox-http" {
     ports    = ["80"]
   }
 
-  target_tags = ["${var.name_prefix}-${random_id.uuid.hex}"]
+  target_tags   = ["${var.name_prefix}-${random_id.uuid.hex}"]
   source_ranges = ["0.0.0.0/0"]
 }
 
