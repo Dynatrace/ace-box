@@ -33,13 +33,31 @@ Vagrant.configure("2") do |config|
       config.vm.provision "file", source: "../../user-skel", destination: "$HOME"
       config.vm.provision "file", source: "./ace-box.conf.yml", destination: "$HOME/ace-box.conf.yml"
 
-      # Run prepare script
-      config.vm.provision "shell", inline: "chmod +x prepare.sh"
-      config.vm.provision "shell", inline: "./prepare.sh --ingress-domain=#{vmconfig["acebox"]["specs"]["priv_ip"]}.nip.io --ingress-protocol=http"
+      # Run init script
+      config.vm.provision "shell", 
+        inline: "chmod +x $HOME/init.sh",
+        privileged: false
+      config.vm.provision "shell", 
+        inline: "$HOME/init.sh",
+        privileged: false
 
-      # Run install script
-      config.vm.provision "shell", inline: "chmod +x install.sh"
-      config.vm.provision "shell", inline: "./install.sh"
+      # Prepare ACE Box
+      config.vm.provision "shell", 
+        inline: "ace prepare --force",
+        env: {
+          "ACE_INGRESS_DOMAIN" => "#{vmconfig["acebox"]["specs"]["priv_ip"]}.nip.io", 
+          "ACE_INGRESS_PROTOCOL" => "http",
+          "ACE_ANSIBLE_WORKDIR" => "/home/vagrant/ansible/"
+        },
+        privileged: false
+
+      # Install ACE Box
+      config.vm.provision "shell", 
+        inline: "ace install all",
+        env: {
+          "ACE_ANSIBLE_WORKDIR" => "/home/vagrant/ansible/"
+        },
+        privileged: false
 
       c.vm.provider "virtualbox" do |pr|
         pr.memory = vmconfig["acebox"]["specs"]["mem"]
