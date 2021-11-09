@@ -58,44 +58,20 @@ resource "aws_instance" "acebox" {
     user        = var.acebox_user
     private_key = tls_private_key.acebox_key.private_key_pem
   }
-
-  provisioner "remote-exec" {
-    inline = ["sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y"]
-  }
-
-  provisioner "remote-exec" {
-    inline = ["mkdir ~/ace-box/"]
-  }
-
-  provisioner "file" {
-    source      = "${path.module}/../../../microk8s"
-    destination = "~/ace-box/"
-  }
-
-  provisioner "file" {
-    source      = "${path.module}/../../../install.sh"
-    destination = "~/install.sh"
-  }
-
 }
 
-resource "null_resource" "provisioner" {
+# Provision ACE-Box
+module "provisioner" {
+  source = "../../modules/ace-box-provisioner"
 
-  connection {
-    host        = aws_instance.acebox.public_ip
-    type        = "ssh"
-    user        = var.acebox_user
-    private_key = tls_private_key.acebox_key.private_key_pem
-  }
-
-  depends_on = [aws_route53_record.ace_box, aws_instance.acebox]
-
-  provisioner "remote-exec" {
-    inline = [
-        "tr -d '\\015' < /home/${var.acebox_user}/install.sh > /home/${var.acebox_user}/install_fixed.sh",
-        "chmod +x /home/${var.acebox_user}/install_fixed.sh",
-        "/home/${var.acebox_user}/install_fixed.sh --ip=${aws_instance.acebox.public_ip} --user=${var.acebox_user} --custom-domain=${var.custom_domain}"
-      ]
-  }
-    
+  host        = aws_instance.acebox.public_ip
+  user        = var.acebox_user
+  private_key = tls_private_key.acebox_key.private_key_pem
+  config_file_config = templatefile("${path.module}/ace-box.conf.yml.tpl", {
+    dt_tenant     = var.dt_tenant
+    dt_api_token  = var.dt_api_token
+    dt_paas_token = var.dt_paas_token
+  })
+  ingress_domain   = "${aws_instance.acebox.public_ip}.${var.custom_domain}"
+  ingress_protocol = var.ingress_protocol
 }

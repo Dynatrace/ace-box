@@ -91,5 +91,5 @@ module "provisioner" {
     dt_paas_token = var.dt_paas_token
   })
   ingress_domain   = "${google_compute_instance.acebox.network_interface.0.access_config.0.nat_ip}.${var.custom_domain}"
-  ingress_protocol = "http"
+  ingress_protocol = var.ingress_protocol
 }

@@ -146,43 +146,20 @@ resource "azurerm_linux_virtual_machine" "acebox" {
     user        = var.acebox_user
     private_key = tls_private_key.acebox_key.private_key_pem
   }
-
-  provisioner "remote-exec" {
-    inline = ["sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y"]
-  }
-
-  provisioner "remote-exec" {
-    inline = ["mkdir ~/ace-box/"]
-  }
-
-  provisioner "file" {
-    source      = "${path.module}/../../microk8s"
-    destination = "~/ace-box/"
-  }
-
-  provisioner "file" {
-    source      = "${path.module}/../../install.sh"
-    destination = "~/install.sh"
-  }
 }
 
-resource "null_resource" "provisioner" {
+# Provision ACE-Box
+module "provisioner" {
+  source = "../modules/ace-box-provisioner"
 
-  connection {
-    host        = azurerm_public_ip.acebox_publicip.ip_address
-    type        = "ssh"
-    user        = var.acebox_user
-    private_key = tls_private_key.acebox_key.private_key_pem
-  }
-
-  depends_on = [azurerm_dns_a_record.ace_box, azurerm_linux_virtual_machine.acebox]
-
-  provisioner "remote-exec" {
-    inline = [
-        "tr -d '\\015' < /home/${var.acebox_user}/install.sh > /home/${var.acebox_user}/install_fixed.sh",
-        "chmod +x /home/${var.acebox_user}/install_fixed.sh",
-        "/home/${var.acebox_user}/install_fixed.sh --ip=${azurerm_public_ip.acebox_publicip.ip_address} --user=${var.acebox_user} --custom-domain=${var.custom_domain}"
-      ]
-  }
-
+  host        = azurerm_public_ip.acebox_publicip.ip_address
+  user        = var.acebox_user
+  private_key = tls_private_key.acebox_key.private_key_pem
+  config_file_config = templatefile("${path.module}/ace-box.conf.yml.tpl", {
+    dt_tenant     = var.dt_tenant
+    dt_api_token  = var.dt_api_token
+    dt_paas_token = var.dt_paas_token
+  })
+  ingress_domain   = "${azurerm_public_ip.acebox_publicip.ip_address}.${var.custom_domain}"
+  ingress_protocol = var.ingress_protocol
 }

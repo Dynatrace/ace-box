@@ -61,3 +61,8 @@ variable "dt_api_token" {
 variable "dt_paas_token" {
   description = "Dynatrace PaaS token in format of 'dt0c01. ...'"
 }
+
+variable "ingress_protocol" {
+  description = "Ingress protocol"
+  default = "http"
+}

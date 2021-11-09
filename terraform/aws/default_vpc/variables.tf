@@ -44,3 +44,20 @@ variable "disk_size" {
   description = "Size of disk that will be available to ace-box instance"
   default     = 60
 }
+
+variable "dt_tenant" {
+  description = "Dynatrace tenant in format of https://[environment-guid].live.dynatrace.com OR https://[managed-domain]/e/[environment-guid]"
+}
+
+variable "dt_api_token" {
+  description = "Dynatrace API token in format of 'dt0c01. ...'"
+}
+
+variable "dt_paas_token" {
+  description = "Dynatrace PaaS token in format of 'dt0c01. ...'"
+}
+
+variable "ingress_protocol" {
+  description = "Ingress protocol"
+  default = "http"
+}
