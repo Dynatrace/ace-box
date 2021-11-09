@@ -12,36 +12,36 @@
   include_role:
     name: gitea
     tasks_from: source-secret
-  when: feature_dashboard
+  when: feature_dashboard and feature_gitea
 
 - name: Dashboard - Source Gitlab secrets
   include_role:
     name: gitlab
     tasks_from: source-secret
-  when: feature_dashboard
+  when: feature_dashboard and feature_gitlab
 
 - name: Dashboard - Source Keptn secrets
   include_role:
     name: keptn
     tasks_from: source-secret
-  when: feature_dashboard
+  when: feature_dashboard and feature_keptn
 
 - name: Dashboard - Source Keptn host
   include_role:
     name: keptn
     tasks_from: source-endpoints
-  when: feature_dashboard
+  when: feature_dashboard and feature_keptn
 
 # Legacy
 
-- name: "AWXS - Extract generated credentials for AWX admin user"
+- name: "AWX - Extract generated credentials for AWX admin user"
   shell: /snap/bin/microk8s.kubectl -n awx get secret awx-admin-password -ojsonpath='{.data.password}' | base64 -d
   register: awx_admin_password_raw
-  when: feature_dashboard
+  when: feature_dashboard and feature_awx
 
 - set_fact:
     awx_admin_password: "{{  awx_admin_password_raw.stdout }}"
-  when: feature_dashboard
+  when: feature_dashboard and feature_awx
 
 # /Legacy
 
