@@ -10,24 +10,20 @@ Vagrant (Local) or Terraform (Cloud) are used for spinning up the VM, Ansible is
   - [Release notes](#release-notes)
   - [Deployment Modes](#deployment-modes)
   - [Components](#components)
-  - [Local version using vagrant](#local-version-using-vagrant)
-  - [Cloud Version using terraform](#cloud-version-using-terraform)
-  - [Spinning up the ace-box](#spinning-up-the-ace-box)
-    - [Step 1 - Clone the ace-box repository](#step-1---clone-the-ace-box-repository)
-    - [Step 2 - change directory to microk8s](#step-2---change-directory-to-microk8s)
-    - [Step 3 - create a config file](#step-3---create-a-config-file)
-      - [config.yml settings](#configyml-settings)
-      - [Resource Requirements](#resource-requirements)
-      - [Demo mode](#demo-mode)
-      - [Training mode](#training-mode)
-    - [Step 4 - Provision](#step-4---provision)
-    - [Troubleshooting](#troubleshooting)
+  - [Installation](#installation)
+    - [Useful Terraform Commands](#useful-terraform-commands)
+  - [Alt: Local installation with Vagrant](#alt-local-installation-with-vagrant)
+    - [SSH into the box](#ssh-into-the-box)
+    - [Vagrant cleanup](#vagrant-cleanup)
+  - [Alt: Bring-your-own-VM](#alt-bring-your-own-vm)
+  - [Configuration settings](#configuration-settings)
+    - [Resource Requirements](#resource-requirements)
+    - [Demo mode](#demo-mode)
+    - [Training mode](#training-mode)
+  - [Troubleshooting](#troubleshooting)
   - [Accessing ACE Dashboard](#accessing-ace-dashboard)
-  - [Ansible playbooks](#ansible-playbooks)
-  - [SSH into the box](#ssh-into-the-box)
-  - [Cleaning up](#cleaning-up)
-    - [Vagrant](#vagrant)
   - [Behind the scenes](#behind-the-scenes)
+  - [ACE-CLI](#ace-cli)
 
 
 ## Release notes
@@ -52,82 +48,139 @@ ACE-BOX comes with the following components
 | ace dashboard | built on the spot |
 | gitea local git server | 1.11.6 |
 
-## Local version using vagrant
-To run the ace-box locally, the following is required:
-- a workstation with at least **16GB of RAM** and **4 CPU cores (non-virtualized)**
-- virtualbox installed (6.1.x tested)
-- vagrant installed (2.2.7 tested)
-- Dynatrace tenant (prod or sprint, dev not recommended)
-- Hyper-V disabled on Windows machines, check [Troubleshooting](#troubleshooting) for more information
 
-## Cloud Version using terraform
-In case you require the ACE-BOX to run on a cloud provider, check out [Terraform Instructions](terraform/Readme.md) for more details. Currently GCP, AWS and Azure are supported.
+## Installation
+The recommended way of installing any ACE box version, local or cloud, is via Terraform (scroll down for alternatives). Check the [Azure](terraform/azure/Readme.md), [AWS](terraform/aws/Readme.md), [Google Cloud](terraform/gcloud/Readme.md) and [Vagrant](terraform/vagrant/Readme.md) subfolders for additional instructions.
 
-## Spinning up the ace-box
+1. Check prereqs:
+     - Terraform installed (+ Vagrant for local installation)
+     - Dynatrace tenant (prod or sprint, dev not recommended)
+2. Go to folder `./terraform/<aws, azure, gcloud or vagrant>/`
+3. Set required Terraform variables:
+   1. By adding `dt_tenant, dt_api_token, dt_paas_token` to a `terraform.tfvars` file:
+      ```
+      dt_tenant = "https://....dynatrace.com"
+      dt_api_token = "dt0c01...."
+      dt_paas_token = "dt0c01...."
+      ```
+   2. By setting environment variables:
+      ```
+      export TF_VAR_dt_tenant=https://....dynatrace.com
+      export TF_VAR_dt_api_token=dt0c01....
+      export TF_VAR_dt_paas_token=dt0c01....
+      ```
+    For details and alternatives see https://www.terraform.io/docs/language/values/variables.html
 
-### Step 1 - Clone the ace-box repository
-Make sure that you have the ace-box repository cloned locally
+4. (Optional) Customize ACE-Box installation by editing `ace-box.conf.yml.tpl`. Please see configuration options below or `refs` for possible values. 
+5. Run `terraform init`
+6. Run `terraform apply`
+7. Grab a coffee, this process will take some time...
 
-### Step 2 - change directory to microk8s
-```
-$ cd microk8s
-```
-### Step 3 - create a config file
-You need to create a config file called `config.yml` that contains the information needed to bring up the vm. You can use `config.yml.template` as a base.
 
-**Note1:** YAML is space sensitive so make sure the indentation is correct. YAML does not allow [tabs](https://yaml.org/faq.html) - even though most code editors replace them with spaces for you!
+### Useful Terraform Commands
 
-**Note2:** If you had forked this repo and want to update it with your own changes, a `gitignore` entry has been added for the config.yml file so you do not accidentally spill your tokens :-).
+Command  | Result
+-------- | -------
+`terraform destroy` | deletes any resources created by Terraform |
+`terraform plan -destroy` | view a speculative destroy plan, to see what the effect of destroying would be |
+`terraform show` | Outputs the resources created by Terraform. Useful to verify IP addresses and the dashboard URL. 
 
-#### config.yml settings
+
+## Alt: Local installation with Vagrant
+The local version can also be installed via Vagrant without the need for Terraform:
+
+1. Check prereqs:
+    - A workstation with at least **16GB of RAM** and **4 CPU cores (non-virtualized)**
+    - Virtualbox installed (6.1.x tested)
+    - Vagrant installed (2.2.7 tested)
+    - Dynatrace tenant (prod or sprint, dev not recommended)
+    - Hyper-V disabled on Windows machines, check [Troubleshooting](#troubleshooting) for more information
+1. Go to folder `./terraform/vagrant/`
+2. Create `ace-box.conf.yml` from `ace-box.conf.yml.tpl` (e.g. by renaming in place or copying from `refs`)
+3. Set required variables:
+    ```
+    ---
+    dynatrace:
+      tenant:     "https://....dynatrace.com"
+      apitoken:   "dt0c01...."
+      paastoken:  "dt0c01...."
+    ...
+    ```
+4. (Optional) Customize ACE-Box installation by editing `ace-box.conf.yml`. Please see configuration options below or `refs` for possible values. 
+5. Run `vagrant up`
+6. Grab a coffee, this process will take some time...
+
+**Note:** The first time you might need to enter your passord at least once.
+
+**Note:** Windows users will be asked to confirm security notifications a couple of times during the provisioning process, so keep an eye out for them.
+
+### SSH into the box
+Execute `vagrant ssh` to gain access to the VM
+
+### Vagrant cleanup
+
+Vagrant offers many commands to deal with the VM, check the below:
+
+Command  | Result
+-------- | -------
+`vagrant destroy` | stops and deletes all traces of the vagrant machine |
+`vagrant halt` | stops the vagrant machine - i.e. shutting down your workstation |
+`vagrant suspend` | suspends the machine - i.e. sleep your workstation |
+`vagrant resume` | resume a suspended vagrant machine |
+`vagrant up` | starts and provisions the vagrant environment |
+`vagrant box update` | update the base box from time to time to ensure it is the latest version. While provisioning a message will be shown that there are updates available |
+
+
+## Alt: Bring-your-own-VM
+
+Bringing your own Ubuntu Virtual Machine has not been tested, but should be possible:
+
+1. Check prereqs:
+    - An Ubuntu 18.04 virtual machine (Ubuntu 18.04 LTS "minimal" tested)
+    - A public IP address
+    - Port 80 and/or 443 exposed
+    - A non-root user to run the script actions needs to be created (e.g. `ace`)
+    - Repository cloned to VM
+2. Run initialization script:
+    ```
+    $ cd user-skel
+    $ ./init.sh
+    ```
+  This will install all necessary dependencies including the ace-cli.
+
+3. Prepare ACE-Box by running the ace-cli and providing required values when prompted:
+      ```
+      $ ace prepare
+      ```
+
+4. Create `ace-box.conf.yml` from `ace-box.conf.yml.tpl` (e.g. by renaming in place or copying from `refs`)
+5. Install ACE-Box components:
+      ```
+      $ ace install all
+      ```
+6. Grab a coffee, this process will take some time...
+
+
+## Configuration settings
 
 The ace-box comes with a certain number of features and settings that can be set/enabled/disabled at provisioning. Adding and removing features will change the resource consumption. Most settings have default values and do not need to be set explicitly, but they can be overwritten if needed.
 
-Default behaviour can be verified in [initial.yml](microk8s/ansible/initial.yml)
-
 Flag  | Description | Required | Default 
 -------- | ------- | ------- | ------- |
-dynatrace.tenant | Dynatrace environment to point to. https://abc12345.live.dynatrace.com OR https://[managed-domain]/e/[environmentguid] | ***yes*** | not set
+dynatrace.tenant | Dynatrace environment to point to. https://[environment-guid].live.dynatrace.com OR https://[managed-domain]/e/[environment-guid] | ***yes*** | not set
 dynatrace.apitoken | API token. Best to give all scopes | ***yes*** | not set
 dynatrace.paastoken | PaaS token for OneAgent and ActiveGate installation | ***yes*** | not set
-acebox.specs.cpu | Number of virtual CPU cores for VM. Minimal 3 | ***yes*** | not set
-acebox.specs.mem | Memory assignment for VM in MB. Minimal 8196 | ***yes*** | not set
-acebox.specs.priv_ip | Private IP for VM. Set to 192.168.50.10 | ***yes*** | not set
-acebox.specs.disk | Disk size of VM. Set to 50GB | ***yes*** | not set
 acebox.features.mode | Mode for ace-box. Choose between `training` or `demo` | no | training
 acebox.features.oneagent | Install OneAgent | no | true
 acebox.features.activegate | Install Private Synthetic ActiveGate | no | false
-acebox.features.activegatekube | EXPERIMENTAL: Deploy ActiveGate on Kubernetes | no | false
 acebox.features.jenkins | Install Jenkins | no | true
 acebox.features.gitea | Install Gitea local git server | no | false
 acebox.features.dashboard | Install ACE dashboard | no | false
 acebox.features.keptn | Install Keptn Quality Gates | no | false
 acebox.features.gitlab | Install Gitlab | no | false
 acebox.features.awx | Install AWX | no | false
-acebox.config.keptn.version | Keptn version to install | no | 0.8.7
-acebox.config.keptn.dynatrace_service_version | Keptn Dynatrace Service version to install **WARNING:** when overwriting keptn services versions, make sure they are compatible with keptn base version! | no | 0.16.0
-acebox.config.keptn.jenkins.helm_chart_version | Version of the Jenkins helm chart to use (is not equal to Jenkins version) | no | 1.27.0
-acebox.config.keptn.version | Version of Jenkins to deploy | no | lts
-acebox.config.keptn.set_creds | placeholder for future | no | n/a
-acebox.config.keptn.set_jenkinslib | placeholder for future | no | n/a
-acebox.config.keptn.jenkins_lib_url | URL for ACE Jenkins library | no | https://github.com/dynatrace-ace/ace-jenkins-extensions.git
-acebox.config.keptn.keptn_lib_url | URL for Jenkins Keptn library | no | https://github.com/keptn-sandbox/keptn-jenkins-library.git
-acebox.config.microk8s.domain_ext | domain extension for ace-box, can be set to `nip.io` or `xip.io` | ***yes*** | nip.io
-acebox.config.microk8s.addons | microk8s addons to enable. **WARNING** may break ace-box functionality | no | dns storage registry ingress 
-acebox.config.git.version | version of gitea to install | no | 1.11.6
-acebox.config.git.user | default login for gitea | no | dynatrace
-acebox.config.git.password | default password for gitea | no | dynatrace
-acebox.config.git.email | email address assigned to gitea user for account creation purposes, can be fake email | no | ace@ace.ace 
-acebox.config.git.org | organization name created on gitea during install | no | ace 
-acebox.config.git.repo | repository name created on gitea during install | no | ace 
-acebox.config.activegate.download_location | overwrite where the oneagent will be downloaded, storing it inside /vagrant/* will speed up subsequent destroy and up commands as the AG does not have to be re-downloaded | no | not set
-acebox.config.dashboard.user | Dashboard login username | no | dynatrace
-acebox.config.dashboard.password | Dashboard login password | no | dynatrace
 
-
-
-
-#### Resource Requirements
+### Resource Requirements
 Each feature requires a certain amount of resources - on top of the base microk8s requirements.
 The resource requirements below are measured using Dynatrace's Kubernetes monitoring
 Feature  | Kubernetes Resource Usage | 
@@ -137,13 +190,9 @@ Jenkins | 1mCore, 1GB RAM
 Gitea | 2 mCores, 250MB RAM
 
 
+### Demo mode
 
-
-#### Demo mode
-
-The below config.yml example will spin up an ace-box with all features in a demo mode (everything pre-configured).
-This file is also available as `microk8s/config.yml.demotmpl`. You can just rename it to `microk8s/config.yml` and modify it accordingly.
-In demo mode, the following gets installed and configured:
+Below config example will spin up an ace-box with all features in a demo mode (everything pre-configured). In demo mode, the following gets installed and configured:
 - Microk8s 
 - Helm 
 - Dynatrace Acitve Gate for Private Synthetic gets installed and automatically configured in the Dynatrace tenant as a Private Location
@@ -157,53 +206,30 @@ In demo mode, the following gets installed and configured:
 
 ```
 dynatrace:
-  tenant:     ''    # https://abc12345.live.dynatrace.com OR https://[managed-domain]/e/[environmentguid]
+  tenant:     ''    # https://[environment-guid].live.dynatrace.com OR https://[managed-domain]/e/[environment-guid]
   apitoken:   ''    # full scope
   paastoken:  ''
 acebox:
-  specs:
-    cpu: 3                      
-    mem: 8196                   
-    priv_ip: "192.168.50.10"    
-    disk: "50GB"
   features:
-    mode: "demo"                
-  config:
-    microk8s:
-      domain_ext: "nip.io"      
+    mode: "demo"
 ```
 
 Setting `mode` to `demo` will overwrite the following:
+
 Flag  | Description | Set to
 -------- | ------- | ------- |
 acebox.specs.features.activegate | Install Private Synthetic ActiveGate | true
-acebox.specs.features.activegatekube | EXPERIMENTAL: Deploy ActiveGate on Kubernetes | true
 acebox.specs.features.jenkins | Install Jenkins | true
 acebox.specs.features.gitea | Install Gitea local git server | true
 acebox.specs.features.dashboard | Install ACE dashboard | true
 acebox.specs.features.keptn | Install Keptn Quality Gates | true
-acebox.specs.features.gitlab | Install Gitlab | true
+
+### Training mode
+
+Training mode can be used to have more control over the features and configuration of the ace-box.
 
 
-#### Training mode
-
-Training mode can be used to have more control over the features and configuration of the ace-box. 
-
-### Step 4 - Provision
-Run the following commands to bring up the virtual machine
-```shell
-vagrant up
-```
-
-Check [Behind the scenes](#behind-the-scenes) for more detail about what happens now
-  
-**This process will take some time, grab a coffee**
-
-**Note:** The first time you will need to enter your passord at least once.
-
-**Note:** Windows users will be asked to confirm security notifications a couple of times during the provisioning process, so keep an eye out for them.
-
-### Troubleshooting
+## Troubleshooting
 1. During testing it was found that when spinning up the VM while being connected to the corporate VPN it would sometimes have connectivity issues. It is best to disconnect from the VPN while provisioning. This will also drastically speed up the provision process. VPN issues manifests themselves mainly in Jenkins being empty (no pipelines or plugins installed) after provisioning. If you have this, turn off VPN and re-provision.
 2. Some users had issues with (old) customer vpn software that was installed - not even connected -  causing issues with the virtual network adaptors. If you are having issues provisioning the VM, uninstall them when possible
 3. If you are using a Windows workstation, ensure that Hyper-V native virtualization has been disabled as it clashes with virtualbox. Hyper-V support is on the roadmap. Check this [doc](https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v) on how to disable Hyper-V
@@ -221,70 +247,42 @@ Check [Behind the scenes](#behind-the-scenes) for more detail about what happens
 ## Accessing ACE Dashboard
 At the end of the provisioning, an ACE Dashboard gets created with more information on how to use the ACE-BOX. Check out [ACE Dashboard](Dashboard.md) for more details.
 
-## Ansible playbooks
-All Ansible playbooks run by the auto provisioning script can also be run standalone. Certain tasks (playbooks) can be filtered by using tags as per definition below:
+## Behind the scenes
+Spinning up an ACE-Box can be split into two main parts:
 
-Tag | Result |
-- | - |
-`init` | Prepares VM for further use (e.g. installs apt packages) |
-`post_install` | Cleans up after installation (e.g. prints config details) |
-`k8s` | Installs and configures microk8s, helm and cert manager |
-`monaco` | Installs and configures Monaco |
-`monaco_uninstall` | Uninstalls Monaco |
-`dt_core` | Installs and configures Dynatrace Cluster ActiveGate and OneAgent. To prevent naming conflicts, this tag also removes legacy Kubernetes clusters from the Dynatrace tenant. |
-`git` | Installs and configures Gitea (`feature_gitea` enabled) and / or Gitlab (`feature_gitlab` enabled) |
-`git_uninstall` | Uninstalls Gitea (`feature_gitea` enabled) |
-`keptn` | Installs and configures Keptn |
-`jenkins` | Installs and configures Jenkins |
-`jenkins_uninstall` | Uninstalls Jenkins |
-`dashboard` | Installs the ACE Box Dashboard |
-`awx` | Installs AWX |
-`awx_uninstall` | Uninstalls AWX |
-`awx_config` | Configures AWX (can't be re-run at the moment, i.e. requires awx_uninstall + awx + awx_config ) |
-`awx_output` | Shows AWX info (e.g. credentials) |
+1) Deploying a VM: This can either happen locally via Vagrant or a VM is can be created in your Cloud Account.
+2) After a VM is available, provisioners install the actual application (i.e. "ACE-Box" logic). This process itself consists of a couple steps:
+   1) Copying working directory: Everything in [user-skel](/user-skel) is copied to the VM
+   2) Package manager update: [init.sh](/user-skel/init.sh) is run. This runs an `apt-get` update and installs `Python3.9`, Ansible and the `ace-cli`
+   3) `ace prepare` is run, which asks for ACE-Box specific configurations (e.g. protocol, custom domain, ...)
+   4) Once the VM is prepared, the actual installation happens by running `ace install all`
 
-For example:
-```bash
-$ ansible-playbook -vv /vagrant/ansible/initial.yml --extra-vars "ansible_python_interpreter=auto acebox_provisioner=vagrant non_root_user=vagrant" --tags post_install
+## ACE-CLI
+`ACE-Box` comes with an including management tool called 'ace-cli'. This cli tool can be used to prepare and/or install the ACE-Box or certain components.
+
+```
+$ ace --version
 ```
 
-## SSH into the box
-Inside the `microk8s` folder, execute `vagrant ssh` to gain access to the VM
+Available commands (ace-cli version 0.0.1, can also be retrieved by running `ace --help`):
 
-## Cleaning up
+  Command | Result |
+  -- | -- |
+  `prepare` | Prepares ACE-Box for further use (e.g. persists domain, protocol settings) |
+  `install <component>` | Installs ACE-Box or components thereof (see table below) |
 
-### Vagrant
+Available components:
 
-Vagrant offers many commands to deal with the VM, check the below:
-
-Command  | Result
--------- | -------
-`vagrant destroy` | stops and deletes all traces of the vagrant machine |
-`vagrant halt` | stops the vagrant machine - i.e. shutting down your workstation |
-`vagrant suspend` | suspends the machine - i.e. sleep your workstation |
-`vagrant resume` | resume a suspended vagrant machine |
-`vagrant up` | starts and provisions the vagrant environment |
-`vagrant box update` | update the base box from time to time to ensure it is the latest version. While provisioning a message will be shown that there are updates available |
-
-
-
-## Behind the scenes
-
-When running the `vagrant up` command the following takes place:
-1. The `Vagrantfile` is read
-2. Some required Vagrant plugins are installed
-3. The `config.yml` file is loaded
-4. An `ubuntu/xenial64` Virtual Machine is spun up based on the specs found in the `config.yml` file. If needed, the image gets downloaded
-5. Networking for the VM gets configured
-6. Once the VM has been spun up, Vagrant `ssh` into it and start the provisioning. `ansible_local` Vagrant provisioner is used which will install ansible on the VM.
-7. Package manager will update the vm and install VirtualBox Guest Additions.
-8. The provisioner does the following:
-   1. The `ansible/initial.yml` file is loaded.
-   2. Some init tasks are executed based on `ansible/playbooks/init_tasks.yaml` such as installing supporting packages and resizing disks
-   3. Microk8s and addons are installed based on `ansible/playbooks/microk8s_tasks.yaml`
-   4. Helm is installed based on `ansible/playbooks/helm_tasks.yaml`. Helm repos are also added
-   5. If enabled, OneAgent is installed based on `ansible/playbooks/dtoneagent_tasks.yaml`
-   6. If enabled, Jenkins is installed based on `ansible/playbooks/jenkins_tasks.yaml`. This uses the helm chart found in `k8s/jenkins-values.yml` which will not only install Jenkins but also perform plugin installation and set up our skeleton pipelines. When run in the demo mode, it will also set up all integrations
-   7. If enabled, An ACE dashboard is built and deployed as described in `ansible/playbooks/dashboard_tasks.yaml`
-   8. If enabled, an Private Synthetic ActiveGate is installed based on `ansible/playbooks/dtactivegate_tasks.yaml`. This also installs all required packages.
-   9. Post installation tasks are also executed, as described in `ansible/playbooks/postinstall_tasks.yaml`. This includes configuring `iptables` for port forwarding
+  Component | Result |
+  -- | -- |
+  `all` | Installs and configures everything according to features enabled in `ace-box.conf.yml` |
+  `microk8s` | Installs and configures MicroK8S |
+  `gitea` | Installs and configures Gitea |
+  `gitlab` | Installs and configures Gitlab |
+  `dynatrace` | Installs and configures Dynatrace OneAgent and ActiveGate |
+  `repositories` | Installs and configures Git Repositories |
+  `keptn` | Installs and configures Keptn |
+  `monaco` | Installs and configures Monaco |
+  `jenkins` | Installs and configures Jenkins |
+  `dashboard` | Installs and configures the dashboard |
+  `awx` | Installs AWX |

@@ -1,0 +1,16 @@
+---
+dynatrace:
+  tenant:     "https://..." # https://[environment-guid].live.dynatrace.com OR https://[managed-domain]/e/[environment-guid]
+  apitoken:   "dt0c01. ..." 
+  paastoken:  "dt0c01. ..."
+acebox:
+  features:
+    mode: "demo"
+    activegate: false
+    oneagent: true
+    gitea: false
+    gitlab: false
+    jenkins: false
+    dashboard: false
+    keptn: false
+    awx: false
