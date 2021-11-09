@@ -59,6 +59,6 @@
   shell: >
     /snap/bin/helm upgrade --install -f /tmp/jenkins-values.yml 
     --version {{ jenkins_helm_chart_version }} 
-    --namespace ace jenkins jenkins/jenkins --wait --timeout 10m
+    --namespace ace jenkins jenkins/jenkins --wait --timeout 15m
   ignore_errors: yes
   when: feature_jenkins
