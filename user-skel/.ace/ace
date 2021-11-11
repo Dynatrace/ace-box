@@ -53,7 +53,7 @@ def ace(
 ):
   """This tool...
   
-  ACTION can start with "prepare", "install" or "delete" and can be followed by a target, e.g. "all", "microk8s", ...
+  ACTION can start with "prepare", "install" or "uninstall" and can be followed by a target, e.g. "all", "microk8s", ...
 
   For example:
 
@@ -70,11 +70,12 @@ def ace(
   action_options = {
     'prepare': True,
     'install': True,
+    'uninstall': True,
   }
 
   available_action_options = [action for action in list(action_options) if action_options[action]]
   
-  target_options = {
+  install_target_options = {
     'all': True,
     'microk8s': True,
     'gitea': True,
@@ -88,7 +89,9 @@ def ace(
     'awx': True,
   }
 
-  available_target_options = [target for target in list(target_options) if target_options[target]]
+  uninstall_target_options = {
+    'gitlab': True,
+  }
 
   if action[0] == 'prepare' and action_options['prepare']:
     logging.info('Preparing ACE-Box...')
@@ -136,6 +139,8 @@ def ace(
       logging.error(f'Path {ansible_workdir} doesn\'t exists!')
 
   elif action[0] == 'install' and action_options['install']:
+    available_target_options = [target for target in list(install_target_options) if install_target_options[target]]
+
     if len(action) < 2:
       logging.warning(f'No target set, please provide one of {available_target_options}')
     elif len(action) == 2 and action[1] in available_target_options:
@@ -153,9 +158,27 @@ def ace(
       logging.warning(f'Unknown option "{action[1]}", please provide one of {available_target_options}')
       # click.echo(...)
 
+  elif action[0] == 'uninstall' and action_options['uninstall']:
+    available_target_options = [target for target in list(uninstall_target_options) if uninstall_target_options[target]]
+
+    if len(action) < 2:
+      click.echo(f'No target set, please provide one of {available_target_options}')
+    elif len(action) == 2 and action[1] in available_target_options:
+      tag = f'{action[1]}_uninstall'
+      logging.info(f'Uninstalling ACE-Box ({tag})...')
+
+      if not ansible_workdir:
+        ansible_workdir = click.prompt('Please enter Ansible work dir', default=default_ansible_workdir)
+
+      subprocess.run(f'ansible-playbook -vv -i hosts initial.yml --tags "{tag}"', cwd=ansible_workdir, shell=True, check=True)
+
+      click.echo("You're welcome!")
+
+    else:
+      click.echo(f'Unknown option "{action[1]}", please provide one of {available_target_options}')
+
   else:
-    logging.warning(f'Unknown option "{action[0]}", please provide one of {available_action_options}')
-    # click.echo(...)
+    click.echo(f'Unknown option "{action[0]}", please provide one of {available_action_options}')
 
 
 if __name__ == '__main__':
