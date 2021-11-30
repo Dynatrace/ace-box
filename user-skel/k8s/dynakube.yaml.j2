@@ -1,4 +1,4 @@
-apiVersion: dynatrace.com/v1alpha1
+apiVersion: dynatrace.com/v1beta1
 kind: DynaKube
 metadata:
   name: dynakube
@@ -20,14 +20,21 @@ spec:
   #
   # networkZone: name-of-my-network-zone
 
-  kubernetesMonitoring:
-    #   Enable Kubernetes monitoring functionality.
-    #
-    enabled: true
-  classicFullStack:
-    # Enable classic oneagent monitoring
-    enabled: true
-    tolerations:
+  oneAgent:
+    # enable classic fullstack monitoring and change its settings
+    # Cannot be used in conjunction with cloud-native fullstack monitoring, application-only monitoring or host monitoring
+    classicFullStack:
+
+      # Optional: tolerations to include with the OneAgent DaemonSet.
+      # See more here: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+      tolerations:
       - effect: NoSchedule
         key: node-role.kubernetes.io/master
         operator: Exists
+
+  # Configuration for ActiveGate instances.
+  activeGate:
+    # Enables listed ActiveGate capabilities
+    capabilities:
+      - routing
+      - kubernetes-monitoring
