@@ -28,7 +28,7 @@
 
 - name: "Dynatrace OneAgent 2 - Create CRD"
   shell: 
-    cmd: "/snap/bin/microk8s.kubectl apply -f https://github.com/Dynatrace/dynatrace-operator/releases/{{ dynatrace_operator_version }}/download/kubernetes.yaml"
+    cmd: "/snap/bin/microk8s.kubectl apply -f https://github.com/Dynatrace/dynatrace-operator/releases/download/{{ dynatrace_operator_version }}/kubernetes.yaml"
   ignore_errors: yes
 
 - name: "Dynatrace OneAgent 3 - Create Secret"
