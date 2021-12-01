@@ -1,5 +1,30 @@
 # ACE-BOX Release notes
 
+## v1.9.5 - November 2021
+
+There are no new features in this release, only targetting fixes and imporovements
+### Fixes/tech updates
+
+#### Keptn 0.10.0 Update and support proper merging of metrics
+Update to latest version of Keptn and Dynatrace Service for Keptn
+[#86]https://github.com/Dynatrace/ace-box/issues/86
+[#81]https://github.com/Dynatrace/ace-box/issues/81
+#### Dynatrace Operator
+The Operator install script was intermittently failing. Went back to manual install.
+[#70]https://github.com/Dynatrace/ace-box/issues/70
+
+#### GCP Terraform requires sourcerange firewall
+[#88]https://github.com/Dynatrace/ace-box/pull/88
+
+#### Dashboard deployed from image registry
+Speeds up deployment
+[#32]https://github.com/Dynatrace/ace-box/discussions/32
+#### Various
+Monaco failure 
+[#77]https://github.com/Dynatrace/ace-box/issues/77
+Gitea login enforced 
+[#60]https://github.com/Dynatrace/ace-box/issues/60
+
 ## v1.9 - July 2021
 
 ### New Features
