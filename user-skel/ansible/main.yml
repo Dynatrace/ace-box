@@ -69,6 +69,12 @@
     tags:
     - never
     - awx
+  - role: vscodeserver
+    tags:
+      - never
+      - vscodeserver
+      - default
+
   - role: dashboard
     tags:
     - never
@@ -116,3 +122,12 @@
     tags:
     - never
     - awx_uninstall
+  - name: Uninstall vscodeserver
+    include_tasks:
+      file: roles/vscodeserver/tasks/uninstall.yml
+      apply:
+        tags:
+          - vscodeserver_uninstall
+    tags:
+      - never
+      - vscodeserver_uninstall

@@ -26,9 +26,10 @@ install_targets = [
     'monaco',
     'jenkins',
     'dashboard',
-    'awx'
+    'awx',
+    'vscodeserver'
 ]
-uninstall_targets = ['gitlab', 'dynatrace', 'awx']
+uninstall_targets = ['gitlab', 'dynatrace', 'awx','vscodeserver']
 
 def set_log_level(
   verbosity,

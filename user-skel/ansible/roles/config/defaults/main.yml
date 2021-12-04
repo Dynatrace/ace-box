@@ -1,2 +1,2 @@
 ---
-features_enabled_default: ["feature_oneagent", "feature_activegate", "feature_gitea", "feature_jenkins", "feature_dashboard", "feature_keptn"]
+features_enabled_default: ["feature_oneagent", "feature_activegate", "feature_gitea", "feature_jenkins", "feature_dashboard", "feature_keptn", "feature_vscodeserver"]
