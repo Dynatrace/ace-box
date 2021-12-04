@@ -76,7 +76,19 @@ const getAwxCredentials: () => CredentialProps = () => {
 		password
 	}
 }
+const getVsCodeCredentials: () => CredentialProps = () => {
+	const href = process.env.VS_CODE_URL || ''
+	const label = 'Vscodeserver'
+	const isEnabled = true
+	const password = process.env.VS_CODE_PASSWORD || ''
 
+	return {
+		isEnabled,
+		href,
+		label,
+	    password
+	}
+}
 const getKeptnBridgeCredentials: () => CredentialProps = () => {
 	const href = process.env.KEPTN_BRIDGE_URL || ''
 	const label = 'Keptn Bridge'
@@ -126,5 +138,6 @@ export {
 	getAwxCredentials,
 	getKeptnBridgeCredentials,
 	getKeptnApiCredentials,
-	getDynatraceCredentials
+	getDynatraceCredentials,
+	getVsCodeCredentials
 }

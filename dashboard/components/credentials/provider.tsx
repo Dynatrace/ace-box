@@ -25,7 +25,8 @@ const CredentialProvider = createContext({
 	awx: { ...credential },
 	keptnBridge: { ...credential },
 	keptnApi: { ...credential },
-	dynatrace: { ...credential }
+	dynatrace: { ...credential },
+	vscodeserver: {...credential}
 })
 
 export { CredentialProvider as default }
