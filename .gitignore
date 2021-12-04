@@ -46,3 +46,4 @@ override.tf.json
 
 # Nodejs
 *.env*
+terraform/gcloud/home/diego/.ssh/id_rsa

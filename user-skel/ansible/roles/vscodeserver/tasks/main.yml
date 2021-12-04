@@ -1,0 +1,20 @@
+- name: vscode - create namespace
+  shell: kubectl create namespace vscode
+  ignore_errors: yes
+  when: feature_vscodeserver
+
+- name: vscode download
+  become_user: "{{ non_root_user }}"
+  ignore_errors: yes
+  shell: cd /home/{{ non_root_user }} && git clone https://github.com/cdr/code-server && cd code-server
+  when: feature_vscodeserver
+
+- name: VScode - Install 
+  become_user: "{{ non_root_user }}"
+  shell: |
+     helm upgrade --install --wait code-server /home/{{ non_root_user }}/code-server/ci/helm-chart --namespace vscode \
+      --set ingress.enabled=true --set ingress.hosts[0].host="vscode.{{ ingress_domain }}" --set ingress.hosts[0].paths={"/"} \
+      --set persistence.enabled=true --set persistence.hostPath={{ vscode_path }} 
+  when: feature_vscodeserver
+
+
