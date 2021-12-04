@@ -42,6 +42,20 @@
   - never
   - awx
 
+- name: Config - Enable VScode
+  include_role:
+    name: config
+    tasks_from: update
+    apply:
+      tags:
+      - vscodeserver
+  vars:
+    ace_config_key: "feature_vscodeserver"
+    ace_config_value: true
+  tags:
+  - never
+  - vscodeserver
+  
 - include: roles/config/tasks/source.yml
   tags:
   - always

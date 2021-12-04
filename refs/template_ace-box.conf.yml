@@ -14,3 +14,4 @@ acebox:
     dashboard: false
     keptn: false
     awx: false
+    vscodeserver: false
