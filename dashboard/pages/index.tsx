@@ -10,11 +10,12 @@ import {
 	getAwxCredentials,
 	getKeptnBridgeCredentials,
 	getKeptnApiCredentials,
-	getDynatraceCredentials
+	getDynatraceCredentials,
+  getVsCodeCredentials
 } from '../libs/credentials'
 
-const Home: FunctionComponent<any> = ({ jenkins, gitea, gitlab, awx, keptnBridge, keptnApi, dynatrace }) =>
-  <CredentialProvider.Provider value={{ jenkins, gitea, gitlab, awx, keptnBridge, keptnApi, dynatrace }}>
+const Home: FunctionComponent<any> = ({ jenkins, gitea, gitlab, awx, keptnBridge, keptnApi, dynatrace,vscodeserver }) =>
+  <CredentialProvider.Provider value={{ jenkins, gitea, gitlab, awx, keptnBridge, keptnApi, dynatrace, vscodeserver }}>
     <Head>
       <title>ACE Dashboard</title>
       <meta name="description" content="ACE Dashboard" />
@@ -31,6 +32,7 @@ const getServerSideProps = async () => {
 	const keptnBridge = getKeptnBridgeCredentials()
 	const keptnApi = getKeptnApiCredentials()
 	const dynatrace = getDynatraceCredentials()
+  const vscodeserver = getVsCodeCredentials()
 
   return {
     props: {
@@ -40,7 +42,8 @@ const getServerSideProps = async () => {
       awx,
       keptnBridge,
       keptnApi,
-      dynatrace
+      dynatrace,
+      vscodeserver
     }
   }
 }

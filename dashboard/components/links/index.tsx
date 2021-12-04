@@ -3,6 +3,7 @@ import JenkinsDetailedLink from '../../components/credentials/jenkins'
 import GiteaDetailedLink from '../../components/credentials/gitea'
 import GitlabDetailedLink from '../../components/credentials/gitlab'
 import AwxDetailedLink from '../../components/credentials/awx'
+import VscodeserverDetailedLink from '../../components/credentials/vscodeserver'
 import KeptnBridgeDetailedLink from '../../components/credentials/keptn-bridge'
 import KeptnApiDetailedLink from '../../components/credentials/keptn-api'
 import DynatraceDetailedLink from '../../components/credentials/dynatrace'
@@ -23,6 +24,7 @@ const AceBoxLinks: FunctionComponent<any> = () =>
           <GiteaDetailedLink />
           <GitlabDetailedLink />
           <AwxDetailedLink />
+          <VscodeserverDetailedLink />
           <KeptnBridgeDetailedLink />
           <KeptnApiDetailedLink />
           <DynatraceDetailedLink />

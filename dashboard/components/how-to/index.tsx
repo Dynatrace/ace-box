@@ -7,7 +7,7 @@ import Keptn from './keptn'
 import Dynatrace from './dynatrace'
 import Kubernetes from './kubernetes'
 import Awx from './awx'
-
+import Vscodeserver from './vscodeserver'
 type tabsProps = {
   [tab: string]: FunctionComponent
 }
@@ -24,9 +24,10 @@ const tabs: tabsProps = {
 type ToolTabsProps = {}
 
 const ToolTabs: FunctionComponent<ToolTabsProps> = () => {
-  const { awx, gitlab } = useContext(CredentialProvider)
+  const { awx, gitlab,vscodeserver } = useContext(CredentialProvider)
   const { isEnabled: isGitlabEnabled } = gitlab
   const { isEnabled: isAwxEnabled } = awx
+  const { isEnabled: isVscodeserverEnabled } = vscodeserver
 
   if (isGitlabEnabled) {
     tabs['Gitlab'] = Gitlab
@@ -35,7 +36,9 @@ const ToolTabs: FunctionComponent<ToolTabsProps> = () => {
   if (isAwxEnabled) {
     tabs['Awx'] = Awx
   }
-
+  if (isVscodeserverEnabled) {
+    tabs['Vscodeserver'] = Vscodeserver
+  }
   const [activeTab, setActiveTab] = useState(Object.keys(tabs)[0])
   const ActiveTabContent = tabs[activeTab]
 
