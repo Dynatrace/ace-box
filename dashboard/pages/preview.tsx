@@ -7,7 +7,7 @@ import { getAwxCredentials } from '../libs/credentials'
 
 const Preview: FunctionComponent<any> = ({ awx, staging, production, canary }) =>
   <PreviewProvider.Provider value={{ staging, production, canary }}>
-    <CredentialProvider.Provider value={{ jenkins: {}, gitea: {}, gitlab: {}, awx, keptnBridge: {}, keptnApi: {}, dynatrace: {} }}>
+    <CredentialProvider.Provider value={{ jenkins: {}, gitea: {}, gitlab: {}, awx, keptnBridge: {}, keptnApi: {}, dynatrace: {} ,vscodeserver:{} }}>
       <Head>
         <title>ACE Dashboard - Preview</title>
         <meta name="description" content="ACE Dashboard" />
