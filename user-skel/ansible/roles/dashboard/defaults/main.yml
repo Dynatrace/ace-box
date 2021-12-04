@@ -2,6 +2,5 @@
 dashboard_user: "dynatrace"
 dashboard_password: "dynatrace"
 dashboard_namespace: "ace"
-dashboard_image_repo: dynatraceace/ace-box-dashboard:1.0.0
-#us-central1-docker.pkg.dev/acl-gsi/ace-box-public/dashboard:vs-code-post-refactor 
+dashboard_image_repo: us-central1-docker.pkg.dev/acl-gsi/ace-box-public/dashboard:vs-code-post-refactor 
 #dynatraceace/ace-box-dashboard:1.0.0
