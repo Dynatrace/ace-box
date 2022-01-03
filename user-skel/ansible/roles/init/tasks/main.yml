@@ -35,3 +35,12 @@
 - name: iptables - Allow forwarding
   become: true
   shell: iptables -P FORWARD ACCEPT
+
+- name: Install iptables-persistent
+  apt:
+    name: "{{ packages }}"
+    state: present
+    update_cache: yes
+  vars:
+    packages:
+    - iptables-persistent
