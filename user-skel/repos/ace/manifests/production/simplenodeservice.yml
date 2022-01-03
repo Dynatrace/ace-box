@@ -74,7 +74,7 @@ spec:
     app: simplenodeservice
   type: NodePort
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   labels:
@@ -87,7 +87,9 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: simplenodeservice
-          servicePort: 80
+          service:
+            name: simplenodeservice
+            port: 
+              number: 80
         path: /
         pathType: ImplementationSpecific

@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: keptn-ingress
@@ -10,7 +10,9 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: api-gateway-nginx
-          servicePort: 80
+          service:
+            name: api-gateway-nginx
+            port: 
+              number: 80
         path: /
         pathType: ImplementationSpecific
