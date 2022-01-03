@@ -1,4 +1,4 @@
 ---
 microk8s_addons: "dns storage registry ingress"
 # microk8s_domain_ext: "nip.io"
-microk8s_release_channel: "1.21/stable"
+microk8s_release_channel: "1.23/stable"
