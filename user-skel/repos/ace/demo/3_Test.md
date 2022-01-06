@@ -10,20 +10,20 @@ The first time this pipeline is run, with a "fast" build (Build number `1`), thi
 
 This pipeline has the following stages. Check out the `jenkins/test.Jenkinsfile` file for the complete file.
 
-### Keptn Init
+### Quality Gate Init
 ```
-stage ('Keptn Init') {
-    steps {
-        script {
-            keptn.keptnInit project:"${env.PROJECT}", service:"${env.APP_NAME}", stage:"${env.ENVIRONMENT}", monitoring:"${env.MONITORING}" , shipyard:'keptn/shipyard.yaml'
-            keptn.keptnAddResources('keptn/sli.yaml','dynatrace/sli.yaml')
-            keptn.keptnAddResources('keptn/slo.yaml','slo.yaml')
-            keptn.keptnAddResources('keptn/dynatrace.conf.yaml','dynatrace/dynatrace.conf.yaml')
+stage ('Quality Gate Init') {
+            steps {
+                script {
+                    cloudautomation.keptnInit project:"${env.PROJECT}", service:"${env.APP_NAME}", stage:"${env.ENVIRONMENT}", monitoring:"${env.MONITORING}" , shipyard:'cloudautomation/shipyard.yaml'
+                    cloudautomation.keptnAddResources('cloudautomation/sli.yaml','dynatrace/sli.yaml')
+                    cloudautomation.keptnAddResources('cloudautomation/slo.yaml','slo.yaml')
+                    cloudautomation.keptnAddResources('cloudautomation/dynatrace.conf.yaml','dynatrace/dynatrace.conf.yaml')
+                }
+            }
         }
-    }
-}
 ```
-This stage will init the keptn project/stage/service and will add the SLI and SLO definitions.
+This stage will init the Cloud Automation project/stage/service and will add the SLI and SLO definitions.
 
 ### DT Test Start/Stop
 ```
@@ -52,7 +52,7 @@ The DT Test Start and DT Test Stop stages will send events to Dynatrace.
 stage('Run performance test') {
     steps {
         script {
-            keptn.markEvaluationStartTime()
+            cloudautomation.markEvaluationStartTime()
         }
         checkout scm
         container('jmeter') {
@@ -81,21 +81,22 @@ stage('Run performance test') {
 
 This stage will use a jmeter container to run jmeter tests against SimpleNodeService in staging.
 
-### Keptn Evaluation
+### Quality Gate
 ```
-stage('Keptn Evaluation') {
+stage('Quality Gate') {
     steps {
         script {
             def labels=[:]
-            labels.put("art_version", "${env.BUILD}.0.0")
-            labels.put("component", "${env.COMPONENT}")
-            labels.put("part_of", "${env.PARTOF}")
+            labels.put("DT_APPLICATION_RELEASE_VERSION", "${env.BUILD}.0.0")
+            labels.put("DT_APPLICATION_BUILD_VERSION", "${env.ART_VERSION}")
+            labels.put("DT_APPLICATION_ENVIRONMENT", "${env.ENVIRONMENT}")
+            labels.put("DT_APPLICATION_NAME", "${env.PARTOF}")
             
-            def keptnContext = keptn.sendStartEvaluationEvent starttime:"", endtime:"", labels:labels
-            echo keptnContext
-            result = keptn.waitForEvaluationDoneEvent setBuildResult:true, waitTime:3
+            def context = cloudautomation.sendStartEvaluationEvent starttime:"", endtime:"", labels:labels
+            echo context
+            result = cloudautomation.waitForEvaluationDoneEvent setBuildResult:true, waitTime:3
 
-            res_file = readJSON file: "keptn.evaluationresult.${keptnContext}.json"
+            res_file = readJSON file: "keptn.evaluationresult.${context}.json"
 
             echo res_file.toString();
         }
@@ -103,7 +104,7 @@ stage('Keptn Evaluation') {
 }
 ```
 
-This stage will request a performance evaluation from Keptn for our project/stage/service. Afterwards it will request also the results and wait for them to come through.
+This stage will request a performance evaluation from Cloud Automation for our project/stage/service. Afterwards it will request also the results and wait for them to come through.
 
 ### Release Approval
 ```
@@ -192,7 +193,7 @@ In the __Release events__ section you will see the test run and evaluation event
 
 Here you will see the details about the failure like the exact score, the jenkins job that was triggered and also a link to the Kepnts Bridge. Open up that link (clickable in a future release) to get details about the scoring.
 
-![Keptn Bridge](assets/jenkins_ace-demo_keptnbridge.png)
+![Bridge](assets/jenkins_ace-demo_keptnbridge.png)
 
 Here you will see the details about which SLIs did not meet their SLOs.
 

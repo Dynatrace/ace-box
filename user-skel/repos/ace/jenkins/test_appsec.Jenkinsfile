@@ -3,7 +3,7 @@
 @Library('keptn-library@5.0') keptnlib
 import sh.keptn.Keptn
 
-def keptn = new sh.keptn.Keptn()
+def cloudautomation = new sh.keptn.Keptn()
 def event = new com.dynatrace.ace.Event()
 def jmeter = new com.dynatrace.ace.Jmeter()
  
@@ -39,7 +39,7 @@ pipeline {
         label 'kubegit'
     }
     stages {
-        stage('Prepare for AppSec QG') {
+        stage('Security Gate PreReqs') {
             steps {
                 container('helm') {
                     // TEMP - Use special build that fixes https://github.com/keptn-contrib/dynatrace-service/pull/616
@@ -50,22 +50,22 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: 'git-creds-ace', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
                         sh "git config --global user.email ${env.GITHUB_USER_EMAIL}"
                         sh "git clone ${env.GIT_PROTOCOL}://${GIT_USERNAME}:${GIT_PASSWORD}@${env.GIT_DOMAIN}/${env.GITHUB_ORGANIZATION}/${env.GIT_REPO}"
-                        sh "cd ${env.GIT_REPO}/ && sed -e 's|APP_BUILD_VERSION_PLACEHOLDER|${env.ART_VERSION}|' keptn/sli_appsec.yaml > keptn/sli_appsec_gen.yaml"
-                        sh "cd ${env.GIT_REPO}/ && git add keptn/sli_appsec_gen.yaml && git commit -m 'Update sli for appsec'"
+                        sh "cd ${env.GIT_REPO}/ && sed -e 's|APP_BUILD_VERSION_PLACEHOLDER|${env.ART_VERSION}|' cloudautomation/sli_appsec.yaml > cloudautomation/sli_appsec_gen.yaml"
+                        sh "cd ${env.GIT_REPO}/ && git add cloudautomation/sli_appsec_gen.yaml && git commit -m 'Update sli for appsec'"
                         sh "cd ${env.GIT_REPO}/ && git push ${env.GIT_PROTOCOL}://${GIT_USERNAME}:${GIT_PASSWORD}@${env.GIT_DOMAIN}/${env.GITHUB_ORGANIZATION}/${env.GIT_REPO}"
                         //sh "rm -rf ${env.GIT_REPO}"
                     }
                 }
             }
         }    
-        stage ('Keptn Init') {
+        stage ('Quality Gate Init') {
             steps {
                 checkout scm
                 script {
-                    keptn.keptnInit project:"${env.PROJECT}", service:"${env.APP_NAME}", stage:"${env.ENVIRONMENT}", monitoring:"${env.MONITORING}" , shipyard:'keptn/shipyard.yaml'
-                    keptn.keptnAddResources('keptn/sli_appsec_gen.yaml','dynatrace/sli.yaml')
-                    keptn.keptnAddResources('keptn/slo_appsec.yaml','slo.yaml')
-                    keptn.keptnAddResources('keptn/dynatrace.conf.yaml','dynatrace/dynatrace.conf.yaml')
+                    cloudautomation.keptnInit project:"${env.PROJECT}", service:"${env.APP_NAME}", stage:"${env.ENVIRONMENT}", monitoring:"${env.MONITORING}" , shipyard:'cloudautomation/shipyard.yaml'
+                    cloudautomation.keptnAddResources('cloudautomation/sli_appsec_gen.yaml','dynatrace/sli.yaml')
+                    cloudautomation.keptnAddResources('cloudautomation/slo_appsec.yaml','slo.yaml')
+                    cloudautomation.keptnAddResources('cloudautomation/dynatrace.conf.yaml','dynatrace/dynatrace.conf.yaml')
                 }
             }
         }
@@ -89,7 +89,7 @@ pipeline {
         stage('Run performance test') {
             steps {
                 script {
-                    keptn.markEvaluationStartTime()
+                    cloudautomation.markEvaluationStartTime()
                 }
                 checkout scm
                 container('jmeter') {
@@ -132,7 +132,7 @@ pipeline {
             }
         }
 
-        stage('Keptn Evaluation') {
+        stage('Quality Gate') {
             steps {
                 script {
                     sleep(time:600,unit:"SECONDS")
@@ -142,11 +142,11 @@ pipeline {
                     labels.put("DT_APPLICATION_ENVIRONMENT", "${env.ENVIRONMENT}")
                     labels.put("DT_APPLICATION_NAME", "${env.PARTOF}")
                     
-                    def keptnContext = keptn.sendStartEvaluationEvent starttime:"", endtime:"", labels:labels
-                    echo keptnContext
-                    result = keptn.waitForEvaluationDoneEvent setBuildResult:true, waitTime:3
+                    def context = cloudautomation.sendStartEvaluationEvent starttime:"", endtime:"", labels:labels
+                    echo context
+                    result = cloudautomation.waitForEvaluationDoneEvent setBuildResult:true, waitTime:3
 
-                    res_file = readJSON file: "keptn.evaluationresult.${keptnContext}.json"
+                    res_file = readJSON file: "keptn.evaluationresult.${context}.json"
 
                     echo res_file.toString();
                 }

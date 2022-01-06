@@ -3,7 +3,7 @@
 @Library('keptn-library@5.0') keptnlib
 import sh.keptn.Keptn
 
-def keptn = new sh.keptn.Keptn()
+def cloudautomation = new sh.keptn.Keptn()
 def event = new com.dynatrace.ace.Event()
 def jmeter = new com.dynatrace.ace.Jmeter()
  
@@ -39,13 +39,13 @@ pipeline {
         label 'kubegit'
     }
     stages {
-        stage ('Keptn Init') {
+        stage ('Quality Gate Init') {
             steps {
                 script {
-                    keptn.keptnInit project:"${env.PROJECT}", service:"${env.APP_NAME}", stage:"${env.ENVIRONMENT}", monitoring:"${env.MONITORING}" , shipyard:'keptn/shipyard.yaml'
-                    keptn.keptnAddResources('keptn/sli.yaml','dynatrace/sli.yaml')
-                    keptn.keptnAddResources('keptn/slo.yaml','slo.yaml')
-                    keptn.keptnAddResources('keptn/dynatrace.conf.yaml','dynatrace/dynatrace.conf.yaml')
+                    cloudautomation.keptnInit project:"${env.PROJECT}", service:"${env.APP_NAME}", stage:"${env.ENVIRONMENT}", monitoring:"${env.MONITORING}" , shipyard:'cloudautomation/shipyard.yaml'
+                    cloudautomation.keptnAddResources('cloudautomation/sli.yaml','dynatrace/sli.yaml')
+                    cloudautomation.keptnAddResources('cloudautomation/slo.yaml','slo.yaml')
+                    cloudautomation.keptnAddResources('cloudautomation/dynatrace.conf.yaml','dynatrace/dynatrace.conf.yaml')
                 }
             }
         }
@@ -69,7 +69,7 @@ pipeline {
         stage('Run performance test') {
             steps {
                 script {
-                    keptn.markEvaluationStartTime()
+                    cloudautomation.markEvaluationStartTime()
                 }
                 checkout scm
                 container('jmeter') {
@@ -112,7 +112,7 @@ pipeline {
             }
         }
 
-        stage('Keptn Evaluation') {
+        stage('Quality Gate') {
             steps {
                 script {
                     def labels=[:]
@@ -121,11 +121,11 @@ pipeline {
                     labels.put("DT_APPLICATION_ENVIRONMENT", "${env.ENVIRONMENT}")
                     labels.put("DT_APPLICATION_NAME", "${env.PARTOF}")
                     
-                    def keptnContext = keptn.sendStartEvaluationEvent starttime:"", endtime:"", labels:labels
-                    echo keptnContext
-                    result = keptn.waitForEvaluationDoneEvent setBuildResult:true, waitTime:3
+                    def context = cloudautomation.sendStartEvaluationEvent starttime:"", endtime:"", labels:labels
+                    echo context
+                    result = cloudautomation.waitForEvaluationDoneEvent setBuildResult:true, waitTime:3
 
-                    res_file = readJSON file: "keptn.evaluationresult.${keptnContext}.json"
+                    res_file = readJSON file: "keptn.evaluationresult.${context}.json"
 
                     echo res_file.toString();
                 }

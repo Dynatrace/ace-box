@@ -13,7 +13,7 @@ As part of this demo, we will use a set of multi-staged pipelines pre-deployed w
     The pipelines do the following:
     - `1. Build` builds the simplenodeservice app, creates a docker image and pushes that image to a local docker registry
     - `2. Deploy` deploys the built simplenodeservice image to the local kubernetes service in a staging namespace, as well as sends a Deployment event to Dynatrace
-    - `3. Test` runs an automated jmeter tests and evaluates using Keptn Quality Gates. If the evaluation fails, the build will fail and the artifact will not be promoted to production
+    - `3. Test` runs an automated jmeter tests and evaluates using Keptn Quality Gates or Dynatrace Cloud Automation. If the evaluation fails, the build will fail and the artifact will not be promoted to production
     - `4. Deploy Production` will deploy the promoted artifact to the production namespace
     - `Monitoring as Code` will use monaco to automatically configure the Dynatrace Environment
   
@@ -26,7 +26,7 @@ The following files/folders exist:
 - `helm` folder: contains the helm chart for the simplenodeservice
 - `jenkins` folder: contains the various Jenkinsfiles that contains the pipeline logic
 - `jmeter` folder: contains the test files
-- `keptn` folder: contains the keptn configuration like sli and slo definitions
+- `cloudautomation` folder: contains the quality gate configuration like sli and slo definitions
 - `mac` folder: contains the monaco configuration
 - `app.js`: simplenodeservice application code
 - `Dockerfile`: simplenodeservice Dockerfile definition for building the container image

@@ -40,7 +40,7 @@ An extra stage was added that updates the `dynatrace-service` image that resolve
 Placeholders are set using `sed` since the `dynatrace-service` currently does not support standard keptn placeholders. Check out https://github.com/keptn-contrib/dynatrace-service/issues/601 for more information. In the final version of this usecase this step will be ommited.
 
 ```
-stage('Prepare for AppSec QG') {
+stage('Security Gate PreReqs') {
     steps {
         container('helm') {
             // TEMP - Use special build that fixes https://github.com/keptn-contrib/dynatrace-service/pull/616
@@ -51,8 +51,8 @@ stage('Prepare for AppSec QG') {
             withCredentials([usernamePassword(credentialsId: 'git-creds-ace', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
                 sh "git config --global user.email ${env.GITHUB_USER_EMAIL}"
                 sh "git clone ${env.GIT_PROTOCOL}://${GIT_USERNAME}:${GIT_PASSWORD}@${env.GIT_DOMAIN}/${env.GITHUB_ORGANIZATION}/${env.GIT_REPO}"
-                sh "cd ${env.GIT_REPO}/ && sed -e 's|APP_BUILD_VERSION_PLACEHOLDER|${env.ART_VERSION}|' keptn/sli_appsec.yaml > keptn/sli_appsec_gen.yaml"
-                sh "cd ${env.GIT_REPO}/ && git add keptn/sli_appsec_gen.yaml && git commit -m 'Update sli for appsec'"
+                sh "cd ${env.GIT_REPO}/ && sed -e 's|APP_BUILD_VERSION_PLACEHOLDER|${env.ART_VERSION}|' cloudautomation/sli_appsec.yaml > cloudautomation/sli_appsec_gen.yaml"
+                sh "cd ${env.GIT_REPO}/ && git add cloudautomation/sli_appsec_gen.yaml && git commit -m 'Update sli for appsec'"
                 sh "cd ${env.GIT_REPO}/ && git push ${env.GIT_PROTOCOL}://${GIT_USERNAME}:${GIT_PASSWORD}@${env.GIT_DOMAIN}/${env.GITHUB_ORGANIZATION}/${env.GIT_REPO}"
                 //sh "rm -rf ${env.GIT_REPO}"
             }
@@ -71,7 +71,7 @@ sleep(time:600,unit:"SECONDS")
 
 ### AppSec SLI and SLO files
 
-Specific sli and slo definitions have been created under `keptn/sli_appsec.yaml` and `keptn/slo_appsec.yaml`.
+Specific sli and slo definitions have been created under `cloudautomation/sli_appsec.yaml` and `cloudautomation/slo_appsec.yaml`.
 
 CRITICAL, HIGH, MEDIUM and LOW vulnerabilities are separated. For HIGH and CRITICAL vulnerabilties we flag them as key_sli and they will stop the build.
 
