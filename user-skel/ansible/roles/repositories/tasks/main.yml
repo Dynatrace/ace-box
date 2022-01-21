@@ -27,6 +27,7 @@
     - monaco-hot
     - quality-gates-hot
     - auto-remediation
+    - demo-apps
   when: feature_gitea
 
 - name: Create and push repositories
@@ -52,4 +53,5 @@
      - { repo_target: 'ace-demo-canary', repo_src: '/home/{{ non_root_user }}/repos/auto-remediation/ace-demo-canary', push_to_gitlab: false, push_to_gitea: true, gitea_org: 'auto-remediation' }
      - { repo_target: 'ace-demo-canary-awx', repo_src: '/home/{{ non_root_user }}/repos/auto-remediation/ace-demo-canary-awx', push_to_gitlab: false, push_to_gitea: true, gitea_org: 'auto-remediation' }
      - { repo_target: 'ace-demo-canary-docs', repo_src: '/home/{{ non_root_user }}/repos/auto-remediation/ace-demo-canary-docs', push_to_gitlab: false, push_to_gitea: true, gitea_org: 'auto-remediation' }
+     - { repo_target: 'unguard', repo_src: '/home/{{ non_root_user }}/repos/demo-apps/unguard', push_to_gitlab: false, push_to_gitea: true, gitea_org: 'demo-apps' }
   when: feature_gitea or feature_gitlab
