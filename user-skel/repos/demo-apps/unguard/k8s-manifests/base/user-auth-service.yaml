@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: unguard-user-auth-service
+  labels:
+    app.kubernetes.io/name: user-auth-service
+    app.kubernetes.io/part-of: unguard
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: user-auth-service
+    app.kubernetes.io/part-of: unguard
+  ports:
+    - targetPort: 9091
+      port: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: unguard-user-auth-service
+  labels:
+    app.kubernetes.io/name: user-auth-service
+    app.kubernetes.io/part-of: unguard
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: user-auth-service
+      app.kubernetes.io/part-of: unguard
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: user-auth-service
+        app.kubernetes.io/part-of: unguard
+    spec:
+      containers:
+        - name: user-auth-service
+          image: unguard-user-auth-service
+          ports:
+            - containerPort: 9091
+          env:
+            - name: SERVER_PORT
+              value: "9091"
+            - name: JAEGER_SERVICE_NAME
+              value: "unguard-user-auth-service"
+            - name: JAEGER_AGENT_HOST
+              value: "jaeger-agent" # change depending on your jaeger deployment
+            - name: JAEGER_SAMPLER_TYPE
+              value: "const"
+            - name: JAEGER_SAMPLER_PARAM
+              value: "1"
+            - name: REDIS_SERVICE_ADDRESS
+              value: "unguard-redis"
+            - name: MARIADB_SERVICE
+              value: "unguard-mariadb"
+            - name: MARIADB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: unguard-mariadb
+                  key: mariadb-root-password

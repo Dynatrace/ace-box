@@ -1,0 +1,4 @@
+apiVersion: v2
+description: Unguard Demo Application
+name: unguard
+version: 0.0.1

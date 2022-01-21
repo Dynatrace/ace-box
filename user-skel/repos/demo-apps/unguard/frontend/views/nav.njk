@@ -1,0 +1,60 @@
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+    <img height="30px" src="{{ extendURL('/img/logo.svg') }}" class="nav-logo"> <a class="navbar-brand" href="{{ extendURL('/') }}">Unguard</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
+            aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item {{'active' if (currentPath != undefined) and (extendURL('/') == currentPath)}}">
+                <a class="nav-link" href="{{ extendURL('/') }}" name="navHome">
+                    Home <span class="sr-only">(current)</span>
+                </a>
+            </li>
+            {% if (username) %}
+                <li class="nav-item {{'active' if (currentPath != undefined) and (extendURL('/my-timeline') == currentPath)}}">
+                    <a class="nav-link" href="{{ extendURL('/my-timeline') }}"  name="navMyTimeline">
+                        My Timeline
+                    </a>
+                </li>
+
+                {% if (isAdManager) %}
+                    <li class="nav-item {{'active' if (currentPath != undefined) and (extendURL('/ad-manager') == currentPath)}}">
+                        <a class="nav-link" href="{{ extendURL('/ad-manager') }}" name="navAdManager">Ad Manager</a>
+                    </li>
+                {% endif %}
+            {% endif %}
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            {% if (username) %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="dropdownUser" data-toggle="dropdown" aria-haspopup="true"
+                       aria-expanded="false">{{ username }}</a>
+                    <ul class="dropdown-menu">
+                        <li align="center" class="well">
+                            <img class="rounded-circle" width="150"
+                                 src="//robohash.org/{{ username }}.png?set=set1&size=150x150" alt="{{ username }}">
+                            <div class="list-group">
+                                <a href="{{ extendURL('/user/'+ username ) }}"
+                                   class="list-group-item list-group-item-action">Profile</a>
+                                <form action="{{ extendURL('/logout') }}" method="post">
+                                    <button class="list-group-item list-group-item-action list-group-item-warning"
+                                            type="submit">Logout
+                                    </button>
+                                </form>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+                <form class="form-inline" action="{{ extendURL('/logout') }}" method="post">
+                    <button class="btn btn-warning my-2 my-sm-0" type="submit" name="navLogoutButton">Logout</button>
+                </form>
+            {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ extendURL('/login') }}" name="navLoginRegisterButton">Login/Register</a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>

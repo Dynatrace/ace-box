@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: unguard-ingress
+  labels:
+    app.kubernetes.io/name: frontend
+    app.kubernetes.io/part-of: unguard
+  annotations:
+    nginx.ingress.kubernetes.io/app-root: /ui
+spec:
+  rules:
+    - host: unguard.kube
+      http:
+        paths:
+          - path: /ui
+            pathType: Prefix
+            backend:
+              service:
+                name: unguard-frontend
+                port:
+                  number: 80
+          - path: /ad-service
+            pathType: Prefix
+            backend:
+              service:
+                name: unguard-ad-service
+                port:
+                  number: 80

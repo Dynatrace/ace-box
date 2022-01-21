@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ .Chart.Name }}-user-auth-service"
+  labels:
+    app.kubernetes.io/name: user-auth-service
+    app.kubernetes.io/part-of: "{{ .Chart.Name }}"
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: user-auth-service
+    app.kubernetes.io/part-of: "{{ .Chart.Name }}"
+  ports:
+    - targetPort: 9091
+      port: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ .Chart.Name }}-user-auth-service"
+  labels:
+    app: ad-service
+    app.kubernetes.io/name: user-auth-service
+    app.kubernetes.io/component: user-auth-service
+    app.kubernetes.io/version: "{{ .Values.unguard.userAuthService.tag }}"
+    app.kubernetes.io/managed-by: "Helm"
+    app.kubernetes.io/part-of: "{{ .Chart.Name }}"
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: user-auth-service
+      app.kubernetes.io/part-of: "{{ .Chart.Name }}"
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: user-auth-service
+        app.kubernetes.io/part-of: "{{ .Chart.Name }}"
+    spec:
+      containers:
+        - name: user-auth-service
+          image: "{{ .Values.unguard.userAuthService.image }}:{{ .Values.unguard.userAuthService.tag }}"
+          ports:
+            - containerPort: 9091
+          env:
+            - name: SERVER_PORT
+              value: "9091"
+            - name: JAEGER_SERVICE_NAME
+              value: "{{ .Chart.Name }}-user-auth-service"
+            - name: JAEGER_AGENT_HOST
+              value: "jaeger-agent" # change depending on your jaeger deployment
+            - name: JAEGER_SAMPLER_TYPE
+              value: "const"
+            - name: JAEGER_SAMPLER_PARAM
+              value: "1"
+            - name: REDIS_SERVICE_ADDRESS
+              value: "unguard-redis"
+            - name: MARIADB_SERVICE
+              value: "unguard-mariadb"
+            - name: MARIADB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: unguard-mariadb
+                  key: mariadb-root-password
+            - name: DT_RELEASE_VERSION
+              value: "{{ .Values.unguard.userAuthService.tag }}"
+            - name: DT_RELEASE_BUILD_VERSION
+              value: "{{ .Values.unguard.userAuthService.tag }}"
+            - name: DT_RELEASE_PRODUCT
+              value: "{{ .Chart.Name }}"
+            - name: DT_RELEASE_STAGE
+              value: "{{ .Release.Namespace }}"
