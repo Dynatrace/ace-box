@@ -1109,4 +1109,63 @@ controller:
                   }
                 }
               }
+          - script: >
+              folder('demo-apps')
+          - script: >
+              folder('demo-apps/unguard')
+              description('Check out ${GIT_PROTOCOL}://${GIT_DOMAIN}/demo-apps/unguard for more information')
+          - script: >
+              pipelineJob('demo-apps/unguard/Unguard Deploy') {
+                definition {
+                  cpsScm {
+                    scriptPath('jenkins/deploy.Jenkinsfile')
+                    scm {
+                      git {
+                          remote { 
+                            url('${GIT_PROTOCOL}://${GIT_DOMAIN}/demo-apps/unguard')
+                            credentials('git-creds-ace')
+                          }
+                          branch('*/master')
+                      }
+                    }
+                    lightweight()
+                  }
+                }
+              }
+          - script: >
+              pipelineJob('demo-apps/unguard/Unguard Monaco') {
+                definition {
+                  cpsScm {
+                    scriptPath('jenkins/monaco.Jenkinsfile')
+                    scm {
+                      git {
+                          remote { 
+                            url('${GIT_PROTOCOL}://${GIT_DOMAIN}/demo-apps/unguard')
+                            credentials('git-creds-ace')
+                          }
+                          branch('*/master')
+                      }
+                    }
+                    lightweight()
+                  }
+                }
+              }
+          - script: >
+              pipelineJob('demo-apps/unguard/Unguard Remove') {
+                definition {
+                  cpsScm {
+                    scriptPath('jenkins/destroy.Jenkinsfile')
+                    scm {
+                      git {
+                          remote { 
+                            url('${GIT_PROTOCOL}://${GIT_DOMAIN}/demo-apps/unguard')
+                            credentials('git-creds-ace')
+                          }
+                          branch('*/master')
+                      }
+                    }
+                    lightweight()
+                  }
+                }
+              }
 {% endif %}
