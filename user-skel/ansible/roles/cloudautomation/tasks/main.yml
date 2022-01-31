@@ -33,5 +33,5 @@
 
 - name: Cloud Automation - Create secret dynatrace
   become_user: "{{ non_root_user }}"
-  shell: "/usr/local/bin/keptn create secret dynatrace --from-literal=DT_TENANT={{ dynatrace_tenant_url }} --from-literal=DT_API_TOKEN={{ dynatrace_api_token }}"
+  shell: "/usr/local/bin/keptn create secret dynatrace --from-literal=DT_TENANT={{ dynatrace_tenant_url }} --from-literal=DT_API_TOKEN={{ dynatrace_api_token }} --scope=dynatrace-service"
   when: feature_cloud_automation
