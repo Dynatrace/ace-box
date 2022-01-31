@@ -46,3 +46,4 @@ override.tf.json
 
 # Nodejs
 *.env*
+**/id_rsa

@@ -7,14 +7,14 @@ attachRules:
     - PROCESS_GROUP_INSTANCE
     tags:
     - context: ENVIRONMENT
-      key: DT_APPLICATION_BUILD_VERSION
-      value: $LABEL.DT_APPLICATION_BUILD_VERSION
+      key: DT_RELEASE_BUILD_VERSION
+      value: $LABEL.DT_RELEASE_BUILD_VERSION
     - context: KUBERNETES
       key: app.kubernetes.io/name
       value: $SERVICE
     - context: KUBERNETES
       key: app.kubernetes.io/part-of
-      value: $LABEL.DT_APPLICATION_NAME
+      value: $LABEL.DT_RELEASE_PRODUCT
     - context: KUBERNETES
       key: app.kubernetes.io/component
       value: api
