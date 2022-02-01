@@ -11,7 +11,7 @@ def tagMatchRules = [
     [
         "meTypes": [ "PROCESS_GROUP_INSTANCE"],
         tags: [
-            ["context": "ENVIRONMENT", "key": "DT_APPLICATION_BUILD_VERSION", "value": "${env.ART_VERSION}"],
+            ["context": "ENVIRONMENT", "key": "DT_RELEASE_BUILD_VERSION", "value": "${env.ART_VERSION}"],
             ["context": "KUBERNETES", "key": "app.kubernetes.io/name", "value": "${env.APP_NAME}"],
             ["context": "KUBERNETES", "key": "app.kubernetes.io/part-of", "value": "simplenode-app"],
             ["context": "KUBERNETES", "key": "app.kubernetes.io/component", "value": "api"],
@@ -137,10 +137,10 @@ pipeline {
                 script {
                     sleep(time:600,unit:"SECONDS")
                     def labels=[:]
-                    labels.put("DT_APPLICATION_RELEASE_VERSION", "${env.BUILD}.0.0")
-                    labels.put("DT_APPLICATION_BUILD_VERSION", "${env.ART_VERSION}")
-                    labels.put("DT_APPLICATION_ENVIRONMENT", "${env.ENVIRONMENT}")
-                    labels.put("DT_APPLICATION_NAME", "${env.PARTOF}")
+                    labels.put("DT_RELEASE_VERSION", "${env.BUILD}.0.0")
+                    labels.put("DT_RELEASE_BUILD_VERSION", "${env.ART_VERSION}")
+                    labels.put("DT_RELEASE_STAGE", "${env.ENVIRONMENT}")
+                    labels.put("DT_RELEASE_PRODUCT", "${env.PARTOF}")
                     
                     def context = cloudautomation.sendStartEvaluationEvent starttime:"", endtime:"", labels:labels
                     echo context
