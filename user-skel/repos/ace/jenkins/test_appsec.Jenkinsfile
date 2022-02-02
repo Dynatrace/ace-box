@@ -41,10 +41,6 @@ pipeline {
     stages {
         stage('Security Gate PreReqs') {
             steps {
-                container('helm') {
-                    // TEMP - Use special build that fixes https://github.com/keptn-contrib/dynatrace-service/pull/616
-                    sh "helm upgrade --install dynatrace-service -n keptn https://github.com/keptn-contrib/dynatrace-service/releases/download/0.18.1/dynatrace-service-0.18.1.tgz --set dynatraceService.image.tag=0.18.2-dev-PR-616"
-                }
                 container('git') {
                     // TEMP - Generate sli files manually to cirumvent https://github.com/keptn-contrib/dynatrace-service/issues/601
                     withCredentials([usernamePassword(credentialsId: 'git-creds-ace', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
