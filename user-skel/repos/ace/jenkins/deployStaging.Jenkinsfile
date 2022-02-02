@@ -28,7 +28,7 @@ pipeline {
             steps {
                 script {
                     env.DT_CUSTOM_PROP = readMetaData() + " " + generateDynamicMetaData()
-                    env.DT_TAGS = readTags()
+                    env.DT_TAGS = readTags() + " " + generateDynamicTags()
                 }
                 container('git') {
                     withCredentials([usernamePassword(credentialsId: 'git-creds-ace', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
@@ -101,6 +101,12 @@ def generateDynamicMetaData(){
     returnValue += "keptn_service=${env.APP_NAME} "
     returnValue += "keptn_stage=staging "
     returnValue += "url=simplenode.staging.${env.INGRESS_DOMAIN}"
+    return returnValue;
+}
+// related to https://github.com/Dynatrace/ace-box/issues/158, can be removed once fixed in Dynatrace (136+)
+def generateDynamicTags() {
+    String returnValue = "";
+    returnValue += "BUILD=${env.ART_VERSION} "
     return returnValue;
 }
 
