@@ -1,0 +1,5 @@
+- name: OpenTelemetry Collector - Uninstall Helm chart
+  shell: /snap/bin/helm uninstall {{ otelcol_name }} --namespace {{ otelcol_namespace }} --wait
+
+- name: OpenTelemetry Collector delete Namespace
+  shell: /snap/bin/microk8s.kubectl delete namespace {{ otelcol_namespace }}

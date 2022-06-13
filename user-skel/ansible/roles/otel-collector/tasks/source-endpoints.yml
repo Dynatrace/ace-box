@@ -1,0 +1,12 @@
+---
+- name: Source endpoints
+  kubernetes.core.k8s_info:
+    kind: Service
+    name: "{{ otelcol_name }}"
+    namespace: "{{ otelcol_namespace }}"
+  register: otelcol_http_data
+
+- name: Set facts
+  set_fact:
+    otel_internal_endpoint: "http://{{ otelcol_http_data.resources[0].spec.clusterIP }}:4317"
+  when: otelcol_http_data is defined and otelcol_http_data.resources[0] is defined
