@@ -1,0 +1,23 @@
+- name: Add mvisonneau chart repo
+  kubernetes.core.helm_repository:
+    name: mvisonneau
+    repo_url: "https://charts.visonneau.fr"
+
+- name: Template Helm values file
+  ansible.builtin.template:
+    src: gitlab-gcpe-values.yml.j2
+    dest: "./roles/{{ role_name }}/files/gitlab-gcpe-values.yml"
+    owner: "{{ ace_box_user }}"
+    group: "{{ ace_box_user }}"
+    mode: '0644'
+
+- name: Install
+  kubernetes.core.helm:
+    name: "gitlab-ci-pipelines-exporter"
+    chart_ref: mvisonneau/gitlab-ci-pipelines-exporter
+    chart_version: "{{ gitlab_gcpe_helm_chart_version }}"
+    release_namespace: "{{ gitlab_namespace }}"
+    wait: true
+    wait_timeout: 15m
+    values_files:
+      - "./roles/{{ role_name }}/files/gitlab-gcpe-values.yml"

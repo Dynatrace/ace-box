@@ -4,3 +4,5 @@ gitlab_namespace: "gitlab"
 gitlab_group_name: "ace"
 feature_gitlab: false
 gitlab_helm_chart_version: "5.6.2"
+gitlab_gcpe_helm_chart_version: "0.2.15"
+gitlab_gcpe_tag: "v0.5.3"

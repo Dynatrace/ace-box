@@ -1,5 +1,8 @@
 - name: Gitlab - Uninstall Helm chart
   shell: /snap/bin/helm uninstall gitlab --namespace {{ gitlab_namespace }} --wait
 
+- name: Gitlab GCPE - Uninstall Helm chart
+  shell: /snap/bin/helm uninstall gitlab-ci-pipelines-exporter --namespace {{ gitlab_namespace }} --wait
+
 - name: Gitlab delete Namespace
   shell: /snap/bin/microk8s.kubectl delete namespace {{ gitlab_namespace }}
