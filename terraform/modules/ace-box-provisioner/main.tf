@@ -59,18 +59,7 @@ resource "null_resource" "provisioner_ace_prepare" {
 
   provisioner "remote-exec" {
     inline = [
-      <<EOF
-sudo ACE_ANSIBLE_WORKDIR=/home/${local.user}/ansible/ \
-ACE_BOX_USER=${local.user} \
-ACE_INGRESS_DOMAIN=${local.ingress_domain} \
-ACE_INGRESS_PROTOCOL=${local.ingress_protocol} \
-ACE_DT_TENANT=${local.dt_tenant} \
-ACE_DT_API_TOKEN=${local.dt_api_token} \
-ACE_DT_PAAS_TOKEN=${local.dt_paas_token} \
-ACE_CA_TENANT=${local.ca_tenant} \
-ACE_CA_API_TOKEN=${local.ca_api_token} \
-ace prepare --force
-      EOF
+      "sudo ACE_ANSIBLE_WORKDIR=/home/${local.user}/ansible/ ACE_BOX_USER=${local.user} ACE_INGRESS_DOMAIN=${local.ingress_domain} ACE_INGRESS_PROTOCOL=${local.ingress_protocol} ACE_DT_TENANT=${local.dt_tenant} ACE_DT_API_TOKEN=${local.dt_api_token} ACE_DT_PAAS_TOKEN=${local.dt_paas_token} ACE_CA_TENANT=${local.ca_tenant} ACE_CA_API_TOKEN=${local.ca_api_token} ace prepare --force"
     ]
   }
 }
@@ -87,11 +76,7 @@ resource "null_resource" "provisioner_ace_install" {
 
   provisioner "remote-exec" {
     inline = [
-      <<EOF
-sudo ACE_ANSIBLE_WORKDIR=/home/${local.user}/ansible/ \
-ACE_BOX_USER=${local.user} \
-ace enable ${var.use_case}
-      EOF
+      "sudo ACE_ANSIBLE_WORKDIR=/home/${local.user}/ansible/ ACE_BOX_USER=${local.user} ace enable ${var.use_case}"
     ]
   }
 }
