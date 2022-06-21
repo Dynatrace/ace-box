@@ -35,6 +35,12 @@
     - hot_appsec
     - never
 
+  # Use case - Incident Management HOT
+  - role: hot-incident-management
+    tags:
+    - hot_im
+    - never
+
   # Use case - Monaco GitOps hands-on training
   # - role: hot-monaco-gitops
   #   tags:
