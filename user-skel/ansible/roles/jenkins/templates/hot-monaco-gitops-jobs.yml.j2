@@ -1,0 +1,77 @@
+        jobs:
+          - script: >
+              pipelineJob('Exercise 2 - Apply all') {
+                definition {
+                  cpsScm {
+                    scriptPath('jenkins/exercise-two.Jenkinsfile')
+                    scm {
+                      git {
+                          remote { 
+                            url('${GIT_PROTOCOL}://${GIT_DOMAIN}/${GITHUB_ORGANIZATION}/${GIT_REPO}')
+                          }
+                          branch('*/master')
+                      }
+                    }
+                    lightweight()
+                  }
+                }
+              }
+          - script: >
+              pipelineJob('Exercise 4 - Update config') {
+                definition {
+                  cpsScm {
+                    scriptPath('jenkins/exercise-four.Jenkinsfile')
+                    scm {
+                      git {
+                          remote { 
+                            url('${GIT_PROTOCOL}://${GIT_DOMAIN}/${GITHUB_ORGANIZATION}/${GIT_REPO}')
+                          }
+                          branch('*/master')
+                      }
+                    }
+                    lightweight()
+                  }
+                }
+              }
+          - script: >
+              pipelineJob('Exercise 5 - Onboard app') {
+                parameters {
+                  choiceParam('Environment', ['Staging','Production'], '')
+                  stringParam('App_Name', 'demo-app', 'The name of the service to deploy.')
+                  stringParam('Application_URL_pattern', 'demo.app/v1/', 'The version of the service to deploy.')
+                  stringParam('Kubernetes_Namespace', 'demo-app-staging', 'The image of the service to deploy.')
+                  stringParam('Health_check_url', 'https://dynatrace.com', 'The version of the service to deploy.')
+                  booleanParam('Skip_synthetic_monitor_deployment', false, 'Skip the deployment of the HTTP monitor')
+                }
+                definition {
+                  cpsScm {
+                    scriptPath('jenkins/exercise-five.Jenkinsfile')
+                    scm {
+                      git {
+                          remote { 
+                            url('${GIT_PROTOCOL}://${GIT_DOMAIN}/${GITHUB_ORGANIZATION}/${GIT_REPO}')
+                          }
+                          branch('*/master')
+                      }
+                    }
+                    lightweight()
+                  }
+                }
+              }
+          - script: >
+              pipelineJob('Exercise 7 - Linking configuration') {
+                definition {
+                  cpsScm {
+                    scriptPath('jenkins/exercise-seven.Jenkinsfile')
+                    scm {
+                      git {
+                          remote { 
+                            url('${GIT_PROTOCOL}://${GIT_DOMAIN}/${GITHUB_ORGANIZATION}/${GIT_REPO}')
+                          }
+                          branch('*/master')
+                      }
+                    }
+                    lightweight()
+                  }
+                }
+              }
