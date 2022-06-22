@@ -3,6 +3,12 @@
     name: microk8s
 
 - include_role:
+    name: dt-activegate
+
+- include_role:
+    name: dt-oneagent
+
+- include_role:
     name: gitea
 
 - include_role:

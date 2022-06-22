@@ -53,11 +53,11 @@
     - hot_appsec
     - never
 
-  # Use case - Monaco GitOps hands-on training
-  # - role: hot-monaco-gitops
-  #   tags:
-  #   - monaco_gitops
-  #   - never
+  # Use case - Monaco GitOps HOT
+  - role: hot-monaco-gitops
+    tags:
+    - hot_monaco
+    - never
   
   # Use case - Quality Gates hands-on training
   # - role: hot-quality-gates
