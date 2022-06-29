@@ -107,6 +107,6 @@
     release_namespace: "{{ jenkins_namespace }}"
     create_namespace: true
     wait: true
-    wait_timeout: 15m
+    wait_timeout: 30m
     values_files:
       - "./roles/{{ role_name }}/files/jenkins-values.yml"
