@@ -40,6 +40,7 @@ With these projects we deployed two synthetic tests. This is the folder struture
 The Jenkins pipeline is the same as the one from exercise 2. This time we deployed the `synthetic` project, instead of `base`.
 
 ```groovy
+
 ENVS_FILE = "monaco/environments.yaml"
 
 pipeline {
@@ -70,9 +71,8 @@ pipeline {
         }
     }
 }
+
 ```
-
-
 
 ### DSS Recap
 Why did we deploy a synthetic test? We did it to show how the Davis Security Score works. So let's quickly recap what the DSS is.
