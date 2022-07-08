@@ -16,8 +16,8 @@ config:
       headers:
         Authorization: "Api-Token {{ dynatrace_api_token | default(None) }}"
     dynatrace:
-      endpoint: "{{ dynatrace_tenant_url | default(None) }}/api/v2/metrics/ingest"
-      api_token: "{{ dynatrace_api_token | default(None) }}"
+    #  endpoint: "{{ dynatrace_tenant_url | default(None) }}/api/v2/metrics/ingest"
+    #  api_token: "{{ dynatrace_api_token | default(None) }}"
             #resource_to_telemetry_conversion:
             #enabled: true
     #logging:
