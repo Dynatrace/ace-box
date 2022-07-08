@@ -28,6 +28,10 @@
     create_namespace: true
     wait: true
     wait_timeout: 15m
+    values:
+      control-plane:
+        features:
+          automaticProvisioningURL: "http://keptn-gitea-provisioner-service.{{ keptn_namespace }}"
   register: keptn_helm_chart
 
 - name: Template ingress file
@@ -60,3 +64,6 @@
 
 - name: Keptn - Install Dynatrace service
   include: roles/keptn/tasks/dynatrace-service.yml
+
+- name: Keptn - Install Gitea Provisioner service
+  include: roles/keptn/tasks/gitea-provisioner-service.yml
