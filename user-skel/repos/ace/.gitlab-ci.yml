@@ -28,6 +28,8 @@ monaco:
     - monaco -v -e=mac/environments.yaml -p=infrastructure mac/projects
     - monaco -v -dry-run -e=mac/environments.yaml -p=ace mac/projects
     - monaco -v -e=mac/environments.yaml -p=ace mac/projects
+    - monaco -v -dry-run -e=mac/environments.yaml -p=gitlab mac/projects
+    - monaco -v -e=mac/environments.yaml -p=gitlab mac/projects
 
 init_keptn:
   image: dynatraceace/keptn-gitlab-runner:2.1
