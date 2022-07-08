@@ -12,26 +12,26 @@ controller:
       kubernetes.io/ingress.class: public
   jenkinsUrlProtocol: {{ ingress_protocol }}
   installPlugins:
-    - command-launcher:84.v4a_97f2027398
-    - kubernetes:3636.v84b_a_1dea_6240
+    - command-launcher:1.6
+    - kubernetes:1.30.11
     - kubernetes-credentials-provider:0.20
-    - workflow-job:1186.v8def1a_5f3944
-    - workflow-aggregator:581.v0c46fa_697ffd
-    - credentials-binding:523.vd859a_4b_122e6
-    - git:4.11.3
+    - workflow-job:1145.v7f2433caa07f
+    - workflow-aggregator:2.6
+    - credentials-binding:1.27.1
+    - git:4.11.1
     - google-oauth-plugin:1.0.6
     - google-source-plugin:0.4
     - performance:3.20
     - github-branch-source:2.11.3
     - job-dsl:1.78.3
     - pipeline-build-step:2.18
-    - docker-plugin:1.2.9
-    - blueocean:1.25.5
-    - configuration-as-code:1429.v09b_044a_c93de
-    - http_request:1.15
-    - pipeline-utility-steps:2.12.2
+    - docker-plugin:1.2.3
+    - blueocean:1.25.2
+    - configuration-as-code:1.55.1
+    - http_request:1.12
+    - pipeline-utility-steps:2.11.0
     - ansible:1.1
-    - gitea:1.4.3
+    - gitea:1.4.1
     - opentelemetry:2.7.1
   installLatestPlugins: false
   JCasC:
@@ -177,6 +177,11 @@ controller:
 
       demo-default-jobs-config: |
 {% include 'demo-default-jobs.yml.j2' %}
+{% endif %}
+{% if demo_default|default(False) == True %}
+
+      demo-monaco-jobs-config: |
+{% include 'demo-monaco-jobs.yml.j2' %}
 {% endif %}
 {% if demo_appsec|default(False) == True %}
 

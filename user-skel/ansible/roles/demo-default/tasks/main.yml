@@ -56,6 +56,7 @@
     git_remote: "gitea"
   loop:
   - { repo_target: "{{ demo_default_repo_name }}", repo_src: "{{ demo_default_source_repo }}", git_org: "{{ demo_default_org }}" }
+  - { repo_target: "{{ monaco_default_repo_name }}", repo_src: "{{ monaco_default_source_repo }}", git_org: "{{ demo_default_org }}" }
   when: new_repo_created is defined and new_repo_created == true
 
 - include_role:
