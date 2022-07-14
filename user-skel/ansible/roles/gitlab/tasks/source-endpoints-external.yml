@@ -1,0 +1,4 @@
+---
+- name: Set facts - external endpoint
+  set_fact:
+    gitlab_external_endpoint: "http://{{ gitlab_domain }}"
