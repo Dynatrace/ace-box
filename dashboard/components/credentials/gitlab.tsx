@@ -4,6 +4,7 @@ import DetailTemplate from '../links/templates/details'
 import LinkTemplate from './templates/link'
 import UsernameTemplate from './templates/username'
 import PasswordTemplate from './templates/password'
+import TokenTemplate from './templates/token'
 import type { CredentialProps } from './templates/types'
 
 const Link: FunctionComponent<CredentialProps> = () => {
@@ -33,11 +34,22 @@ const Password: FunctionComponent<CredentialProps> = ({ variant }) => {
   )
 }
 
+const Token: FunctionComponent<CredentialProps> = ({ variant }) => {
+  const { gitlab } = useContext(CredentialProvider)
+  const { token } = gitlab
+
+  return (
+    <TokenTemplate token={token} variant={variant} />
+  )
+}
+
 const GitlabLink = Link
 
 const GitlabUsername = Username
 
 const GitlabPassword = Password
+
+const GitlabToken = Token
 
 const DetailedLink = () => {
   const { gitlab } = useContext(CredentialProvider)
@@ -47,9 +59,9 @@ const DetailedLink = () => {
     ? <DetailTemplate
         title={label || 'Gitlab'}
         href={href || '#'}
-        credentials={[GitlabUsername, GitlabPassword]}
+        credentials={[GitlabUsername, GitlabPassword, GitlabToken]}
       />
     : null
 }
 
-export { DetailedLink as default, Link, GitlabLink, Username, GitlabUsername, Password, GitlabPassword }
+export { DetailedLink as default, Link, GitlabLink, Username, GitlabUsername, Password, GitlabPassword, Token, GitlabToken }

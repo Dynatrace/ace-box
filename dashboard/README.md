@@ -35,6 +35,7 @@ The `pages/api` directory is mapped to `/api/*`. Files in this directory are tre
 | GITLAB_URL | Gitlab | URL  |
 | GITLAB_USER | Gitlab | Username  |
 | GITLAB_PASSWORD | Gitlab | Password  |
+| GITLAB_OAUTH | Gitlab | OAuth Token  |
 | AWX_URL | AWX | URL  |
 | AWX_USER | AWX | Username  |
 | AWX_PASSWORD | AWX | Password  |
