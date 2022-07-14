@@ -1,0 +1,9 @@
+config:
+    - app-simplenode-staging: "application.json"
+    - app-simplenode-prod: "application.json"
+  
+app-simplenode-staging:
+    - name: "app.simplenodeservice-appsec.staging"
+
+app-simplenode-prod:
+    - name: "app.simplenodeservice-appsec.production"

@@ -1,0 +1,115 @@
+{
+    "dashboardMetadata": {
+      "name": "{{ .name }}",
+      "shared": true,
+      "owner": "",
+      "sharingDetails": {
+        "linkShared": true,
+        "published": true
+      },
+      "dashboardFilter": {
+        "timeframe": "-30m",
+        "managementZone": {
+          "id": "{{ .managementZoneId }}",
+          "name": "{{ .managementZoneName }}"
+        }
+      }
+    },
+    "tiles": [
+      {
+        "name": "Service health",
+        "tileType": "SERVICES",
+        "configured": true,
+        "bounds": {
+          "top": 38,
+          "left": 0,
+          "width": 304,
+          "height": 304
+        },
+        "tileFilter": {
+          "timeframe": null,
+          "managementZone": null
+        },
+        "filterConfig": null,
+        "chartVisible": true
+      },
+      {
+        "name": "Custom chart",
+        "tileType": "CUSTOM_CHARTING",
+        "configured": true,
+        "bounds": {
+          "top": 38,
+          "left": 342,
+          "width": 494,
+          "height": 304
+        },
+        "tileFilter": {
+          "timeframe": null,
+          "managementZone": null
+        },
+        "filterConfig": {
+          "type": "MIXED",
+          "customName": "Response time",
+          "defaultName": "Custom chart",
+          "chartConfig": {
+            "legendShown": true,
+            "type": "TIMESERIES",
+            "series": [
+              {
+                "metric": "builtin:service.response.time",
+                "aggregation": "AVG",
+                "percentile": null,
+                "type": "BAR",
+                "entityType": "SERVICE",
+                "dimensions": [],
+                "sortAscending": false,
+                "aggregationRate": "TOTAL",
+                "sortColumn": true
+              }
+            ],
+            "resultMetadata": {}
+          },
+          "filtersPerEntityType": {}
+        }
+      },
+      {
+        "name": "Custom chart",
+        "tileType": "CUSTOM_CHARTING",
+        "configured": true,
+        "bounds": {
+          "top": 38,
+          "left": 874,
+          "width": 494,
+          "height": 304
+        },
+        "tileFilter": {
+          "timeframe": null,
+          "managementZone": null
+        },
+        "filterConfig": {
+          "type": "MIXED",
+          "customName": "Failure rate (any  errors)",
+          "defaultName": "Custom chart",
+          "chartConfig": {
+            "legendShown": true,
+            "type": "TIMESERIES",
+            "series": [
+              {
+                "metric": "builtin:service.errors.total.rate",
+                "aggregation": "AVG",
+                "percentile": null,
+                "type": "BAR",
+                "entityType": "SERVICE",
+                "dimensions": [],
+                "sortAscending": false,
+                "aggregationRate": "TOTAL",
+                "sortColumn": true
+              }
+            ],
+            "resultMetadata": {}
+          },
+          "filtersPerEntityType": {}
+        }
+      }
+    ]
+  }
