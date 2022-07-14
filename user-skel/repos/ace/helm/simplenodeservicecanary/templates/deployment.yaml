@@ -1,0 +1,83 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    meta.helm.sh/release-name: "{{ .Release.Name }}"
+  labels:
+    app: "{{ .Chart.Name }}"
+    version: {{ .Values.version }}
+    app.kubernetes.io/name: "{{ .Chart.Name }}"
+    app.kubernetes.io/component: "api"
+    app.kubernetes.io/version: "{{ .Values.version }}"
+    app.kubernetes.io/managed-by: "Helm"
+    chart: "{{ .Chart.Name }}"
+    app.kubernetes.io/part-of: "simplenode-app-canary"
+  name: {{ .Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+      version: {{ .Values.version }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+        version: {{ .Values.version }}
+        app.kubernetes.io/name: "{{ .Chart.Name }}"
+        app.kubernetes.io/version: "{{ .Values.version }}"
+        app.kubernetes.io/managed-by: "Helm"
+        app.kubernetes.io/part-of: "simplenode-app-canary"
+        app.kubernetes.io/component: "api"
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: {{ .Values.image }}
+        env:
+        # - name: DT_TAGS
+        #   value: {{ .Values.dt_tags }}
+        # - name: DT_CUSTOM_PROP
+        #   value: {{ .Values.dt_custom_prop }}
+        - name: DT_APPLICATION_RELEASE_VERSION
+          value: "{{ .Values.version }}"
+        - name: DT_APPLICATION_BUILD_VERSION
+          value: "{{ .Values.build_version }}"
+        - name: DT_APPLICATION_NAME
+          value: "simplenode-app-canary"
+        - name: DT_APPLICATION_ENVIRONMENT
+          value: "{{ .Release.Namespace }}"
+        - name: DT_CLUSTER_ID
+          value: "simplenodeservice-canary"
+        resources:
+          limits:
+            cpu: 200m
+            memory: 200Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp-volume
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 15
+      volumes:
+        - name: tmp-volume
+          emptyDir:
+            medium: Memory
+      nodeSelector:
+        beta.kubernetes.io/os: linux
