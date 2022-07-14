@@ -1,0 +1,12 @@
+config:
+    - health-canary: "health-check-monitor.json"
+  
+health-canary:
+    - name: "webcheck.simplenode.canary"
+    - url: "http://simplenodeservice.canary.{{ .Env.INGRESS_DOMAIN }}/api/invoke?url=http://simplenodeservice.canary.{{ .Env.INGRESS_DOMAIN }}"
+    - description: "Health Check for simplenode in canary"
+    - location: "/infrastructure/synthetic-location/acebox.id"
+    # - managementZoneId: "/ace/management-zone/management-zone-staging.id"
+    - tag: "/canary/auto-tag/tagging-canary.name"
+    #- applicationId: "/ace/application/app-simplenode-staging.id"
+    - enabled: "true"

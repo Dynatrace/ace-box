@@ -1,0 +1,19 @@
+config:
+    - dashboard-canary: "dashboard.json"
+    - canary: "canary.json"
+  
+dashboard-canary:
+    - name: "ace-demo-canary - Dashboard"
+    - managementZoneId: "/canary/management-zone/management-zone-canary.id"
+    - managementZoneName: "/canary/management-zone/management-zone-canary.name"
+    - sloId: "/canary/slo/simplenode-canary.id"
+    - metricNameResponseTimeByVersion: "/canary/calculated-metrics-service/simplenode-canary-response_time_by_version.name"
+    - metricNameFailureRateByVersion: "/canary/calculated-metrics-service/simplenode-canary-failure_rate_by_version.name"
+
+canary:
+    - name: "🐥 Canary Tracker"
+    - managementZoneId: "/canary/management-zone/management-zone-canary.id"
+    - managementZoneName: "/canary/management-zone/management-zone-canary.name"
+    - sloId: "/canary/slo/simplenode-canary.id"
+    - metricNameResponseTimeByVersion: "/canary/calculated-metrics-service/simplenode-canary-response_time_by_version.name"
+    - metricNameFailureRateByVersion: "/canary/calculated-metrics-service/simplenode-canary-failure_rate_by_version.name"

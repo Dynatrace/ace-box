@@ -1,0 +1,8 @@
+
+config:
+  - app-detect-simplenode-canary: "rule.json"
+
+app-detect-simplenode-canary:
+  - name: "/canary/application/app-simplenode-canary.name"
+  - applicationId: "/canary/application/app-simplenode-canary.id"
+  - pattern: "http://simplenodeservice.canary.{{ .Env.INGRESS_DOMAIN }}"

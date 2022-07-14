@@ -1,0 +1,5 @@
+config:
+    - app-simplenode-canary: "application.json"
+  
+app-simplenode-canary:
+    - name: "app.simplenodeservice.canary"

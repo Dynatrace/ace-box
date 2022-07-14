@@ -1,0 +1,14 @@
+{
+  "enabled": true,
+  "name": "{{ .name }}",
+  "customDescription": "Service Errors Total SuccessCount / Service RequestCount Total",
+  "useRateMetric": false,
+  "metricRate": "",
+  "metricNumerator": "builtin:service.errors.total.successCount:splitBy()",
+  "metricDenominator": "builtin:service.requestCount.total:splitBy()",
+  "evaluationType": "AGGREGATE",
+  "filter": "type(\"SERVICE\"),tag(\"[Environment]DT_APPLICATION_NAME:{{ .DT_APPLICATION_NAME }}\",\"environment:{{ .namespace }}\")",
+  "target": 95,
+  "warning": 99,
+  "timeframe": "-1w"
+}
