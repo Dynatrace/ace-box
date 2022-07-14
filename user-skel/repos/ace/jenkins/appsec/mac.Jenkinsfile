@@ -34,7 +34,7 @@ pipeline {
 			steps {
                 container('ace') {
                     script{
-                        sh "monaco -v -dry-run -e=$ENVS_FILE -p=simplenode monaco/projects"
+                        sh "monaco -v -dry-run -e=$ENVS_FILE -p=simplenode-appsec monaco/projects"
                     }
                 }
 			}
@@ -43,7 +43,7 @@ pipeline {
 			steps {
                 container('ace') {
                     script {
-				        sh "monaco -v -e=$ENVS_FILE -p=simplenode monaco/projects"
+				        sh "monaco -v -e=$ENVS_FILE -p=simplenode-appsec monaco/projects"
                     }
                 }
 			}

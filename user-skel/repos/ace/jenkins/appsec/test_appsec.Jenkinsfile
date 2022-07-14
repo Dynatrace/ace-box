@@ -15,7 +15,7 @@ pipeline {
         choice(name: 'QG_MODE', choices: ['yaml','dashboard'], description: 'Use yaml or dashboard for QG')
     }
     environment {
-        ENVIRONMENT = 'simplenodeappsec-staging'
+        TARGET_NAMESPACE = 'simplenodeappsec-staging'
         PROJECT = 'simplenodeproject-appsec'
         MONITORING = 'dynatrace'
         VU = 1
@@ -53,21 +53,10 @@ pipeline {
         stage('DT Test Start') {
             steps {
                     script {
-                        def tagMatchRules = [
-                            [
-                                "meTypes": [ "PROCESS_GROUP_INSTANCE"],
-                                tags: [
-                                    ["context": "ENVIRONMENT", "key": "DT_RELEASE_BUILD_VERSION", "value": "${env.ART_VERSION}"],
-                                    ["context": "KUBERNETES", "key": "app.kubernetes.io/name", "value": "${env.APP_NAME}"],
-                                    ["context": "KUBERNETES", "key": "app.kubernetes.io/part-of", "value": "simplenode-app"],
-                                    ["context": "KUBERNETES", "key": "app.kubernetes.io/component", "value": "api"],
-                                    ["context": "CONTEXTLESS", "key": "environment", "value": "${env.ENVIRONMENT}"]
-                                ]
-                            ]
-                        ]
-
+                        def rootDir = pwd()
+                        def sharedLib = load "${rootDir}/jenkins/shared/shared.groovy"
                         def status = event.pushDynatraceInfoEvent (
-                            tagRule: tagMatchRules,
+                            tagRule: sharedLib.getTagRulesForPGIEvent(),
                             title: "Jmeter Start ${env.APP_NAME} ${env.ART_VERSION}",
                             description: "Performance test started for ${env.APP_NAME} ${env.ART_VERSION}",
                             source : "jmeter",
@@ -91,7 +80,7 @@ pipeline {
                         def status = jmeter.executeJmeterTest ( 
                             scriptName: "jmeter/simplenodeservice_load.jmx",
                             resultsDir: "perfCheck_${env.APP_NAME}_staging_${BUILD_NUMBER}",
-                            serverUrl: "simplenodeservice.${env.ENVIRONMENT}", 
+                            serverUrl: "simplenodeservice.${env.TARGET_NAMESPACE}", 
                             serverPort: 80,
                             checkPath: '/health',
                             vuCount: env.VU.toInteger(),
@@ -111,29 +100,19 @@ pipeline {
         stage('DT Test Stop') {
             steps {
                     script {
-                        def tagMatchRules = [
-                            [
-                                "meTypes": [ "PROCESS_GROUP_INSTANCE"],
-                                tags: [
-                                    ["context": "ENVIRONMENT", "key": "DT_RELEASE_BUILD_VERSION", "value": "${env.ART_VERSION}"],
-                                    ["context": "KUBERNETES", "key": "app.kubernetes.io/name", "value": "${env.APP_NAME}"],
-                                    ["context": "KUBERNETES", "key": "app.kubernetes.io/part-of", "value": "simplenode-app"],
-                                    ["context": "KUBERNETES", "key": "app.kubernetes.io/component", "value": "api"],
-                                    ["context": "CONTEXTLESS", "key": "environment", "value": "${env.ENVIRONMENT}"]
-                                ]
-                            ]
-                        ]
 
+                        def rootDir = pwd()
+                        def sharedLib = load "${rootDir}/jenkins/shared/shared.groovy"
                         def status = event.pushDynatraceInfoEvent (
-                             tagRule: tagMatchRules,
-                             title: "Jmeter Stop ${env.APP_NAME} ${env.ART_VERSION}",
-                             description: "Performance test stopped for ${env.APP_NAME} ${env.ART_VERSION}",
-                             source : "jmeter",
-                             customProperties : [
-                                 "Jenkins Build Number": env.BUILD_ID,
-                                 "Virtual Users" : env.VU,
-                                 "Loop Count" : env.LOOPCOUNT
-                             ]
+                            tagRule: sharedLib.getTagRulesForPGIEvent(),
+                            title: "Jmeter Stop ${env.APP_NAME} ${env.ART_VERSION}",
+                            description: "Performance test stopped for ${env.APP_NAME} ${env.ART_VERSION}",
+                            source : "jmeter",
+                            customProperties : [
+                                "Jenkins Build Number": env.BUILD_ID,
+                                "Virtual Users" : env.VU,
+                                "Loop Count" : env.LOOPCOUNT
+                            ]
                          )
                     }
             }
@@ -146,7 +125,7 @@ pipeline {
                     def labels=[:]
                     labels.put("DT_RELEASE_VERSION", "${env.BUILD}.0.0")
                     labels.put("DT_RELEASE_BUILD_VERSION", "${env.ART_VERSION}")
-                    labels.put("DT_RELEASE_STAGE", "${env.ENVIRONMENT}")
+                    labels.put("DT_RELEASE_STAGE", "${env.TARGET_NAMESPACE}")
                     labels.put("DT_RELEASE_PRODUCT", "${env.PARTOF}")
                     
                     def context = cloudautomation.sendStartEvaluationEvent starttime:"", endtime:"", labels:labels
@@ -186,8 +165,9 @@ pipeline {
                             break;
                         case "FAILURE":
                             env.DPROD = false;
+
                             def status = event.pushDynatraceErrorEvent (
-                                tagRule: tagMatchRules,
+                                tagRule: getTagRules(),
                                 title: "Quality Gate failed for ${env.APP_NAME} ${env.ART_VERSION}",
                                 description: "Quality Gate evaluation failed for ${env.APP_NAME} ${env.ART_VERSION}",
                                 source : "jenkins",
@@ -221,3 +201,20 @@ pipeline {
         }  
     }
 }
+
+// def getTagRules() {
+//     def tagMatchRules = [
+//         [
+//             "meTypes": [ "PROCESS_GROUP_INSTANCE"],
+//             tags: [
+//                 ["context": "ENVIRONMENT", "key": "DT_RELEASE_BUILD_VERSION", "value": "${env.ART_VERSION}"],
+//                 ["context": "KUBERNETES", "key": "app.kubernetes.io/name", "value": "${env.APP_NAME}"],
+//                 ["context": "KUBERNETES", "key": "app.kubernetes.io/part-of", "value": "simplenode-app"],
+//                 ["context": "KUBERNETES", "key": "app.kubernetes.io/component", "value": "api"],
+//                 ["context": "CONTEXTLESS", "key": "environment", "value": "${env.ENVIRONMENT}"]
+//             ]
+//         ]
+//     ]
+
+//     return tagMatchRules
+// }

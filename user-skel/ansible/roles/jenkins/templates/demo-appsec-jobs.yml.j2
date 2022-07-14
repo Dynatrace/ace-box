@@ -9,7 +9,7 @@
                 }
                 definition {
                   cpsScm {
-                    scriptPath('jenkins/build.Jenkinsfile')
+                    scriptPath('jenkins/appsec/build.Jenkinsfile')
                     scm {
                       git {
                           remote { 
@@ -33,7 +33,7 @@
                 }
                 definition {
                   cpsScm {
-                    scriptPath('jenkins/deployStaging.Jenkinsfile')
+                    scriptPath('jenkins/appsec/deployStaging.Jenkinsfile')
                     scm {
                       git {
                           remote { 
@@ -57,7 +57,7 @@
                 }
                 definition {
                   cpsScm {
-                    scriptPath('jenkins/test_appsec.Jenkinsfile')
+                    scriptPath('jenkins/appsec/test_appsec.Jenkinsfile')
                     scm {
                       git {
                           remote { 
@@ -81,7 +81,7 @@
                 }
                 definition {
                   cpsScm {
-                    scriptPath('jenkins/deployProd.Jenkinsfile')
+                    scriptPath('jenkins/appsec/deployProd.Jenkinsfile')
                     scm {
                       git {
                           remote { 
@@ -99,7 +99,7 @@
               pipelineJob('demo-appsec/Monitoring as Code') {
                 definition {
                   cpsScm {
-                    scriptPath('jenkins/mac.Jenkinsfile')
+                    scriptPath('jenkins/appsec/mac.Jenkinsfile')
                     scm {
                       git {
                           remote { 
