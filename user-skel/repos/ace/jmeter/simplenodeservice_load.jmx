@@ -9,7 +9,7 @@
         <collectionProp name="Arguments.arguments">
           <elementProp name="SERVER_URL" elementType="Argument">
             <stringProp name="Argument.name">SERVER_URL</stringProp>
-            <stringProp name="Argument.value">simplenodeservice.staging-keptnsample.35.222.211.27.xip.io</stringProp>
+            <stringProp name="Argument.value">simplenodeservice.staging-keptnsample.xyz.xip.io</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="DefaultThinkTime" elementType="Argument">
@@ -196,7 +196,7 @@ hm.add(new org.apache.jmeter.protocol.http.control.Header(&quot;x-dynatrace-test
             <collectionProp name="Arguments.arguments">
               <elementProp name="url" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">http://simplenodeservice.staging</stringProp>
+                <stringProp name="Argument.value">http://${__P(SERVER_URL,${SERVER_URL})}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 <stringProp name="Argument.name">url</stringProp>

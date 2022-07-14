@@ -1,17 +1,15 @@
 ---
 spec_version: '0.1.0'
 dtCreds: dynatrace
+dashboard: query
 attachRules:
   tagRule:
   - meTypes:
     - PROCESS_GROUP_INSTANCE
     tags:
     - context: ENVIRONMENT
-      key: DT_RELEASE_BUILD_VERSION
-      value: $LABEL.DT_RELEASE_BUILD_VERSION
-    - context: ENVIRONMENT
       key: DT_RELEASE_STAGE
-      value: $LABEL.DT_RELEASE_STAGE
+      value: $STAGE
     - context: KUBERNETES
       key: app.kubernetes.io/name
       value: $SERVICE
