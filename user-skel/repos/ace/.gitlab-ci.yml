@@ -4,8 +4,8 @@ include:
 
 variables:
   BUILD_ID: '1'  # 1, 2, 3 or 4
-  DT_RELEASE_VERSION: 'v$BUILD_ID.0.0'
-  DT_RELEASE_BUILD_VERSION: '$BUILD_ID.0.0'
+  DT_RELEASE_VERSION: 'v$BUILD_ID.0.2'
+  DT_RELEASE_BUILD_VERSION: '$BUILD_ID.0.2'
   DT_RELEASE_PRODUCT: 'simplenode-app'
   DT_RELEASE_STAGE: 'simplenode-gitlab-staging'
 
@@ -24,13 +24,13 @@ monaco:
   image: dynatraceace/monaco-runner:release-v1.6.0
   stage: init
   script:
-    - monaco -v -dry-run -e=mac/environments.yaml -p=infrastructure mac/projects
-    - monaco -v -e=mac/environments.yaml -p=infrastructure mac/projects
-    - monaco -v -dry-run -e=mac/environments.yaml -p=ace mac/projects
-    - monaco -v -e=mac/environments.yaml -p=ace mac/projects
+    - monaco -v -dry-run -e=monaco/environments.yaml -p=infrastructure monaco/projects
+    - monaco -v -e=monaco/environments.yaml -p=infrastructure monaco/projects
+    - monaco -v -dry-run -e=monaco/environments.yaml -p=simplenode-gitlab monaco/projects
+    - monaco -v -e=monaco/environments.yaml -p=simplenode-gitlab monaco/projects
 
 init_keptn:
-  image: dynatraceace/keptn-gitlab-runner:2.1
+  image: dynatraceace/keptn-gitlab-runner:2.2
   stage: init
   variables: 
     KEPTN_PROJECT: simplenode-gitlab
@@ -124,7 +124,7 @@ run-tests:
     - keptn.test.endtime
 
 quality_gate:
-  image: dynatraceace/keptn-gitlab-runner:2.1
+  image: dynatraceace/keptn-gitlab-runner:2.2
   stage: eval
   script:
     - export KEPTN_LABELS='[{"DT_RELEASE_VERSION":"'${DT_RELEASE_VERSION}'"},{"DT_RELEASE_BUILD_VERSION":"'${DT_RELEASE_BUILD_VERSION}'"},{"DT_RELEASE_STAGE":"'${DT_RELEASE_STAGE}'"},{"DT_RELEASE_PRODUCT":"'${DT_RELEASE_PRODUCT}'"}]'
