@@ -1,0 +1,12 @@
+---
+- include_role:
+    name: demo-default
+
+- include_role:
+    name: demo-appsec
+
+- include_role:
+    name: demo-autorem
+
+- include_role:
+    name: demo-gitlab
