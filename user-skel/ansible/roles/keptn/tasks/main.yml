@@ -60,3 +60,7 @@
 
 - name: Keptn - Install Dynatrace service
   include: roles/keptn/tasks/dynatrace-service.yml
+
+- name: Keptn - Change look and feel
+  when: keptn_look_and_feel_url is defined
+  shell: "kubectl -n keptn set env deployment/bridge LOOK_AND_FEEL_URL={{ keptn_look_and_feel_url }}"
