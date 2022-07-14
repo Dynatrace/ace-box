@@ -11,6 +11,12 @@
   # are sourced alongside newly enabled/disabled
   - role: config-v2
 
+  # Use case - All demo
+  - role: demo-all
+    tags:
+    - demo_all
+    - never
+
   # Use case - Quality Gates demo
   - role: demo-default
     tags:
@@ -27,6 +33,12 @@
   - role: demo-autorem
     tags:
     - demo_autorem
+    - never
+  
+  # Use case - Auto remediation demo
+  - role: demo-gitlab
+    tags:
+    - demo_gitlab
     - never
 
   # Use case - AppSec HOT

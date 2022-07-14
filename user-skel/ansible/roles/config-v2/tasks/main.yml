@@ -10,6 +10,19 @@
   - unconfig
   - never
 
+- name: Enable "demo_all"
+  include_tasks: set-var.yml
+  vars:
+  - var_key_to_set: "demo_all"
+  - var_value_to_set: "{{ not is_unconfig }}"
+  args:
+    apply:
+      tags:
+        - demo_all
+  tags:
+  - demo_all
+  - never
+
 - name: Enable "demo_default"
   include_tasks: set-var.yml
   vars:
@@ -47,6 +60,19 @@
         - demo_autorem
   tags:
   - demo_autorem
+  - never
+
+- name: Enable "demo_gitlab"
+  include_tasks: set-var.yml
+  vars:
+  - var_key_to_set: "demo_gitlab"
+  - var_value_to_set: "{{ not is_unconfig }}"
+  args:
+    apply:
+      tags:
+        - demo_gitlab
+  tags:
+  - demo_gitlab
   - never
 
 - name: Enable "hot_appsec"

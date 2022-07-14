@@ -29,11 +29,16 @@ install_targets = [
     'awx',
     'cloudautomation'
 ]
-uninstall_targets = []
+uninstall_targets = [
+    'gitlab',
+    'jenkins'
+]
 enable_targets = [
     'demo_default',
     'demo_appsec',
     'demo_autorem',
+    'demo_gitlab',
+    'demo_all',
     'hot_appsec'
 ]
 
