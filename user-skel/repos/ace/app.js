@@ -50,7 +50,7 @@ var init = function(newBuildNumber) {
 
 	// CHECK IF WE ARE RUNNING "In Production"
 	// first we check if somebody set the deployment_group_name env-variable
-	inProduction = process.env.DEPLOYMENT_GROUP_NAME && process.env.DEPLOYMENT_GROUP_NAME.startsWith("Production");
+	inProduction = process.env.DT_APPLICATION_ENVIRONMENT && (process.env.DT_APPLICATION_ENVIRONMENT.includes("production")||process.env.DT_APPLICATION_ENVIRONMENT.includes("canary"))  ;
 	// second we check whether our host or podname includes blue or green in its name - we use this for blue/green deployments in production
 	if(!inProduction) {
 		inProduction = os.hostname().includes("green") || os.hostname().includes("blue");
