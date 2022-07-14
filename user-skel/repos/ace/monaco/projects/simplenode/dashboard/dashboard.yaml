@@ -1,0 +1,13 @@
+config:
+    - dashboard-staging: "dashboard.json"
+    - dashboard-qg: "quality-gate-dashboard.json"
+  
+dashboard-staging:
+    - name: "MAC Dashboard Staging"
+    - managementZoneId: "/simplenode/management-zone/management-zone-staging.id"
+    - managementZoneName: "/simplenode/management-zone/management-zone-staging.name"
+
+dashboard-qg:
+    - name: "KQG;project=simplenodeproject;service=simplenodeservice;stage=staging"
+    - managementZoneId: "/simplenode/management-zone/management-zone-staging.id"
+    - managementZoneName: "/simplenode/management-zone/management-zone-staging.name"
