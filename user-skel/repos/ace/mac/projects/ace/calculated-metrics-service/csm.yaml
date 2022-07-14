@@ -1,6 +1,0 @@
-config:
-    - simplenode.staging: "csm.json"
-
-simplenode.staging:
-    - name: "simplenode.staging"
-    - metricKey: "calc:service.simplenode.staging"
