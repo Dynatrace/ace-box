@@ -1,0 +1,11 @@
+config:
+    - tagging-staging: "tagging.json"
+    - tagging-prod: "tagging.json"
+  
+tagging-staging:
+    - name: "mac-staging"
+    - namespace: "simplenode-gitlab-staging"
+
+tagging-prod:
+    - name: "mac-prod"
+    - namespace: "simplenode-gitlab-production"

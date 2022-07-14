@@ -1,0 +1,12 @@
+config:
+    - management-zone-staging: "management-zone.json"
+    - management-zone-prod: "management-zone.json"
+
+management-zone-staging:
+    - environment: "simplenode-gitlab-staging"
+    - name: "simplenode-gitlab-staging"
+
+management-zone-prod:
+    - environment: "simplenode-gitlab-production"
+    - name: "simplenode-gitlab-production"
+
