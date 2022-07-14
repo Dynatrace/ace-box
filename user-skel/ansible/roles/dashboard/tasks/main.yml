@@ -56,7 +56,7 @@
     /snap/bin/helm upgrade -i ace-dashboard /tmp/dashboard-helm-chart --namespace {{ dashboard_namespace }} --create-namespace
     --set domain={{ ingress_domain }}
     --set authb64encoded={{ authb64encoded }}
-    --set image=dynatraceace/ace-box-dashboard:1.1.0
+    --set image={{ dashboard_image }}
     --set env.SIMPLENODEAPP_URL_STAGING={{ ingress_protocol }}://simplenodeservice.staging.{{ ingress_domain }}
     --set env.SIMPLENODEAPP_URL_PRODUCTION={{ ingress_protocol }}://simplenodeservice.production.{{ ingress_domain }}
     --set env.SIMPLENODEAPP_URL_CANARY={{ ingress_protocol }}://simplenodeservice.canary.{{ ingress_domain }}
@@ -70,6 +70,7 @@
     --set env.GITLAB_URL={{ ingress_protocol }}://gitlab.{{ ingress_domain }}
     --set env.GITLAB_USER={{ gitlab_username | default(None) }}
     --set env.GITLAB_PASSWORD={{ gitlab_password | default(None) }}
+    --set env.GITLAB_OAUTH={{ gitlab_oauth_token | default(None) }}
     --set env.AWX_URL={{ ingress_protocol }}://awx.{{ ingress_domain }}
     --set env.AWX_USER={{ awx_admin_username | default(None) }}
     --set env.AWX_PASSWORD={{ awx_admin_password | default(None) }}
