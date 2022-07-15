@@ -13,7 +13,7 @@ stages:
   - init
   - deploy
   - test
-  - eval
+  - evaluate
 
 workflow:
   rules:
@@ -29,7 +29,7 @@ monaco:
     - monaco -v -dry-run -e=monaco/environments.yaml -p=simplenode-gitlab monaco/projects
     - monaco -v -e=monaco/environments.yaml -p=simplenode-gitlab monaco/projects
 
-init_keptn:
+init_cloudautomation:
   image: dynatraceace/keptn-gitlab-runner:2.2
   stage: init
   variables: 
@@ -125,7 +125,7 @@ run-tests:
 
 quality_gate:
   image: dynatraceace/keptn-gitlab-runner:2.2
-  stage: eval
+  stage: evaluate
   script:
     - export KEPTN_LABELS='[{"DT_RELEASE_VERSION":"'${DT_RELEASE_VERSION}'"},{"DT_RELEASE_BUILD_VERSION":"'${DT_RELEASE_BUILD_VERSION}'"},{"DT_RELEASE_STAGE":"'${DT_RELEASE_STAGE}'"},{"DT_RELEASE_PRODUCT":"'${DT_RELEASE_PRODUCT}'"}]'
     - /keptn/keptn_eval.sh
