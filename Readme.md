@@ -89,7 +89,7 @@ The recommended way of installing any ACE box version, local or cloud, is via Te
         | ca_tenant | no | Dynatrace Cloud Automation environment URL. **Note**: if not set, Keptn will be installed and used instead |
         | ca_api_token | no | Dynatrace Cloud Automation api token. **Note**: if not set, Keptn will be installed and used instead |
         | acebox_user | no | User, for which home directory will be provisioned (Default: "ace") |
-        | use_case | no | Use case, the ACE Box will be prepared for. Options are "demo_default" (Default), "demo_appsec" and "demo_autorem"  |
+        | use_case | no | Use case, the ACE Box will be prepared for. Options are `demo_default` (Default), `demo_appsec`, `demo_autorem`, `demo_gitlab` and `demo_all`  |
 
 4. Run `terraform init`
 5. Run `terraform apply`
@@ -261,6 +261,8 @@ $ ace --version
   `demo_default` | Prepares ACE Box for a default demo, i.e. Quality Gates on Jenkins |
   `demo_appsec` | Prepares ACE Box for an AppSec demo, i.e. AppSec Quality Gates on Jenkins |
   `demo_autorem` | Prepares ACE Box for an auto remediation demo, i.e. Jenkins canary traffic shift with AWX |
+  `demo_gitlab` | Prepares ACE Box for a default demo, i.e. Quality Gates on GitLab |
+  `demo_all` | A combination of `demo_default` `demo_appsec` `demo_autorem` `demo_gitlab`. Please note that this will require a VM with more capacity|
 
   
 ### Available install components:
