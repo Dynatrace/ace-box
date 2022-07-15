@@ -8,6 +8,12 @@ I mainly use it to demonstrate continuous delivery, automated quality gates and 
 ## Demo flow
 This repo comes with everything to demonstrate an end to end flow for **Monitoring as a Service**, **Monitoring as Code** and **Quality Gates**. Check out [demo](demo/Readme.md) for instructions and details.
 
+For a standard demo flow incl. **Monitoring as a Service**, **Monitoring as Code/Monaco** and **Quality Gates** using Jenkins and Gitea: [demo-default](demo/Readme.md)
+
+For a Security Gates demo based on the standard demo above: [demo-appsec](demo/appsec/Readme.md)
+
+For a standard demo but using **GitLab**: [demo-gitlab](demo/gitlab/Readme.md)
+
 ## Extended Feature Set
 I've modified and extended it with a couple of additional API calls such as:
 * echo a string
