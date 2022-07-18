@@ -61,6 +61,7 @@ deployment:
       --set environment="$DT_RELEASE_STAGE" 
       --namespace "$DT_RELEASE_STAGE" --create-namespace 
       --wait
+    - sleep 150
 
 
 # dynatrace_info_event:
@@ -72,16 +73,19 @@ deployment:
 #     EVENT_TYPE: "CUSTOM_INFO"
 #     TITLE: "My Event Title"
 
-# dynatrace_deploy_event:
-#   extends: .dynatrace_event
-#   stage: deploy
-#   variables:
-#     DESCRIPTION: "A DEPLOY event"
-#     CUSTOM_PROPERTIES: '{"label1":"foo","label2":"bar"}'
-#     EVENT_TYPE: "CUSTOM_DEPLOYMENT"
-#     DEPLOYMENT_NAME: "simplenode_gitlab"
-#     DEPLOYMENT_VERSION: "1.0.0"
-#     REMEDIATION_ACTION: "http://google.com"
+dynatrace_deploy_event:
+  extends: .dynatrace_event
+  stage: deploy
+  needs: ["deployment"]
+  variables:
+    DYNATRACE_ENV_URL: "$DT_TENANT_URL"
+    DYNATRACE_API_TOKEN: "$DT_API_TOKEN"
+    DESCRIPTION: "$DT_RELEASE_PRODUCT $DT_RELEASE_VERSION deployed"
+    CUSTOM_PROPERTIES: '{"version":"$DT_RELEASE_VERSION","namespace":"$DT_RELEASE_STAGE"}'
+    EVENT_TYPE: "CUSTOM_DEPLOYMENT"
+    DEPLOYMENT_NAME: "simplenode_gitlab"
+    DEPLOYMENT_VERSION: "$DT_RELEASE_VERSION"
+    REMEDIATION_ACTION: "http://google.com"
 
 # dynatrace_annotation_event:
 #   extends: .dynatrace_event
