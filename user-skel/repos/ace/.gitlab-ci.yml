@@ -112,13 +112,13 @@ deployment-production:
   stage: deploy-production
   script:
     - >
-      helm upgrade --install simplenode-gitlab-staging helm/simplenodeservice 
+      helm upgrade --install simplenode-gitlab-production helm/simplenodeservice 
       --set image="dynatraceace/simplenodeservice:$DT_RELEASE_BUILD_VERSION"
       --set domain="$INGRESS_DOMAIN" 
       --set version="$DT_RELEASE_VERSION"
       --set build_version="$DT_RELEASE_BUILD_VERSION" 
-      --set environment="$DT_RELEASE_STAGE_PROD" 
-      --namespace "$DT_RELEASE_STAGE_PROD" --create-namespace 
+      --set environment="$DT_RELEASE_STAGE_PRODUCTION" 
+      --namespace "$DT_RELEASE_STAGE_PRODUCTION" --create-namespace 
       --wait
     - sleep 150
 
