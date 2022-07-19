@@ -8,12 +8,14 @@ variables:
   DT_RELEASE_BUILD_VERSION: '$BUILD_ID.0.2'
   DT_RELEASE_PRODUCT: 'simplenode-app'
   DT_RELEASE_STAGE: 'simplenode-gitlab-staging'
+  DT_RELEASE_STAGE_PRODUCTION: 'simplenode-gitlab-production'
 
 stages:
   - init
-  - deploy
+  - deploy-staging
   - test
   - evaluate
+  - deploy-production
 
 workflow:
   rules:
@@ -26,6 +28,7 @@ monaco:
   script:
     - monaco -v -dry-run -e=monaco/environments.yaml -p=infrastructure monaco/projects
     - monaco -v -e=monaco/environments.yaml -p=infrastructure monaco/projects
+    - sleep 30
     - monaco -v -dry-run -e=monaco/environments.yaml -p=simplenode-gitlab monaco/projects
     - monaco -v -e=monaco/environments.yaml -p=simplenode-gitlab monaco/projects
 
@@ -48,9 +51,9 @@ init_cloudautomation:
     paths: 
     - keptn.init.json
 
-deployment:
+deployment-staging:
   image: dtzar/helm-kubectl
-  stage: deploy
+  stage: deploy-staging
   script:
     - >
       helm upgrade --install simplenode-gitlab-staging helm/simplenodeservice 
@@ -63,50 +66,20 @@ deployment:
       --wait
     - sleep 150
 
-
-# dynatrace_info_event:
-#   extends: .dynatrace_event
-#   stage: deploy
-#   variables:
-#     DESCRIPTION: "An INFO event"
-#     CUSTOM_PROPERTIES: '{"label1":"foo","label2":"bar"}'
-#     EVENT_TYPE: "CUSTOM_INFO"
-#     TITLE: "My Event Title"
-
-dynatrace_deploy_event:
+dynatrace_deploy_event_staging:
   extends: .dynatrace_event
-  stage: deploy
-  needs: ["deployment"]
+  stage: deploy-staging
+  needs: ["deployment-staging"]
   variables:
     DYNATRACE_ENV_URL: "$DT_TENANT_URL"
     DYNATRACE_API_TOKEN: "$DT_API_TOKEN"
     DESCRIPTION: "$DT_RELEASE_PRODUCT $DT_RELEASE_VERSION deployed"
-    CUSTOM_PROPERTIES: '{"version":"$DT_RELEASE_VERSION","namespace":"$DT_RELEASE_STAGE"}'
+    CUSTOM_PROPERTIES: '{"namespace":"$DT_RELEASE_STAGE"}'
     EVENT_TYPE: "CUSTOM_DEPLOYMENT"
     DEPLOYMENT_NAME: "simplenode_gitlab"
     DEPLOYMENT_VERSION: "$DT_RELEASE_VERSION"
-    REMEDIATION_ACTION: "http://google.com"
-
-# dynatrace_annotation_event:
-#   extends: .dynatrace_event
-#   stage: deploy
-#   variables:
-#     DESCRIPTION: "An ANNOTATION event"
-#     CUSTOM_PROPERTIES: '{"label1":"foo","label2":"bar"}'
-#     EVENT_TYPE: "CUSTOM_ANNOTATION"
-#     ANNOTATION_TYPE: "My Custom annotation"
-#     ANNOTATION_DESCRIPTION: "I want to annotate something"
-  
-# dynatrace_config_event:
-#   extends: .dynatrace_event
-#   stage: deploy
-#   variables:
-#     DESCRIPTION: "A CONFIG event"
-#     CUSTOM_PROPERTIES: '{"label1":"foo","label2":"bar"}'
-#     EVENT_TYPE: "CUSTOM_CONFIGURATION"
-#     CONFIGURATION: "I Set Something to 1"
-#     ORIGINAL: "It was 0" 
-
+    REMEDIATION_ACTION: "Ansible Tower"
+    DT_NAMESPACE: "$DT_RELEASE_STAGE"
 
 run-tests:
   before_script: 
@@ -133,3 +106,33 @@ quality_gate:
   script:
     - export KEPTN_LABELS='[{"DT_RELEASE_VERSION":"'${DT_RELEASE_VERSION}'"},{"DT_RELEASE_BUILD_VERSION":"'${DT_RELEASE_BUILD_VERSION}'"},{"DT_RELEASE_STAGE":"'${DT_RELEASE_STAGE}'"},{"DT_RELEASE_PRODUCT":"'${DT_RELEASE_PRODUCT}'"}]'
     - /keptn/keptn_eval.sh
+
+deployment-production:
+  image: dtzar/helm-kubectl
+  stage: deploy-production
+  script:
+    - >
+      helm upgrade --install simplenode-gitlab-staging helm/simplenodeservice 
+      --set image="dynatraceace/simplenodeservice:$DT_RELEASE_BUILD_VERSION"
+      --set domain="$INGRESS_DOMAIN" 
+      --set version="$DT_RELEASE_VERSION"
+      --set build_version="$DT_RELEASE_BUILD_VERSION" 
+      --set environment="$DT_RELEASE_STAGE_PROD" 
+      --namespace "$DT_RELEASE_STAGE_PROD" --create-namespace 
+      --wait
+    - sleep 150
+
+dynatrace_deploy_event_production:
+  extends: .dynatrace_event
+  stage: deploy-production
+  needs: ["deployment-production"]
+  variables:
+    DYNATRACE_ENV_URL: "$DT_TENANT_URL"
+    DYNATRACE_API_TOKEN: "$DT_API_TOKEN" 
+    DESCRIPTION: "$DT_RELEASE_PRODUCT $DT_RELEASE_VERSION deployed"
+    CUSTOM_PROPERTIES: '{"namespace":"$DT_RELEASE_STAGE_PROD"}'
+    EVENT_TYPE: "CUSTOM_DEPLOYMENT"
+    DEPLOYMENT_NAME: "simplenode_gitlab"
+    DEPLOYMENT_VERSION: "$DT_RELEASE_VERSION"
+    REMEDIATION_ACTION: "Ansible Tower"
+    DT_NAMESPACE: "$DT_RELEASE_STAGE_PRODUCTION"

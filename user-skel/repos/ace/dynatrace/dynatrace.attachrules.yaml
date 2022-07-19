@@ -2,11 +2,17 @@
 attachRules:
   tagRule:
   - meTypes:
-    - SERVICE
+    - PROCESS_GROUP_INSTANCE
     tags:
     - context: CONTEXTLESS
-      key: app
-      value: simplenodeservice
-    - context: CONTEXTLESS
       key: environment
-      value: simplenode-gitlab-staging
+      value: ${DT_NAMESPACE}
+    - context: ENVIRONMENT
+      key: DT_RELEASE_BUILD_VERSION
+      value: ${DT_RELEASE_BUILD_VERSION}
+    - context: KUBERNETES
+      key: app.kubernetes.io/name
+      value: simplenodeservice
+    - context: KUBERNETES
+      key: app.kubernetes.io/part-of
+      value: ${DT_RELEASE_PRODUCT}
