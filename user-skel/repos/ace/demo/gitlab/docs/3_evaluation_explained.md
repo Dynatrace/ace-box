@@ -111,3 +111,10 @@ total_score:
 In this stage, we ask Cloud Automation to perform the evaluation based on the above SLI/SLO defintion, time frame and additional labels we want to pass in.
 
 The CI pipeline then processes the result and promotes/fails the pipeline depending on that result.
+
+## Modifying the Quality Gate
+By making changes to the `sli.yaml` and `slo.yaml` files, and re-running the pipeline, you can change the quality gate.
+
+## (Optional): Deploying a successful build again
+
+If wanted, you can follow the steps outlined in [Deploying a bad build](2_failed_build.md#deploying-a-bad-build) to deploy a fast build by setting the `BUILD_ID` variable to `1` or `3`
