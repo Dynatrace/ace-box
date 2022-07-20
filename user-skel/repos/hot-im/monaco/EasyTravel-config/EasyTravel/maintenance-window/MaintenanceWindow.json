@@ -1,0 +1,38 @@
+{
+  "name": "{{.name}}",
+  "description": "",
+  "type": "PLANNED",
+  "enabled": false,
+  "suppression": "DETECT_PROBLEMS_AND_ALERT",
+  "suppressSyntheticMonitorsExecution": false,
+  "scope": {
+    "entities": [],
+    "matches": [
+      {
+        "type": null,
+        "managementZoneId": null,
+        "mzId": null,
+        "tags": [
+          {
+            "context": "CONTEXTLESS",
+            "key": "{{.app_tag}}",
+            "value": "{{.app_tag_value}}"
+          }
+        ],
+        "tagCombination": "AND"
+      }
+    ]
+  },
+  "schedule": {
+    "recurrenceType": "WEEKLY",
+    "recurrence": {
+      "dayOfWeek": "{{.dayOfWeek}}",
+      "dayOfMonth": null,
+      "startTime": "{{.startTime}}",
+      "durationMinutes": "{{.durationMinutes}}"
+    },
+    "start": "{{.start}}",
+    "end": "{{.end}}",
+    "zoneId": "UTC"
+  }
+}

@@ -1,0 +1,5 @@
+config:
+  - revenue: revenue.json
+
+revenue:
+  - name: Revenue

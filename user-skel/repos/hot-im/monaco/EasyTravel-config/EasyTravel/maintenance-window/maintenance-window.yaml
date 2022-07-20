@@ -1,0 +1,13 @@
+config:
+- maintenance-window1: MaintenanceWindow.json
+
+maintenance-window1:
+- name: test
+- app_tag: app
+- app_tag_value: test
+- dayOfWeek: SATURDAY
+- startTime: "11:00"
+- durationMinutes: "60"
+- start: "2022-04-28 00:00"
+- end: "2022-12-28 23:59"
+- skipDeployment: "true"

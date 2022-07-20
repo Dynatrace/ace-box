@@ -1,0 +1,36 @@
+{
+  "displayName": "{{.name}}",
+  "rules": [
+    {
+      "severityLevel": "RESOURCE_CONTENTION",
+      "tagFilter": {
+        "includeMode": "INCLUDE_ANY",
+        "tagFilters": [
+          {
+            "context": "CONTEXTLESS",
+            "key": "Entity",
+            "value": "Application"
+          }
+        ]
+      },
+      "delayInMinutes": 0
+    },
+    {
+      "severityLevel": "RESOURCE_CONTENTION",
+      "tagFilter": {
+        "includeMode": "INCLUDE_ANY",
+        "tagFilters": [
+          {
+            "context": "CONTEXTLESS",
+            "key": "Entity",
+            "value": "Services"
+          }
+        ]
+      },
+      "delayInMinutes": 0
+    }
+  ],
+  "managementZoneId": {{.mzId}},
+  "mzId": "{{.mzId}}",
+  "eventTypeFilters": []
+}

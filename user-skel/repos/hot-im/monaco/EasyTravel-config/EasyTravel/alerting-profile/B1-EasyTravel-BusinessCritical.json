@@ -1,0 +1,36 @@
+{
+  "displayName": "{{.name}}",
+  "rules": [
+    {
+      "severityLevel": "CUSTOM_ALERT",
+      "tagFilter": {
+        "includeMode": "INCLUDE_ALL",
+        "tagFilters": [
+          {
+            "context": "CONTEXTLESS",
+            "key": "Entity",
+            "value": "Application"
+          }
+        ]
+      },
+      "delayInMinutes": 0
+    },
+    {
+      "severityLevel": "AVAILABILITY",
+      "tagFilter": {
+        "includeMode": "INCLUDE_ALL",
+        "tagFilters": [
+          {
+            "context": "CONTEXTLESS",
+            "key": "Entity",
+            "value": "Application"
+          }
+        ]
+      },
+      "delayInMinutes": 0
+    }
+  ],
+  "managementZoneId": {{.mzId}},
+  "mzId": "{{.mzId}}",
+  "eventTypeFilters": []
+}

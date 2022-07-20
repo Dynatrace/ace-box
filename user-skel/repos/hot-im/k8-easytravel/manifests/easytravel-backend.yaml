@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: easytravel-backend
+  namespace: easytravel
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+        app: easytravel
+        tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: easytravel
+        tier: backend
+        app.kubernetes.io/name: easytravel-backend
+        app.kubernetes.io/instance: easytravel-backend-1.0.0
+        app.kubernetes.io/version: "1.0.0"
+        app.kubernetes.io/component: backend
+        app.kubernetes.io/part-of: easytravel
+        app.kubernetes.io/managed-by: kubernetes
+        app.kubernetes.io/created-by: ignacio
+      annotations:
+        contact: "demo@dynatrace.com"
+        priority: "high"
+        tier: backend
+        app: easytravel
+    spec:
+      containers:
+      - image: dynatrace/easytravel-backend:2.0.0.3218
+        name: easytravel-backend
+        envFrom:
+        - configMapRef:
+            name: easytravel-config
+        - secretRef:
+            name: mongo-credentials
+        resources:
+          limits:
+            cpu: 1200m
+            memory: 2048Mi
+          requests:
+            cpu: 800m
+            memory: 1024Mi
+        ports:
+        - containerPort: 8080
+          #readinessProbe:
+          #httpGet:
+          #  path: /
+          #  port: 8080
+          #  scheme: HTTP
+          #initialDelaySeconds: 5
+          #livenessProbe:
+          #httpGet:
+          #  path: /services/JourneyService/getLocations
+          #  port: 8080
+          #  scheme: HTTP
+          #initialDelaySeconds: 120
+          #periodSeconds: 120
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: easytravel
+    tier: backend
+  name: easytravel-backend
+  namespace: easytravel
+spec:
+  ports:
+  - port: 8080
+    targetPort: 8080
+  selector:
+    app: easytravel
+    tier: backend
+  type: ClusterIP

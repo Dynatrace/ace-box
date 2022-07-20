@@ -1,0 +1,5 @@
+config:
+  - nginx: nginx.json
+
+nginx:
+  - name: nginx naming

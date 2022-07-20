@@ -1,0 +1,122 @@
+{
+ "dimensionalRules": [],
+ "name": "{{.name}}",
+ "rules": [
+  {
+   "conditions": [
+    {
+     "comparisonInfo": {
+      "negate": false,
+      "operator": "EQUALS",
+      "type": "TAG",
+      "value": {
+       "context": "CONTEXTLESS",
+       "key": "{{ .appKey }}",
+       "value": "{{ .appValue }}"
+      }
+     },
+     "key": {
+      "attribute": "SERVICE_TAGS"
+     }
+    }
+   ],
+   "enabled": true,
+   "propagationTypes": [
+    "SERVICE_TO_PROCESS_GROUP_LIKE",
+    "SERVICE_TO_HOST_LIKE"
+   ],
+   "type": "SERVICE"
+  },
+  {
+   "conditions": [
+    {
+     "comparisonInfo": {
+      "negate": false,
+      "operator": "EQUALS",
+      "type": "TAG",
+      "value": {
+       "context": "CONTEXTLESS",
+       "key": "{{ .appKey }}",
+       "value": "{{ .appValue }}"
+      }
+     },
+     "key": {
+      "attribute": "PROCESS_GROUP_TAGS"
+     }
+    }
+   ],
+   "enabled": true,
+   "propagationTypes": [
+    "PROCESS_GROUP_TO_HOST"
+   ],
+   "type": "PROCESS_GROUP"
+  },
+  {
+   "conditions": [
+    {
+     "comparisonInfo": {
+      "negate": false,
+      "operator": "EQUALS",
+      "type": "TAG",
+      "value": {
+       "context": "CONTEXTLESS",
+       "key": "{{ .appKey }}",
+       "value": "{{ .appValue }}"
+      }
+     },
+     "key": {
+      "attribute": "HOST_TAGS"
+     }
+    }
+   ],
+   "enabled": true,
+   "type": "HOST"
+  },
+  {
+   "conditions": [
+    {
+     "comparisonInfo": {
+      "negate": false,
+      "operator": "EQUALS",
+      "type": "TAG",
+      "value": {
+       "context": "CONTEXTLESS",
+       "key": "{{ .appKey }}",
+       "value": "{{ .appValue }}"
+      }
+     },
+     "key": {
+      "attribute": "HTTP_MONITOR_TAGS",
+      "type": "STATIC"
+     }
+    }
+   ],
+   "enabled": true,
+   "propagationTypes": [],
+   "type": "HTTP_MONITOR"
+  },
+  {
+  "type": "WEB_APPLICATION",
+  "enabled": true,
+  "propagationTypes": [],
+  "conditions": [
+	{
+	  "key": {
+		"attribute": "WEB_APPLICATION_TAGS",
+		"type": "STATIC"
+	  },
+	  "comparisonInfo": {
+		"type": "TAG",
+		"operator": "EQUALS",
+		"value": {
+		  "context": "CONTEXTLESS",
+		  "key": "{{ .appKey }}",
+		  "value": "{{ .appValue }}"
+		},
+		"negate": false
+	  }
+	}
+  ]
+}
+ ]
+}

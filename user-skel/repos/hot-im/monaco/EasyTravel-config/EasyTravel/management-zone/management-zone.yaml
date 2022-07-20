@@ -1,0 +1,7 @@
+config:
+- mz1: default.json
+
+mz1:
+- name: EasyTravel
+- appKey: Application
+- appValue: EasyTravel

@@ -1,0 +1,22 @@
+{
+  "type": "SERVICE",
+  "nameFormat": "{ProcessGroup:ExeName}",
+  "displayName": "{{.name}}",
+  "enabled": true,
+  "rules": [
+    {
+      "key": {
+        "attribute": "SERVICE_TECHNOLOGY",
+        "type": "STATIC"
+      },
+      "comparisonInfo": {
+        "type": "SIMPLE_TECH",
+        "operator": "EQUALS",
+        "value": {
+          "type": "NGINX"
+        },
+        "negate": false
+      }
+    }
+  ]
+}

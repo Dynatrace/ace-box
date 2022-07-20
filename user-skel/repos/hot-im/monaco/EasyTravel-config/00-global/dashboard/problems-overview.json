@@ -1,0 +1,515 @@
+ {
+  "dashboardMetadata": {
+    "name": "Baselining Overview | Incident Mgmt Framework",
+    "shared": false,
+    "owner": "ignacio.goldman@dynatrace.com",
+    "dashboardFilter": {
+      "timeframe": "-7d to now"
+    },
+    "popularity": 1
+  },
+  "tiles": [
+    {
+      "name": "",
+      "nameSize": "",
+      "tileType": "OPEN_PROBLEMS",
+      "configured": true,
+      "bounds": {
+        "top": 190,
+        "left": 152,
+        "width": 152,
+        "height": 152
+      },
+      "tileFilter": {
+        "managementZone": {
+          "id": "-6654578769631520597",
+          "name": "CD_AFW"
+        }
+      }
+    },
+    {
+      "name": "Markdown",
+      "tileType": "MARKDOWN",
+      "configured": true,
+      "bounds": {
+        "top": 190,
+        "left": 0,
+        "width": 152,
+        "height": 152
+      },
+      "tileFilter": {},
+      "markdown": "## App1"
+    },
+    {
+      "name": "Markdown",
+      "tileType": "MARKDOWN",
+      "configured": true,
+      "bounds": {
+        "top": 114,
+        "left": 0,
+        "width": 152,
+        "height": 38
+      },
+      "tileFilter": {},
+      "markdown": "## Application"
+    },
+    {
+      "name": "Markdown",
+      "tileType": "MARKDOWN",
+      "configured": true,
+      "bounds": {
+        "top": 114,
+        "left": 152,
+        "width": 152,
+        "height": 38
+      },
+      "tileFilter": {},
+      "markdown": "## Problems"
+    },
+    {
+      "name": "Markdown",
+      "tileType": "MARKDOWN",
+      "configured": true,
+      "bounds": {
+        "top": 152,
+        "left": 0,
+        "width": 1330,
+        "height": 38
+      },
+      "tileFilter": {},
+      "markdown": "---"
+    },
+    {
+      "name": "Markdown",
+      "tileType": "MARKDOWN",
+      "configured": true,
+      "bounds": {
+        "top": 0,
+        "left": 0,
+        "width": 1330,
+        "height": 114
+      },
+      "tileFilter": {},
+      "markdown": "This dashboard shows the number of problems per Management Zone in the past 7 days. It's an Overview of the consolidation phase\n- ⚠️ High # problems: potential noise for the team, false positives, anomaly tweak possible\n- ⚠️ Low # problems: potential issues not being sent to team, adjustment of anomaly in DT"
+    },
+    {
+      "name": "",
+      "nameSize": "",
+      "tileType": "OPEN_PROBLEMS",
+      "configured": true,
+      "bounds": {
+        "top": 342,
+        "left": 152,
+        "width": 152,
+        "height": 152
+      },
+      "tileFilter": {
+        "managementZone": {
+          "id": "3851043124338361867",
+          "name": "CD_agent-service"
+        }
+      }
+    },
+    {
+      "name": "Markdown",
+      "tileType": "MARKDOWN",
+      "configured": true,
+      "bounds": {
+        "top": 342,
+        "left": 0,
+        "width": 152,
+        "height": 152
+      },
+      "tileFilter": {},
+      "markdown": "## App2"
+    },
+    {
+      "name": "",
+      "nameSize": "",
+      "tileType": "OPEN_PROBLEMS",
+      "configured": true,
+      "bounds": {
+        "top": 494,
+        "left": 152,
+        "width": 152,
+        "height": 152
+      },
+      "tileFilter": {
+        "managementZone": {
+          "id": "-6595885403062829907",
+          "name": "CD_am-bpm"
+        }
+      }
+    },
+    {
+      "name": "Markdown",
+      "tileType": "MARKDOWN",
+      "configured": true,
+      "bounds": {
+        "top": 494,
+        "left": 0,
+        "width": 152,
+        "height": 152
+      },
+      "tileFilter": {},
+      "markdown": "## App3"
+    },
+    {
+      "name": "",
+      "nameSize": "",
+      "tileType": "OPEN_PROBLEMS",
+      "configured": true,
+      "bounds": {
+        "top": 190,
+        "left": 494,
+        "width": 152,
+        "height": 152
+      },
+      "tileFilter": {
+        "managementZone": {
+          "id": "6489260219676736642",
+          "name": "CD_am-casa"
+        }
+      }
+    },
+    {
+      "name": "",
+      "nameSize": "",
+      "tileType": "OPEN_PROBLEMS",
+      "configured": true,
+      "bounds": {
+        "top": 342,
+        "left": 494,
+        "width": 152,
+        "height": 152
+      },
+      "tileFilter": {
+        "managementZone": {
+          "id": "-8221852403424262400",
+          "name": "CD_am-cesim"
+        }
+      }
+    },
+    {
+      "name": "",
+      "nameSize": "",
+      "tileType": "OPEN_PROBLEMS",
+      "configured": true,
+      "bounds": {
+        "top": 494,
+        "left": 494,
+        "width": 152,
+        "height": 152
+      },
+      "tileFilter": {
+        "managementZone": {
+          "id": "-6525374610311912144",
+          "name": "CD_am-esim-ui"
+        }
+      }
+    },
+    {
+      "name": "Markdown",
+      "tileType": "MARKDOWN",
+      "configured": true,
+      "bounds": {
+        "top": 190,
+        "left": 342,
+        "width": 152,
+        "height": 152
+      },
+      "tileFilter": {},
+      "markdown": "## App4"
+    },
+    {
+      "name": "Markdown",
+      "tileType": "MARKDOWN",
+      "configured": true,
+      "bounds": {
+        "top": 342,
+        "left": 342,
+        "width": 152,
+        "height": 152
+      },
+      "tileFilter": {},
+      "markdown": "## App5"
+    },
+    {
+      "name": "Markdown",
+      "tileType": "MARKDOWN",
+      "configured": true,
+      "bounds": {
+        "top": 494,
+        "left": 342,
+        "width": 152,
+        "height": 152
+      },
+      "tileFilter": {},
+      "markdown": "## App6"
+    },
+    {
+      "name": "Markdown",
+      "tileType": "MARKDOWN",
+      "configured": true,
+      "bounds": {
+        "top": 114,
+        "left": 494,
+        "width": 152,
+        "height": 38
+      },
+      "tileFilter": {},
+      "markdown": "## Problems"
+    },
+    {
+      "name": "Markdown",
+      "tileType": "MARKDOWN",
+      "configured": true,
+      "bounds": {
+        "top": 114,
+        "left": 342,
+        "width": 152,
+        "height": 38
+      },
+      "tileFilter": {},
+      "markdown": "## Application"
+    },
+    {
+      "name": "",
+      "nameSize": "",
+      "tileType": "OPEN_PROBLEMS",
+      "configured": true,
+      "bounds": {
+        "top": 190,
+        "left": 836,
+        "width": 152,
+        "height": 152
+      },
+      "tileFilter": {
+        "managementZone": {
+          "id": "6845961539606420354",
+          "name": "CD_am-mno-manager"
+        }
+      }
+    },
+    {
+      "name": "",
+      "nameSize": "",
+      "tileType": "OPEN_PROBLEMS",
+      "configured": true,
+      "bounds": {
+        "top": 342,
+        "left": 836,
+        "width": 152,
+        "height": 152
+      },
+      "tileFilter": {
+        "managementZone": {
+          "id": "8505678630142971659",
+          "name": "CD_APIGW"
+        }
+      }
+    },
+    {
+      "name": "",
+      "nameSize": "",
+      "tileType": "OPEN_PROBLEMS",
+      "configured": true,
+      "bounds": {
+        "top": 494,
+        "left": 836,
+        "width": 152,
+        "height": 152
+      },
+      "tileFilter": {
+        "managementZone": {
+          "id": "5858960741172780348",
+          "name": "CD_APIM"
+        }
+      }
+    },
+    {
+      "name": "Markdown",
+      "tileType": "MARKDOWN",
+      "configured": true,
+      "bounds": {
+        "top": 494,
+        "left": 684,
+        "width": 152,
+        "height": 152
+      },
+      "tileFilter": {},
+      "markdown": "## App9"
+    },
+    {
+      "name": "Markdown",
+      "tileType": "MARKDOWN",
+      "configured": true,
+      "bounds": {
+        "top": 190,
+        "left": 684,
+        "width": 152,
+        "height": 152
+      },
+      "tileFilter": {},
+      "markdown": "## App7"
+    },
+    {
+      "name": "Markdown",
+      "tileType": "MARKDOWN",
+      "configured": true,
+      "bounds": {
+        "top": 342,
+        "left": 684,
+        "width": 152,
+        "height": 152
+      },
+      "tileFilter": {},
+      "markdown": "## App8"
+    },
+    {
+      "name": "",
+      "nameSize": "",
+      "tileType": "OPEN_PROBLEMS",
+      "configured": true,
+      "bounds": {
+        "top": 190,
+        "left": 1178,
+        "width": 152,
+        "height": 152
+      },
+      "tileFilter": {
+        "managementZone": {
+          "id": "8190401556217650523",
+          "name": "CD_am-ui"
+        }
+      }
+    },
+    {
+      "name": "",
+      "nameSize": "",
+      "tileType": "OPEN_PROBLEMS",
+      "configured": true,
+      "bounds": {
+        "top": 342,
+        "left": 1178,
+        "width": 152,
+        "height": 152
+      },
+      "tileFilter": {
+        "managementZone": {
+          "id": "8481305279283217918",
+          "name": "CD_am-vms"
+        }
+      }
+    },
+    {
+      "name": "",
+      "nameSize": "",
+      "tileType": "OPEN_PROBLEMS",
+      "configured": true,
+      "bounds": {
+        "top": 494,
+        "left": 1178,
+        "width": 152,
+        "height": 152
+      },
+      "tileFilter": {
+        "managementZone": {
+          "id": "2107206930322242750",
+          "name": "CD_App-Repository"
+        }
+      }
+    },
+    {
+      "name": "Markdown",
+      "tileType": "MARKDOWN",
+      "configured": true,
+      "bounds": {
+        "top": 190,
+        "left": 1026,
+        "width": 152,
+        "height": 152
+      },
+      "tileFilter": {},
+      "markdown": "## App10"
+    },
+    {
+      "name": "Markdown",
+      "tileType": "MARKDOWN",
+      "configured": true,
+      "bounds": {
+        "top": 342,
+        "left": 1026,
+        "width": 152,
+        "height": 152
+      },
+      "tileFilter": {},
+      "markdown": "## App11"
+    },
+    {
+      "name": "Markdown",
+      "tileType": "MARKDOWN",
+      "configured": true,
+      "bounds": {
+        "top": 494,
+        "left": 1026,
+        "width": 152,
+        "height": 152
+      },
+      "tileFilter": {},
+      "markdown": "## App12"
+    },
+    {
+      "name": "Markdown",
+      "tileType": "MARKDOWN",
+      "configured": true,
+      "bounds": {
+        "top": 114,
+        "left": 684,
+        "width": 152,
+        "height": 38
+      },
+      "tileFilter": {},
+      "markdown": "## Application"
+    },
+    {
+      "name": "Markdown",
+      "tileType": "MARKDOWN",
+      "configured": true,
+      "bounds": {
+        "top": 114,
+        "left": 836,
+        "width": 152,
+        "height": 38
+      },
+      "tileFilter": {},
+      "markdown": "## Problems"
+    },
+    {
+      "name": "Markdown",
+      "tileType": "MARKDOWN",
+      "configured": true,
+      "bounds": {
+        "top": 114,
+        "left": 1178,
+        "width": 152,
+        "height": 38
+      },
+      "tileFilter": {},
+      "markdown": "## Problems"
+    },
+    {
+      "name": "Markdown",
+      "tileType": "MARKDOWN",
+      "configured": true,
+      "bounds": {
+        "top": 114,
+        "left": 1026,
+        "width": 152,
+        "height": 38
+      },
+      "tileFilter": {},
+      "markdown": "## Application"
+    }
+  ]
+}

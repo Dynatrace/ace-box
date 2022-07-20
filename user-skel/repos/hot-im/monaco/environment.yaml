@@ -1,0 +1,4 @@
+dtconfig:
+  - name: "dtconfig"
+  - env-url: "{{.Env.DYNATRACE_URL}}"
+  - env-token-name: "DYNATRACE_APITOKEN"

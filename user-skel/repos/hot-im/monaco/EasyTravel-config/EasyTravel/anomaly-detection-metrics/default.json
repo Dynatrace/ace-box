@@ -1,0 +1,34 @@
+{
+  "metricId": "builtin:tech.jvm.memory.gc.suspensionTime",
+  "name": "{{.name}}",
+  "description": "The {metricname} value of {severity} was {alert_condition} your custom threshold of {threshold}.",
+  "aggregationType": "AVG",
+  "severity": "CUSTOM_ALERT",
+  "enabled": true,
+  "disabledReason": "NONE",
+  "warningReason": "NONE",
+  "alertingScope": [
+    {
+      "filterType": "MANAGEMENT_ZONE",
+      "managementZoneId": {{.mzId}},
+      "mzId": "{{.mzId}}"
+    }
+  ],
+  "monitoringStrategy": {
+    "type": "STATIC_THRESHOLD",
+    "samples": 3,
+    "violatingSamples": 3,
+    "dealertingSamples": 3,
+    "alertCondition": "ABOVE",
+    "alertingOnMissingData": false,
+    "threshold": 5,
+    "unit": "PERCENT"
+  },
+  "alertCondition": "ABOVE",
+  "samples": 3,
+  "violatingSamples": 3,
+  "dealertingSamples": 3,
+  "threshold": 5,
+  "unit": "PERCENT",
+  "eventType": "CUSTOM_ALERT"
+}

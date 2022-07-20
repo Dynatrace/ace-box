@@ -1,0 +1,24 @@
+config:
+- application: application.json
+- stage: stage.json
+- entity: entity.json
+- appid: appid.json
+- region: region.json
+
+application:
+  - name: Application
+  - skipDeployment: "false"
+
+stage:
+  - name: Stage
+  - skipDeployment: "false"
+
+entity:
+  - name: Entity
+  - skipDeployment: "false"
+
+appid:
+  - name: AppID
+
+region:
+  - name: Region

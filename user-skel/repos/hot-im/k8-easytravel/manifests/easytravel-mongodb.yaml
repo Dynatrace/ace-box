@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: easytravel-mongodb
+  namespace: easytravel
+spec:
+  selector:
+    matchLabels:
+      app: easytravel
+      tier: mongodb
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: easytravel
+        tier: mongodb
+        app.kubernetes.io/name: easytravel-mongodb
+        app.kubernetes.io/instance: easytravel-mongodb-1.0.0
+        app.kubernetes.io/version: "1.0.0"
+        app.kubernetes.io/component: database
+        app.kubernetes.io/part-of: easytravel
+        app.kubernetes.io/managed-by: kubernetes
+        app.kubernetes.io/created-by: ignacio
+      annotations:
+        contact: "demo@dynatrace.com"
+        priority: "high"
+        tier: mongodb
+        app: easytravel
+    spec:
+      containers:
+      - image: dynatrace/easytravel-mongodb:2.0.0.3218
+        name: easytravel-mongodb
+        ports:
+        - containerPort: 27017
+        resources:
+          limits:
+            cpu: 4096m
+            memory: 1024Mi
+          requests:
+            cpu: 2048m
+            memory: 512Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: easytravel
+    tier: mongodb
+  name: easytravel-mongodb
+  namespace: easytravel
+spec:
+  type: ClusterIP
+  ports:
+  - port: 27017
+    targetPort: 27017
+  selector:
+    app: easytravel
+    tier: mongodb

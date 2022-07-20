@@ -1,0 +1,17 @@
+{
+  "tsmMetricKey": "calc:service.revenue",
+  "name": "{{.name}}",
+  "enabled": true,
+  "metricDefinition": {
+    "metric": "REQUEST_ATTRIBUTE",
+    "requestAttribute": "Revenue"
+  },
+  "unit": "COUNT",
+  "unitDisplayName": "",
+  "entityId": null,
+  "managementZones": [
+    "EasyTravel"
+  ],
+  "conditions": [],
+  "dimensionDefinition": null
+}

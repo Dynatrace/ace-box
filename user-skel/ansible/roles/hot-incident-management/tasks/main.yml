@@ -15,10 +15,6 @@
 - include_role:
     name: monaco
 
-# - include_role:
-#     name: monaco
-#     tasks_from: dt-cleanup
-
 - include_role:
     name: gitea
 
@@ -26,19 +22,6 @@
     name: gitea
     tasks_from: source-secret
   when: gitea_access_token is not defined or gitea_username is not defined or gitea_password is not defined
-
-- include_role:
-    name: gitea
-    tasks_from: create-organization
-  vars:
-    gitea_org: "{{ demo_im_org }}"
-
-- include_role:
-    name: gitea
-    tasks_from: create-repository
-  vars:
-    gitea_org: "{{ demo_im_org }}"
-    gitea_repo: "{{ demo_im_repo_name }}"
 
 - include_role:
     name: gitea
@@ -64,14 +47,18 @@
     git_domain: "{{ gitea_domain }}"
     git_remote: "gitea"
   loop:
-  - { repo_target: "{{ demo_im_repo_name }}", repo_src: "{{ demo_im_source_repo }}", git_org: "{{ demo_im_org }}" }
   - { repo_target: "{{ hot_im_repo_name }}", repo_src: "{{ hot_im_source_repo }}", git_org: "{{ hot_im_org }}" }
   when: new_repo_created is defined and new_repo_created == true
-  # when: new_repo_created is defined and new_repo_created == true
 
-# TBD - additional tasks:
-# - install itop
-# - install easytravel
-# - copy custom scripts (from ./files OR user-skel/repos/...) to user home
+# setEnv.sh should have DT URL, API and PAAS token before executing
 
-# OR - clone content from origin repo
+- name: Sed script file
+  shell: sed -i -e 's/\r$//' /home/ace/repos/hot/hot-im/setup.sh
+
+- name: Incident Mgmt Lab Setup
+  shell: . /home/ace/.bashrc && sh /home/ace/repos/hot/hot-im/setup.sh
+  register: ps
+
+- name: debug
+  debug:
+    var: ps.stdout_lines

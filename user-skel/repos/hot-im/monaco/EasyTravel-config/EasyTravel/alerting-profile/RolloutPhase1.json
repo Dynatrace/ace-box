@@ -1,0 +1,48 @@
+{
+  "displayName": "{{.name}}",
+  "rules": [
+    {
+      "severityLevel": "RESOURCE_CONTENTION",
+      "tagFilter": {
+        "includeMode": "NONE",
+        "tagFilters": []
+      },
+      "delayInMinutes": 0
+    },
+    {
+      "severityLevel": "PERFORMANCE",
+      "tagFilter": {
+        "includeMode": "NONE",
+        "tagFilters": []
+      },
+      "delayInMinutes": 0
+    },
+    {
+      "severityLevel": "ERROR",
+      "tagFilter": {
+        "includeMode": "NONE",
+        "tagFilters": []
+      },
+      "delayInMinutes": 0
+    },
+    {
+      "severityLevel": "AVAILABILITY",
+      "tagFilter": {
+        "includeMode": "NONE",
+        "tagFilters": []
+      },
+      "delayInMinutes": 0
+    },
+    {
+      "severityLevel": "CUSTOM_ALERT",
+      "tagFilter": {
+        "includeMode": "NONE",
+        "tagFilters": []
+      },
+      "delayInMinutes": 0
+    }
+  ],
+  "managementZoneId": 997040965689904800,
+  "mzId": "997040965689904720",
+  "eventTypeFilters": []
+}

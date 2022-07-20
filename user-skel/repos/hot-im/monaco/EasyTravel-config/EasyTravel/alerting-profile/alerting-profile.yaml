@@ -1,0 +1,27 @@
+config:
+- P2-EasyTravel-AppMajor: P2-EasyTravel-AppMajor.json
+- mzBucket: mz-bucket.json
+- rollout: RolloutPhase1.json
+- devteam: devteam.json
+- tier1: tier1.json
+- tier2: tier2.json
+
+P2-EasyTravel-AppMajor:
+- name: P2 - EasyTravel - App Major
+- mzId: EasyTravel-config/EasyTravel/management-zone/mz1.id
+
+mzBucket:
+- name: EasyTravel - Bucket
+- mzId: EasyTravel-config/EasyTravel/management-zone/mz1.id
+
+rollout:
+- name: EasyTravel - Severe Alerts - Rollout Phase 1
+
+devteam:
+- name: EasyTravel - Dev team
+
+tier1:
+- name: EasyTravel - Tier 1 Applications
+
+tier2:
+- name: EasyTravel - Tier 2 Applications

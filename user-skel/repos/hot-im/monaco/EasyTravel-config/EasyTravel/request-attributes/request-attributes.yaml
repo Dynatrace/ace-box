@@ -1,0 +1,9 @@
+config:
+- Revenue: Revenue.json
+
+Revenue:
+- name: Revenue
+- dataType: DOUBLE
+- className: com.dynatrace.easytravel.business.webservice.BookingService
+- methodName: storeBooking
+- argumentIndex: "4"

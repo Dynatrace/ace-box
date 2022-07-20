@@ -1,0 +1,16 @@
+{
+  "type": "WEBHOOK",
+  "name": "{{.name}}",
+  "alertingProfile": "{{.alertingProfile}}",
+  "active": true,
+  "url": "{{.webhook}}",
+  "acceptAnyCertificate": true,
+    "payload": "auth_user={{.userItop}}&auth_pwd={{.pwdItop}}&json_data=%7B%0A%09%22operation%22%3A%20%22core%2Fcreate%22%2C%0A%09%22class%22%3A%20%22Incident%22%2C%0A%09%22fields%22%3A%20%7B%0A%09%09%22title%22%3A%20%22{ProblemTitle} - {ImpactedEntity}%22%2C%0A%09%09%22description%22%3A%20%22{ProblemURL}%22%2C%0A%09%09%22org_id%22%3A%20%221%22%0A%09%7D%2C%0A%09%22comment%22%3A%20%22Created%20by%20Dynatrace%20AI%22%2C%0A%09%22output_fields%22%3A%20%22id%22%0A%7D",
+  "headers": [
+    {
+      "name": "Content-Type",
+      "value": "application/x-www-form-urlencoded"
+    }
+  ],
+  "notifyEventMergesEnabled": false
+}

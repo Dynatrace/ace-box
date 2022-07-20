@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: easytravel-frontend
+  namespace: easytravel
+spec:
+  selector:
+    matchLabels:
+      app: easytravel
+      tier: frontend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: easytravel
+        tier: frontend
+        app.kubernetes.io/name: easytravel-frontend
+        app.kubernetes.io/instance: easytravel-frontend-1.0.0
+        app.kubernetes.io/version: "1.0.0"
+        app.kubernetes.io/component: frontend
+        app.kubernetes.io/part-of: easytravel
+        app.kubernetes.io/managed-by: kubernetes
+        app.kubernetes.io/created-by: ignacio
+      annotations:
+        contact: "demo@dynatrace.com"
+        priority: "high"
+        tier: frontend
+        app: easytravel
+    spec:
+      containers:
+      - image: dynatrace/easytravel-frontend:2.0.0.3218
+        name: easytravel-frontend
+        envFrom:
+        - configMapRef:
+            name: easytravel-config
+        - secretRef:
+            name: mongo-credentials
+        ports:
+        - containerPort: 8080
+        # readinessProbe:
+        #   httpGet:
+        #     path: /
+        #     port: 8080
+        #     scheme: HTTP
+        #   initialDelaySeconds: 5
+        # livenessProbe:
+        #   httpGet:
+        #     path: /
+        #     port: 8080
+        #     scheme: HTTP
+        #   initialDelaySeconds: 120
+        resources:
+          limits:
+            cpu: 1200m
+            memory: 2048Mi
+          requests:
+            cpu: 800m
+            memory: 1024Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: easytravel
+    tier: frontend
+  name: easytravel-frontend
+  namespace: easytravel
+spec:
+  ports:
+  - port: 8080
+    targetPort: 8080
+  selector:
+    app: easytravel
+    tier: frontend
+  type: ClusterIP

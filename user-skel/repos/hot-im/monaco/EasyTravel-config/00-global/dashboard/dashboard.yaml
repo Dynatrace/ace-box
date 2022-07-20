@@ -1,0 +1,9 @@
+config:
+- genericDashboard: generic-template.json
+- problems: problems-overview.json
+
+genericDashboard:
+  - name: Generic V1 - Overview
+
+problems:
+  - name: Baselining Overview | Incident Mgmt Framework

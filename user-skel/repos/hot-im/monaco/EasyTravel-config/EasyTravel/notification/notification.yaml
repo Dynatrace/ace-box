@@ -1,0 +1,22 @@
+config:
+- EasyTravel-msTeams: msTeams.json
+- EasyTravel-mail: email.json
+- EasyTravel-ITOP-AppMajor: itop_webhook.json
+
+EasyTravel-mail:
+- name: EasyTravel - mail 
+- alertingProfile: EasyTravel-config/EasyTravel/alerting-profile/mzBucket.id
+- receivers: person@company.com
+- skipDeployment: "true"
+
+EasyTravel-msTeams:
+- name: EasyTravel - msTeams
+- alertingProfile: EasyTravel-config/EasyTravel/alerting-profile/mzBucket.id
+- webhook: https://dynatrace.webhook.office.com/webhookb2/e3749f30-3542-42e5-9488-f1682fa9d344@70ebe3a3-5b30-435d-9d67-7716d74ca190/IncomingWebhook/d84b53d6145a4e5f81099f847460a929/db595f39-ddad-4e0b-a2e1-080caf4f3010
+
+EasyTravel-ITOP-AppMajor:
+- name: EasyTravel - ITOP - AppMajor
+- alertingProfile: EasyTravel-config/EasyTravel/alerting-profile/P2-EasyTravel-AppMajor.id
+- webhook: http://{{.Env.ITOP_IP}}:8000/webservices/rest.php?version=1.3
+- userItop: {{.Env.ITOP_USER}}
+- pwdItop: {{.Env.ITOP_PWD}}

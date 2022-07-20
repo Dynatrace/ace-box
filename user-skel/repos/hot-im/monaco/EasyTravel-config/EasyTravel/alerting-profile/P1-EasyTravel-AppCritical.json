@@ -1,0 +1,64 @@
+{
+  "displayName": "{{.name}}",
+  "rules": [
+    {
+      "severityLevel": "AVAILABILITY",
+      "tagFilter": {
+        "includeMode": "INCLUDE_ALL",
+        "tagFilters": [
+          {
+            "context": "CONTEXTLESS",
+            "key": "Entity",
+            "value": "Synthetic"
+          }
+        ]
+      },
+      "delayInMinutes": 0
+    },
+    {
+      "severityLevel": "CUSTOM_ALERT",
+      "tagFilter": {
+        "includeMode": "INCLUDE_ALL",
+        "tagFilters": [
+          {
+            "context": "CONTEXTLESS",
+            "key": "Entity",
+            "value": "Service"
+          }
+        ]
+      },
+      "delayInMinutes": 0
+    },
+    {
+      "severityLevel": "ERROR",
+      "tagFilter": {
+        "includeMode": "INCLUDE_ALL",
+        "tagFilters": [
+          {
+            "context": "CONTEXTLESS",
+            "key": "Entity",
+            "value": "Service"
+          }
+        ]
+      },
+      "delayInMinutes": 0
+    },
+    {
+      "severityLevel": "ERROR",
+      "tagFilter": {
+        "includeMode": "INCLUDE_ALL",
+        "tagFilters": [
+          {
+            "context": "CONTEXTLESS",
+            "key": "Entity",
+            "value": "Application"
+          }
+        ]
+      },
+      "delayInMinutes": 0
+    }
+  ],
+  "managementZoneId": {{.mzId}},
+  "mzId": "{{.mzId}}",
+  "eventTypeFilters": []
+}

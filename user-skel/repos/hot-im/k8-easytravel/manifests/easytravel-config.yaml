@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: easytravel-config
+  namespace: easytravel
+data:
+  ET_BACKEND_URL: http://easytravel-backend:8080
+  ET_FRONTEND_URL: http://easytravel-www:80
+  ET_WWW_URL: http://easytravel-www:80
+  ET_FRONTEND_LOCATION: easytravel-frontend:8080
+  ET_BACKEND_LOCATION: easytravel-backend:8080
+  ET_PROBLEMS: DatabaseCleanup
+  ET_PROBLEMS_DELAY: "0"
+  ET_VISIT_NUMBER: "40"
+  ET_APM_SERVER_DEFAULT: APM
+  CATALINA_OPTS: "-XX:+UseContainerSupport -XX:MaxRAMPercentage=80"

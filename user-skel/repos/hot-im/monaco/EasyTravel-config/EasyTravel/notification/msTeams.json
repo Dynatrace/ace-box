@@ -1,0 +1,11 @@
+{
+ "acceptAnyCertificate": false,
+ "active": true,
+ "alertingProfile": "{{.alertingProfile}}",
+ "headers": [],
+ "name": "{{.name}}",
+ "notifyEventMergesEnabled": false,
+ "payload": "{\n\"title\":\"{ProblemTitle}\",\n\"text\":\"{ProblemDetailsHTML}\",\n\"themeColor\":\"EA4300\"\n}",
+ "type": "WEBHOOK",
+ "url": "{{.webhook}}"
+}

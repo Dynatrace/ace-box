@@ -1,0 +1,39 @@
+{
+  "name": "{{.name}}",
+  "enabled": true,
+  "dataType": "{{.dataType}}",
+  "dataSources": [
+    {
+      "enabled": true,
+      "source": "METHOD_PARAM",
+      "valueProcessing": {
+        "splitAt": "",
+        "trim": false
+      },
+      "technology": "JAVA",
+      "methods": [
+        {
+          "method": {
+            "visibility": "PUBLIC",
+            "modifiers": [],
+            "className": "{{.className}}",
+            "methodName": "{{.methodName}}",
+            "argumentTypes": [
+              "java.lang.Integer",
+              "java.lang.String",
+              "java.lang.String",
+              "java.lang.Double"
+            ],
+            "returnType": "java.lang.String"
+          },
+          "capture": "ARGUMENT",
+          "argumentIndex": {{.argumentIndex}}
+        }
+      ]
+    }
+  ],
+  "normalization": "ORIGINAL",
+  "aggregation": "SUM",
+  "confidential": false,
+  "skipPersonalDataMasking": false
+}

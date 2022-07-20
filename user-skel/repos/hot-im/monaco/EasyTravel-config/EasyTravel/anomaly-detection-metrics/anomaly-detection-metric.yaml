@@ -1,0 +1,11 @@
+config:
+- suspensionTime: default.json
+- revenue: revenue.json
+
+suspensionTime:
+- name: Garbage Collector Increase
+- mzId: EasyTravel-config/EasyTravel/management-zone/mz1.id
+- skipDeployment: "true"
+
+revenue:
+- name: Revenue Degradation

@@ -1,7 +1,4 @@
 ---
-demo_im_source_repo: "/home/{{ ace_box_user }}/repos/ace"
-demo_im_org: "demo"
-demo_im_repo_name: "ace"
-hot_im_source_repo: "/home/{{ ace_box_user }}/repos/hot/hot-im"
+hot_im_source_repo: "/home/{{ ace_box_user }}/repos/hot-im"
 hot_im_org: "hot"
 hot_im_repo_name: "im"
