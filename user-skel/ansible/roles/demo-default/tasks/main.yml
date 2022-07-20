@@ -16,15 +16,15 @@
     tasks_from: dt-cleanup
 
 - include_role:
+    name: gitea
+
+- include_role:
     name: keptn
   when: cloud_automation_flavor is defined and cloud_automation_flavor == "KEPTN"
 
 - include_role:
     name: cloudautomation
   when: cloud_automation_flavor is defined and cloud_automation_flavor == "CLOUD_AUTOMATION"
-
-- include_role:
-    name: gitea
 
 - include_role:
     name: gitea
