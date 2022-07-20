@@ -8,5 +8,5 @@
 
 - name: Set facts - internal endpoint
   set_fact:
-    gitlab_internal_endpoint: "http://{{ gitlab_http_data.resources[0].spec.clusterIP }}:8080"
+    gitlab_internal_endpoint: "http://{{ gitlab_http_data.resources[0].spec.clusterIP }}:8181"
   when: gitlab_http_data is defined and gitlab_http_data.resources[0] is defined
