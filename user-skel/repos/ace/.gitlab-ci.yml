@@ -1,5 +1,4 @@
 include:
-  - remote: 'https://gitlab.com/dynatrace-ace/keptn-gitlab-library/-/raw/master/jmeter_run_test.yaml'
   - remote: 'https://gitlab.com/dynatrace-ace/dynatrace-gitlab-library/-/raw/master/dynatrace_event.yaml'
 
 variables:
