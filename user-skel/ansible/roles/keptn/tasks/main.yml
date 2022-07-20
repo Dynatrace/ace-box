@@ -14,6 +14,24 @@
     - var_value_to_set: "KEPTN"
   when: cloud_automation_flavor != "KEPTN"
 
+#Ensure Gitea is installed when we are using Keptn to have auto repository provisioning
+- include_role:
+    name: gitea
+
+- name: Keptn - Source Gitea endpoints
+  include_role: 
+    name: gitea
+    tasks_from: source-endpoints.yml
+  when: gitea_internal_endpoint is not defined
+
+- name: Keptn - Source Gitea secrets
+  include_role: 
+    name: gitea
+    tasks_from: source-secret.yml
+
+- name: Keptn - Install Gitea Provisioner service
+  include: roles/keptn/tasks/gitea-provisioner-service.yml
+
 - name: Install Keptn CLI
   include_role:
     name: keptn-cli
@@ -64,6 +82,3 @@
 
 - name: Keptn - Install Dynatrace service
   include: roles/keptn/tasks/dynatrace-service.yml
-
-- name: Keptn - Install Gitea Provisioner service
-  include: roles/keptn/tasks/gitea-provisioner-service.yml
