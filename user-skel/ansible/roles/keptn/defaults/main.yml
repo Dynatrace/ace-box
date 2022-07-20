@@ -1,9 +1,7 @@
 ---
-keptn_version: "0.16.0"
-keptn_dynatrace_service_version: "0.22.0"
+keptn_version: "0.16.1"
+keptn_dynatrace_service_version: "0.23.0"
 keptn_namespace: "keptn"
 keptn_ingress_domain: "keptn.{{ ingress_domain }}"
 keptn_cli_download_location: "/tmp/keptn"
-keptn_gitea_provision_service_version: "0.1.0"
-keptn_gitea_provision_service_user: "dynatrace"
-keptn_gitea_provision_service_password: "dynatrace"
+keptn_gitea_provision_service_version: "0.1.1"

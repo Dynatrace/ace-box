@@ -11,6 +11,6 @@
       gitea:
         admin:
           create: true
-          username: "{{ keptn_gitea_provision_service_user }}"
-          password: "{{ keptn_gitea_provision_service_password }}"
-        endpoint: "http://gitea-http.gitea:3000/"
+          username: "{{ gitea_username }}"
+          password: "{{ gitea_password }}"
+        endpoint: "{{ gitea_internal_endpoint }}/"
