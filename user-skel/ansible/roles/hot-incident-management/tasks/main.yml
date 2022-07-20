@@ -50,14 +50,17 @@
   - { repo_target: "{{ hot_im_repo_name }}", repo_src: "{{ hot_im_source_repo }}", git_org: "{{ hot_im_org }}" }
   when: new_repo_created is defined and new_repo_created == true
 
-# setEnv.sh should have DT URL, API and PAAS token before executing
-
-- name: Sed script file
-  shell: sed -i -e 's/\r$//' /home/ace/repos/hot/hot-im/setup.sh
-
-- name: Incident Mgmt Lab Setup
-  shell: . /home/ace/.bashrc && sh /home/ace/repos/hot/hot-im/setup.sh
+#Pass variables and execute setup script
+- name: Incident Mgmt. Lab Setup
+  shell: 
+    cmd: "DYNATRACE_URL={{ dynatrace_tenant_url }} DYNATRACE_PAASTOKEN={{ dynatrace_paas_token }} DYNATRACE_APITOKEN={{ dynatrace_api_token }} sh /home/{{ ace_box_user }}/repos/hot-im/setup.sh"
+    chdir: "/home/{{ ace_box_user }}/repos/hot-im/"
   register: ps
+
+- name: Run Monaco - Apply Config
+  shell:
+    cmd: "ITOP_USER='' ITOP_PWD='' ITOP_IP={{ ingress_domain }} NEW_CLI=1 DYNATRACE_URL={{ dynatrace_tenant_url }} DYNATRACE_APITOKEN={{ dynatrace_api_token }} monaco deploy -e environment.yaml"
+    chdir: "/home/{{ ace_box_user }}/repos/hot-im/monaco"
 
 - name: debug
   debug:

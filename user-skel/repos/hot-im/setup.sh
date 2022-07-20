@@ -1,20 +1,7 @@
 #!/bin/bash
 
-# Set DYNATRACE_URL, PAAS and API token
-echo "Setting Environment Variables..."
-chmod +x setEnv.sh
-sed -i 's/\r$//' setEnv.sh
-source ./setEnv.sh
-
-#Run Monaco initial config
-echo "Running Dynatrace Monitoring as Code..."
-chmod +x executeMonaco.sh
-sed -i 's/\r$//' executeMonaco.sh
-source ./executeMonaco.sh
-
 #Install ITOP
-apt install docker.io -y
-sudo docker run -d -p 8000:80 --name=my-itop europe-west2-docker.pkg.dev/acetaskforceemea/images/itop:3.0.0-beta
+docker run -d -p 8000:80 --name=my-itop europe-west2-docker.pkg.dev/acetaskforceemea/images/itop:3.0.0-beta
 echo "Started ITOP. Waiting 30s until installation."
 sleep 30
 
@@ -23,10 +10,12 @@ echo "Configuring Itop..."
 chmod +x install_itop.sh
 sed -i 's/\r$//' install_itop.sh
 ./install_itop.sh
-#TODO: re-configure on restart?
 
-# Run again to export ITOP_ENDPOINT
-source ./setEnv.sh
+#Run Monaco initial config
+# echo "Running Dynatrace Monitoring as Code..."
+# chmod +x executeMonaco.sh
+# sed -i 's/\r$//' executeMonaco.sh
+# source ./executeMonaco.sh
 
 #########################
 # Install EasyTravel K8 #

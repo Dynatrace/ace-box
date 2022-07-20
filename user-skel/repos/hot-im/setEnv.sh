@@ -1,7 +1,7 @@
 #!/bin/bash
 
 export NEW_CLI=1
-export DYNATRACE_URL="https://abc12345.sprint.dynatracelabs.com"
+export DYNATRACE_URL=""
 export DYNATRACE_PAASTOKEN=""
 export DYNATRACE_APITOKEN=""
 export ITOP_IP=$(wget -qO- ifconfig.me/ip)

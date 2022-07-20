@@ -78,7 +78,8 @@ Entities can be **tagged**, e.g. the owner of this host is the `Infra Team`, hos
 <details>
   <summary>Expand to see what has been pre-installed and pre-configured for you in this lab module</summary>
 
-* The OneAgent has been installed for you on a Google Cloud Virtual Machine with host group (installation paramater) `_A_EasyTravel_I_APPID00274628_S_PROD_R_US_`. Following Dynatrace best practices, you should always install the OneAgent with a host group parameter because its value will automatically be propagated to Dynatrace.
+* The Operator is running in a worked node with a host group (installation paramater) `PROD_US`. Following Dynatrace best practices, you should always install the OneAgent with a host group parameter because its value will automatically be propagated to Dynatrace.
+* The app related metadata is passed to Dynatrace via annotations.
 * Six tags have been pre-configured for you: `Application`, `AppID`, `Stage`, `Region`, `Entity` and `Owner`, of which the first four are derived the host group name.
 
 </details>

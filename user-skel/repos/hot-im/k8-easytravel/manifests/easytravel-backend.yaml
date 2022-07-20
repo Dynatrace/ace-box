@@ -19,12 +19,13 @@ spec:
       labels:
         app: easytravel
         tier: backend
+        appId: APPID00274628
         app.kubernetes.io/name: easytravel-backend
         app.kubernetes.io/instance: easytravel-backend-1.0.0
         app.kubernetes.io/version: "1.0.0"
         app.kubernetes.io/component: backend
         app.kubernetes.io/part-of: easytravel
-        app.kubernetes.io/managed-by: kubernetes
+        app.kubernetes.io/managed-by: EasyTravel-Team
         app.kubernetes.io/created-by: ignacio
       annotations:
         contact: "demo@dynatrace.com"
