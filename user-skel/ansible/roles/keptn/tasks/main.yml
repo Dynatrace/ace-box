@@ -28,6 +28,10 @@
     create_namespace: true
     wait: true
     wait_timeout: 15m
+    values:
+      control-plane:
+        bridge:
+          lookAndFeelUrl: "{{ keptn_look_and_feel_url }}"
   register: keptn_helm_chart
 
 - name: Template ingress file
@@ -60,7 +64,3 @@
 
 - name: Keptn - Install Dynatrace service
   include: roles/keptn/tasks/dynatrace-service.yml
-
-- name: Keptn - Change look and feel
-  when: keptn_look_and_feel_url is defined
-  shell: "kubectl -n keptn set env deployment/bridge LOOK_AND_FEEL_URL={{ keptn_look_and_feel_url }}"
