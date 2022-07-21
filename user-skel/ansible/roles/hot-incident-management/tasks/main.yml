@@ -51,6 +51,13 @@
   when: new_repo_created is defined and new_repo_created == true
 
 #Pass variables and execute setup script
+- name: Adjust setup script
+  shell: 
+    cmd: "chmod +x setup.sh && sed -i -e 's/\r$//' setup.sh"
+    chdir: "/home/{{ ace_box_user }}/repos/hot-im/"
+  register: ps
+
+#Pass variables and execute setup script
 - name: Incident Mgmt. Lab Setup
   shell: 
     cmd: "DYNATRACE_URL={{ dynatrace_tenant_url }} DYNATRACE_PAASTOKEN={{ dynatrace_paas_token }} DYNATRACE_APITOKEN={{ dynatrace_api_token }} sh /home/{{ ace_box_user }}/repos/hot-im/setup.sh"
