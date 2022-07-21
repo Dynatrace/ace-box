@@ -6,9 +6,6 @@
   include: roles/gitlab/tasks/source-endpoints.yml
   when: gitlab_internal_endpoint is not defined
 
-- set_fact:
-    gitlab_new_repo_created: false
-
 - name: Gitlab - Ensure project "{{ gitlab_prj }} exists"
   block:
   - name: Lookup project
