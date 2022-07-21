@@ -1,5 +1,12 @@
 ---
 - include_role:
+    name: config-v2
+    tasks_from: set-var
+  vars:
+    var_key_to_set: "demo_all"
+    var_value_to_set: true
+
+- include_role:
     name: demo-default
 
 - include_role:
