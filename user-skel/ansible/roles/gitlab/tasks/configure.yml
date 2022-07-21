@@ -76,5 +76,3 @@
     - { key: 'KUBE_BEARER_TOKEN', value: '{{ dt_operator_kube_bearer_token | default(None) }}' }
     - { key: 'KUBE_API_ENDPOINT', value: '{{ kubernetes_api_endpoint | default(None) }}' }
     - { key: 'SYNTH_NODE_ID', value: '{{ dt_synthetic_node_id | default(None) }}' }
-
-# - include_tasks: roles/gitlab/tasks/ensure-project.yml
