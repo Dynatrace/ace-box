@@ -49,19 +49,6 @@
   - demo_autorem
   - never
 
-- name: Enable "demo_gitlab"
-  include_tasks: set-var.yml
-  vars:
-  - var_key_to_set: "demo_gitlab"
-  - var_value_to_set: "{{ not is_unconfig }}"
-  args:
-    apply:
-      tags:
-        - demo_gitlab
-  tags:
-  - demo_gitlab
-  - never
-
 - name: Enable "hot_appsec"
   include_tasks: set-var.yml
   vars:
