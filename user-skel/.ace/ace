@@ -43,6 +43,20 @@ enable_targets = [
     'hot_appsec'
 ]
 
+def is_external_use_case(use_case):
+    if use_case.startswith('http://') or use_case.startswith('https://'):
+        return True
+    else:
+        return False
+
+def check_enable_targets(ctx, param, value):
+    if is_external_use_case(value):
+        return value
+    if value in enable_targets:
+        return value
+    else:
+        raise click.BadParameter(f'Must be one of {enable_targets} or valid link to external use case in format \'http(s)://...\'')
+
 def set_log_level(
   verbosity,
 ):
@@ -415,10 +429,7 @@ def set(
 )
 @click.argument(
     'target',
-    type=click.Choice(
-        enable_targets,
-        case_sensitive=True,
-    ),
+    callback=check_enable_targets,
     nargs=1,
 )
 def enable(
@@ -427,7 +438,7 @@ def enable(
     user,
 ):
     """Enabling ACE-Box use case"""
-    logging.info('Preparing ACE-Box for use case {%s}...', target)
+    logging.info('Preparing ACE-Box for use case \"%s\"...', target)
 
     if not ansible_workdir:
         ansible_workdir = click.prompt(
@@ -435,16 +446,31 @@ def enable(
             default=default_ansible_workdir
         )
 
-    subprocess.run((
-            f'ansible-playbook main-v2.yml --extra-vars "'
-            f'ace_box_user={user}'
-            '" '
-            f'--tags "{target}"'
-        ),
-        cwd=ansible_workdir,
-        shell=True,
-        check=True,
-    )
+    if is_external_use_case(target):
+        logging.info('Detected external use case')
+
+        subprocess.run((
+                f'ansible-playbook main-v2.yml --extra-vars "'
+                f'ace_box_user={user} '
+                f'use_case_ext_src={target}'
+                '" '
+                f'--tags "use_case_ext"'
+            ),
+            cwd=ansible_workdir,
+            shell=True,
+            check=True,
+        )
+    else:
+        subprocess.run((
+                f'ansible-playbook main-v2.yml --extra-vars "'
+                f'ace_box_user={user}'
+                '" '
+                f'--tags "{target}"'
+            ),
+            cwd=ansible_workdir,
+            shell=True,
+            check=True,
+        )
 
     click.echo(f'Successfully installed {target}')
     click.echo("You're welcome!")

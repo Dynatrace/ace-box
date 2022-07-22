@@ -1,0 +1,23 @@
+---
+- set_fact:
+    use_case_ext_name: "{{ use_case_ext_src.split('/')[-1] | replace('.git', '') }}"
+
+- name: Clone external use case
+  ansible.builtin.git:
+    repo: "{{ use_case_ext_src }}"
+    dest: "/tmp/{{ use_case_ext_name }}"
+
+- name: Synchronize Use Case role
+  synchronize:
+    src: "/tmp/{{ use_case_ext_name }}/roles/{{ default_use_case_ext_name }}/"
+    dest: "/home/{{ ace_box_user }}/ansible/roles/{{ use_case_ext_name }}/"
+
+- name: Synchronize roles
+  synchronize:
+    src: "/tmp/{{ use_case_ext_name }}/roles/"
+    dest: "/home/{{ ace_box_user }}/ansible/roles/"
+    rsync_opts:
+      - "--exclude={{ default_use_case_ext_name }}"
+
+- include_role:
+    name: "{{ use_case_ext_name }}"
