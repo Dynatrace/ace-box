@@ -1,3 +1,5 @@
+{{ if .Values.ingress.enabled }}
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -27,3 +29,53 @@ spec:
               number: 80
         path: /
         pathType: ImplementationSpecific
+{{ else if .Values.virtualservice.enabled }}
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  annotations:
+    meta.helm.sh/release-name: {{ .Chart.Name }}
+    meta.helm.sh/release-namespace: ace
+  labels:
+    app: {{ .Chart.Name }}
+    app.kubernetes.io/managed-by: Helm
+    chart: {{ .Chart.Name }}
+    heritage: Helm
+    release: {{ .Chart.Name }}
+  name: {{ .Chart.Name }}
+spec:
+  hosts:
+  - "{{ .Values.domain }}"
+  - "dashboard.{{ .Values.domain }}"
+  gateways:
+  - "istio-ingress/default-gateway"
+  http:
+  - route:
+    - destination:
+        host: {{ .Chart.Name }}
+        port:
+          number: 80
+---
+apiVersion: extensions.istio.io/v1alpha1
+kind: WasmPlugin
+metadata:
+  name: basic-auth
+  namespace: istio-ingress
+spec:
+  selector:
+    matchLabels:
+      istio: ingress
+  url: oci://ghcr.io/istio-ecosystem/wasm-extensions/basic_auth:1.12.0
+  phase: AUTHN
+  pluginConfig:
+    basic_auth_rules:
+      - hosts:
+          - "{{ .Values.domain }}"
+          - "dashboard.{{ .Values.domain }}"
+        prefix: "/"
+        request_methods:
+          - "GET"
+        credentials:
+          - "{{ .Values.authb64encoded }}"
+{{ end }}

@@ -1,11 +1,17 @@
 ---
-- name: Encrpyt http basic auth password
-  set_fact:
-    password_encrypted: "{{ dashboard_password | password_hash('md5') }}"
+- name: Create BasicAuth for NGINX Ingress
+  block:
+  - set_fact:
+      password_encrypted: "{{ dashboard_password | password_hash('md5') }}"
+  - set_fact:
+      authb64encoded: "{{ [dashboard_user, password_encrypted] | join(':') | b64encode }}"
+  when: ingress_class != "istio"
 
-- name: Encode http basic auth credentials
-  set_fact:
-    authb64encoded: "{{ [dashboard_user, password_encrypted] | join(':') | b64encode }}"
+- name: Create BasicAuth for Istio Ingress
+  block:
+  - set_fact:
+      authb64encoded: "{{ [dashboard_user, dashboard_password] | join(':') | b64encode }}"
+  when: ingress_class == "istio"
 
 - name: Source Gitea secrets
   include_role:
@@ -85,6 +91,8 @@
     --set env.CLOUD_AUTOMATION_BRIDGE_URL={{ cloud_automation_bridge | default(None) }}
     --set env.QUALITY_GATES_PROVIDER={{ cloud_automation_flavor | default(None) }}
     --set env.K8S_PROVIDER=MICROK8S
+    --set ingress.enabled={{ ingress_class != "istio" }}
+    --set virtualservice.enabled={{ ingress_class == "istio" }}
 
 - name: Print some dashboard config
   debug:

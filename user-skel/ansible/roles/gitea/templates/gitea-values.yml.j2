@@ -56,9 +56,9 @@ service:
     annotations:
 
 ingress:
-  enabled: true
+  enabled: {{ ingress_class != "istio" }}
   annotations:
-    kubernetes.io/ingress.class: public
+    kubernetes.io/ingress.class: {{ ingress_class }}
     nginx.ingress.kubernetes.io/proxy-body-size: 100m
     # kubernetes.io/tls-acme: "true"
   hosts:
