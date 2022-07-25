@@ -1,4 +1,12 @@
 ---
+
+- include_role:
+    name: config-v2
+    tasks_from: set-var
+  vars:
+    var_key_to_set: "demo_appsec"
+    var_value_to_set: true
+
 - include_role:
     name: microk8s
 
