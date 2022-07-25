@@ -1,0 +1,32 @@
+---
+- name: Deploy Job Executor service
+  kubernetes.core.helm:
+    name: job-executor-service 
+    chart_ref: "https://github.com/keptn-contrib/job-executor-service/releases/download/{{ keptn_job_executor_service_version }}/job-executor-service-{{ keptn_job_executor_service_version }}.tgz"
+    release_namespace: "{{ keptn_job_executor_service_namespace }}"
+    create_namespace: true
+    wait: true
+    wait_timeout: 15m
+    values:
+      remoteControlPlane:
+        autoDetect:
+          enabled: true
+        topicSubscription: "{{ keptn_job_executor_service_subscriptions }}"
+        api:
+          token: ""
+          hostname: ""
+          protocol: ""
+
+- name: Create Dynatrace secret
+  kubernetes.core.k8s:
+    name: dynatrace
+    api_version: v1
+    kind: Secret
+    state: present
+    namespace: "{{ keptn_job_executor_service_namespace }}"
+    resource_definition:
+      type: Opaque
+      data:
+        DT_TENANT: "{{ dynatrace_tenant_url | regex_replace('https://', '') | b64encode }}"
+        DT_API_TOKEN: "{{ dynatrace_api_token | b64encode }}" 
+        DT_PAAS_TOKEN: "{{ dynatrace_paas_token | b64encode }}" 

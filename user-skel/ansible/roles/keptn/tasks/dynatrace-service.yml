@@ -1,4 +1,8 @@
 ---
+# - name: Create Dynatrace secret
+#   ansible.builtin.command: "keptn create secret dynatrace --scope=dynatrace-service --from-literal=DT_TENANT={{ dynatrace_tenant_url }} --from-literal=DT_API_TOKEN={{ dynatrace_api_token }}"
+#   ignore_errors: true
+
 - name: Create Keptn Dynatrace secret
   kubernetes.core.k8s:
     name: dynatrace

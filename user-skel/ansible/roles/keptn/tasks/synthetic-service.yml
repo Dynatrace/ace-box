@@ -1,0 +1,17 @@
+---
+- name: Deploy Dynatrace Synthetic service
+  kubernetes.core.helm:
+    name: dynatrace-synthetic-service 
+    chart_ref: "https://github.com/dynatrace-ace/dynatrace-synthetic-service/releases/download/v0.4.1/dt-synthetic-service-0.4.1.tar.gz"
+    release_namespace: "{{ keptn_namespace }}"
+    create_namespace: true
+    wait: true
+    wait_timeout: 15m
+    values:
+      dynatraceService:
+        config:
+          keptnApiUrl: "{{ ingress_protocol }}://{{ keptn_ingress_domain }}/api"
+          keptnBridgeUrl: "{{ ingress_protocol }}://{{ keptn_ingress_domain }}/bridge"
+      distributor:
+        image:
+          tag: "{{ keptn_version }}"

@@ -1,0 +1,9 @@
+---
+- name: Deploy Dynatrace Synthetic service
+  kubernetes.core.helm:
+    name: keptn-test-collector-service 
+    chart_ref: "https://github.com/dynatrace-ace/keptn-test-collector-service/releases/download/v0.1.3/keptn-test-collector-0.1.3.tar.gz"
+    release_namespace: "{{ keptn_namespace }}"
+    create_namespace: true
+    wait: true
+    wait_timeout: 15m

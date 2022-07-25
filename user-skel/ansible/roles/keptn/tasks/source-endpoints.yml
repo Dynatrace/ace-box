@@ -1,17 +1,32 @@
 ---
-- name: Source endpoints
-  kubernetes.core.k8s_info:
-    kind: Ingress
-    name: "keptn-ingress"
-    namespace: "{{ keptn_namespace }}"
-  register: keptn_ingress_data
+- name: Source endpoints (non-Istio)
+  block:
+  - kubernetes.core.k8s_info:
+      kind: Ingress
+      name: "keptn-ingress"
+      namespace: "{{ keptn_namespace }}"
+    register: keptn_ingress_data
+  - set_fact:
+      keptn_ingress_domain: "{{ keptn_ingress_data.resources[0].spec.rules[0].host }}"
+      keptn_endpoint: "{{ ingress_protocol }}://{{ keptn_ingress_data.resources[0].spec.rules[0].host }}/api"
+      keptn_bridge: "{{ ingress_protocol }}://{{ keptn_ingress_data.resources[0].spec.rules[0].host }}/bridge"
+    when: keptn_ingress_data is defined and keptn_ingress_data.resources[0] is defined
+  when: ingress_class != "istio"
 
-- name: Set facts
-  set_fact:
-    keptn_ingress_domain: "{{ keptn_ingress_data.resources[0].spec.rules[0].host }}"
-    keptn_endpoint: "{{ ingress_protocol }}://{{ keptn_ingress_data.resources[0].spec.rules[0].host }}/api"
-    keptn_bridge: "{{ ingress_protocol }}://{{ keptn_ingress_data.resources[0].spec.rules[0].host }}/bridge"
-  when: keptn_ingress_data is defined and keptn_ingress_data.resources[0] is defined
+- name: Source endpoints (Istio)
+  block:
+  - kubernetes.core.k8s_info:
+      api_version: networking.istio.io/v1beta1
+      kind: VirtualService
+      name: "keptn"
+      namespace: "{{ keptn_namespace }}"
+    register: keptn_virtualservice_data
+  - set_fact:
+      keptn_ingress_domain: "{{ keptn_virtualservice_data.resources[0].spec.hosts[0] }}"
+      keptn_endpoint: "{{ ingress_protocol }}://{{ keptn_virtualservice_data.resources[0].spec.hosts[0] }}/api"
+      keptn_bridge: "{{ ingress_protocol }}://{{ keptn_virtualservice_data.resources[0].spec.hosts[0] }}/bridge"
+    when: keptn_virtualservice_data is defined and keptn_virtualservice_data.resources[0] is defined
+  when: ingress_class == "istio"
 
 - name: Source internal endpoints
   kubernetes.core.k8s_info:
