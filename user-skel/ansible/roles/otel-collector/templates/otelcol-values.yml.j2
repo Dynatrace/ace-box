@@ -1,0 +1,358 @@
+# Default values for opentelemetry-collector.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+nameOverride: ""
+fullnameOverride: ""
+
+# Valid values are "daemonset" and "deployment".
+# If set, agentCollector and standaloneCollector are ignored.
+mode: "deployment"
+
+config:
+  exporters:
+    otlphttp:
+      endpoint: "{{ dynatrace_tenant_url | default(None) }}/api/v2/otlp"
+      headers:
+        Authorization: "Api-Token {{ dynatrace_api_token | default(None) }}"
+    dynatrace:
+    #  endpoint: "{{ dynatrace_tenant_url | default(None) }}/api/v2/metrics/ingest"
+    #  api_token: "{{ dynatrace_api_token | default(None) }}"
+            #resource_to_telemetry_conversion:
+            #enabled: true
+    #logging:
+    #  loglevel: debug
+  extensions:
+    health_check: {}
+    memory_ballast: {}
+  processors:
+    batch: {}
+    # If set to null, will be overridden with values based on k8s resource limits
+    memory_limiter: null
+  receivers:
+    jaeger:
+      protocols:
+        grpc:
+          endpoint: 0.0.0.0:14250
+        thrift_http:
+          endpoint: 0.0.0.0:14268
+        thrift_compact:
+          endpoint: 0.0.0.0:6831
+    otlp:
+      protocols:
+        grpc:
+          endpoint: 0.0.0.0:4317
+        http:
+          endpoint: 0.0.0.0:4318
+    prometheus:
+      config:
+        scrape_configs:
+          - job_name: opentelemetry-collector
+            scrape_interval: 10s
+            static_configs:
+              - targets:
+                  - ${MY_POD_IP}:8888
+    zipkin:
+      endpoint: 0.0.0.0:9411
+  service:
+    telemetry:
+      logs:
+        level: "debug"
+      metrics:
+        address: 0.0.0.0:8888
+    extensions:
+      - health_check
+      - memory_ballast
+    pipelines:
+      logs:
+        exporters:
+          - logging
+        processors:
+          - memory_limiter
+          - batch
+        receivers:
+          - otlp
+      metrics:
+        exporters: 
+          - logging
+          - dynatrace
+        processors:
+          - memory_limiter
+          - batch
+        receivers:
+          - otlp
+      traces:
+        exporters: 
+          - logging 
+          - otlphttp
+        processors:
+          - memory_limiter
+          - batch
+        receivers:
+          - otlp
+
+# Shared params for agentCollector daemonset and standaloneCollector deployment pods.
+# Can be overridden here or for any component independently using the same keys.
+
+image:
+  # If you want to use the core image `otel/opentelemetry-collector`, you also need to change `command.name` value to `otelcol`.
+  repository: otel/opentelemetry-collector-contrib
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "{{ otelcol_image_tag }}"
+imagePullSecrets: []
+
+# OpenTelemetry Collector executable
+command:
+  name: otelcol-contrib
+  extraArgs: []
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+clusterRole:
+  # Specifies whether a clusterRole should be created
+  create: false
+  # Annotations to add to the clusterRole
+  annotations: {}
+  # The name of the clusterRole to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+  # A set of rules as documented here : https://kubernetes.io/docs/reference/access-authn-authz/rbac/
+  rules: []
+  # - apiGroups:
+  #   - ''
+  #   resources:
+  #   - 'pods'
+  #   - 'nodes'
+  #   verbs:
+  #   - 'get'
+  #   - 'list'
+  #   - 'watch'
+
+  clusterRoleBinding:
+    # Annotations to add to the clusterRoleBinding
+    annotations: {}
+    # The name of the clusterRoleBinding to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name: ""
+
+podSecurityContext: {}
+securityContext: {}
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+# Allows for pod scheduler prioritisation
+# Can be overridden here or for agentCollector and standaloneCollector independently.
+priorityClassName: ""
+
+extraEnvs: []
+extraVolumes: []
+extraVolumeMounts: []
+
+# Configuration for ports, shared between agentCollector, standaloneCollector and service.
+# Can be overridden here or for agentCollector and standaloneCollector independently.
+ports:
+  otlp:
+    enabled: true
+    containerPort: 4317
+    servicePort: 4317
+    hostPort: 4317
+    protocol: TCP
+  otlp-http:
+    enabled: true
+    containerPort: 4318
+    servicePort: 4318
+    hostPort: 4318
+    protocol: TCP
+  jaeger-compact:
+    enabled: true
+    containerPort: 6831
+    servicePort: 6831
+    hostPort: 6831
+    protocol: UDP
+  jaeger-thrift:
+    enabled: true
+    containerPort: 14268
+    servicePort: 14268
+    hostPort: 14268
+    protocol: TCP
+  jaeger-grpc:
+    enabled: true
+    containerPort: 14250
+    servicePort: 14250
+    hostPort: 14250
+    protocol: TCP
+  zipkin:
+    enabled: true
+    containerPort: 9411
+    servicePort: 9411
+    hostPort: 9411
+    protocol: TCP
+  metrics:
+    # The metrics port is disabled by default. However you need to enable the port
+    # in order to use the ServiceMonitor (serviceMonitor.enabled) or PodMonitor (podMonitor.enabled).
+    enabled: false
+    containerPort: 8888
+    servicePort: 8888
+    protocol: TCP
+
+containerLogs:
+  enabled: false
+
+resources:
+  limits:
+    cpu: 1
+    memory: 2Gi
+
+podAnnotations: {}
+
+podLabels: {}
+
+# Host networking requested for this pod. Use the host's network namespace.
+hostNetwork: false
+
+# Pod DNS policy ClusterFirst, ClusterFirstWithHostNet, None, Default, None
+dnsPolicy: ""
+
+# only used with deployment mode
+replicaCount: 1
+
+annotations: {}
+
+# List of init container specs, e.g. for copying a binary to be executed as a lifecycle hook.
+initContainers: []
+# initContainers:
+#   - name: test
+#     command:
+#       - cp
+#     args:
+#       - /bin/sleep
+#       - /test/sleep
+#     image: busybox:latest
+#     volumeMounts:
+#       - name: test
+#         mountPath: /test
+
+# Pod lifecycle policies.
+lifecycleHooks: {}
+# lifecycleHooks:
+#   preStop:
+#     exec:
+#       command:
+#       - /test/sleep
+#       - "5"
+
+# DEPRECATED. See UPGRADING.md
+standaloneCollector:
+  enabled: false
+
+  replicaCount: 1
+
+  resources:
+    limits:
+      cpu: 1
+      memory: 2Gi
+
+  podAnnotations: {}
+
+  podLabels: {}
+
+  annotations: {}
+
+  # Configuration override that will be merged into the standalone collector default config
+  configOverride: {}
+
+# DEPRECATED. See UPGRADING.md
+agentCollector:
+  enabled: true
+
+  containerLogs:
+    enabled: false
+
+  resources:
+    limits:
+      cpu: 256m
+      memory: 512Mi
+
+  podAnnotations: {}
+
+  podLabels: {}
+
+  # Host networking requested for this pod. Use the host's network namespace.
+  hostNetwork: false
+
+  # Configuration override that will be merged into the agent's default config
+  configOverride: {}
+
+service:
+  type: ClusterIP
+  annotations: {}
+
+ingress:
+  enabled: true
+  annotations: {}
+  ingressClassName: public
+  hosts:
+    - host: "{{ otelcol_ingress_domain }}"
+      paths:
+        - path: /
+          pathType: Prefix
+          port: 4317
+#  tls:
+#    - secretName: collector-tls
+#      hosts:
+#        - collector.example.com
+
+podMonitor:
+  # The pod monitor by default scrapes the metrics port.
+  # The metrics port needs to be enabled as well.
+  enabled: false
+  metricsEndpoints:
+  - port: metrics
+    # interval: 15s
+
+  # additional labels for the PodMonitor
+  extraLabels: {}
+  #   release: kube-prometheus-stack
+
+serviceMonitor:
+  # The service monitor by default scrapes the metrics port.
+  # The metrics port needs to be enabled as well.
+  enabled: false
+  metricsEndpoints:
+  - port: metrics
+    # interval: 15s
+
+  # additional labels for the ServiceMonitor
+  extraLabels: {}
+  #  release: kube-prometheus-stack
+
+# PodDisruptionBudget is used only if standaloneCollector enabled
+podDisruptionBudget:
+  enabled: false
+#   minAvailable: 2
+#   maxUnavailable: 1
+
+# autoscaling is used only if standaloneCollector enabled
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+prometheusRule:
+  enabled: false
+  groups: []
+
+  # additional labels for the PrometheusRule
+  extraLabels: {}

@@ -3,6 +3,10 @@ pipeline {
     agent {
         label "monaco-runner"
     }
+    environment {
+        DT_API_TOKEN = credentials('DT_API_TOKEN')
+        DT_TENANT_URL = credentials('DT_TENANT_URL')
+    }
     stages {
         stage('Dry Run on Validation') {
             when {
@@ -20,7 +24,7 @@ pipeline {
                         sh "monaco -v -dry-run -e=$ENVS_FILE -se=validation -p=$env.MON_APP projects/"
                     }
                 }
-			}
+            }
           
         }
 
@@ -40,7 +44,7 @@ pipeline {
                         sh "monaco -v -e=$ENVS_FILE -se=validation -p=$env.MON_APP projects/"
                     }
                 }
-			}
+            }
         }
 
         stage('Approval') {
@@ -58,7 +62,7 @@ pipeline {
                     }
                 
                 }
-			}
+            }
         }
 
         stage('Create PR') {
@@ -70,29 +74,29 @@ pipeline {
             steps {
                 script {
                     def requestBody = """{
-                        | "base": "master",
-                        | "body": "PR to merge ${env.BRANCH_NAME} back in with master",
+                        | "base": "main",
+                        | "body": "PR to merge ${env.BRANCH_NAME} back in with main",
                         | "head": "${env.BRANCH_NAME}",
-                        | "title": "Merge ${env.BRANCH_NAME} with master"
+                        | "title": "Merge ${env.BRANCH_NAME} with main"
                     }""".stripMargin()
-                    withCredentials([usernamePassword(credentialsId: 'git-creds-ace', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-                        def encodedPassword = URLEncoder.encode("$GIT_PASSWORD",'UTF-8')
+                    withCredentials([string(credentialsId: 'git-api-token', variable: 'GIT_TOKEN')]) {
+                        def encodedPassword = URLEncoder.encode("$GIT_TOKEN",'UTF-8')
                         def response = httpRequest contentType: 'APPLICATION_JSON',
                             httpMode: 'POST',
                             requestBody: requestBody,
-                            url: "${GIT_PROTOCOL}://${GIT_DOMAIN}/api/v1/repos/${GITHUB_ORGANIZATION}/monaco/pulls",
+                            url: "${GIT_PROTOCOL}://${GIT_DOMAIN}/api/v1/repos/${GIT_ORG_DEMO}/monaco/pulls",
                             customHeaders: [[maskValue: true, name: 'Authorization', value: "token ${encodedPassword}"]],
                             validResponseCodes: "100:201", 
                             ignoreSslErrors: true
                     }
                 }
-			}
+            }
         }
 
         stage('Dry Run on Production') {
             when {
                 expression {
-                    return env.BRANCH_NAME == 'master'
+                    return env.BRANCH_NAME == 'main'
                 }
             }
             steps {
@@ -101,14 +105,14 @@ pipeline {
                         sh "monaco -v -dry-run -e=$ENVS_FILE -se=production projects/"
                     }
                 }
-			}
+            }
           
         }
 
         stage('Deploy to Production') {
             when {
                 expression {
-                    return env.BRANCH_NAME == 'master'
+                    return env.BRANCH_NAME == 'main'
                 }
             }
             steps {
@@ -117,7 +121,7 @@ pipeline {
                         sh "monaco -v -e=$ENVS_FILE -se=production projects/"
                     }
                 }
-			}
+            }
         }
     }
 }

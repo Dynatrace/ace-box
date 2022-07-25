@@ -91,6 +91,14 @@
     name: dt-activegate
     tasks_from: source-node-id
 
+- block:
+  - name: Source OpenTelemetry Collector details
+    include_role:
+      name: otel-collector
+      tasks_from: source-endpoints
+  - set_fact:
+      otel_endpoint: "{{ otel_internal_endpoint }}"
+
 - name: Template Helm values file
   ansible.builtin.template:
     src: jenkins-values.yml.j2

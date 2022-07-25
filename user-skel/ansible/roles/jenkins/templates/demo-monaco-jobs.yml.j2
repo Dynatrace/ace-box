@@ -1,0 +1,31 @@
+        jobs:
+        - script: >
+            folder('demo-monaco-gitops')
+        - script: >
+            pipelineJob('demo-monaco-gitops/Onboard Application') {
+              parameters {
+                stringParam('MON_PROJECT_NAME', 'myFirstProject', 'The name of the Monaco project to onboard.')
+                stringParam('MON_APP_NAME', 'myApp', 'The name of Application to onboard.')
+                stringParam('MON_ENDPOINT', 'https://dynatrace.com', 'The application URL for UEM.')
+                stringParam('MON_UEM_COVERAGE', '75', 'UEM coverage percentage')
+                booleanParam('MON_SKIP_APP', false, 'Skip the creation of the application')
+                stringParam('MON_NAMESPACE', 'myappnamespace', 'Which kubernetes namespace the application is running in')
+                stringParam('MON_WEB_CHECK', 'https://dynatrace.com', 'Which URL you want to use for the HTTP monitor')
+                booleanParam('MON_SKIP_WEB_CHECK', false, 'Skip the creation of the HTTP monitor')
+              }
+              definition {
+                cpsScm {
+                  scriptPath('onboarding.Jenkinsfile')
+                  scm {
+                    git {
+                        remote { 
+                          url('{{ ingress_protocol }}://{{ git_domain }}/{{ git_org_demo }}/{{ git_repo_monaco }}')
+                          credentials('git-creds-ace')
+                        }
+                        branch('*/main')
+                    }
+                  }
+                  lightweight()
+                }
+              }
+            }

@@ -23,15 +23,15 @@
     tasks_from: dt-cleanup
 
 - include_role:
+    name: gitea
+
+- include_role:
     name: keptn
   when: cloud_automation_flavor is defined and cloud_automation_flavor == "KEPTN"
 
 - include_role:
     name: cloudautomation
   when: cloud_automation_flavor is defined and cloud_automation_flavor == "CLOUD_AUTOMATION"
-
-- include_role:
-    name: gitea
 
 - include_role:
     name: gitea
@@ -63,7 +63,11 @@
     git_remote: "gitea"
   loop:
   - { repo_target: "{{ demo_default_repo_name }}", repo_src: "{{ demo_default_source_repo }}", git_org: "{{ demo_default_org }}" }
+  - { repo_target: "{{ monaco_default_repo_name }}", repo_src: "{{ monaco_default_source_repo }}", git_org: "{{ demo_default_org }}" }
   when: new_repo_created is defined and new_repo_created == true
+
+- include_role:
+    name: otel-collector
 
 - include_role:
     name: jenkins

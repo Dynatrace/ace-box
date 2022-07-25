@@ -1,0 +1,5 @@
+otelcol_helm_chart_version: "0.18.0"
+otelcol_image_tag: "0.53.0"
+otelcol_namespace: "otel"
+otelcol_name: "opentelemetry-collector"
+otelcol_ingress_domain: "collector.{{ ingress_domain }}"

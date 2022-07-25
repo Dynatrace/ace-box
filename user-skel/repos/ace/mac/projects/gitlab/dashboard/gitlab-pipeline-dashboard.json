@@ -1,0 +1,855 @@
+{
+    "dashboardMetadata": {
+      "name": "GitLab Pipeline Dashboard",
+      "shared": false,
+      "owner": "admin",
+      "popularity": 10,
+      "hasConsistentColors": false
+    },
+    "tiles": [
+      {
+        "name": "Project Overview",
+        "tileType": "DATA_EXPLORER",
+        "configured": true,
+        "bounds": {
+          "top": 0,
+          "left": 0,
+          "width": 380,
+          "height": 304
+        },
+        "tileFilter": {},
+        "customName": "Table",
+        "queries": [
+          {
+            "id": "A",
+            "metric": "gitlab_ci_pipeline_duration_seconds",
+            "spaceAggregation": "AVG",
+            "timeAggregation": "DEFAULT",
+            "splitBy": [
+              "project"
+            ],
+            "sortBy": "DESC",
+            "filterBy": {
+              "nestedFilters": [],
+              "criteria": []
+            },
+            "limit": 100,
+            "enabled": true
+          }
+        ],
+        "visualConfig": {
+          "type": "TABLE",
+          "global": {
+            "hideLegend": false
+          },
+          "rules": [
+            {
+              "matcher": "A:",
+              "properties": {
+                "color": "DEFAULT"
+              },
+              "seriesOverrides": []
+            }
+          ],
+          "axes": {
+            "xAxis": {
+              "visible": true
+            },
+            "yAxes": []
+          },
+          "heatmapSettings": {
+            "yAxis": "VALUE"
+          },
+          "thresholds": [
+            {
+              "axisTarget": "LEFT",
+              "columnId": "",
+              "rules": [
+                {
+                  "color": "#7dc540"
+                },
+                {
+                  "color": "#f5d30f"
+                },
+                {
+                  "color": "#dc172a"
+                }
+              ],
+              "queryId": "A",
+              "visible": true
+            }
+          ],
+          "tableSettings": {
+            "isThresholdBackgroundAppliedToCell": false
+          },
+          "graphChartSettings": {
+            "connectNulls": false
+          },
+          "honeycombSettings": {
+            "showHive": true,
+            "showLegend": true,
+            "showLabels": false
+          }
+        },
+        "queriesSettings": {
+          "resolution": ""
+        },
+        "metricExpressions": [
+          "resolution=Inf&(gitlab_ci_pipeline_duration_seconds:splitBy(project):avg:auto:sort(value(avg,descending)):limit(100)):limit(100):names"
+        ]
+      },
+      {
+        "name": "Slowest Jobs",
+        "tileType": "DATA_EXPLORER",
+        "configured": true,
+        "bounds": {
+          "top": 0,
+          "left": 380,
+          "width": 608,
+          "height": 304
+        },
+        "tileFilter": {},
+        "customName": "Top list",
+        "queries": [
+          {
+            "id": "A",
+            "metric": "gitlab_ci_pipeline_job_duration_seconds",
+            "spaceAggregation": "AVG",
+            "timeAggregation": "DEFAULT",
+            "splitBy": [
+              "project",
+              "job_name"
+            ],
+            "sortBy": "DESC",
+            "filterBy": {
+              "nestedFilters": [],
+              "criteria": []
+            },
+            "limit": 100,
+            "enabled": true
+          }
+        ],
+        "visualConfig": {
+          "type": "TOP_LIST",
+          "global": {
+            "hideLegend": false
+          },
+          "rules": [
+            {
+              "matcher": "A:",
+              "properties": {
+                "color": "DEFAULT"
+              },
+              "seriesOverrides": []
+            }
+          ],
+          "axes": {
+            "xAxis": {
+              "visible": true
+            },
+            "yAxes": []
+          },
+          "heatmapSettings": {
+            "yAxis": "VALUE"
+          },
+          "thresholds": [
+            {
+              "axisTarget": "LEFT",
+              "rules": [
+                {
+                  "color": "#7dc540"
+                },
+                {
+                  "color": "#f5d30f"
+                },
+                {
+                  "color": "#dc172a"
+                }
+              ],
+              "queryId": "",
+              "visible": true
+            }
+          ],
+          "tableSettings": {
+            "isThresholdBackgroundAppliedToCell": false
+          },
+          "graphChartSettings": {
+            "connectNulls": false
+          },
+          "honeycombSettings": {
+            "showHive": true,
+            "showLegend": true,
+            "showLabels": false
+          }
+        },
+        "queriesSettings": {
+          "resolution": ""
+        },
+        "metricExpressions": [
+          "resolution=Inf&(gitlab_ci_pipeline_job_duration_seconds:splitBy(project,job_name):avg:auto:sort(value(avg,descending)):limit(100)):limit(100):names"
+        ]
+      },
+      {
+        "name": "pipeline status - simplenodeservice",
+        "tileType": "DATA_EXPLORER",
+        "configured": true,
+        "bounds": {
+          "top": 304,
+          "left": 0,
+          "width": 380,
+          "height": 114
+        },
+        "tileFilter": {},
+        "customName": "Data explorer results",
+        "queries": [
+          {
+            "id": "A",
+            "metric": "gitlab_ci_pipeline_job_status",
+            "spaceAggregation": "AVG",
+            "timeAggregation": "DEFAULT",
+            "splitBy": [],
+            "sortBy": "DESC",
+            "filterBy": {
+              "filterOperator": "AND",
+              "nestedFilters": [
+                {
+                  "filter": "project",
+                  "filterType": "DIMENSION",
+                  "filterOperator": "OR",
+                  "nestedFilters": [],
+                  "criteria": [
+                    {
+                      "value": "ace/simplenodeservice",
+                      "evaluator": "EQ"
+                    }
+                  ]
+                }
+              ],
+              "criteria": []
+            },
+            "limit": 100,
+            "enabled": true
+          }
+        ],
+        "visualConfig": {
+          "type": "SINGLE_VALUE",
+          "global": {
+            "hideLegend": false
+          },
+          "rules": [
+            {
+              "matcher": "A:",
+              "properties": {
+                "color": "DEFAULT"
+              },
+              "seriesOverrides": []
+            }
+          ],
+          "axes": {
+            "xAxis": {
+              "visible": true
+            },
+            "yAxes": []
+          },
+          "heatmapSettings": {
+            "yAxis": "VALUE"
+          },
+          "singleValueSettings": {
+            "showTrend": false,
+            "showSparkLine": true,
+            "linkTileColorToThreshold": true
+          },
+          "thresholds": [
+            {
+              "axisTarget": "LEFT",
+              "columnId": "",
+              "rules": [
+                {
+                  "value": 0.8,
+                  "color": "#7dc540"
+                },
+                {
+                  "color": "#f5d30f"
+                },
+                {
+                  "color": "#dc172a"
+                }
+              ],
+              "queryId": "A",
+              "visible": true
+            }
+          ],
+          "tableSettings": {
+            "isThresholdBackgroundAppliedToCell": false
+          },
+          "graphChartSettings": {
+            "connectNulls": false
+          },
+          "honeycombSettings": {
+            "showHive": true,
+            "showLegend": true,
+            "showLabels": false
+          }
+        },
+        "queriesSettings": {
+          "resolution": ""
+        },
+        "metricExpressions": [
+          "resolution=Inf&(gitlab_ci_pipeline_job_status:filter(and(eq(project,\"ace/simplenodeservice\"))):splitBy():avg:auto:sort(value(avg,descending)):limit(100)):limit(100):names"
+        ]
+      },
+      {
+        "name": "stage availability",
+        "tileType": "DATA_EXPLORER",
+        "configured": true,
+        "bounds": {
+          "top": 532,
+          "left": 0,
+          "width": 380,
+          "height": 228
+        },
+        "tileFilter": {},
+        "customName": "Data explorer results",
+        "queries": [
+          {
+            "id": "A",
+            "metric": "gitlab_ci_pipeline_job_status",
+            "spaceAggregation": "AVG",
+            "timeAggregation": "DEFAULT",
+            "splitBy": [
+              "job_name"
+            ],
+            "sortBy": "DESC",
+            "filterBy": {
+              "filterOperator": "AND",
+              "nestedFilters": [
+                {
+                  "filter": "project",
+                  "filterType": "DIMENSION",
+                  "filterOperator": "OR",
+                  "nestedFilters": [],
+                  "criteria": [
+                    {
+                      "value": "ace/simplenodeservice",
+                      "evaluator": "EQ"
+                    }
+                  ]
+                }
+              ],
+              "criteria": []
+            },
+            "limit": 100,
+            "enabled": true
+          }
+        ],
+        "visualConfig": {
+          "type": "TABLE",
+          "global": {
+            "hideLegend": false
+          },
+          "rules": [
+            {
+              "matcher": "A:",
+              "unitTransform": "auto",
+              "valueFormat": "auto",
+              "properties": {
+                "color": "DEFAULT",
+                "seriesType": "LINE",
+                "alias": "gitlab_ci_pipeline_job_status"
+              },
+              "seriesOverrides": []
+            }
+          ],
+          "axes": {
+            "xAxis": {
+              "visible": true
+            },
+            "yAxes": []
+          },
+          "heatmapSettings": {
+            "yAxis": "VALUE"
+          },
+          "thresholds": [
+            {
+              "axisTarget": "LEFT",
+              "columnId": "",
+              "rules": [
+                {
+                  "value": 0.8,
+                  "color": "#1f7e1e"
+                },
+                {
+                  "color": "#f5d30f"
+                },
+                {
+                  "color": "#dc172a"
+                }
+              ],
+              "queryId": "A",
+              "visible": true
+            }
+          ],
+          "tableSettings": {
+            "isThresholdBackgroundAppliedToCell": true
+          },
+          "graphChartSettings": {
+            "connectNulls": false
+          },
+          "honeycombSettings": {
+            "showHive": true,
+            "showLegend": true,
+            "showLabels": false
+          }
+        },
+        "queriesSettings": {
+          "resolution": ""
+        },
+        "metricExpressions": [
+          "resolution=Inf&(gitlab_ci_pipeline_job_status:filter(and(eq(project,\"ace/simplenodeservice\"))):splitBy(job_name):avg:auto:sort(value(avg,descending)):limit(100)):limit(100):names"
+        ]
+      },
+      {
+        "name": "pipeline status - demo",
+        "tileType": "DATA_EXPLORER",
+        "configured": true,
+        "bounds": {
+          "top": 304,
+          "left": 380,
+          "width": 342,
+          "height": 114
+        },
+        "tileFilter": {},
+        "customName": "Data explorer results",
+        "queries": [
+          {
+            "id": "A",
+            "metric": "gitlab_ci_pipeline_job_status",
+            "spaceAggregation": "AVG",
+            "timeAggregation": "DEFAULT",
+            "splitBy": [],
+            "sortBy": "DESC",
+            "filterBy": {
+              "filterOperator": "AND",
+              "nestedFilters": [
+                {
+                  "filter": "project",
+                  "filterType": "DIMENSION",
+                  "filterOperator": "OR",
+                  "nestedFilters": [],
+                  "criteria": [
+                    {
+                      "value": "ace/simplenodeservice",
+                      "evaluator": "EQ"
+                    }
+                  ]
+                }
+              ],
+              "criteria": []
+            },
+            "limit": 100,
+            "enabled": true
+          }
+        ],
+        "visualConfig": {
+          "type": "SINGLE_VALUE",
+          "global": {
+            "hideLegend": false
+          },
+          "rules": [
+            {
+              "matcher": "A:",
+              "properties": {
+                "color": "DEFAULT"
+              },
+              "seriesOverrides": []
+            }
+          ],
+          "axes": {
+            "xAxis": {
+              "visible": true
+            },
+            "yAxes": []
+          },
+          "heatmapSettings": {
+            "yAxis": "VALUE"
+          },
+          "singleValueSettings": {
+            "showTrend": false,
+            "showSparkLine": true,
+            "linkTileColorToThreshold": true
+          },
+          "thresholds": [
+            {
+              "axisTarget": "LEFT",
+              "columnId": "",
+              "rules": [
+                {
+                  "value": 0.8,
+                  "color": "#7dc540"
+                },
+                {
+                  "color": "#f5d30f"
+                },
+                {
+                  "color": "#dc172a"
+                }
+              ],
+              "queryId": "A",
+              "visible": true
+            }
+          ],
+          "tableSettings": {
+            "isThresholdBackgroundAppliedToCell": false
+          },
+          "graphChartSettings": {
+            "connectNulls": false
+          },
+          "honeycombSettings": {
+            "showHive": true,
+            "showLegend": true,
+            "showLabels": false
+          }
+        },
+        "queriesSettings": {
+          "resolution": ""
+        },
+        "metricExpressions": [
+          "resolution=Inf&(gitlab_ci_pipeline_job_status:filter(and(eq(project,\"ace/simplenodeservice\"))):splitBy():avg:auto:sort(value(avg,descending)):limit(100)):limit(100):names"
+        ]
+      },
+      {
+        "name": "stage availability",
+        "tileType": "DATA_EXPLORER",
+        "configured": true,
+        "bounds": {
+          "top": 532,
+          "left": 380,
+          "width": 342,
+          "height": 228
+        },
+        "tileFilter": {},
+        "customName": "Data explorer results",
+        "queries": [
+          {
+            "id": "A",
+            "metric": "gitlab_ci_pipeline_job_status",
+            "spaceAggregation": "AVG",
+            "timeAggregation": "DEFAULT",
+            "splitBy": [
+              "job_name"
+            ],
+            "sortBy": "DESC",
+            "filterBy": {
+              "filterOperator": "AND",
+              "nestedFilters": [
+                {
+                  "filter": "project",
+                  "filterType": "DIMENSION",
+                  "filterOperator": "OR",
+                  "nestedFilters": [],
+                  "criteria": [
+                    {
+                      "value": "otherteam/simplenodeservice",
+                      "evaluator": "EQ"
+                    }
+                  ]
+                }
+              ],
+              "criteria": []
+            },
+            "limit": 100,
+            "enabled": true
+          }
+        ],
+        "visualConfig": {
+          "type": "TABLE",
+          "global": {
+            "hideLegend": false
+          },
+          "rules": [
+            {
+              "matcher": "A:",
+              "unitTransform": "auto",
+              "valueFormat": "auto",
+              "properties": {
+                "color": "DEFAULT",
+                "seriesType": "LINE",
+                "alias": "gitlab_ci_pipeline_job_status"
+              },
+              "seriesOverrides": []
+            }
+          ],
+          "axes": {
+            "xAxis": {
+              "visible": true
+            },
+            "yAxes": []
+          },
+          "heatmapSettings": {
+            "yAxis": "VALUE"
+          },
+          "thresholds": [
+            {
+              "axisTarget": "LEFT",
+              "columnId": "",
+              "rules": [
+                {
+                  "value": 0.8,
+                  "color": "#1f7e1e"
+                },
+                {
+                  "color": "#f5d30f"
+                },
+                {
+                  "color": "#dc172a"
+                }
+              ],
+              "queryId": "A",
+              "visible": true
+            }
+          ],
+          "tableSettings": {
+            "isThresholdBackgroundAppliedToCell": true
+          },
+          "graphChartSettings": {
+            "connectNulls": false
+          },
+          "honeycombSettings": {
+            "showHive": true,
+            "showLegend": true,
+            "showLabels": false
+          }
+        },
+        "queriesSettings": {
+          "resolution": ""
+        },
+        "metricExpressions": [
+          "resolution=Inf&(gitlab_ci_pipeline_job_status:filter(and(eq(project,\"otherteam/simplenodeservice\"))):splitBy(job_name):avg:auto:sort(value(avg,descending)):limit(100)):limit(100):names"
+        ]
+      },
+      {
+        "name": "Last execution time",
+        "tileType": "DATA_EXPLORER",
+        "configured": true,
+        "bounds": {
+          "top": 418,
+          "left": 380,
+          "width": 342,
+          "height": 114
+        },
+        "tileFilter": {},
+        "customName": "Single value",
+        "queries": [
+          {
+            "id": "A",
+            "metric": "gitlab_ci_pipeline_duration_seconds",
+            "timeAggregation": "DEFAULT",
+            "splitBy": [],
+            "sortBy": "DESC",
+            "filterBy": {
+              "filterOperator": "AND",
+              "nestedFilters": [
+                {
+                  "filter": "project",
+                  "filterType": "DIMENSION",
+                  "filterOperator": "OR",
+                  "nestedFilters": [],
+                  "criteria": [
+                    {
+                      "value": "otherteam/simplenodeservice",
+                      "evaluator": "EQ"
+                    }
+                  ]
+                }
+              ],
+              "criteria": []
+            },
+            "limit": 100,
+            "enabled": true
+          }
+        ],
+        "visualConfig": {
+          "type": "SINGLE_VALUE",
+          "global": {
+            "hideLegend": false
+          },
+          "rules": [
+            {
+              "matcher": "A:",
+              "unitTransform": "none",
+              "valueFormat": "0,00",
+              "properties": {
+                "color": "DEFAULT",
+                "seriesType": "LINE"
+              },
+              "seriesOverrides": []
+            }
+          ],
+          "axes": {
+            "xAxis": {
+              "visible": true
+            },
+            "yAxes": []
+          },
+          "heatmapSettings": {
+            "yAxis": "VALUE"
+          },
+          "singleValueSettings": {
+            "showTrend": false,
+            "showSparkLine": true,
+            "linkTileColorToThreshold": true
+          },
+          "thresholds": [
+            {
+              "axisTarget": "LEFT",
+              "rules": [
+                {
+                  "value": 0,
+                  "color": "#7dc540"
+                },
+                {
+                  "value": 500,
+                  "color": "#f5d30f"
+                },
+                {
+                  "value": 1000,
+                  "color": "#dc172a"
+                }
+              ],
+              "queryId": "",
+              "visible": true
+            }
+          ],
+          "tableSettings": {
+            "isThresholdBackgroundAppliedToCell": false
+          },
+          "graphChartSettings": {
+            "connectNulls": false
+          },
+          "honeycombSettings": {
+            "showHive": true,
+            "showLegend": true,
+            "showLabels": false
+          }
+        },
+        "queriesSettings": {
+          "resolution": ""
+        },
+        "metricExpressions": [
+          "resolution=Inf&(gitlab_ci_pipeline_duration_seconds:filter(and(eq(project,\"otherteam/simplenodeservice\"))):splitBy():sort(value(auto,descending)):limit(100)):limit(100):names"
+        ]
+      },
+      {
+        "name": "Last execution time",
+        "tileType": "DATA_EXPLORER",
+        "configured": true,
+        "bounds": {
+          "top": 418,
+          "left": 0,
+          "width": 380,
+          "height": 114
+        },
+        "tileFilter": {},
+        "customName": "Single value",
+        "queries": [
+          {
+            "id": "A",
+            "metric": "gitlab_ci_pipeline_duration_seconds",
+            "timeAggregation": "DEFAULT",
+            "splitBy": [],
+            "sortBy": "DESC",
+            "filterBy": {
+              "filterOperator": "AND",
+              "nestedFilters": [
+                {
+                  "filter": "project",
+                  "filterType": "DIMENSION",
+                  "filterOperator": "OR",
+                  "nestedFilters": [],
+                  "criteria": [
+                    {
+                      "value": "ace/simplenodeservice",
+                      "evaluator": "EQ"
+                    }
+                  ]
+                }
+              ],
+              "criteria": []
+            },
+            "limit": 100,
+            "enabled": true
+          }
+        ],
+        "visualConfig": {
+          "type": "SINGLE_VALUE",
+          "global": {
+            "hideLegend": false
+          },
+          "rules": [
+            {
+              "matcher": "A:",
+              "unitTransform": "none",
+              "valueFormat": "0,00",
+              "properties": {
+                "color": "DEFAULT",
+                "seriesType": "LINE"
+              },
+              "seriesOverrides": []
+            }
+          ],
+          "axes": {
+            "xAxis": {
+              "visible": true
+            },
+            "yAxes": []
+          },
+          "heatmapSettings": {
+            "yAxis": "VALUE"
+          },
+          "singleValueSettings": {
+            "showTrend": false,
+            "showSparkLine": false,
+            "linkTileColorToThreshold": true
+          },
+          "thresholds": [
+            {
+              "axisTarget": "LEFT",
+              "rules": [
+                {
+                  "value": 0,
+                  "color": "#7dc540"
+                },
+                {
+                  "value": 50,
+                  "color": "#f5d30f"
+                },
+                {
+                  "value": 100,
+                  "color": "#dc172a"
+                }
+              ],
+              "queryId": "",
+              "visible": true
+            }
+          ],
+          "tableSettings": {
+            "isThresholdBackgroundAppliedToCell": false
+          },
+          "graphChartSettings": {
+            "connectNulls": false
+          },
+          "honeycombSettings": {
+            "showHive": true,
+            "showLegend": true,
+            "showLabels": false
+          }
+        },
+        "queriesSettings": {
+          "resolution": ""
+        },
+        "metricExpressions": [
+          "resolution=Inf&(gitlab_ci_pipeline_duration_seconds:filter(and(eq(project,\"ace/simplenodeservice\"))):splitBy():sort(value(auto,descending)):limit(100)):limit(100):names"
+        ]
+      }
+    ]
+  }

@@ -1,12 +1,13 @@
 ---
 jenkins_helm_chart_version: "3.3.18"
 jenkins_namespace: "jenkins"
-jenkins_version: "2.319.1-lts"
+jenkins_version: "2.319.3-lts"
 # jenkins_ace_lib_url: "https://github.com/dynatrace-ace/dynatrace-jenkins-library.git"
 # jenkins_keptn_lib_url: "https://github.com/keptn-sandbox/keptn-jenkins-library.git"
 jenkins_username: dynatrace
 jenkins_password: dynatrace
 git_org_demo: "demo"
 git_repo_demo: "ace"
+git_repo_monaco: "monaco"
 # git_org_demo_autorem: "demo"
 # git_repo_demo_autorem: "ace"

@@ -14,6 +14,9 @@
     - var_value_to_set: "CLOUD_AUTOMATION"
   when: cloud_automation_flavor is not defined or cloud_automation_flavor != "CLOUD_AUTOMATION"
 
+- name: Source Cloud Automation version
+  include_tasks: roles/{{ role_name }}/tasks/source-version.yml
+
 - name: Install Keptn CLI
   include_role:
     name: keptn-cli
