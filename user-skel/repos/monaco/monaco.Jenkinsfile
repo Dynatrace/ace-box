@@ -57,7 +57,7 @@ pipeline {
                 script {
                     env.MON_APP = env.BRANCH_NAME.substring(env.BRANCH_NAME.indexOf('/') + 1, env.BRANCH_NAME.length())
                 
-                    timeout(time:3, unit:'MINUTES') {
+                    timeout(time:15, unit:'MINUTES') {
                         env.CREATE_PR = input message: 'Are you happy with the configuration in Validation?', ok: 'Continue', parameters: [choice(name: 'CREATE_PR', choices: 'YES\nNO', description: 'Create Pull Request?')]
                     }
                 
@@ -79,7 +79,7 @@ pipeline {
                         | "head": "${env.BRANCH_NAME}",
                         | "title": "Merge ${env.BRANCH_NAME} with main"
                     }""".stripMargin()
-                    withCredentials([string(credentialsId: 'git-api-token', variable: 'GIT_TOKEN')]) {
+                    withCredentials([string(credentialsId: 'git-access-token', variable: 'GIT_TOKEN')]) {
                         def encodedPassword = URLEncoder.encode("$GIT_TOKEN",'UTF-8')
                         def response = httpRequest contentType: 'APPLICATION_JSON',
                             httpMode: 'POST',

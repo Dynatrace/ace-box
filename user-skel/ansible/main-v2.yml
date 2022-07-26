@@ -40,6 +40,12 @@
     tags:
     - demo_gitlab
     - never
+  
+  # Use case - Monaco GitOps demo
+  - role: demo-monaco-gitops
+    tags:
+    - demo_monaco_gitops
+    - never
 
   # Use case - AppSec HOT
   - role: hot-appsec

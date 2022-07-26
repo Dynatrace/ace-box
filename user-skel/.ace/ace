@@ -39,6 +39,7 @@ enable_targets = [
     'demo_autorem',
     'demo_gitlab',
     'demo_all',
+    'demo_monaco_gitops',
     'hot_appsec'
 ]
 

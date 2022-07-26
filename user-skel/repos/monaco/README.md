@@ -5,7 +5,7 @@ In this demo, we will demonstrate how customers can leverage a true GitOps appro
 This is a great way to showcase generic application onboarding together with tools (git, jenkins) and mechanisms (merge, pull request, code review) that developers and SREs understand and bring together in a GitOps Approach to observability.
 
 ## Onboarding pipeline
-In the `monaco-gitops-demo` folder, you will find the pipeline `Monaco - Application Onboarding`.
+In the `demo-monaco-gitops` folder, you will find the pipeline `Monaco - Application Onboarding`.
 Run this pipeline which will bring up a form.
 Fill in the details of the form as you wish, you can use the below screenshot as an example.
 
@@ -13,15 +13,15 @@ Fill in the details of the form as you wish, you can use the below screenshot as
 
 Once finished, click on `Build`.
 
-This pipeline is driven by the Jenkinsfile stored in gitea `ace/monaco/src/branch/master/onboarding.Jenkinsfile` and does the following:
+This pipeline is driven by the Jenkinsfile stored in gitea `demo/monaco/src/branch/master/onboarding.Jenkinsfile` and does the following:
 
-1. Create a new branch in the `ace/monaco` repo that is called `onboarding/PROJECT_NAME_FROM_FORM` 
+1. Create a new branch in the `demo/monaco` repo that is called `onboarding/PROJECT_NAME_FROM_FORM` 
 2. Create a folder with the name of the project specified in the form into the `projects` folder inside the `ace/monaco` repo.
 3. Copy over the `_template` folder from the root of the repo to the newly created folder
 4. Using a combination of `find` and `sed` it will do basic text replacement based on the input of the form into the Monaco configuration
 5. Check in and push all the files into the newly created onboarding branch
 
-After the pipeline has run, check out the `ace/monaco` repository and see that a newly created branch appears and a new project folder.
+After the pipeline has run, check out the `demo/monaco` repository and see that a newly created branch appears and a new project folder.
 
 ![Gitea - Branch and Project created](assets/gitea_branch_project.png)
 
@@ -30,19 +30,25 @@ At this stage, no configuration has been applied to Dynatrace yet. We have merel
 
 Next up, we need to integrate Jenkins with Gitea, and allow it to scan all branches automatically.
 
-In order to do so, navigate to Jenkins and make sure that you are inside the `monaco-gitops-demo` folder. At the left side of the screen click on `New Item` and select `Gitea Organization`. Name the item `ace`.
+In order to do so, navigate to Jenkins and make sure that you are inside the `demo-monaco-gitops` folder. At the left side of the screen click on `New Item` and select `Multibranch Pipeline`. Name the item `ace`.
 
-In the `Projects` section: 
-1. Ensure that the `gitea-ace-box` server has been selected
-2. Set the proper `Credentials` to `dynatrace/*****`.
-3. Set the owner to `ace`
-4. Under `Project Recognizers`, set the `Pipeline Jenkinsfile Script Path` to `monaco.Jenkinsfile`
+In the section `Branch Sources`:
+1. Click on `Add source` and select `Gitea`
+2. The Gitea server should be automatically selected
+3. Select the `dynatrace/******` credentials
+4. Under Owner, fill in `demo`
+5. The Repository `monaco` should be automatically selected
+6. The rest in this section can be left as default
+
+In the section `Build Configuration`:
+1. Leave the mode to `by Jenkinsfile`
+2. Set the Script Path to: `monaco.Jenkinsfile`
 
 Click on `Save`
 
-This will now scan all the repositories in the `ace` organization in gitea, and look for a `monaco.Jenkinsfile`, and if found it will process it.
+This will now scan all the repositories in the `demo` organization in gitea, and look for a `monaco.Jenkinsfile`, and if found it will process it.
 
-After a minute, if you go into Jenkins in the `monaco-gitops-demo` folder and open the `ace` folder, you will find one repository listed: `monaco`.
+After a minute, if you go into Jenkins in the `demo-monaco-gitops` folder and open the `ace` folder, you will find one repository listed: `monaco`.
 
 Open this repository and you will see two branches listed:
 

@@ -1,0 +1,4 @@
+---
+monaco_default_org: "demo"
+monaco_default_source_repo: "/home/{{ ace_box_user }}/repos/monaco"
+monaco_default_repo_name: "monaco"

@@ -75,8 +75,22 @@ controller:
               - key: "KUBE_API_ENDPOINT"
                 value: "{{ kubernetes_api_endpoint | default(None) }}"
 {% endif %}
+{% if demo_monaco_gitops|default(False) == True %}
+              - key: "GIT_ORG_DEMO"
+                value: "{{ git_org_demo | default(None) }}"
+              - key: "KUBE_API_ENDPOINT"
+                value: "{{ kubernetes_api_endpoint | default(None) }}"
+{% endif %}
       library-config: |
         unclassified:
+{% if demo_monaco_gitops|default(False) == True %}
+          giteaServers:
+            servers:
+            - credentialsId: "git-creds-ace"
+              displayName: "gitea-acebox"
+              manageHooks: true
+              serverUrl: "http://gitea.acebox-kr.ace-innovation.info"
+{% endif %}
           globalLibraries:
             libraries:
             - name: "keptn-library"
@@ -121,7 +135,7 @@ controller:
         credentials:
           system:
             domainCredentials:
-{% if demo_default|default(False) == True or demo_appsec|default(False) == True or demo_autorem|default(False) == True or hot_appsec|default(False) == True %}
+{% if demo_default|default(False) == True or demo_appsec|default(False) == True or demo_autorem|default(False) == True or hot_appsec|default(False) == True or demo_monaco_gitops|default(False) == True %}
               - credentials:
                 - usernamePassword:
                     id: "git-creds-ace"
@@ -129,10 +143,11 @@ controller:
                     description: "Git credentials"
                     username: "{{ git_username | default(None) }}"
                     password: "{{ git_password | default(None) }}"
-                - personalAccessTokenImpl:
+                - string:
                     id: "git-access-token"
+                    description: "Git Personal Access Token"
                     scope: GLOBAL
-                    token: "{{ git_access_token | default(None) }}"
+                    secret: "{{ git_access_token | default(None) }}"
                 - string:
                     id: "KUBE_BEARER_TOKEN"
                     scope: GLOBAL
@@ -178,7 +193,7 @@ controller:
       demo-default-jobs-config: |
 {% include 'demo-default-jobs.yml.j2' %}
 {% endif %}
-{% if demo_default|default(False) == True %}
+{% if demo_monaco_gitops|default(False) == True %}
 
       demo-monaco-jobs-config: |
 {% include 'demo-monaco-jobs.yml.j2' %}

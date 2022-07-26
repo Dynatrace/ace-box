@@ -18,7 +18,7 @@ pipeline {
                     def encodedPassword = URLEncoder.encode("$GIT_PASSWORD",'UTF-8')
                     sh "git config --global user.email ${env.GITHUB_USER_EMAIL}"
                     sh "git config user.name ${GIT_USERNAME}"
-                              sh "git checkout -B onboarding/${env.MON_PROJECT_NAME}"
+                    sh "git checkout -B onboarding/${env.MON_PROJECT_NAME}"
                     sh "mkdir -p projects/${env.MON_PROJECT_NAME}/base"
                     sh "cp -r _template/. projects/${env.MON_PROJECT_NAME}/base"
                     sh "find projects/${env.MON_PROJECT_NAME}/base/ -type f -name '*.yaml'"

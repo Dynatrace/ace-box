@@ -17,3 +17,6 @@
 
 - include_role:
     name: demo-gitlab
+
+- include_role:
+    name: demo-monaco-gitops
