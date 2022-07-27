@@ -1,0 +1,4 @@
+---
+hot_monaco_source_repo: "/home/{{ ace_box_user }}/repos/hot/hot-monaco-gitops"
+hot_monaco_org: "hot"
+hot_monaco_repo_name: "monaco-gitops"

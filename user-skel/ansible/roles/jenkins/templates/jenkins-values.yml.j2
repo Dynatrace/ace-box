@@ -135,7 +135,7 @@ controller:
         credentials:
           system:
             domainCredentials:
-{% if demo_default|default(False) == True or demo_appsec|default(False) == True or demo_autorem|default(False) == True or hot_appsec|default(False) == True or demo_monaco_gitops|default(False) == True %}
+{% if demo_default|default(False) == True or demo_appsec|default(False) == True or demo_autorem|default(False) == True or hot_appsec|default(False) == True or hot_monaco|default(False) == True %}
               - credentials:
                 - usernamePassword:
                     id: "git-creds-ace"
@@ -212,4 +212,9 @@ controller:
 
       hot-appsec-jobs-config: |
 {% include 'hot-appsec-jobs.yml.j2' %}
+{% endif %}
+{% if hot_monaco|default(False) == True %}
+
+      hot-monaco-gitops-jobs-config: |
+{% include 'hot-monaco-gitops-jobs.yml.j2' %}
 {% endif %}
