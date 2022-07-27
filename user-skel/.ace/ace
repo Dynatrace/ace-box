@@ -40,7 +40,8 @@ enable_targets = [
     'demo_gitlab',
     'demo_all',
     'demo_monaco_gitops',
-    'hot_appsec'
+    'hot_appsec',
+    'hot_monaco'
 ]
 
 def set_log_level(
