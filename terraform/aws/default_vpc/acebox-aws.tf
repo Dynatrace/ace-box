@@ -63,7 +63,7 @@ resource "aws_instance" "acebox" {
 }
 
 locals {
-  ingress_domain = var.custom_domain == "" ? "${aws_instance.acebox.public_ip}.nip.io" : var.custom_domain
+  ingress_domain = local.is_custom_domain ? local.custom_domain : "${aws_instance.acebox.public_ip}.nip.io"
 }
 
 # Provision ACE-Box

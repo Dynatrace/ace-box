@@ -65,7 +65,7 @@ resource "google_compute_instance" "acebox" {
 }
 
 locals {
-  ingress_domain = var.custom_domain == "" ? "${google_compute_instance.acebox.network_interface.0.access_config.0.nat_ip}.nip.io" : var.custom_domain
+  ingress_domain = local.is_custom_domain ? local.custom_domain : "${google_compute_instance.acebox.network_interface.0.access_config.0.nat_ip}.nip.io"
 }
 
 # Provision ACE-Box

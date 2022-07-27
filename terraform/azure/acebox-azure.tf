@@ -136,7 +136,7 @@ resource "azurerm_linux_virtual_machine" "acebox" {
 }
 
 locals {
-  ingress_domain = var.custom_domain == "" ? "${azurerm_public_ip.acebox_publicip.ip_address}.nip.io" : var.custom_domain
+  ingress_domain = local.is_custom_domain ? local.custom_domain : "${azurerm_public_ip.acebox_publicip.ip_address}.nip.io"
 }
 
 # Provision ACE-Box
