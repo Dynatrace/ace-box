@@ -1,26 +1,15 @@
-<details>
-  <summary>Expand to see progress tracking and status of Lab 2</summary>
-  
-| Item        | Status           | Owner  |
-| ------------- |-------------| -----|
-| Add intro | Done | Julie Allard |
-| Add Take Action on Intelligent Answers module | Done - ready for review | Julie Allard |
-| Add Map Dynatrace Alerts to Incident Tickets module | Done - ready for review | Julie Allard |
-
-Search for *"TO DO"* on this page to see where more content will be added.
-</details>
-
 **Table of Contents**
 
-[[_TOC_]]
+* [2.1 Take Action on Intelligent Answers](#21-take-action-on-intelligent-answers)
+* [2.2 Map Dynatrace Alerts to Incident Tickets](#22-map-dynatrace-alerts-to-incident-tickets)
 
 # Lab 2 | Consolidation | Incident Management Workshop 
 
-Dynatrace's 4-step approach to Automate Incident Management & Drive AIOps started with the Baselining phase, where we let Dynatrace learn the behavior of your application and detect incidents automatically. As soon as you understand how Gen3 alerts work, we can move onto the **Consolidation phase**.
+Dynatrace's 4-step approach to Automate Incident Management & Drive AIOps started with the Baselining phase, where we let Dynatrace learn the behavior of your application and detect incidents automatically. As soon as you understand how alerts from Dynatrace work, we can move onto the **Consolidation phase**.
 
 This phase represents the *people and process* aspect of our delivery framework: you will learn what types of alerts exist in Dynatrace, how to focus on the most important alerts and finally you will need to decide how to map them to your incident management world or ITSM terminology.
 
-> *How do we do that?* - You will do so by reviewing alerts from Dynatrace on at least a weekly basis. For each alert type, you’ll need to take one out of three actions: improve your application, remove any false positives (if necessary) or deprioritize alerts for components or applications that are not important to you or do not need a human response. By doing this regular exercise, you’ll have had enough exposure and hands-on experience with alerts in Dynatrace, for you to be able to translate them to your incident management world. More specifically, with your main product owners and the administrator of your incident management system, you will need to map the metadata and automatically determined severity and impact levels in Dynatrace to the terminology and fields in your incident management platform before designing the technical integration.
+> *How do we do that?* - You will do so by reviewing alerts from Dynatrace on at least a weekly basis. For each alert type, you’ll need to take one out of three actions: improve your application, remove any false positives (if necessary) or optimize your issue prioritization. By doing this regular exercise, you’ll have had enough exposure and hands-on experience with alerts in Dynatrace, for you to be able to translate them to your incident management world. More specifically, with your main product owners and the administrator of your incident management system, you will need to map the metadata and automatically determined severity and impact levels in Dynatrace to the terminology and fields in your incident management platform before designing the technical integration.
 
 <div align="center">
 <img width="800" src="img/4-step approach.png">
@@ -40,10 +29,10 @@ The Consolidation Lab contains two modules:
 
 ##### Take Action on Intelligent Answers
 
-Before converting Gen3 alerts to tickets, commit to taking action on them to reduce their number: 
+Before converting Problems in Dynatrace to incident tickets, commit to taking action on them to reduce their number:
 1. Improve your app **or**
 2. Remove any false positives **or**
-3. Deprioritize the issue
+3. Optimize your issue prioritization
 
 What you’ll learn:
 * Why it is important to reduce the number of alerts
@@ -273,7 +262,7 @@ It is important to exclude expected service disruption or system downtime from b
       * Entity: `Service JourneyService`
 4. Save the maintenance window.
 
-#### 2.1.5 How to deprioritize issues
+#### 2.1.5 How to optimize your issue prioritization
 
 We learned in the [Baselining Lab](https://gitlab.com/eduard.van.der.bent/incident-management-lab/-/tree/main/exercises/01-lab) that Dynatrace will automatically assign a severity and impact level to an incident, e.g. by stating how many real users are affected, and that it will indicate how to classify incident through smart propagation of metadata using tags.
 
