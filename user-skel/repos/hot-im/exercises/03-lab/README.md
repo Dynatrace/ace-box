@@ -1,19 +1,8 @@
-<details>
-  <summary>Expand to see progress tracking and status of Lab 3</summary>
-  
-| Item        | Status           | Owner  |
-| ------------- |-------------| -----|
-| Add intro | Done | Julie Allard |
-| Add Enrich your CMDB module | In progress - need to add theory | Julie Allard |
-| Add Enrich your Incident Tickets module | In progress - need to add theory | Julie Allard |
-| Add Bidirectional Traceability module | In progress - need to add theory and awaiting lab exercices from Nacho | Julie Allard |
-
-Search for *"TO DO"* on this page to see where more content will be added.
-</details>
-
 **Table of Contents**
 
-[[_TOC_]]
+* [3.1 Enrich your CMDB](#31-enrich-your-cmdb)
+* [3.2 Enrich your Incident Tickets](#32-enrich-your-incident-tickets)
+* [3.3 Bidirectional Traceability](#33-bidirectional-traceability)
 
 # Lab 3 | Integration | Incident Management Workshop 
 
@@ -46,7 +35,7 @@ Improve the accuracy of your CMDB and capture your complex or dynamic enterprise
 
 What you’ll learn:
 * How to build your CMDB with Smartscape topology data
-* How to improve incident classification through automated CI binding
+* How to improve incident classification through automated CI binding
 
 ##### Enrich your Incident Tickets
 
@@ -58,10 +47,10 @@ What you’ll learn:
 
 ##### Bidirectional Traceability
 
-With two-way traceability, you will enrich your software intelligence platform with actions taken in your enterprise ecosystem. This makes incident post-mortems more effective, which are essential for continuous improvement.
+With two-way traceability, you will enrich your software intelligence platform with actions taken in your enterprise ecosystem. This makes incident post-mortems more effective, which are essential for continuous improvement.
 
 What you’ll learn:
-* How to ingest events from 3rd party systems into the Davis AI
+* How to ingest events from 3rd party systems into the Davis AI
   * Deployment changes
   * 3rd party configuration changes
   * Infrastructure availability
