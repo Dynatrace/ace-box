@@ -1,5 +1,6 @@
 **Table of Contents**
 
+* [Learning objectives](#learning-objectives)
 * [3.1 Enrich your CMDB](#31-enrich-your-cmdb)
 * [3.2 Enrich your Incident Tickets](#32-enrich-your-incident-tickets)
 * [3.3 Bidirectional Traceability](#33-bidirectional-traceability)
@@ -19,9 +20,9 @@ This phase represents the *technical* aspect of our delivery framework: you will
 In this third lab, the **Integration Lab**, we will demonstrate a best practice integration by connecting Dynatrace with an open-source service management tool and show what a Dynatrace alert can look like in an ITSM system and how you can investigate any issue so quickly. We will get hands-on in our lab environments with alerting profiles, problem notifications and the Problems v2 API in Dynatrace, but most of the steps have already been automated with scripts for you.
 
 The Integration Lab contains three modules:
-* [**Enrich your CMDB**](https://gitlab.com/eduard.van.der.bent/incident-management-lab/-/tree/main/exercises/03-lab#21-enrich-your-cmdb)
-* [**Enrich your Incident Tickets**](https://gitlab.com/eduard.van.der.bent/incident-management-lab/-/tree/main/exercises/03-lab#32-enrich-your-incident-tickets)
-* [**Bidirectional Traceability**](https://gitlab.com/eduard.van.der.bent/incident-management-lab/-/tree/main/exercises/03-lab#32-enrich-your-incident-tickets)
+* [**Enrich your CMDB**](#31-enrich-your-cmdb)
+* [**Enrich your Incident Tickets**](#32-enrich-your-incident-tickets)
+* [**Bidirectional Traceability**](#33-bidirectional-traceability)
 
 <div align="center">
 <img width="900" src="img/Lab 3.png">
