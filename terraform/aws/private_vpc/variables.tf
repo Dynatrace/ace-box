@@ -48,11 +48,6 @@ variable "route53_private_zone" {
   default     = false
 }
 
-variable "private_ssh_key" {
-  description = "Path of where to store private key on current module directory"
-  default     = "./key"
-}
-
 variable "disk_size" {
   description = "Size of disk that will be available to ace-box instance"
   default     = 60

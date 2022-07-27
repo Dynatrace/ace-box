@@ -3,7 +3,7 @@ output "acebox_dashboard" {
 }
 
 output "acebox_ip" {
-  value = "connect using: ssh -i ${path.module}/${var.private_ssh_key} ${var.acebox_user}@${aws_instance.acebox.public_ip}"
+  value = "connect using: ssh -i ${module.ssh_key.private_key_filename} ${var.acebox_user}@${aws_instance.acebox.public_ip}"
 }
 
 output "comment" {

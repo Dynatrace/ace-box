@@ -31,16 +31,9 @@ resource "google_compute_firewall" "acebox-http" {
   source_ranges = ["0.0.0.0/0"]
 }
 
-## Create key pair
-resource "tls_private_key" "acebox_key" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
-
-resource "local_file" "acebox_pem" {
-  filename        = "${path.module}/${var.private_ssh_key}"
-  content         = tls_private_key.acebox_key.private_key_pem
-  file_permission = 400
+# SSH key
+module "ssh_key" {
+  source = "../modules/ssh"
 }
 
 ## Create acebox host
@@ -65,7 +58,7 @@ resource "google_compute_instance" "acebox" {
   }
 
   metadata = {
-    sshKeys = "${var.acebox_user}:${tls_private_key.acebox_key.public_key_openssh}"
+    sshKeys = "${var.acebox_user}:${module.ssh_key.public_key_openssh}"
   }
 
   tags = ["${var.name_prefix}-${random_id.uuid.hex}"]
@@ -81,7 +74,7 @@ module "provisioner" {
 
   host             = google_compute_instance.acebox.network_interface.0.access_config.0.nat_ip
   user             = var.acebox_user
-  private_key      = tls_private_key.acebox_key.private_key_pem
+  private_key      = module.ssh_key.private_key_pem
   ingress_domain   = local.ingress_domain
   ingress_protocol = var.ingress_protocol
   dt_tenant        = var.dt_tenant

@@ -99,15 +99,9 @@ resource "azurerm_network_security_group" "acebox_nsg" {
   }
 }
 
-resource "tls_private_key" "acebox_key" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
-
-resource "local_file" "acebox_pem" {
-  filename        = "${path.module}/${var.private_ssh_key}"
-  content         = tls_private_key.acebox_key.private_key_pem
-  file_permission = 400
+# SSH key
+module "ssh_key" {
+  source = "../modules/ssh"
 }
 
 resource "azurerm_linux_virtual_machine" "acebox" {
@@ -120,7 +114,7 @@ resource "azurerm_linux_virtual_machine" "acebox" {
 
   admin_ssh_key {
     username   = var.acebox_user
-    public_key = tls_private_key.acebox_key.public_key_openssh
+    public_key = module.ssh_key.public_key_openssh
   }
 
   source_image_reference {
@@ -151,7 +145,7 @@ module "provisioner" {
 
   host             = azurerm_public_ip.acebox_publicip.ip_address
   user             = var.acebox_user
-  private_key      = tls_private_key.acebox_key.private_key_pem
+  private_key      = module.ssh_key.private_key_pem
   ingress_domain   = local.ingress_domain
   ingress_protocol = var.ingress_protocol
   dt_tenant        = var.dt_tenant

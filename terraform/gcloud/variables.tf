@@ -30,11 +30,6 @@ variable "acebox_os" {
   default     = "ubuntu-minimal-2004-lts"
 }
 
-variable "private_ssh_key" {
-  description = "Path of where to store private key on current module directory"
-  default     = "./key"
-}
-
 variable "custom_domain" {
   description = "Set to overwrite custom domain"
   default     = ""

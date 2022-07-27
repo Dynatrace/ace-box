@@ -18,11 +18,6 @@ variable "acebox_os_azure" {
   }
 }
 
-variable "private_ssh_key" {
-  description = "Path of where to store private key on current module directory"
-  default     = "./key"
-}
-
 variable "azure_location" {
   description = "Azure Locationwhere resources will be created"
   default     = "westeurope"

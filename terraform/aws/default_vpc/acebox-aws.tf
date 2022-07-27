@@ -34,20 +34,14 @@ module "security_group" {
   egress_rules        = ["all-all"]
 }
 
-resource "tls_private_key" "acebox_key" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
-
-resource "local_file" "acebox_pem" {
-  filename        = "${path.module}/${var.private_ssh_key}"
-  content         = tls_private_key.acebox_key.private_key_pem
-  file_permission = 400
+# SSH key
+module "ssh_key" {
+  source = "../../modules/ssh"
 }
 
 resource "aws_key_pair" "generated_key" {
   key_name   = "ace-box-key-${random_id.uuid.hex}"
-  public_key = tls_private_key.acebox_key.public_key_openssh
+  public_key = module.ssh_key.public_key_openssh
 }
 
 resource "aws_instance" "acebox" {
@@ -78,7 +72,7 @@ module "provisioner" {
 
   host             = aws_instance.acebox.public_ip
   user             = var.acebox_user
-  private_key      = tls_private_key.acebox_key.private_key_pem
+  private_key      = module.ssh_key.private_key_pem
   ingress_domain   = local.ingress_domain
   ingress_protocol = var.ingress_protocol
   dt_tenant        = var.dt_tenant
