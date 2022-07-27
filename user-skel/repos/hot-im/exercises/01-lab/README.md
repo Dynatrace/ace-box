@@ -1,18 +1,8 @@
-<details>
-  <summary>Expand to see progress tracking and status of Lab 1</summary>
-  
-| Item        | Status           | Owner  |
-| ------------- |-------------| -----|
-| Add intro | Done | Julie Allard |
-| Add Advanced Observability module | Done | Julie Allard |
-| Add Davis AI & Alerting module | Done | Julie Allard |
-
-Search for *"TO DO"* on this page to see where more content will be added.
-</details>
-
 **Table of Contents**
 
-[[_TOC_]]
+* [1.1 Advanced Observability](#11-advanced-observability)
+* [1.2 Davis AI & Alerting](#12-davis-ai--alerting)
+
 
 # Lab 1 | Baselining | Incident Management Workshop 
 
@@ -44,7 +34,7 @@ The Baselining Lab contains two modules:
 
 ##### Advanced Observability
 
-Get to know the key features powering Dynatrace’s AI-driven observability.
+Get to know the key features powering Dynatrace’s AI-driven observability.
 
 What you’ll learn:
 * The basics in Dynatrace
@@ -59,7 +49,7 @@ What you’ll learn:
 Get to know Dynatrace’s key ingredients to automate your incident management process from creation to resolution.
 
 What you’ll learn:
-* What is a Gen3 alert
+* What is a Problem in Dynatrace
 * How the AI reduces alert noise and determines the root cause
 * What are the alert types
 * How to filter alerts
@@ -228,11 +218,11 @@ The above ingredients, with AI applied on top, form the base of modern AIOps.
 
 ## 1.2 Davis AI & Alerting
 
-As stated in the previous lab module, baselining will start right after installing the OneAgent. When heading to the Problems page in Dynatrace, you will see that, most probably, Problems have already been opened based on anomalies detected for your application. In this lab module, we will learn what those Problems or Gen3 alerts in Dynatrace are, how to filter for them and how to push them to external systems. 
+As stated in the previous lab module, baselining will start right after installing the OneAgent. When heading to the Problems page in Dynatrace, you will see that, most probably, Problems have already been opened based on anomalies detected for your application. In this lab module, we will learn what those Problems or alerts from Dynatrace are, how to filter for them and how to push them to external systems. 
 
-#### 1.2.1 What is a Gen3 alert?
+#### 1.2.1 What is a Problem in Dynatrace?
 
-A Gen3 alert is a grouping of **all related events, with context, impact and root cause** details for a given anomaly in your monitoring environment, avoiding an alert storm.
+A Problem in Dynatrace is a grouping of **all related events, with context, impact and root cause** details for a given anomaly in your monitoring environment, avoiding an alert storm.
 
 In Dynatrace, this gets consolidated into **1 Problem card**.
 
