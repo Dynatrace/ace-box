@@ -1,5 +1,6 @@
 **Table of Contents**
 
+* [Learning Objectives](#learning-objectives)
 * [2.1 Take Action on Intelligent Answers](#21-take-action-on-intelligent-answers)
 * [2.2 Map Dynatrace Alerts to Incident Tickets](#22-map-dynatrace-alerts-to-incident-tickets)
 
@@ -18,8 +19,8 @@ This phase represents the *people and process* aspect of our delivery framework:
 In this second lab, the **Consolidation Lab**, we will prepare ourselves and the organization for the actual integration by focusing on the most important alerts first. We will get hands-on in our lab environments with alerting profiles, maintenance windows, frequent issue detection, failure detection and anomaly detection settings in Dynatrace. Then we will share our best practices on how to design the alert-to-incident lifecycle for your organization.
 
 The Consolidation Lab contains two modules:
-* [**Take Action on Intelligent Answers**](https://gitlab.com/eduard.van.der.bent/incident-management-lab/-/tree/main/exercises/02-lab#21-take-action-on-intelligent-answers) (exercises)
-* [**Map Dynatrace Alerts to Incident Tickets**](https://gitlab.com/eduard.van.der.bent/incident-management-lab/-/tree/main/exercises/02-lab#22-map-dynatrace-alerts-to-incident-tickets) (theory)
+* [**Take Action on Intelligent Answers**](#21-take-action-on-intelligent-answers) (exercises)
+* [**Map Dynatrace Alerts to Incident Tickets**](#22-map-dynatrace-alerts-to-incident-tickets) (theory)
 
 <div align="center">
 <img width="900" src="img/Lab 2.png">
@@ -63,7 +64,7 @@ To avoid an alert storm, there are two main steps to take:
     * Is there 1 or more ServiceDesk (queue) for all apps?
     * How many tickets can each assignment group handle?
 
-We just covered the first point in the [Baselining Lab](https://gitlab.com/eduard.van.der.bent/incident-management-lab/-/tree/main/exercises/01-lab). This lab module will elaborate on the second point, where you will learn how to deal with alerts effectively.
+We just covered the first point in the Baselining Lab. This lab module will elaborate on the second point, where you will learn how to deal with alerts effectively.
 
 <details>
   <summary>Expand to see what has been pre-configured for you in this lab module</summary>
@@ -75,7 +76,7 @@ We just covered the first point in the [Baselining Lab](https://gitlab.com/eduar
 
 ***Lab prerequisite:***
 
-Go to the command line and execute the script `./simulate/SlowJourney.sh`. This will simulate some response time degradations for the EasyTravel application and generate Dynatrace Problems for one of the exercises in [lab section 2.1.5](https://gitlab.com/eduard.van.der.bent/incident-management-lab/-/tree/main/exercises/02-lab#215-how-to-deprioritize-issues).
+Go to the command line and execute the script `./simulate/SlowJourney.sh`. This will simulate some response time degradations for the EasyTravel application and generate Dynatrace Problems for one of the exercises in [lab section 2.1.5](#215-how-to-optimize-your-issue-prioritization).
 
 #### 2.1.1 Why it is important to reduce the number of alerts
 
@@ -102,7 +103,7 @@ Which apps or areas need action first? To define the order of priority, consider
 * Number of incidents per year or month
 * Number of alerts in Dynatrace
 
-> TO DO: add Nacho's plotly dashboard showing the number of Dynatrace Problems per selectable tag, in this case tag `Application`
+> TO DO: Julie to blur application names
 
 <div align="center">
 <img width="900" src="img/problems-per-tag.png">
@@ -112,10 +113,10 @@ Once you have prioritized your apps or areas for consolidation, you are ready to
 
 | Result of assessment | Recommended action | Lab section |
 | ------------- |-------------| -----|
-| Is the issue not so urgent? | Open a ticket to **fix**, disable alerting, enable alerting again when fixed | [2.1.3](https://gitlab.com/eduard.van.der.bent/incident-management-lab/-/tree/main/exercises/02-lab#213-improve-your-application) |
-| Is the issue urgent? | **Fix** your app with urgency | [2.1.3](https://gitlab.com/eduard.van.der.bent/incident-management-lab/-/tree/main/exercises/02-lab#213-improve-your-application) |
-| False positive, e.g. due to special error handling? | **Tweak** the anomaly/failure detection settings | [2.1.4](https://gitlab.com/eduard.van.der.bent/incident-management-lab/-/tree/main/exercises/02-lab#214-how-to-remove-false-positives) |
-| Is the issue known or very low impact? | If reasonable, **disable** alerting | [2.1.5](https://gitlab.com/eduard.van.der.bent/incident-management-lab/-/tree/main/exercises/02-lab#215-how-to-deprioritize-issues) |
+| Is the issue not so urgent? | Open a ticket to **fix**, disable alerting, enable alerting again when fixed | [2.1.3](#213-improve-your-application) |
+| Is the issue urgent? | **Fix** your app with urgency | [2.1.3](#213-improve-your-application) |
+| False positive, e.g. due to special error handling? | **Tweak** the anomaly/failure detection settings | [2.1.4](#214-how-to-remove-false-positives) |
+| Is the issue known or very low impact? | If reasonable, **disable** alerting | [2.1.5](#215-how-to-optimize-your-issue-prioritization) |
 
 #### 2.1.3 Improve your application
 
@@ -127,7 +128,7 @@ To reduce (potential) incidents and tackle (potential) incident root causes whil
 
 After receiving a `User action duration degradation` alert for a Tier 1 application, the DevOps team has been made aware of the impact on real users and of the foundational root cause of this incident: 1000 end users have gone through a bad user experience due to slow response times, introduced by a new release. To resolve the issue, a developer must rollback the deployment as soon as possible. **How to analyze this incident in Dynatrace?**
 
-> TO DO: add demo instructions on where to click to troubleshoot and understand the issue
+> TO DO: Nacho to add demo instructions on where to click to troubleshoot and understand the issue
 
 ##### Move non-urgent fixes to your backlog
 
@@ -213,8 +214,6 @@ There are two options:
 1. Disable alerting for certain disks **or**
 2. Exclude those disks from being monitored at all
 
-> TO DO: check with Nacho & Ed if it's acceptable to recommend the first approach (disable alerting rather than disable monitoring). If yes, add instructions on how to exclude a disk from alerting - this seems more work than to exclude a disk from monitoring.
-
 💡 You can customize most settings at three levels:
 1. **Entity level**: this will override any host group level or global settings
 2. **Host group level**: this will override any global settings
@@ -264,9 +263,9 @@ It is important to exclude expected service disruption or system downtime from b
 
 #### 2.1.5 How to optimize your issue prioritization
 
-We learned in the [Baselining Lab](https://gitlab.com/eduard.van.der.bent/incident-management-lab/-/tree/main/exercises/01-lab) that Dynatrace will automatically assign a severity and impact level to an incident, e.g. by stating how many real users are affected, and that it will indicate how to classify incident through smart propagation of metadata using tags.
+We learned in the Baselining Lab that Dynatrace will automatically assign a severity and impact level to an incident, e.g. by stating how many real users are affected, and that it will indicate how to classify incident through smart propagation of metadata using tags.
 
-When integrating with your incident management system, your will need to focus on the most critical or severe alerts first. These are the most actionable alerts you want to get immediately and get a human response for, while the remaining alerts may get sent to an external system that does not impose SLAs on their response and resolution. When efforts to improve your applications are ongoing (as discussed in lab section [2.1.3](https://gitlab.com/eduard.van.der.bent/incident-management-lab/-/tree/main/exercises/02-lab#213-improve-your-application)) and false positives have been removed (as recommended in lab section [2.1.4](https://gitlab.com/eduard.van.der.bent/incident-management-lab/-/tree/main/exercises/02-lab#214-how-to-remove-false-positives)), there are several ways to (de)prioritize alerts and target the most actionable alerts for the first rollout of alerts we want to convert into an incident ticket.
+When integrating with your incident management system, your will need to focus on the most critical or severe alerts first. These are the most actionable alerts you want to get immediately and get a human response for, while the remaining alerts may get sent to an external system that does not impose SLAs on their response and resolution. When efforts to improve your applications are ongoing (as discussed in lab section [2.1.3](#213-improve-your-application)) and false positives have been removed (as recommended in lab section [2.1.4](#214-how-to-remove-false-positives)), there are several ways to (de)prioritize alerts and target the most actionable alerts for the first rollout of alerts we want to convert into an incident ticket.
 
 Following Dynatrace best practices, you should always consider tuning your alerting profiles first before changing any anomaly detection settings. This will reduce the risk of missing unknown problems in your environment.
 
@@ -327,13 +326,11 @@ Dynatrace's auto-detected anomalies will always correspond to some severity-impa
 
 You may want to exclude specific non-severe events from being sent to your incident management tool because they do not require a human response, e.g. `Connectivity problem` or `High latency`. You will need to identify which anomalies (event types) account for the highest amount or percentage of Problems in Dynatrace. **How to exclude certain events from alerting?**
 
-> TO DO: add Nacho's plotly dashboards showing the number of Dynatrace Problems per title (instead of eventType)
-
 <div align="center">
 <img width="900" src="img/problems-per-eventType-casa.png">
 </div>
 
-You can exclude non-severe alerts in the same way we did in lab [2.1.3](https://gitlab.com/eduard.van.der.bent/incident-management-lab/-/tree/main/exercises/02-lab#213-improve-your-application).
+You can exclude non-severe alerts in the same way we did in lab [2.1.3](#213-improve-your-application).
 
 ##### Exclude short-lived issues
 
@@ -369,7 +366,7 @@ As a second step, you will need to look at the number of problems by event type 
 
 You can leverage the different filters available on the Problems page (*Observe and explore* > *Problems*), the Services Portal (if you have an ongoing ACE Services Engagement) or custom dashboards to define your consolidation strategy.
 
-> TO DO: add Nacho's plotly dashboards showing the number of Dynatrace Problems per selectable tag, per event type and per range of duration
+> TO DO: Nacho to sort the number of problems by decreasing number
 
 <div align="center">
 <img width="900" src="img/problems-per-tag.png">
@@ -417,7 +414,7 @@ What information do we usually need to open an incident ticket?
 * Which properties are static and can be easily derived from tags or the problem card itself? Items in columns 1 & 2?
 * Which properties are dynamic and may change over time, depending on the evolution of the issue? Items in column 3?
 
-In Lab 3, the [Integration Lab](https://gitlab.com/eduard.van.der.bent/incident-management-lab/-/blob/main/exercises/03-lab), we will use an open source IT service management tool called [iTop (IT Operations Portal)](https://github.com/Combodo/iTop) to set up automated ticketing. You can already have a look at this tool's incident properties [here](https://www.itophub.io/wiki/page?id=3_0_0%3Adatamodel%3Aitop-incident-mgmt-itil).
+In Lab 3, the Integration Lab, we will use an open source IT service management tool called [iTop (IT Operations Portal)](https://github.com/Combodo/iTop) to set up automated ticketing. You can already have a look at this tool's incident properties [here](https://www.itophub.io/wiki/page?id=3_0_0%3Adatamodel%3Aitop-incident-mgmt-itil).
 
 Before defining a mapping, we need to understand what information is available to us from Dynatrace.
 
@@ -434,7 +431,7 @@ What is the most important information that is available to us for a Problem in 
 | ProblemURL | Management zones |  |
 |  | Alerting profiles |  |
 
-Head back to [section 1.2.3 in the Baselining Lab](https://gitlab.com/eduard.van.der.bent/incident-management-lab/-/tree/main/exercises/01-lab#123-what-are-the-different-alert-types) for a refresher on what those different severity and impact levels in Dynatrace mean.
+Head back to section 1.2.3 in the Baselining Lab for a refresher on what the different severity and impact levels in Dynatrace are.
 
 #### 2.2.3 How to design the auto-assignment of tickets to the right support group
 
@@ -444,7 +441,7 @@ You have two main options:
 
 1. **Direct mapping of Dynatrace entity IDs to your CMDB** (recommended setup)
 
-    This requires you to populate your CMDB with Dynatrace entity IDs from the Smartscape topology. We will integrate Dynatrace with a CMDB in the [Integration Lab](https://gitlab.com/eduard.van.der.bent/incident-management-lab/-/tree/main/exercises/03-lab#enrich-your-cmdb).
+    This requires you to populate your CMDB with Dynatrace entity IDs from the Smartscape topology. We will integrate Dynatrace with a CMDB in the Integration Lab.
 
 <div align="center">
 <img width="400" src="img/Lab 2.2.3 DT-CMDB.png">
