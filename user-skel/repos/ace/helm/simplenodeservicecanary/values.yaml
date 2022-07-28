@@ -1,0 +1,8 @@
+domain: DOMAIN_PLACEHOLDER
+build_version: BUILD_VERSION_PLACEHOLDER
+version: v1
+# dt_tags: DT_TAGS_PLACEHOLDER
+# dt_custom_prop: DT_CUSTOM_PROP_PLACEHOLDER
+image: IMAGE_PLACEHOLDER
+canaryWeight: 100
+isCanary: false

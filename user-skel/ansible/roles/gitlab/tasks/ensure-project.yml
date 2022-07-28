@@ -1,0 +1,40 @@
+---
+- include_tasks: roles/gitlab/tasks/source-secret.yml
+  when: gitlab_oauth_token is not defined
+
+- name: Source endpoints
+  include: roles/gitlab/tasks/source-endpoints.yml
+  when: gitlab_internal_endpoint is not defined
+
+- name: Gitlab - Ensure project "{{ gitlab_prj }} exists"
+  block:
+  - name: Lookup project
+    uri:
+      url: "{{ gitlab_internal_endpoint }}/api/v4/projects?search={{ gitlab_prj | urlencode }}"
+      validate_certs: false
+      method: GET
+      status_code: [200, 201]
+      headers:
+        Content-Type: "application/json"
+        Authorization: "Bearer {{ gitlab_oauth_token }}"
+    register: gitlab_get_projects_result
+  - set_fact:
+      gitlab_group_id: "{{ gitlab_get_projects_result.json[0].id }}"
+  rescue:
+  - name: Gitlab - Create project"
+    uri:
+      url: "{{ gitlab_internal_endpoint }}/api/v4/projects"
+      validate_certs: false
+      method: POST
+      status_code: [200, 201]
+      headers:
+        Content-Type: "application/json"
+        Authorization: "Bearer {{ gitlab_oauth_token }}"
+      body:
+        name: "{{ gitlab_prj }}"
+        namespace_id: "{{ gitlab_prj_namespace_id }}"
+        visibility: "public"
+      body_format: json
+    register: gitlab_post_projects_result
+  - set_fact:
+      gitlab_project_id: "{{ gitlab_post_projects_result.json.id }}"

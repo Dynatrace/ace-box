@@ -1,0 +1,12 @@
+---
+- name: Source endpoints
+  kubernetes.core.k8s_info:
+    kind: Service
+    name: "gitlab-webservice-default"
+    namespace: "{{ gitlab_namespace }}"
+  register: gitlab_http_data
+
+- name: Set facts - internal endpoint
+  set_fact:
+    gitlab_internal_endpoint: "http://{{ gitlab_http_data.resources[0].spec.clusterIP }}:8181"
+  when: gitlab_http_data is defined and gitlab_http_data.resources[0] is defined

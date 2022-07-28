@@ -1,0 +1,12 @@
+- name: Cloud Automation - Get Version
+  uri:
+    url: "{{ cloud_automation_tenant_url }}/api/v1/metadata"
+    validate_certs: false
+    method: GET
+    status_code: [200, 201]
+    headers:
+      accept: "application/json"
+      x-token: "{{ cloud_automation_api_token }}"
+  register: cloud_automation_metadata_result
+- set_fact:
+    cloud_automation_version: "{{ cloud_automation_metadata_result.json.keptnversion }}"

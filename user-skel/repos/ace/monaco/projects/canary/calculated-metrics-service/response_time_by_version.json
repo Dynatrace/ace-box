@@ -1,0 +1,35 @@
+{
+  "tsmMetricKey": "calc:service.{{ .name }}",
+  "name": "{{ .name }}",
+  "enabled": true,
+  "metricDefinition": {
+    "metric": "RESPONSE_TIME",
+    "requestAttribute": null
+  },
+  "unit": "MICRO_SECOND",
+  "unitDisplayName": "",
+  "managementZones": [],
+  "conditions": [
+    {
+      "attribute": "SERVICE_TAG",
+      "comparisonInfo": {
+        "type": "TAG",
+        "comparison": "EQUALS",
+        "value": {
+          "context": "CONTEXTLESS",
+          "key": "environment",
+          "value": "canary"
+        },
+        "negate": false
+      }
+    }
+  ],
+  "dimensionDefinition": {
+    "name": "version",
+    "dimension": "{Request:ApplicationBuildVersion}",
+    "placeholders": [],
+    "topX": 100,
+    "topXDirection": "DESCENDING",
+    "topXAggregation": "AVERAGE"
+  }
+}

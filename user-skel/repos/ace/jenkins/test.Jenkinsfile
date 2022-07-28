@@ -7,19 +7,6 @@ def cloudautomation = new sh.keptn.Keptn()
 def event = new com.dynatrace.ace.Event()
 def jmeter = new com.dynatrace.ace.Jmeter()
  
-def tagMatchRules = [
-    [
-        "meTypes": [ "PROCESS_GROUP_INSTANCE"],
-        tags: [
-            ["context": "ENVIRONMENT", "key": "DT_RELEASE_BUILD_VERSION", "value": "${env.ART_VERSION}"],
-            ["context": "KUBERNETES", "key": "app.kubernetes.io/name", "value": "${env.APP_NAME}"],
-            ["context": "KUBERNETES", "key": "app.kubernetes.io/part-of", "value": "simplenode-app"],
-            ["context": "KUBERNETES", "key": "app.kubernetes.io/component", "value": "api"],
-            ["context": "CONTEXTLESS", "key": "environment", "value": "staging"]
-        ]
-    ]
-]
-
 pipeline {
     parameters {
         string(name: 'APP_NAME', defaultValue: 'simplenodeservice', description: 'The name of the service to deploy.', trim: true)
@@ -28,7 +15,7 @@ pipeline {
         choice(name: 'QG_MODE', choices: ['yaml','dashboard'], description: 'Use yaml or dashboard for QG')
     }
     environment {
-        ENVIRONMENT = 'staging'
+        TARGET_NAMESPACE = 'simplenode-staging'
         PROJECT = 'simplenodeproject'
         MONITORING = 'dynatrace'
         VU = 1
@@ -45,8 +32,10 @@ pipeline {
     stages {
         stage ('Quality Gate Init') {
             steps {
+                checkout scm
                 script {
-                    cloudautomation.keptnInit project:"${env.PROJECT}", service:"${env.APP_NAME}", stage:"${env.ENVIRONMENT}", monitoring:"${env.MONITORING}" , shipyard:'cloudautomation/shipyard.yaml'
+                    cloudautomation.keptnInit project:"${env.PROJECT}", service:"${env.APP_NAME}", stage:"staging", monitoring:"${env.MONITORING}" , shipyard:'cloudautomation/shipyard.yaml'
+                    
                     switch(env.QG_MODE) {
                         case "yaml": 
                             cloudautomation.keptnAddResources('cloudautomation/sli.yaml','dynatrace/sli.yaml')
@@ -57,14 +46,17 @@ pipeline {
                             cloudautomation.keptnAddResources('cloudautomation/dynatrace-dashboard.conf.yaml','dynatrace/dynatrace.conf.yaml')
                             break;
                     }
+                    
                 }
             }
         }
         stage('DT Test Start') {
             steps {
                     script {
+                        def rootDir = pwd()
+                        def sharedLib = load "${rootDir}/jenkins/shared/shared.groovy"
                         def status = event.pushDynatraceInfoEvent (
-                            tagRule: tagMatchRules,
+                            tagRule: sharedLib.getTagRulesForPGIEvent(),
                             title: "Jmeter Start ${env.APP_NAME} ${env.ART_VERSION}",
                             description: "Performance test started for ${env.APP_NAME} ${env.ART_VERSION}",
                             source : "jmeter",
@@ -88,7 +80,7 @@ pipeline {
                         def status = jmeter.executeJmeterTest ( 
                             scriptName: "jmeter/simplenodeservice_load.jmx",
                             resultsDir: "perfCheck_${env.APP_NAME}_staging_${BUILD_NUMBER}",
-                            serverUrl: "simplenodeservice.staging", 
+                            serverUrl: "simplenodeservice.${env.TARGET_NAMESPACE}", 
                             serverPort: 80,
                             checkPath: '/health',
                             vuCount: env.VU.toInteger(),
@@ -108,16 +100,19 @@ pipeline {
         stage('DT Test Stop') {
             steps {
                     script {
+
+                        def rootDir = pwd()
+                        def sharedLib = load "${rootDir}/jenkins/shared/shared.groovy"
                         def status = event.pushDynatraceInfoEvent (
-                             tagRule: tagMatchRules,
-                             title: "Jmeter Stop ${env.APP_NAME} ${env.ART_VERSION}",
-                             description: "Performance test stopped for ${env.APP_NAME} ${env.ART_VERSION}",
-                             source : "jmeter",
-                             customProperties : [
-                                 "Jenkins Build Number": env.BUILD_ID,
-                                 "Virtual Users" : env.VU,
-                                 "Loop Count" : env.LOOPCOUNT
-                             ]
+                            tagRule: sharedLib.getTagRulesForPGIEvent(),
+                            title: "Jmeter Stop ${env.APP_NAME} ${env.ART_VERSION}",
+                            description: "Performance test stopped for ${env.APP_NAME} ${env.ART_VERSION}",
+                            source : "jmeter",
+                            customProperties : [
+                                "Jenkins Build Number": env.BUILD_ID,
+                                "Virtual Users" : env.VU,
+                                "Loop Count" : env.LOOPCOUNT
+                            ]
                          )
                     }
             }
@@ -126,10 +121,11 @@ pipeline {
         stage('Quality Gate') {
             steps {
                 script {
+                    //sleep(time:600,unit:"SECONDS")
                     def labels=[:]
                     labels.put("DT_RELEASE_VERSION", "${env.BUILD}.0.0")
                     labels.put("DT_RELEASE_BUILD_VERSION", "${env.ART_VERSION}")
-                    labels.put("DT_RELEASE_STAGE", "${env.ENVIRONMENT}")
+                    labels.put("DT_RELEASE_STAGE", "${env.TARGET_NAMESPACE}")
                     labels.put("DT_RELEASE_PRODUCT", "${env.PARTOF}")
                     
                     def context = cloudautomation.sendStartEvaluationEvent starttime:"", endtime:"", labels:labels
@@ -169,8 +165,9 @@ pipeline {
                             break;
                         case "FAILURE":
                             env.DPROD = false;
+
                             def status = event.pushDynatraceErrorEvent (
-                                tagRule: tagMatchRules,
+                                tagRule: getTagRules(),
                                 title: "Quality Gate failed for ${env.APP_NAME} ${env.ART_VERSION}",
                                 description: "Quality Gate evaluation failed for ${env.APP_NAME} ${env.ART_VERSION}",
                                 source : "jenkins",

@@ -1,6 +1,9 @@
 ---
 gitlab_username: "root"
 gitlab_namespace: "gitlab"
-gitlab_group_name: "ace"
+gitlab_group_name: "demo"
 feature_gitlab: false
-gitlab_helm_chart_version: "5.6.2"
+gitlab_helm_chart_version: "6.1.2"
+gitlab_domain: "gitlab.{{ ingress_domain }}"
+gitlab_gcpe_helm_chart_version: "0.2.15"
+gitlab_gcpe_tag: "v0.5.3"

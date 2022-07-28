@@ -1,0 +1,65 @@
+---
+- include_role:
+    name: config-v2
+    tasks_from: set-var
+  vars:
+    var_key_to_set: "demo_gitlab"
+    var_value_to_set: true
+
+- include_role:
+    name: microk8s
+
+- include_role:
+    name: dt-activegate
+
+- include_role:
+    name: dt-oneagent
+
+- include_role:
+    name: monaco
+
+- include_role:
+    name: monaco
+    tasks_from: dt-cleanup
+
+- include_role:
+    name: keptn
+  when: cloud_automation_flavor is defined and cloud_automation_flavor == "KEPTN"
+
+- include_role:
+    name: cloudautomation
+  when: cloud_automation_flavor is defined and cloud_automation_flavor == "CLOUD_AUTOMATION"
+
+- include_role:
+    name: gitlab
+
+- name: Gitlab - Ensure Group
+  include_role:
+    name: gitlab
+    tasks_from: ensure-group
+  vars:
+    gitlab_group_name: "{{ gitlab_demo_default_group }}"
+
+- name: Gitlab - Ensure Project
+  include_role:
+    name: gitlab
+    tasks_from: ensure-project
+  vars:
+    gitlab_prj: "{{ gitlab_demo_default_repo_name }}"
+    gitlab_prj_namespace_id: "{{ gitlab_group_id }}"
+
+- include_role:
+    name: repository
+  vars:
+    repo_src: "{{ item.repo_src }}"
+    git_org: "{{ item.git_org }}"
+    git_repo: "{{ item.repo_target }}"
+    git_username: "root"
+    git_password: "{{ gitlab_password }}"
+    git_domain: "{{ gitlab_domain }}"
+    git_remote: "gitlab"
+  loop:
+  - { repo_target: "{{ gitlab_demo_default_repo_name }}", repo_src: "{{ demo_default_source_repo }}", git_org: "{{ gitlab_demo_default_group }}" }
+
+- include_role:
+    name: dashboard

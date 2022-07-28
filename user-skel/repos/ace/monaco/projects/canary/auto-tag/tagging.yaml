@@ -1,0 +1,6 @@
+config:
+    - tagging-canary: "tagging.json"
+  
+tagging-canary:
+    - name: "ace-demo-canary"
+    - namespace: "canary"

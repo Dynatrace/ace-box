@@ -1,0 +1,65 @@
+{
+    "name": "{{ .name }}",
+    "frequencyMin": 5,
+    "enabled": {{ .enabled }},
+    "type": "HTTP",
+    "script": {
+      "version": "1.0",
+      "requests": [
+        {
+          "description": "{{ .description }}",
+          "url": "{{ .url }}",
+          "method": "GET",
+          "requestBody": "",
+          "validation": {
+            "rules": [
+              {
+                "value": ">=400",
+                "passIfFound": false,
+                "type": "regexConstraint"
+              }
+            ]
+          },
+          "configuration": {
+            "requestHeaders": [
+              {
+                "name": "accept",
+                "value": "application/json"
+              }
+            ],
+            "acceptAnyCertificate": false,
+            "followRedirects": true
+          }
+        }
+      ]
+    },
+    "locations": [
+      "{{ .location }}"
+    ],
+    "anomalyDetection": {
+      "outageHandling": {
+        "globalOutage": false,
+        "localOutage": true,
+        "localOutagePolicy": {
+          "affectedLocations": 1,
+          "consecutiveRuns": 3
+        }
+      },
+      "loadingTimeThresholds": {
+        "enabled": false,
+        "thresholds": [
+          {
+            "type": "TOTAL",
+            "valueMs": 0
+          }
+        ]
+      }
+    },
+    "tags": [
+      "{{.tag}}"
+    ],
+    "managementZones": [
+    ],
+    "manuallyAssignedApps": [
+    ]
+  }

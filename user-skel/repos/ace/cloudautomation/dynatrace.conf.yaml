@@ -9,6 +9,9 @@ attachRules:
     - context: ENVIRONMENT
       key: DT_RELEASE_BUILD_VERSION
       value: $LABEL.DT_RELEASE_BUILD_VERSION
+    - context: ENVIRONMENT
+      key: DT_RELEASE_STAGE
+      value: $LABEL.DT_RELEASE_STAGE
     - context: KUBERNETES
       key: app.kubernetes.io/name
       value: $SERVICE

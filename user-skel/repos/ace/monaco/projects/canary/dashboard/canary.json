@@ -1,0 +1,314 @@
+{
+    "dashboardMetadata": {
+      "name": "{{.name}}",
+      "shared": true,
+      "owner": "",
+      "dashboardFilter": {
+        "timeframe": "-30m",
+        "managementZone": {
+            "id": "{{ .managementZoneId }}",
+            "name": "{{ .managementZoneName }}"
+        }
+      }
+    },
+    "tiles": [
+      {
+        "name": "Service health",
+        "tileType": "SERVICES",
+        "configured": true,
+        "bounds": {
+          "top": 266,
+          "left": 1140,
+          "width": 152,
+          "height": 152
+        },
+        "tileFilter": {},
+        "chartVisible": true
+      },
+      {
+        "name": "Service-level objective",
+        "tileType": "SLO",
+        "configured": true,
+        "bounds": {
+          "top": 266,
+          "left": 684,
+          "width": 304,
+          "height": 152
+        },
+        "tileFilter": {},
+        "assignedEntities": [
+            "{{ .sloId }}"
+        ],
+        "metric": "METRICS=true;LEGEND=true;PROBLEMS=true;decimals=10;customTitle=ace-demo-canary;"
+      },
+      {
+        "name": "Response time by version",
+        "tileType": "DATA_EXPLORER",
+        "configured": true,
+        "bounds": {
+          "top": 266,
+          "left": 0,
+          "width": 684,
+          "height": 266
+        },
+        "tileFilter": {},
+        "customName": "Response time by version",
+        "queries": [
+          {
+            "id": "A",
+            "metric": "calc:service.{{ .metricNameResponseTimeByVersion }}",
+            "spaceAggregation": "AVG",
+            "timeAggregation": "DEFAULT",
+            "splitBy": [
+              "version"
+            ],
+            "filterBy": {
+              "nestedFilters": [],
+              "criteria": []
+            },
+            "enabled": true
+          }
+        ],
+        "visualConfig": {
+          "type": "GRAPH_CHART",
+          "global": {},
+          "rules": [
+            {
+              "matcher": "A:",
+              "properties": {
+                "color": "DEFAULT",
+                "seriesType": "LINE"
+              },
+              "seriesOverrides": []
+            }
+          ],
+          "axes": {
+            "xAxis": {
+              "visible": true
+            },
+            "yAxes": []
+          },
+          "thresholds": [
+            {
+              "axisTarget": "LEFT",
+              "rules": [
+                {
+                  "color": "#7dc540"
+                },
+                {
+                  "color": "#f5d30f"
+                },
+                {
+                  "color": "#dc172a"
+                }
+              ],
+              "visible": true
+            }
+          ]
+        }
+      },
+      {
+        "name": "Load by version",
+        "tileType": "DATA_EXPLORER",
+        "configured": true,
+        "bounds": {
+          "top": 532,
+          "left": 0,
+          "width": 684,
+          "height": 266
+        },
+        "tileFilter": {},
+        "customName": "Data explorer results",
+        "queries": [
+          {
+            "id": "A",
+            "metric": "calc:service.{{ .metricNameResponseTimeByVersion }}",
+            "spaceAggregation": "COUNT",
+            "timeAggregation": "DEFAULT",
+            "splitBy": [
+              "version"
+            ],
+            "filterBy": {
+              "nestedFilters": [],
+              "criteria": []
+            },
+            "enabled": true
+          }
+        ],
+        "visualConfig": {
+          "type": "GRAPH_CHART",
+          "global": {},
+          "rules": [
+            {
+              "matcher": "A:",
+              "properties": {
+                "color": "DEFAULT",
+                "seriesType": "AREA"
+              },
+              "seriesOverrides": []
+            }
+          ],
+          "axes": {
+            "xAxis": {
+              "visible": true
+            },
+            "yAxes": []
+          },
+          "thresholds": [
+            {
+              "axisTarget": "LEFT",
+              "columnId": "response_time_by_version",
+              "rules": [
+                {
+                  "color": "#7dc540"
+                },
+                {
+                  "color": "#f5d30f"
+                },
+                {
+                  "color": "#dc172a"
+                }
+              ],
+              "visible": true
+            }
+          ]
+        }
+      },
+      {
+        "name": "Top failed versions",
+        "tileType": "DATA_EXPLORER",
+        "configured": true,
+        "bounds": {
+          "top": 0,
+          "left": 684,
+          "width": 608,
+          "height": 266
+        },
+        "tileFilter": {},
+        "customName": "Top failed versions",
+        "queries": [
+          {
+            "id": "A",
+            "metric": "calc:service.{{ .metricNameFailureRateByVersion }}",
+            "spaceAggregation": "AVG",
+            "timeAggregation": "DEFAULT",
+            "splitBy": [
+              "version"
+            ],
+            "filterBy": {
+              "nestedFilters": [],
+              "criteria": []
+            },
+            "enabled": true
+          }
+        ],
+        "visualConfig": {
+          "type": "TOP_LIST",
+          "global": {},
+          "rules": [
+            {
+              "matcher": "A:",
+              "properties": {
+                "color": "DEFAULT",
+                "seriesType": "LINE"
+              },
+              "seriesOverrides": []
+            }
+          ],
+          "axes": {
+            "xAxis": {
+              "visible": true
+            },
+            "yAxes": []
+          },
+          "thresholds": [
+            {
+              "axisTarget": "LEFT",
+              "rules": [
+                {
+                  "color": "#7dc540"
+                },
+                {
+                  "color": "#f5d30f"
+                },
+                {
+                  "color": "#dc172a"
+                }
+              ],
+              "visible": true
+            }
+          ]
+        }
+      },
+      {
+        "name": "Failure rate by version",
+        "tileType": "DATA_EXPLORER",
+        "configured": true,
+        "bounds": {
+          "top": 0,
+          "left": 0,
+          "width": 684,
+          "height": 266
+        },
+        "tileFilter": {},
+        "customName": "Failure rate by version",
+        "queries": [
+          {
+            "id": "A",
+            "metric": "calc:service.{{ .metricNameFailureRateByVersion }}",
+            "spaceAggregation": "AVG",
+            "timeAggregation": "DEFAULT",
+            "splitBy": [
+              "version"
+            ],
+            "filterBy": {
+              "filterOperator": "AND",
+              "nestedFilters": [],
+              "criteria": []
+            },
+            "enabled": true
+          }
+        ],
+        "visualConfig": {
+          "type": "GRAPH_CHART",
+          "global": {},
+          "rules": [
+            {
+              "matcher": "A",
+              "properties": {
+                "seriesType": "LINE"
+              },
+              "seriesOverrides": []
+            },
+            {
+              "matcher": "A:",
+              "properties": {
+                "color": "DEFAULT",
+                "seriesType": "LINE"
+              },
+              "seriesOverrides": []
+            }
+          ],
+          "axes": {
+            "xAxis": {
+              "visible": true
+            },
+            "yAxes": []
+          },
+          "thresholds": []
+        }
+      },
+      {
+        "name": "Problems",
+        "tileType": "OPEN_PROBLEMS",
+        "configured": true,
+        "bounds": {
+          "top": 266,
+          "left": 988,
+          "width": 152,
+          "height": 152
+        },
+        "tileFilter": {}
+      }
+    ]
+  }

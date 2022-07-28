@@ -1,0 +1,21 @@
+---
+spec_version: '0.1.0'
+dtCreds: dynatrace
+dashboard: query
+attachRules:
+  tagRule:
+  - meTypes:
+    - PROCESS_GROUP_INSTANCE
+    tags:
+    - context: ENVIRONMENT
+      key: DT_RELEASE_STAGE
+      value: $STAGE
+    - context: KUBERNETES
+      key: app.kubernetes.io/name
+      value: $SERVICE
+    - context: KUBERNETES
+      key: app.kubernetes.io/part-of
+      value: $LABEL.DT_RELEASE_PRODUCT
+    - context: KUBERNETES
+      key: app.kubernetes.io/component
+      value: api

@@ -26,3 +26,6 @@
         config:
           keptnApiUrl: "{{ ingress_protocol }}://{{ keptn_ingress_domain }}/api"
           keptnBridgeUrl: "{{ ingress_protocol }}://{{ keptn_ingress_domain }}/bridge"
+      distributor:
+        image:
+          tag: "{{ keptn_version }}"

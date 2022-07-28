@@ -1,0 +1,13 @@
+config:
+    - dashboard-staging: "dashboard.json"
+    - dashboard-qg: "quality-gate-dashboard.json"
+  
+dashboard-staging:
+    - name: "Gitlab Simplenode Dashboard Staging"
+    - managementZoneId: "/simplenode-gitlab/management-zone/management-zone-staging.id"
+    - managementZoneName: "/simplenode-gitlab/management-zone/management-zone-staging.name"
+
+dashboard-qg:
+    - name: "KQG;project=simplenode-gitlab;service=simplenodeservice;stage=staging"
+    - managementZoneId: "/simplenode-gitlab/management-zone/management-zone-staging.id"
+    - managementZoneName: "/simplenode-gitlab/management-zone/management-zone-staging.name"

@@ -1,0 +1,9 @@
+config:
+    - simplenode-canary-response_time_by_version: "response_time_by_version.json"
+    - simplenode-canary-failure_rate_by_version: "failure_rate_by_version.json"
+
+simplenode-canary-response_time_by_version:
+    - name: "simplenode.canary.response_time_by_version"
+
+simplenode-canary-failure_rate_by_version:
+    - name: "simplenode.canary.failure_rate_by_version"

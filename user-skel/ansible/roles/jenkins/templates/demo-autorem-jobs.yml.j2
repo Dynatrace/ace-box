@@ -5,11 +5,11 @@
             pipelineJob('demo-auto-remediation/1. Build images') {
               definition {
                 cpsScm {
-                  scriptPath('jenkins/01_build_images.Jenkinsfile')
+                  scriptPath('jenkins/canary/01_build_images.Jenkinsfile')
                   scm {
                     git {
                         remote { 
-                          url('{{ ingress_protocol }}://{{ git_domain }}/{{ git_org_demo_autorem }}/{{ git_repo_demo_autorem }}')
+                          url('{{ ingress_protocol }}://{{ git_domain }}/{{ git_org_demo_autorem }}/{{ git_repo_demo }}')
                           credentials('git-creds-ace')
                         }
                         branch('*/main')
@@ -23,11 +23,11 @@
             pipelineJob('demo-auto-remediation/2. Monaco') {
               definition {
                 cpsScm {
-                  scriptPath('jenkins/02_monaco.Jenkinsfile')
+                  scriptPath('jenkins/canary/02_monaco.Jenkinsfile')
                   scm {
                     git {
                         remote { 
-                          url('{{ ingress_protocol }}://{{ git_domain }}/{{ git_org_demo_autorem }}/{{ git_repo_demo_autorem }}')
+                          url('{{ ingress_protocol }}://{{ git_domain }}/{{ git_org_demo_autorem }}/{{ git_repo_demo }}')
                           credentials('git-creds-ace')
                         }
                         branch('*/main')
@@ -47,11 +47,11 @@
               }
               definition {
                 cpsScm {
-                  scriptPath('jenkins/03_deploy.Jenkinsfile')
+                  scriptPath('jenkins/canary/03_deploy.Jenkinsfile')
                   scm {
                     git {
                         remote { 
-                          url('{{ ingress_protocol }}://{{ git_domain }}/{{ git_org_demo_autorem }}/{{ git_repo_demo_autorem }}')
+                          url('{{ ingress_protocol }}://{{ git_domain }}/{{ git_org_demo_autorem }}/{{ git_repo_demo }}')
                           credentials('git-creds-ace')
                         }
                         branch('*/main')
@@ -65,11 +65,11 @@
             pipelineJob('demo-auto-remediation/4. Generate Load') {
               definition {
                 cpsScm {
-                  scriptPath('jenkins/04_generate_load.Jenkinsfile')
+                  scriptPath('jenkins/canary/04_generate_load.Jenkinsfile')
                   scm {
                     git {
                         remote { 
-                          url('{{ ingress_protocol }}://{{ git_domain }}/{{ git_org_demo_autorem }}/{{ git_repo_demo_autorem }}')
+                          url('{{ ingress_protocol }}://{{ git_domain }}/{{ git_org_demo_autorem }}/{{ git_repo_demo }}')
                           credentials('git-creds-ace')
                         }
                         branch('*/main')
@@ -87,11 +87,11 @@
               }
               definition {
                 cpsScm {
-                  scriptPath('jenkins/05_canary.Jenkinsfile')
+                  scriptPath('jenkins/canary/05_canary.Jenkinsfile')
                   scm {
                     git {
                         remote { 
-                          url('{{ ingress_protocol }}://{{ git_domain }}/{{ git_org_demo_autorem }}/{{ git_repo_demo_autorem }}')
+                          url('{{ ingress_protocol }}://{{ git_domain }}/{{ git_org_demo_autorem }}/{{ git_repo_demo }}')
                           credentials('git-creds-ace')
                         }
                         branch('*/main')

@@ -1,0 +1,478 @@
+{
+    "id": "2e878491-7006-4e60-8af4-2588c119c707",
+    "dashboardMetadata": {
+      "name": "KQG;project=simplenodeproject-appsec;service=simplenodeservice;stage=production",
+      "shared": false,
+      "owner": "admin",
+      "dashboardFilter": {
+        "managementZone": {
+          "id": "-6696948168354543789",
+          "name": "monaco-mz-production"
+        }
+      }
+    },
+    "tiles": [
+      {
+        "name": "HIGH Vulnerabilities;sli=vulnerabilities_high;pass=<=+0,<1;weight=5;key=true",
+        "tileType": "DATA_EXPLORER",
+        "configured": true,
+        "bounds": {
+          "top": 38,
+          "left": 608,
+          "width": 304,
+          "height": 304
+        },
+        "tileFilter": {},
+        "customName": "Data explorer results",
+        "queries": [
+          {
+            "id": "A",
+            "metric": "builtin:security.securityProblem.open.managementZone",
+            "spaceAggregation": "SUM",
+            "timeAggregation": "DEFAULT",
+            "splitBy": [
+              "Risk Level"
+            ],
+            "sortBy": "DESC",
+            "filterBy": {
+              "filterOperator": "AND",
+              "nestedFilters": [
+                {
+                  "filter": "Risk Level",
+                  "filterType": "DIMENSION",
+                  "filterOperator": "OR",
+                  "nestedFilters": [],
+                  "criteria": [
+                    {
+                      "value": "HIGH",
+                      "evaluator": "EQ"
+                    }
+                  ]
+                }
+              ],
+              "criteria": []
+            },
+            "limit": 100,
+            "enabled": true
+          }
+        ],
+        "visualConfig": {
+          "type": "SINGLE_VALUE",
+          "global": {
+            "hideLegend": false
+          },
+          "rules": [
+            {
+              "matcher": "A:",
+              "properties": {
+                "color": "DEFAULT"
+              },
+              "seriesOverrides": []
+            }
+          ],
+          "axes": {
+            "xAxis": {
+              "displayName": "",
+              "visible": true
+            },
+            "yAxes": [
+              {
+                "displayName": "",
+                "visible": true,
+                "min": "AUTO",
+                "max": "AUTO",
+                "position": "LEFT",
+                "queryIds": [
+                  "A"
+                ],
+                "defaultAxis": true
+              }
+            ]
+          },
+          "heatmapSettings": {},
+          "singleValueSettings": {
+            "showTrend": true,
+            "showSparkLine": true,
+            "linkTileColorToThreshold": true
+          },
+          "thresholds": [
+            {
+              "axisTarget": "LEFT",
+              "rules": [
+                {
+                  "color": "#7dc540"
+                },
+                {
+                  "color": "#f5d30f"
+                },
+                {
+                  "value": 1,
+                  "color": "#dc172a"
+                }
+              ],
+              "queryId": "",
+              "visible": true
+            }
+          ],
+          "tableSettings": {
+            "isThresholdBackgroundAppliedToCell": false
+          },
+          "graphChartSettings": {
+            "connectNulls": false
+          },
+          "honeycombSettings": {}
+        },
+        "queriesSettings": {
+          "resolution": "",
+          "foldTransformation": "LAST_VALUE"
+        }
+      },
+      {
+        "name": "MEDIUM Vulnerabilities;sli=vulnerabilities_medium;pass=<=+0;warn=<=+1;weight=1;key=false",
+        "tileType": "DATA_EXPLORER",
+        "configured": true,
+        "bounds": {
+          "top": 38,
+          "left": 304,
+          "width": 304,
+          "height": 304
+        },
+        "tileFilter": {},
+        "customName": "Data explorer results",
+        "queries": [
+          {
+            "id": "A",
+            "metric": "builtin:security.securityProblem.open.managementZone",
+            "spaceAggregation": "SUM",
+            "timeAggregation": "DEFAULT",
+            "splitBy": [
+              "Risk Level"
+            ],
+            "sortBy": "DESC",
+            "filterBy": {
+              "filterOperator": "AND",
+              "nestedFilters": [
+                {
+                  "filter": "Risk Level",
+                  "filterType": "DIMENSION",
+                  "filterOperator": "OR",
+                  "nestedFilters": [],
+                  "criteria": [
+                    {
+                      "value": "MEDIUM",
+                      "evaluator": "EQ"
+                    }
+                  ]
+                }
+              ],
+              "criteria": []
+            },
+            "limit": 100,
+            "enabled": true
+          }
+        ],
+        "visualConfig": {
+          "type": "SINGLE_VALUE",
+          "global": {
+            "hideLegend": false
+          },
+          "rules": [
+            {
+              "matcher": "A:",
+              "properties": {
+                "color": "DEFAULT"
+              },
+              "seriesOverrides": []
+            }
+          ],
+          "axes": {
+            "xAxis": {
+              "displayName": "",
+              "visible": true
+            },
+            "yAxes": [
+              {
+                "displayName": "",
+                "visible": true,
+                "min": "AUTO",
+                "max": "AUTO",
+                "position": "LEFT",
+                "queryIds": [
+                  "A"
+                ],
+                "defaultAxis": true
+              }
+            ]
+          },
+          "heatmapSettings": {},
+          "singleValueSettings": {
+            "showTrend": true,
+            "showSparkLine": true,
+            "linkTileColorToThreshold": true
+          },
+          "thresholds": [
+            {
+              "axisTarget": "LEFT",
+              "rules": [
+                {
+                  "color": "#7dc540"
+                },
+                {
+                  "value": 1,
+                  "color": "#f5d30f"
+                },
+                {
+                  "value": 3,
+                  "color": "#dc172a"
+                }
+              ],
+              "queryId": "",
+              "visible": true
+            }
+          ],
+          "tableSettings": {
+            "isThresholdBackgroundAppliedToCell": false
+          },
+          "graphChartSettings": {
+            "connectNulls": false
+          },
+          "honeycombSettings": {}
+        },
+        "queriesSettings": {
+          "resolution": "",
+          "foldTransformation": "LAST_VALUE"
+        }
+      },
+      {
+        "name": "LOW Vulnerabilities;sli=vulnerabilities_low;pass=<=+0;warn=<=+1;weight=1;key=false",
+        "tileType": "DATA_EXPLORER",
+        "configured": true,
+        "bounds": {
+          "top": 38,
+          "left": 0,
+          "width": 304,
+          "height": 304
+        },
+        "tileFilter": {},
+        "customName": "Data explorer results",
+        "queries": [
+          {
+            "id": "A",
+            "metric": "builtin:security.securityProblem.open.managementZone",
+            "spaceAggregation": "SUM",
+            "timeAggregation": "DEFAULT",
+            "splitBy": [
+              "Risk Level"
+            ],
+            "sortBy": "DESC",
+            "filterBy": {
+              "filterOperator": "AND",
+              "nestedFilters": [
+                {
+                  "filter": "Risk Level",
+                  "filterType": "DIMENSION",
+                  "filterOperator": "OR",
+                  "nestedFilters": [],
+                  "criteria": [
+                    {
+                      "value": "LOW",
+                      "evaluator": "EQ"
+                    }
+                  ]
+                }
+              ],
+              "criteria": []
+            },
+            "limit": 100,
+            "enabled": true
+          }
+        ],
+        "visualConfig": {
+          "type": "SINGLE_VALUE",
+          "global": {
+            "hideLegend": false
+          },
+          "rules": [
+            {
+              "matcher": "A:",
+              "properties": {
+                "color": "DEFAULT"
+              },
+              "seriesOverrides": []
+            }
+          ],
+          "axes": {
+            "xAxis": {
+              "displayName": "",
+              "visible": true
+            },
+            "yAxes": [
+              {
+                "displayName": "",
+                "visible": true,
+                "min": "AUTO",
+                "max": "AUTO",
+                "position": "LEFT",
+                "queryIds": [
+                  "A"
+                ],
+                "defaultAxis": true
+              }
+            ]
+          },
+          "heatmapSettings": {},
+          "singleValueSettings": {
+            "showTrend": true,
+            "showSparkLine": true,
+            "linkTileColorToThreshold": true
+          },
+          "thresholds": [
+            {
+              "axisTarget": "LEFT",
+              "rules": [
+                {
+                  "color": "#7dc540"
+                },
+                {
+                  "value": 1,
+                  "color": "#f5d30f"
+                },
+                {
+                  "value": 3,
+                  "color": "#dc172a"
+                }
+              ],
+              "queryId": "",
+              "visible": true
+            }
+          ],
+          "tableSettings": {
+            "isThresholdBackgroundAppliedToCell": false
+          },
+          "graphChartSettings": {
+            "connectNulls": false
+          },
+          "honeycombSettings": {}
+        },
+        "queriesSettings": {
+          "resolution": "",
+          "foldTransformation": "LAST_VALUE"
+        }
+      },
+      {
+        "name": "CRITICAL Vulnerabilities;sli=vulnerabilities_critical;pass=<=+0,<1;weight=5;key=true",
+        "tileType": "DATA_EXPLORER",
+        "configured": true,
+        "bounds": {
+          "top": 38,
+          "left": 912,
+          "width": 304,
+          "height": 304
+        },
+        "tileFilter": {},
+        "customName": "Data explorer results",
+        "queries": [
+          {
+            "id": "A",
+            "metric": "builtin:security.securityProblem.open.managementZone",
+            "spaceAggregation": "SUM",
+            "timeAggregation": "DEFAULT",
+            "splitBy": [
+              "Risk Level"
+            ],
+            "sortBy": "DESC",
+            "filterBy": {
+              "filterOperator": "AND",
+              "nestedFilters": [
+                {
+                  "filter": "Risk Level",
+                  "filterType": "DIMENSION",
+                  "filterOperator": "OR",
+                  "nestedFilters": [],
+                  "criteria": [
+                    {
+                      "value": "CRITICAL",
+                      "evaluator": "EQ"
+                    }
+                  ]
+                }
+              ],
+              "criteria": []
+            },
+            "limit": 100,
+            "enabled": true
+          }
+        ],
+        "visualConfig": {
+          "type": "SINGLE_VALUE",
+          "global": {
+            "hideLegend": false
+          },
+          "rules": [
+            {
+              "matcher": "A:",
+              "properties": {
+                "color": "DEFAULT"
+              },
+              "seriesOverrides": []
+            }
+          ],
+          "axes": {
+            "xAxis": {
+              "displayName": "",
+              "visible": true
+            },
+            "yAxes": [
+              {
+                "displayName": "",
+                "visible": true,
+                "min": "AUTO",
+                "max": "AUTO",
+                "position": "LEFT",
+                "queryIds": [
+                  "A"
+                ],
+                "defaultAxis": true
+              }
+            ]
+          },
+          "heatmapSettings": {},
+          "singleValueSettings": {
+            "showTrend": true,
+            "showSparkLine": true,
+            "linkTileColorToThreshold": true
+          },
+          "thresholds": [
+            {
+              "axisTarget": "LEFT",
+              "rules": [
+                {
+                  "color": "#7dc540"
+                },
+                {
+                  "color": "#f5d30f"
+                },
+                {
+                  "value": 1,
+                  "color": "#dc172a"
+                }
+              ],
+              "queryId": "",
+              "visible": true
+            }
+          ],
+          "tableSettings": {
+            "isThresholdBackgroundAppliedToCell": false
+          },
+          "graphChartSettings": {
+            "connectNulls": false
+          },
+          "honeycombSettings": {}
+        },
+        "queriesSettings": {
+          "resolution": "",
+          "foldTransformation": "LAST_VALUE"
+        }
+      }
+    ]
+  }

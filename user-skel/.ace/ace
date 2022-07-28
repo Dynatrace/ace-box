@@ -29,12 +29,19 @@ install_targets = [
     'awx',
     'cloudautomation'
 ]
-uninstall_targets = []
+uninstall_targets = [
+    'gitlab',
+    'jenkins'
+]
 enable_targets = [
     'demo_default',
     'demo_appsec',
     'demo_autorem',
-    'hot_appsec'
+    'demo_gitlab',
+    'demo_all',
+    'demo_monaco_gitops',
+    'hot_appsec',
+    'hot_monaco'
 ]
 
 def set_log_level(

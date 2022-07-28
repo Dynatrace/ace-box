@@ -1,0 +1,25 @@
+
+config:
+  - app-detect-simplenode-staging: "rule.json"
+  - app-detect-simplenode-prod: "rule.json"
+  
+app-detect-simplenode-staging:
+  - name: "/simplenode-gitlab/application/app-simplenode-staging.name"
+  - applicationId: "/simplenode-gitlab/application/app-simplenode-staging.id"
+  - pattern: "http://simplenodeservice.simplenode-gitlab-staging.{{ .Env.INGRESS_DOMAIN }}"
+
+app-detect-simplenode-prod:
+  - name: "/simplenode-gitlab/application/app-simplenode-prod.name"
+  - applicationId: "/simplenode-gitlab/application/app-simplenode-prod.id"
+  - pattern: "http://simplenodeservice.simplenode-gitlab-production.{{ .Env.INGRESS_DOMAIN }}"
+
+  
+# Below examples to apply certain configuration on a tenant basis
+# rule.dev:
+# - pattern: "https://account-dev.dynatracelabs.com/admin"
+
+# rule.hardening:
+# - pattern: "https://account-sprint.dynatracelabs.com/admin"
+
+# rule.prod:
+# - pattern: "https://account.dynatrace.com/admin"

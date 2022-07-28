@@ -7,19 +7,6 @@ def cloudautomation = new sh.keptn.Keptn()
 def event = new com.dynatrace.ace.Event()
 def jmeter = new com.dynatrace.ace.Jmeter()
  
-def tagMatchRules = [
-    [
-        "meTypes": [ "PROCESS_GROUP_INSTANCE"],
-        tags: [
-            ["context": "ENVIRONMENT", "key": "DT_RELEASE_BUILD_VERSION", "value": "${env.ART_VERSION}"],
-            ["context": "KUBERNETES", "key": "app.kubernetes.io/name", "value": "${env.APP_NAME}"],
-            ["context": "KUBERNETES", "key": "app.kubernetes.io/part-of", "value": "simplenode-app"],
-            ["context": "KUBERNETES", "key": "app.kubernetes.io/component", "value": "api"],
-            ["context": "CONTEXTLESS", "key": "environment", "value": "staging"]
-        ]
-    ]
-]
-
 pipeline {
     parameters {
         string(name: 'APP_NAME', defaultValue: 'simplenodeservice', description: 'The name of the service to deploy.', trim: true)
@@ -28,8 +15,8 @@ pipeline {
         choice(name: 'QG_MODE', choices: ['yaml','dashboard'], description: 'Use yaml or dashboard for QG')
     }
     environment {
-        ENVIRONMENT = 'staging'
-        PROJECT = 'simplenodeproject'
+        ENVIRONMENT = 'simplenodeappsec-staging'
+        PROJECT = 'simplenodeproject-appsec'
         MONITORING = 'dynatrace'
         VU = 1
         LOOPCOUNT = 500
@@ -47,7 +34,7 @@ pipeline {
             steps {
                 checkout scm
                 script {
-                    cloudautomation.keptnInit project:"${env.PROJECT}", service:"${env.APP_NAME}", stage:"${env.ENVIRONMENT}", monitoring:"${env.MONITORING}" , shipyard:'cloudautomation/shipyard.yaml'
+                    cloudautomation.keptnInit project:"${env.PROJECT}", service:"${env.APP_NAME}", stage:"staging", monitoring:"${env.MONITORING}" , shipyard:'cloudautomation/shipyard.yaml'
                     
                     switch(env.QG_MODE) {
                         case "yaml": 
@@ -66,6 +53,19 @@ pipeline {
         stage('DT Test Start') {
             steps {
                     script {
+                        def tagMatchRules = [
+                            [
+                                "meTypes": [ "PROCESS_GROUP_INSTANCE"],
+                                tags: [
+                                    ["context": "ENVIRONMENT", "key": "DT_RELEASE_BUILD_VERSION", "value": "${env.ART_VERSION}"],
+                                    ["context": "KUBERNETES", "key": "app.kubernetes.io/name", "value": "${env.APP_NAME}"],
+                                    ["context": "KUBERNETES", "key": "app.kubernetes.io/part-of", "value": "simplenode-app"],
+                                    ["context": "KUBERNETES", "key": "app.kubernetes.io/component", "value": "api"],
+                                    ["context": "CONTEXTLESS", "key": "environment", "value": "${env.ENVIRONMENT}"]
+                                ]
+                            ]
+                        ]
+
                         def status = event.pushDynatraceInfoEvent (
                             tagRule: tagMatchRules,
                             title: "Jmeter Start ${env.APP_NAME} ${env.ART_VERSION}",
@@ -91,7 +91,7 @@ pipeline {
                         def status = jmeter.executeJmeterTest ( 
                             scriptName: "jmeter/simplenodeservice_load.jmx",
                             resultsDir: "perfCheck_${env.APP_NAME}_staging_${BUILD_NUMBER}",
-                            serverUrl: "simplenodeservice.staging", 
+                            serverUrl: "simplenodeservice.${env.ENVIRONMENT}", 
                             serverPort: 80,
                             checkPath: '/health',
                             vuCount: env.VU.toInteger(),
@@ -111,6 +111,19 @@ pipeline {
         stage('DT Test Stop') {
             steps {
                     script {
+                        def tagMatchRules = [
+                            [
+                                "meTypes": [ "PROCESS_GROUP_INSTANCE"],
+                                tags: [
+                                    ["context": "ENVIRONMENT", "key": "DT_RELEASE_BUILD_VERSION", "value": "${env.ART_VERSION}"],
+                                    ["context": "KUBERNETES", "key": "app.kubernetes.io/name", "value": "${env.APP_NAME}"],
+                                    ["context": "KUBERNETES", "key": "app.kubernetes.io/part-of", "value": "simplenode-app"],
+                                    ["context": "KUBERNETES", "key": "app.kubernetes.io/component", "value": "api"],
+                                    ["context": "CONTEXTLESS", "key": "environment", "value": "${env.ENVIRONMENT}"]
+                                ]
+                            ]
+                        ]
+
                         def status = event.pushDynatraceInfoEvent (
                              tagRule: tagMatchRules,
                              title: "Jmeter Stop ${env.APP_NAME} ${env.ART_VERSION}",

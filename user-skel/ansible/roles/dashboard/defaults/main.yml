@@ -2,3 +2,4 @@
 dashboard_user: "dynatrace"
 dashboard_password: "dynatrace"
 dashboard_namespace: "ace"
+dashboard_image: "dynatraceace/ace-box-dashboard:1.2.1"

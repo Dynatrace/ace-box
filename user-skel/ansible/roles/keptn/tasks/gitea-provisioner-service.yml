@@ -1,0 +1,16 @@
+---
+- name: Deploy Keptn Gitea Provisioner service
+  kubernetes.core.helm:
+    name: keptn-gitea-provisioner-service 
+    chart_ref: "https://github.com/keptn-sandbox/keptn-gitea-provisioner-service/releases/download/{{ keptn_gitea_provision_service_version }}/keptn-gitea-provisioner-service-{{ keptn_gitea_provision_service_version }}.tgz"
+    release_namespace: "{{ keptn_namespace }}"
+    create_namespace: true
+    wait: true
+    wait_timeout: 15m
+    values:
+      gitea:
+        admin:
+          create: true
+          username: "{{ gitea_username }}"
+          password: "{{ gitea_password }}"
+        endpoint: "{{ gitea_internal_endpoint }}/"

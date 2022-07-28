@@ -54,16 +54,32 @@
     become: true
     become_user: root
     shell: /snap/bin/microk8s.status --wait-ready
+    register: microk8s_status
+    retries: 3
+    delay: 30
+    until: microk8s_status is not failed
   - name: "Microk8s - Enable addons {{ microk8s_addons }}"
     become: true
     become_user: root
     shell: "/snap/bin/microk8s.enable {{ microk8s_addons }}"
+    register: microk8s_addons_enable
+    retries: 3
+    delay: 60
+    until: microk8s_addons_enable is not failed
   - name: Microk8s - Start microk8s
     become: true
     become_user: root
     shell: /snap/bin/microk8s.start
+    register: microk8s_start
+    retries: 3
+    delay: 60
+    until: microk8s_start is not failed
   - name: Microk8s - Wait for microk8s to be ready
     become: true
     become_user: root
     shell: /snap/bin/microk8s.status --wait-ready
+    register: microk8s_restart_status
+    retries: 3
+    delay: 60
+    until: microk8s_restart_status is not failed
   when: microk8s.changed

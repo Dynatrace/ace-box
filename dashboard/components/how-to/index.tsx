@@ -107,9 +107,11 @@ const ToolTabs: FunctionComponent<ToolTabsProps> = () => {
 type HowToProps = {}
 
 const HowTo: FunctionComponent<HowToProps> = () => {
-  const { awx, gitea } = useContext(CredentialProvider)
+  const { awx, gitea, gitlab } = useContext(CredentialProvider)
   const { href: giteaHref } = gitea
+  const { href: gitlabHref } = gitlab
   const { isEnabled: isAwxEnabled } = awx
+  const { isEnabled: isGitLabEnabled } = gitlab
 
   return (
     <div>
@@ -135,17 +137,24 @@ const HowTo: FunctionComponent<HowToProps> = () => {
           The following list shows use cases currently supported by ACE Box. Please follow the link for step-by-step instructions.
         </p>
         <dl className="definition-list">
-          <dt>All-in-one</dt>
-          <dd><a href={`${giteaHref}/ace/ace`} target="_blank" rel="noreferrer">Step-by-step instructions</a></dd>
-          <dt>Monaco - Hands-on Training</dt>
+          <dt>Quality Gates, Monitoring as a Service and Monitoring as Code - Demo using <b>Jenkins, Gitea and Cloud Automation</b></dt>
+          <dd><a href={`${giteaHref}/demo/ace`} target="_blank" rel="noreferrer">Step-by-step instructions</a></dd>
+          {/* Commenting as not part of demo flow -- needs to be enhanced in future<dt>Monaco - Hands-on Training</dt>
           <dd><a href={`${giteaHref}/monaco-hot/monaco-hot`}>Step-by-step instructions</a></dd>
           <dt>Quality Gates - Hands-on Training</dt>
-          <dd><a href={`${giteaHref}/quality-gates-hot/lab-guides`} target="_blank" rel="noreferrer">Step-by-step instructions</a></dd>
+          <dd><a href={`${giteaHref}/quality-gates-hot/lab-guides`} target="_blank" rel="noreferrer">Step-by-step instructions</a></dd> */}
           {
             isAwxEnabled &&
               <>
-                <dt>Canary deployment and auto remediation - Hands-on Training</dt>
-                <dd><a href={`${giteaHref}/auto-remediation/ace-demo-canary-docs`} target="_blank" rel="noreferrer">Step-by-step instructions</a></dd>
+                <dt>Canary deployment and auto remediation - Demo using <b>Jenkins, Gitea and AWX</b></dt>
+                <dd><a href={`${giteaHref}/demo/auto-remediation-docs`} target="_blank" rel="noreferrer">Step-by-step instructions</a></dd>
+              </>
+          }
+          {
+            isGitLabEnabled &&
+              <>
+                <dt>Quality Gates, Monitoring as a Service and Monitoring as Code - Demo using <b>GitLab and Cloud Automation</b></dt>
+                <dd><a href={`${gitlabHref}/demo/ace/-/tree/main/demo/gitlab`} target="_blank" rel="noreferrer">Step-by-step instructions</a></dd>
               </>
           }
         </dl>

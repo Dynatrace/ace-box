@@ -15,23 +15,24 @@ controller:
     - command-launcher:1.6
     - kubernetes:1.30.11
     - kubernetes-credentials-provider:0.20
-    - workflow-job:2.42
+    - workflow-job:1145.v7f2433caa07f
     - workflow-aggregator:2.6
-    - credentials-binding:1.27
-    - git:4.10.0
+    - credentials-binding:1.27.1
+    - git:4.11.1
     - google-oauth-plugin:1.0.6
     - google-source-plugin:0.4
     - performance:3.20
     - github-branch-source:2.11.3
-    - job-dsl:1.78.1
-    - pipeline-build-step:2.15
+    - job-dsl:1.78.3
+    - pipeline-build-step:2.18
     - docker-plugin:1.2.3
     - blueocean:1.25.2
-    - configuration-as-code:1.55
+    - configuration-as-code:1.55.1
     - http_request:1.12
     - pipeline-utility-steps:2.11.0
     - ansible:1.1
     - gitea:1.4.1
+    - opentelemetry:2.7.1
   installLatestPlugins: false
   JCasC:
     enabled: true
@@ -74,8 +75,22 @@ controller:
               - key: "KUBE_API_ENDPOINT"
                 value: "{{ kubernetes_api_endpoint | default(None) }}"
 {% endif %}
+{% if demo_monaco_gitops|default(False) == True %}
+              - key: "GIT_ORG_DEMO"
+                value: "{{ git_org_demo | default(None) }}"
+              - key: "KUBE_API_ENDPOINT"
+                value: "{{ kubernetes_api_endpoint | default(None) }}"
+{% endif %}
       library-config: |
         unclassified:
+{% if demo_monaco_gitops|default(False) == True %}
+          giteaServers:
+            servers:
+            - credentialsId: "git-creds-ace"
+              displayName: "gitea-acebox"
+              manageHooks: true
+              serverUrl: "http://gitea.acebox-kr.ace-innovation.info"
+{% endif %}
           globalLibraries:
             libraries:
             - name: "keptn-library"
@@ -102,7 +117,20 @@ controller:
                       remote: "https://github.com/dynatrace-ace/jenkins-test-library"
                       traits:
                       - "gitBranchDiscovery"
-
+          openTelemetry:
+            authentication: "noAuthentication"
+            disabledResourceProviders: "io.opentelemetry.sdk.extension.resources.ProcessResourceProvider"
+            endpoint: "{{ otel_endpoint }}"
+            exportOtelConfigurationAsEnvironmentVariables: false
+            ignoredSteps: "dir,echo,isUnix,pwd,properties"
+            observabilityBackends:
+            - customObservabilityBackend:
+                name: "Dynatrace"
+                traceVisualisationUrlTemplate: "{{ dynatrace_tenant_url | default(None) }}/#trace;gf=all;traceId=^${traceId};timeframe=last7d"
+            - dynatrace:
+                url: "{{ dynatrace_tenant_url | default(None) }}"
+            serviceName: "jenkins"
+            serviceNamespace: "jenkins"
       credentials-config: |
         credentials:
           system:
@@ -115,10 +143,11 @@ controller:
                     description: "Git credentials"
                     username: "{{ git_username | default(None) }}"
                     password: "{{ git_password | default(None) }}"
-                - personalAccessTokenImpl:
+                - string:
                     id: "git-access-token"
+                    description: "Git Personal Access Token"
                     scope: GLOBAL
-                    token: "{{ git_access_token | default(None) }}"
+                    secret: "{{ git_access_token | default(None) }}"
                 - string:
                     id: "KUBE_BEARER_TOKEN"
                     scope: GLOBAL
@@ -163,6 +192,11 @@ controller:
 
       demo-default-jobs-config: |
 {% include 'demo-default-jobs.yml.j2' %}
+{% endif %}
+{% if demo_monaco_gitops|default(False) == True %}
+
+      demo-monaco-jobs-config: |
+{% include 'demo-monaco-jobs.yml.j2' %}
 {% endif %}
 {% if demo_appsec|default(False) == True %}
 

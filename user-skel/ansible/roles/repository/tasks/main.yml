@@ -17,9 +17,15 @@
     chdir: "{{ repo_src }}"
   ignore_errors: true
 
-- name: Source endpoints
+- name: Source Gitea endpoints
   include: roles/gitea/tasks/source-endpoints.yml
-  when: gitea_internal_endpoint is not defined
+  when: gitea_internal_endpoint is not defined and git_remote == "gitea"
+
+- name: Source Gitlab Internal endpoints
+  include_role:
+    name: gitlab
+    tasks_from: source-endpoints
+  when: gitlab_internal_endpoint is not defined and git_remote == "gitlab"
 
 - block:
     - name: "Add remote {{ git_remote }}"
@@ -31,6 +37,19 @@
       ansible.builtin.command: "git remote set-url {{ git_remote }} http://{{ git_username }}:{{ git_password }}@{{ gitea_internal_endpoint | regex_replace('http://', '') }}/{{ git_org }}/{{ git_repo }}"
       args:
         chdir: "{{ repo_src }}"
+  when: git_remote == "gitea"
+
+- block:
+    - name: "Add remote {{ git_remote }}"
+      ansible.builtin.command: "git remote add {{ git_remote }} http://{{ git_username }}:{{ git_password }}@{{ gitlab_internal_endpoint | regex_replace('http://', '') }}/{{ git_org }}/{{ git_repo }}"
+      args:
+        chdir: "{{ repo_src }}"
+  rescue:
+    - name: "Set remote {{ git_remote }}"
+      ansible.builtin.command: "git remote set-url {{ git_remote }} http://{{ git_username }}:{{ git_password }}@{{ gitlab_internal_endpoint | regex_replace('http://', '') }}/{{ git_org }}/{{ git_repo }}"
+      args:
+        chdir: "{{ repo_src }}"
+  when: git_remote == "gitlab"
 
 - name: "Publish repo"
   ansible.builtin.command: "git push {{ git_remote }} main"

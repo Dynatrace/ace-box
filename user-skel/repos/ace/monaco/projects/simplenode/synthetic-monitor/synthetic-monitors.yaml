@@ -1,0 +1,23 @@
+config:
+    - health-staging: "health-check-monitor.json"
+    - health-prod: "health-check-monitor.json"
+  
+health-staging:
+    - name: "webcheck.simplenode.staging"
+    - url: "http://simplenodeservice.staging.{{ .Env.INGRESS_DOMAIN }}/api/invoke?url=https://www.dynatrace.com"
+    - description: "Health Check for simplenode in staging"
+    - location: "/infrastructure/synthetic-location/acebox.id"
+    - managementZoneId: "/simplenode/management-zone/management-zone-staging.id"
+    - tag: "/simplenode/auto-tag/tagging-staging.name"
+    #- applicationId: "/simplenode/application/app-simplenode-staging.id"
+    - enabled: "true"
+
+health-prod:
+    - name: "webcheck.simplenode.production"
+    - url: "http://simplenodeservice.production.{{ .Env.INGRESS_DOMAIN }}/api/invoke?url=https://www.dynatrace.com"
+    - description: "Health Check for simplenode in production"
+    - location: "/infrastructure/synthetic-location/acebox.id"
+    - managementZoneId: "/simplenode/management-zone/management-zone-prod.id"
+    - tag: "/simplenode/auto-tag/tagging-prod.name"
+    #- applicationId: "/simplenode/application/app-simplenode-prod.id"
+    - enabled: "true"

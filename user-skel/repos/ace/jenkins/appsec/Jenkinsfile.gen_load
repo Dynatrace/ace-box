@@ -1,0 +1,41 @@
+pipeline {
+  parameters {
+    string(name: 'ENDPOINT', defaultValue: 'http://simplenodeservice.STAGE.11.22.33.44.xip.io', description: 'The URL Endpoint of your SimpleNodeService, e.g: http://simplenode.production.10.23.23.43.xip.io', trim: true)
+    string(name: 'PRODUCTION', defaultValue: 'Production', description: 'Production or non Production Load', trim: true)
+  }
+  agent {
+    label 'kubegit'
+  }
+  stages {
+    stage('Run Test (abort job to stop)') {
+      steps {
+        container("curl") {
+          sh """
+            echo "Load Test Launched against $ENDPOINT - $PRODUCTION"
+            while [ ! -f ./endloadtest.txt ];
+            do
+            # In Production we sleep less which means we will have more load
+            # In Testing we also add the x-dynatrace HTTP Header so that we can demo our "load testing integration" options using Request Attributes!
+            if [[ $PRODUCTION == *"Production"* ]]; then
+                curl -s "$ENDPOINT/" -o nul &> loadtest.log || true
+                curl -s "$ENDPOINT/version" -o nul &> loadtest.log || true
+                curl -s "$ENDPOINT/api/echo?text=This is from a production user" -o nul &> loadtest.log || true
+                curl -s "$ENDPOINT/api/invoke?url=http://www.dynatrace.com" -o nul &> loadtest.log || true
+                curl -s "$ENDPOINT/api/invoke?url=http://blog.dynatrace.com" -o nul &> loadtest.log || true
+
+                sleep 2;
+            else 
+                curl -s "$ENDPOINT/" -H "x-dynatrace-test: TSN=Test.Homepage;" -o nul &> loadtest.log || true
+                curl -s "$ENDPOINT/version" -H "x-dynatrace-test: TSN=Test.Version;" -o nul &> loadtest.log || true
+                curl -s "$ENDPOINT/api/echo?text=This is from a testing script" -H "x-dynatrace-test: TSN=Test.Echo;" -o nul &> loadtest.log || true
+                curl -s "$ENDPOINT/api/invoke?url=http://www.dynatrace.com" -H "x-dynatrace-test: TSN=Test.Invoke;" -o nul &> loadtest.log || true
+
+                sleep 5;
+            fi
+            done;
+            """
+        }
+      }
+    }
+  }
+}

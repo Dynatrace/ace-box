@@ -1,4 +1,4 @@
-ENVS_FILE = "mac/environments.yaml"
+ENVS_FILE = "monaco/environments.yaml"
 
 pipeline {
     agent {
@@ -15,7 +15,7 @@ pipeline {
 			steps {
                 container('ace') {
                     script{
-                        sh "monaco -v -dry-run -e=$ENVS_FILE -p=infrastructure mac/projects"
+                        sh "monaco -v -dry-run -e=$ENVS_FILE -p=infrastructure monaco/projects"
                     }
                 }
 			}
@@ -24,7 +24,7 @@ pipeline {
 			steps {
                 container('ace') {
                     script {
-				        sh "monaco -v -e=$ENVS_FILE -p=infrastructure mac/projects"
+				        sh "monaco -v -e=$ENVS_FILE -p=infrastructure monaco/projects"
                         sh "sleep 60"
                     }
                 }
@@ -34,7 +34,7 @@ pipeline {
 			steps {
                 container('ace') {
                     script{
-                        sh "monaco -v -dry-run -e=$ENVS_FILE -p=ace mac/projects"
+                        sh "monaco -v -dry-run -e=$ENVS_FILE -p=simplenode monaco/projects"
                     }
                 }
 			}
@@ -43,7 +43,7 @@ pipeline {
 			steps {
                 container('ace') {
                     script {
-				        sh "monaco -v -e=$ENVS_FILE -p=ace mac/projects"
+				        sh "monaco -v -e=$ENVS_FILE -p=simplenode monaco/projects"
                     }
                 }
 			}

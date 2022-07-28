@@ -1,5 +1,12 @@
 ---
 - include_role:
+    name: config-v2
+    tasks_from: set-var
+  vars:
+    var_key_to_set: "demo_default"
+    var_value_to_set: true
+
+- include_role:
     name: microk8s
 
 - include_role:
@@ -16,15 +23,15 @@
     tasks_from: dt-cleanup
 
 - include_role:
+    name: gitea
+
+- include_role:
     name: keptn
   when: cloud_automation_flavor is defined and cloud_automation_flavor == "KEPTN"
 
 - include_role:
     name: cloudautomation
   when: cloud_automation_flavor is defined and cloud_automation_flavor == "CLOUD_AUTOMATION"
-
-- include_role:
-    name: gitea
 
 - include_role:
     name: gitea
@@ -57,6 +64,9 @@
   loop:
   - { repo_target: "{{ demo_default_repo_name }}", repo_src: "{{ demo_default_source_repo }}", git_org: "{{ demo_default_org }}" }
   when: new_repo_created is defined and new_repo_created == true
+
+- include_role:
+    name: otel-collector
 
 - include_role:
     name: jenkins

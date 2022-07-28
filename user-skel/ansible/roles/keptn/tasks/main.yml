@@ -14,6 +14,24 @@
     - var_value_to_set: "KEPTN"
   when: cloud_automation_flavor != "KEPTN"
 
+#Ensure Gitea is installed when we are using Keptn to have auto repository provisioning
+- include_role:
+    name: gitea
+
+- name: Keptn - Source Gitea endpoints
+  include_role: 
+    name: gitea
+    tasks_from: source-endpoints.yml
+  when: gitea_internal_endpoint is not defined
+
+- name: Keptn - Source Gitea secrets
+  include_role: 
+    name: gitea
+    tasks_from: source-secret.yml
+
+- name: Keptn - Install Gitea Provisioner service
+  include: roles/keptn/tasks/gitea-provisioner-service.yml
+
 - name: Install Keptn CLI
   include_role:
     name: keptn-cli
@@ -28,6 +46,12 @@
     create_namespace: true
     wait: true
     wait_timeout: 15m
+    values:
+      control-plane:
+        bridge:
+          lookAndFeelUrl: "{{ keptn_look_and_feel_url }}"
+        features:
+          automaticProvisioningURL: "http://keptn-gitea-provisioner-service.{{ keptn_namespace }}"
   register: keptn_helm_chart
 
 - name: Template ingress file

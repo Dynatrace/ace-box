@@ -1,0 +1,13 @@
+config:
+    - dashboard-staging: "dashboard.json"
+    - dashboard-qg: "quality-gate-dashboard.json"
+  
+dashboard-staging:
+    - name: "Simplenode-AppSec Dashboard Staging"
+    - managementZoneId: "/simplenode-appsec/management-zone/management-zone-staging.id"
+    - managementZoneName: "/simplenode-appsec/management-zone/management-zone-staging.name"
+
+dashboard-qg:
+    - name: "KQG;project=simplenodeproject-appsec;service=simplenodeservice;stage=staging"
+    - managementZoneId: "/simplenode-appsec/management-zone/management-zone-staging.id"
+    - managementZoneName: "/simplenode-appsec/management-zone/management-zone-staging.name"

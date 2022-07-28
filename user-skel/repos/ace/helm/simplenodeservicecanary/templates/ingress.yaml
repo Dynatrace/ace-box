@@ -1,0 +1,29 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    meta.helm.sh/release-name: {{ .Release.Name }}
+    kubernetes.io/ingress.class: public
+    nginx.ingress.kubernetes.io/canary: {{ if .Values.isCanary }}"true"{{ else }}"false"{{ end }}
+    nginx.ingress.kubernetes.io/canary-weight: "{{ .Values.canaryWeight }}"
+  labels:
+    app: {{ .Chart.Name }}
+    version: {{ .Values.version }}
+    app.kubernetes.io/managed-by: Helm
+    chart: {{ .Chart.Name }}
+    heritage: Helm
+    release: {{ .Release.Name }}
+  name: {{ .Release.Name }}
+spec:
+  rules:
+  - host: {{ .Chart.Name }}.{{ .Release.Namespace }}.{{ .Values.domain }}
+    http:
+      paths:
+      - backend:
+          service:
+            name: {{ .Release.Name }}
+            port: 
+              number: 80
+        path: /
+        pathType: ImplementationSpecific

@@ -1,0 +1,24 @@
+- name: Add open-telemetry chart repo
+  kubernetes.core.helm_repository:
+    name: open-telemetry
+    repo_url: "https://open-telemetry.github.io/opentelemetry-helm-charts"
+
+- name: Template Helm values file
+  ansible.builtin.template:
+    src: otelcol-values.yml.j2
+    dest: "./roles/{{ role_name }}/files/otelcol-values.yml"
+    owner: "{{ ace_box_user }}"
+    group: "{{ ace_box_user }}"
+    mode: '0644'
+
+- name: Install
+  kubernetes.core.helm:
+    name: "{{ otelcol_name }}"
+    chart_ref: open-telemetry/opentelemetry-collector
+    chart_version: "{{ otelcol_helm_chart_version }}"
+    release_namespace: "{{ otelcol_namespace }}"
+    create_namespace: true
+    wait: true
+    wait_timeout: 15m
+    values_files:
+      - "./roles/{{ role_name }}/files/otelcol-values.yml"

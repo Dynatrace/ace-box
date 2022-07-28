@@ -26,7 +26,10 @@ const getKubernetesCredentials: () => CredentialProps = () => {
 const getJenkinsCredentials: () => CredentialProps = () => {
 	const href = process.env.JENKINS_URL || ''
 	const label = 'Jenkins'
-	const isEnabled = !!process.env.JENKINS_URL
+	//const isEnabled = !!process.env.JENKINS_URL
+	const isEnabled = !!process.env.JENKINS_URL && process.env.JENKINS_URL.toLowerCase() !== "n/a" && process.env.JENKINS_URL !== ""
+		&& !!process.env.JENKINS_USER && process.env.JENKINS_USER.toLowerCase() !== "n/a" && process.env.JENKINS_USER !== ""
+		&& !!process.env.JENKINS_PASSWORD && process.env.JENKINS_PASSWORD.toLowerCase() !== "n/a" && process.env.JENKINS_PASSWORD !== ""
 	const username = process.env.JENKINS_USER || ''
 	const password = process.env.JENKINS_PASSWORD || '' 
 
@@ -42,7 +45,10 @@ const getJenkinsCredentials: () => CredentialProps = () => {
 const getGiteaCredentials: () => CredentialProps = () => {
 	const href = process.env.GITEA_URL || ''
 	const label = 'Gitea'
-	const isEnabled = !!process.env.GITEA_URL
+	//const isEnabled = !!process.env.GITEA_URL
+	const isEnabled = !!process.env.GITEA_URL && process.env.GITEA_URL.toLowerCase() !== "n/a" && process.env.GITEA_URL !== ""
+		&& !!process.env.GITEA_USER && process.env.GITEA_USER.toLowerCase() !== "n/a" && process.env.GITEA_USER !== ""
+		&& !!process.env.GITEA_PASSWORD && process.env.GITEA_PASSWORD.toLowerCase() !== "n/a" && process.env.GITEA_PASSWORD !== ""
 	const username = process.env.GITEA_USER || ''
 	const password = process.env.GITEA_PASSWORD || ''
 	const token = process.env.GITEA_PAT || ''
@@ -65,13 +71,15 @@ const getGitlabCredentials: () => CredentialProps = () => {
 		&& !!process.env.GITLAB_PASSWORD && process.env.GITLAB_PASSWORD.toLowerCase() !== "n/a" && process.env.GITLAB_PASSWORD !== ""
 	const username = process.env.GITLAB_USER || ''
 	const password = process.env.GITLAB_PASSWORD || ''
+	const token = process.env.GITLAB_OAUTH || ''
 
 	return {
 		isEnabled,
 		href,
 		label,
 		username,
-		password
+		password,
+		token
 	}
 }
 

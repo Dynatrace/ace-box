@@ -1,0 +1,7 @@
+config:
+  - simplenode-canary: "slo.json"
+
+simplenode-canary:
+  - name: "ace-demo-canary"
+  - DT_APPLICATION_NAME: "simplenode-app"
+  - namespace: "canary"
