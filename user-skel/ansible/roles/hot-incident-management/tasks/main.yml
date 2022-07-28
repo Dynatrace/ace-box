@@ -9,8 +9,8 @@
 - include_role:
     name: microk8s
 
-- include_role:
-    name: dt-oneagent
+# - include_role:
+#     name: dt-oneagent
 
 - include_role:
     name: monaco

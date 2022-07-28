@@ -15,14 +15,6 @@ def getTickets():
     headers["Authorization"] = "Api-Token "+DT_TOKEN
     headers["Content-Type"] = "application/json"
 
-    # Update anomaly detection settings to GC suspension at 10%
-    r = requests.get(DT_URL+'/api/config/v1/anomalyDetection/hosts', headers=headers)
-    content = r.json()
-    content['highGcActivityDetection']["customThresholds"] = {}
-    content['highGcActivityDetection']["customThresholds"]['gcTimePercentage'] = 40
-    content['highGcActivityDetection']["customThresholds"]['gcSuspensionPercentage'] = 10
-    r = requests.put(DT_URL+'/api/config/v1/anomalyDetection/hosts', json.dumps(content), headers=headers)
-    
     # Update txt file with number of open tickets
     tickets = len(itop.schema('Incident').find())
     f = open("open-tickets.txt", "w")
@@ -45,7 +37,7 @@ def getTickets():
     data = {
       "eventType": "CUSTOM_DEPLOYMENT",
       "source": "Bitbucket",
-      "deploymentName": "simple-web-app",
+      "deploymentName": "EasyTravel",
       "deploymentVersion": "2.0",
       "attachRules": {
         "tagRule": [{

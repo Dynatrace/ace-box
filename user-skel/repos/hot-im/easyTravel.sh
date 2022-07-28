@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 # Install needed packages
-#sudo apt update -y && sudo apt -y upgrade
-#sudo apt install -y git vim wget curl openjdk-8-jre apt-transport-https software-properties-common
-#sudo snap install jq
+sudo apt update -y && sudo apt -y upgrade
+sudo apt install -y git vim wget curl openjdk-8-jre apt-transport-https software-properties-common
+sudo apt-get install -y jq
 
 # Download easyTravel and install
 cd /tmp

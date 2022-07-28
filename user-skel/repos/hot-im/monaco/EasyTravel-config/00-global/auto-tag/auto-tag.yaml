@@ -7,15 +7,12 @@ config:
 
 application:
   - name: Application
-  - skipDeployment: "false"
 
 stage:
   - name: Stage
-  - skipDeployment: "false"
 
 entity:
   - name: Entity
-  - skipDeployment: "false"
 
 appid:
   - name: AppID

@@ -24,7 +24,8 @@ spec:
     # enable classic fullstack monitoring and change its settings
     # Cannot be used in conjunction with cloud-native fullstack monitoring, application-only monitoring or host monitoring
     classicFullStack:
-
+      args:
+      - --set-host-group=PROD_US
       # Optional: tolerations to include with the OneAgent DaemonSet.
       # See more here: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
       tolerations:

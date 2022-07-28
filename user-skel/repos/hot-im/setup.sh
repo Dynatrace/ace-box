@@ -11,23 +11,17 @@ chmod +x install_itop.sh
 sed -i 's/\r$//' install_itop.sh
 ./install_itop.sh
 
-#Run Monaco initial config
-# echo "Running Dynatrace Monitoring as Code..."
-# chmod +x executeMonaco.sh
-# sed -i 's/\r$//' executeMonaco.sh
-# source ./executeMonaco.sh
-
 #########################
 # Install EasyTravel K8 #
 #########################
-cd k8-easytravel/scripts
-chmod +x create_easytravel.sh
-sed -i 's/\r$//' create_easytravel.sh
-./create_easytravel.sh
-chmod +x start_loadgen.sh
-sed -i 's/\r$//' start_loadgen.sh
-./start_loadgen.sh
-cd ../../
+# cd k8-easytravel/scripts
+# chmod +x create_easytravel.sh
+# sed -i 's/\r$//' create_easytravel.sh
+# ./create_easytravel.sh
+# chmod +x start_loadgen.sh
+# sed -i 's/\r$//' start_loadgen.sh
+# ./start_loadgen.sh
+# cd ../../
 
 #apt-get install python3-pip -y
 python3 -m pip install itoptop
@@ -36,24 +30,44 @@ python3 -m pip install itoptop
 ### Old - For local (non ace-box) ###
 #####################################
 # Install dependencies
-#sudo apt-get update
-#sudo apt install wget -y
+sudo apt-get update
+sudo apt install wget -y
 
 #Install OneAgent
-#wget -O Dynatrace-OneAgent-Linux-latest.sh "$DYNATRACE_URL/api/v1/deployment/installer/agent/unix/default/latest?arch=x86&flavor=default" --header="Authorization: Api-Token $DYNATRACE_PAASTOKEN"
-#sudo /bin/sh Dynatrace-OneAgent-Linux-latest.sh --set-host-group=EasyTravel_APPID00274628_PROD_US
+wget -O Dynatrace-OneAgent-Linux-latest.sh "$DYNATRACE_URL/api/v1/deployment/installer/agent/unix/default/latest?arch=x86&flavor=default" --header="Authorization: Api-Token $DYNATRACE_PAASTOKEN"
+sudo /bin/sh Dynatrace-OneAgent-Linux-latest.sh --set-host-group=EasyTravel_APPID00274628_PROD_US
 
 #echo "Installing EasyTravel"
-#chmod +x easyTravel.sh
-#sed -i 's/\r$//' easyTravel.sh
-#./easyTravel.sh
+chmod +x easyTravel.sh
+sed -i 's/\r$//' easyTravel.sh
+./easyTravel.sh
 
 # chmod scripts
-#chmod +x ./simulate/disable500.sh
-#chmod +x ./simulate/easyTravelv1.sh
-#chmod +x ./simulate/disableSlowLogin.sh
-#chmod +x ./simulate/enableSlowLogin.sh
-#chmod +x ./simulate/enable500.sh
-#chmod +x ./simulate/easyTravelv2.sh
-#chmod +x ./simulate/enableSlowLogin.sh
-#chmod +x ./simulate/SlowJourney.sh
+chmod +x ./simulate/disable500.sh
+sed -i 's/\r$//' ./simulate/disable500.sh
+chmod +x ./simulate/easyTravelv1.sh
+sed -i 's/\r$//' ./simulate/easyTravelv1.sh
+chmod +x ./simulate/disableSlowLogin.sh
+sed -i 's/\r$//' ./simulate/disableSlowLogin.sh
+chmod +x ./simulate/enableSlowLogin.sh
+sed -i 's/\r$//' ./simulate/enableSlowLogin.sh
+chmod +x ./simulate/enable500.sh
+sed -i 's/\r$//' ./simulate/enable500.sh
+chmod +x ./simulate/easyTravelv2.sh
+sed -i 's/\r$//' ./simulate/easyTravelv2.sh
+chmod +x ./simulate/enableSlowLogin.sh
+sed -i 's/\r$//' ./simulate/enableSlowLogin.sh
+chmod +x ./simulate/SlowJourney.sh
+sed -i 's/\r$//' ./simulate/SlowJourney.sh
+
+# Set environment variables
+sed -i 's/\r$//' setEnv.sh
+source setEnv.sh
+
+python3 updateAnomalyDetection.py
+
+#Run Monaco initial config
+echo "Running Dynatrace Monitoring as Code..."
+chmod +x executeMonaco.sh
+sed -i 's/\r$//' executeMonaco.sh
+source ./executeMonaco.sh

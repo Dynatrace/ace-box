@@ -1,31 +1,63 @@
 {
+
   "name": "{{.name}}",
+
   "description": null,
+
   "rules": [
+
     {
+
       "type": "PROCESS_GROUP",
+
       "enabled": true,
+
       "valueFormat": "{HostGroup:Name/^[^_]+_+[^_]+_([^_]++)}",
+
       "propagationTypes": [
+
         "PROCESS_GROUP_TO_SERVICE",
+
         "PROCESS_GROUP_TO_HOST"
+
       ],
+
       "conditions": [
+
         {
+
           "key": {
+
             "attribute": "HOST_GROUP_NAME",
+
             "type": "STATIC"
+
           },
+
           "comparisonInfo": {
+
             "type": "STRING",
+
             "operator": "EXISTS",
+
             "value": null,
+
             "negate": false,
+
             "caseSensitive": null
+
           }
+
         }
+
       ]
+
     }
+
   ],
+
   "entitySelectorBasedRules": []
+
 }
+
+

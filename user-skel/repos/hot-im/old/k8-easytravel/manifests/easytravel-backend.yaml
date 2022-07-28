@@ -17,9 +17,6 @@ spec:
   template:
     metadata:
       labels:
-        app: easytravel
-        tier: backend
-        appId: APPID00274628
         app.kubernetes.io/name: easytravel-backend
         app.kubernetes.io/instance: easytravel-backend-1.0.0
         app.kubernetes.io/version: "1.0.0"
@@ -32,6 +29,7 @@ spec:
         priority: "high"
         tier: backend
         app: easytravel
+        appId: APPID00274628
     spec:
       containers:
       - image: dynatrace/easytravel-backend:2.0.0.3218

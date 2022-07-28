@@ -1,76 +1,74 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: easytravel-www
+  name: easytravel-frontend
   namespace: easytravel
 spec:
   selector:
     matchLabels:
       app: easytravel
-      tier: web
+      tier: frontend
   replicas: 1
   template:
     metadata:
       labels:
-        app: easytravel
-        tier: web
-        stage: prod
-        appId: APPID00274628
-        app.kubernetes.io/name: easytravel-nginx
-        app.kubernetes.io/instance: easytravel-nginx-1.0.0
+        app.kubernetes.io/name: easytravel-frontend
+        app.kubernetes.io/instance: easytravel-frontend-1.0.0
         app.kubernetes.io/version: "1.0.0"
-        app.kubernetes.io/component: webserver
+        app.kubernetes.io/component: frontend
         app.kubernetes.io/part-of: easytravel
         app.kubernetes.io/managed-by: EasyTravel-Team
         app.kubernetes.io/created-by: ignacio
       annotations:
         contact: "demo@dynatrace.com"
         priority: "high"
-        tier: web
+        tier: frontend
         app: easytravel
+        appId: APPID00274628
     spec:
       containers:
-      - image: dynatrace/easytravel-nginx:2.0.0.3218
-        name: easytravel-www
+      - image: dynatrace/easytravel-frontend:2.0.0.3218
+        name: easytravel-frontend
         envFrom:
         - configMapRef:
             name: easytravel-config
+        - secretRef:
+            name: mongo-credentials
         ports:
-        - containerPort: 80
-        resources:
-          limits:
-            cpu: 800m
-            memory: 1024Mi
-          requests:
-            cpu: 400m
-            memory: 512Mi
+        - containerPort: 8080
         # readinessProbe:
         #   httpGet:
         #     path: /
-        #     port: 80
+        #     port: 8080
         #     scheme: HTTP
         #   initialDelaySeconds: 5
         # livenessProbe:
         #   httpGet:
         #     path: /
-        #     port: 80
+        #     port: 8080
         #     scheme: HTTP
         #   initialDelaySeconds: 120
-        #   periodSeconds: 120
+        resources:
+          limits:
+            cpu: 1200m
+            memory: 2048Mi
+          requests:
+            cpu: 800m
+            memory: 1024Mi
 ---
 apiVersion: v1
 kind: Service
 metadata:
   labels:
     app: easytravel
-    tier: web
-  name: easytravel-www
+    tier: frontend
+  name: easytravel-frontend
   namespace: easytravel
 spec:
   ports:
-  - port: 80
-    targetPort: 80
+  - port: 8080
+    targetPort: 8080
   selector:
     app: easytravel
-    tier: web
-  type: LoadBalancer
+    tier: frontend
+  type: ClusterIP

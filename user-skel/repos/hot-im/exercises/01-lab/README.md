@@ -129,8 +129,6 @@ The **Smartscape topology** will capture and visualize the entities in your IT e
 
 In this section, we want to demonstrate that all captured **metrics** (as well as traces, log files, events and more) are automatically mapped to the monitored entities they relate to and that important metrics are baselined without configuring anything.
 
-> TO DO: make instructions for points 2-4 more clear & add screenshot(s) after tags have been updated by Nacho :white_check_mark:
-
 ***Demo:***
 
 1. Type `EasyTravelWebserver:8079` in the global search bar to go to the `EasyTravelWebserver:8079` service overview page.
@@ -140,13 +138,13 @@ In this section, we want to demonstrate that all captured **metrics** (as well a
     * Load
 
 <div align="center">
-<img width="400" src="img/EasyTravelWebserver.png">
+<img width="600" src="img/EasyTravelWebserver.png">
 </div>
 
 3. Go to the overview page of the Apache HTTP Server process of this service.
 
 <div align="center">
-<img width="400" src="img/link-to-PG.png">
+<img width="600" src="img/link-to-PG.png">
 </div>
 
 4. Look at the important metrics that are automatically baselined for processes:
@@ -179,8 +177,6 @@ Why is grouping important?
 5. Analyze how the `EasyTravel` management zone has been configured. It is based on the `Application` tag.
 6. Type `EasyTravelWebserver:8079` in the global search bar to go to the `EasyTravelWebserver:8079` service overview page.
 7. Expand the *Properties and tags* section to see where all tags (in grey boxes) and metadata will appear.
-
-> TO DO: add screenshot after tags have been updated by Nacho :white_check_mark:
 
 <div align="center">
 <img width="400" src="img/EasyTravelWebserver.png">
@@ -272,8 +268,6 @@ The following will be demonstrated by the instructor in a Dynatrace demo environ
 5. Filter for Impact level *Application*.
 6. Sort the number of *Affected* entities in decreasing order.
 7. Select one of the first Dynatrace Problems in the list.
-
-> TO DO: add screenshot after Nacho has added a deployment event that will appear in the Problem :white_check_mark:
 
 <div align="center">
 <img width="900" src="img/event-in-Problem.png">

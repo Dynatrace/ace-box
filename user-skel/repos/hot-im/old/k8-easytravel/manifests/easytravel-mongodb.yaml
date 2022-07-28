@@ -12,9 +12,6 @@ spec:
   template:
     metadata:
       labels:
-        app: easytravel
-        tier: mongodb
-        appId: APPID00274628
         app.kubernetes.io/name: easytravel-mongodb
         app.kubernetes.io/instance: easytravel-mongodb-1.0.0
         app.kubernetes.io/version: "1.0.0"
@@ -27,6 +24,7 @@ spec:
         priority: "high"
         tier: mongodb
         app: easytravel
+        appId: APPID00274628
     spec:
       containers:
       - image: dynatrace/easytravel-mongodb:2.0.0.3218
