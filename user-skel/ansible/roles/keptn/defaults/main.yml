@@ -7,3 +7,11 @@ keptn_cli_download_location: "/tmp/keptn"
 # uncomment to give keptn the cloud automation look and feel
 keptn_look_and_feel_url: "https://d2ixiz0hn5ywb5.cloudfront.net/branding.zip"
 keptn_gitea_provision_service_version: "0.1.1"
+keptn_jmeter_service_enabled: true
+keptn_helm_service_enabled: false
+keptn_synthetic_service_enabled: false
+keptn_test_collector_service_enabled: false
+keptn_job_executor_service_enabled: true
+keptn_job_executor_service_version: "0.2.3"
+keptn_job_executor_service_namespace: "keptn-jes"
+keptn_job_executor_service_subscriptions: "sh.keptn.event.remote-task.triggered"
