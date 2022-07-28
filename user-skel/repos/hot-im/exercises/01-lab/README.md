@@ -1,18 +1,8 @@
-<details>
-  <summary>Expand to see progress tracking and status of Lab 1</summary>
-  
-| Item        | Status           | Owner  |
-| ------------- |-------------| -----|
-| Add intro | Done | Julie Allard |
-| Add Advanced Observability module | Done | Julie Allard |
-| Add Davis AI & Alerting module | Done | Julie Allard |
-
-Search for *"TO DO"* on this page to see where more content will be added.
-</details>
-
 **Table of Contents**
 
-[[_TOC_]]
+* [Learning Objectives](#learning-objectives)
+* [1.1 Advanced Observability](#11-advanced-observability)
+* [1.2 Davis AI & Alerting](#12-davis-ai--alerting)
 
 # Lab 1 | Baselining | Incident Management Workshop 
 
@@ -28,13 +18,15 @@ Depending on your Dynatrace training plan and the amount of people that need to 
 <img width="800" src="img/4-step approach.png">
 </div>
 
+> TO DO: Julie to update image
+
 Today's workshop will lay out how we approach each step in the framework, followed by a demo or hands-on exercises for the first three phases.
 
 In this first lab, the **Baselining Lab**, we will lay out the basics in Dynatrace to understand how Dynatrace delivers precise and reliable answers and intelligent automation, which is the foundation of true AIOps. We will get hands-on in our lab environments with tags, management zones, alerting profiles and problem notifications in Dynatrace.
 
 The Baselining Lab contains two modules:
-* [**Advanced Observability**](https://gitlab.com/eduard.van.der.bent/incident-management-lab/-/tree/main/exercises/01-lab#11-advanced-observability) (demo)
-* [**Davis AI & Alerting**](https://gitlab.com/eduard.van.der.bent/incident-management-lab/-/tree/main/exercises/01-lab#12-davis-ai-alerting) (exercises)
+* [**Advanced Observability**](#11-advanced-observability) (demo)
+* [**Davis AI & Alerting**](#12-davis-ai--alerting) (exercises)
 
 <div align="center">
 <img width="700" src="img/Lab 1.png">
@@ -44,7 +36,7 @@ The Baselining Lab contains two modules:
 
 ##### Advanced Observability
 
-Get to know the key features powering Dynatrace’s AI-driven observability.
+Get to know the key features powering Dynatrace’s AI-driven observability.
 
 What you’ll learn:
 * The basics in Dynatrace
@@ -59,7 +51,7 @@ What you’ll learn:
 Get to know Dynatrace’s key ingredients to automate your incident management process from creation to resolution.
 
 What you’ll learn:
-* What is a Gen3 alert
+* What is a Problem in Dynatrace
 * How the AI reduces alert noise and determines the root cause
 * What are the alert types
 * How to filter alerts
@@ -83,6 +75,8 @@ Entities can be **tagged**, e.g. the owner of this host is the `Infra Team`, hos
 * Six tags have been pre-configured for you: `Application`, `AppID`, `Stage`, `Region`, `Entity` and `Owner`, of which the first four are derived the host group name.
 
 </details>
+
+> TO DO: Nacho to update the host group and add missing tags e.g. `Owner`
 
 #### 1.1.1 Entities in the Smartscape topology
 
@@ -204,6 +198,8 @@ Following Dynatrace best practices, where possible, you should not configure tag
 <img width="900" src="img/Lab 1.1.5 MaaS.png">
 </div>
 
+> TO DO: Julie to update image
+
 #### Summary of Lab 1 Module 1 (Advanced Observability)
 
 What did we learn in this lab module?
@@ -218,23 +214,23 @@ What did we learn in this lab module?
 * Automatic baselining (for important metrics)
 * Belong to an entity
 
-Entities should be organized by YOU using **metadata / tags**.
+Entities should be organized by YOU using **metadata**, **tags** and/or **management zones**.
 
 The above ingredients, with AI applied on top, form the base of modern AIOps.
 
 ## 1.2 Davis AI & Alerting
 
-As stated in the previous lab module, baselining will start right after installing the OneAgent. When heading to the Problems page in Dynatrace, you will see that, most probably, Problems have already been opened based on anomalies detected for your application. In this lab module, we will learn what those Problems or Gen3 alerts in Dynatrace are, how to filter for them and how to push them to external systems. 
+As stated in the previous lab module, baselining will start right after installing the OneAgent. When heading to the Problems page in Dynatrace, you will see that, most probably, Problems have already been opened based on anomalies detected for your application. In this lab module, we will learn what those Problems or alerts from Dynatrace are, how to filter for them and how to push them to external systems. 
 
-#### 1.2.1 What is a Gen3 alert?
+#### 1.2.1 What is a Problem in Dynatrace?
 
-A Gen3 alert is a grouping of **all related events, with context, impact and root cause** details for a given anomaly in your monitoring environment, avoiding an alert storm.
+A Problem in Dynatrace is a grouping of **all related events, with context, impact and root cause** details for a given anomaly in your monitoring environment, avoiding an alert storm.
 
 In Dynatrace, this gets consolidated into **1 Problem card**.
 
 During its lifespan, a Dynatrace Problem might raise its severity and impact level. For example, a Problem might begin in slowdown level and then be raised automatically to availability level when an outage is detected.
 
-We will take a closer look at a Problem in Dynatrace in [lab 1.2.3](https://gitlab.com/eduard.van.der.bent/incident-management-lab/-/tree/main/exercises/01-lab#123-what-are-the-different-alert-types).
+We will take a closer look at a Problem in Dynatrace in [lab 1.2.3](#123-what-are-the-different-alert-types).
 
 #### 1.2.2 How the AI reduces alert noise and determines the root cause
 
@@ -284,73 +280,20 @@ A brief overview of the auto-determined severities and impact levels in Dynatrac
 
 ##### Severity levels in Dynatrace
 
-Some examples of alert types for the different **severity levels**:
-
-* **Monitoring unavailable**
-
-    Indicates a widespread monitoring interruption, where the majority of your installed OneAgents lose their connection with the Dynatrace server.
-
-* **Availability (Severity 1)**
-
-    Indicates if a resource may be unavailable by detecting low traffic, host monitoring or process availability, synthetic outages, or custom metrics configured with an availability severity.
-
-* **Error (Severity 2)**
-
-    Informs of increased error rates or error-related incidents such as JavaScript or service failures, mobile app crashes, network interface errors or custom metrices configured with an error severity.
-
-* **Slowdown (Severity 3)**
-
-    Indicates an increase of response time for applications, services, databases, synthetics or custom metrics configured with a slowdown severity.
-
-* **Resource (Severity 4)**
-
-    Indicate resource contention such as CPU or memory saturation, unexpected high traffic, low disk space, increased  GC time or custom metrics configured with a resource severity.
-
-* **Custom (Severity 5)**
-
-    Used for user-defined thresholds on metrics. Custom severity events are not correlated by Davis.
-
-* **Info (Severity 6)**
-
-    Indicate events that don't result in the creation of a new problem, Java Framework changes, deployments or VMotions.
+* Monitoring unavailable
+* Availability (Severity 1)
+* Error (Severity 2)
+* Slowdown (Severity 3)
+* Resource (Severity 4)
+* Custom (Severity 5)
+* Info (Severity 6)
 
 ##### Impact levels in Dynatrace
 
-Some examples of alert types for the different **impact levels**:
-
-* **Application**
-
-    * Unexpected high traffic
-    * Unexpected low traffic
-    * User action duration degradation
-    * Javascript error rate increase
-    * *Synthetic only:* Web check performance threshold violation
-    * *Synthetic only:* Web check availability error
-
-* **Services**
-
-    * Response time degradation
-    * Failure rate increase
-    * Failed databases connects
-    * Unexpected high traffic
-    * Unexpected low traffic
-
-
-* **Infrastructure**
-
-    * CPU saturation 
-    * Memory saturation 
-    * Slow storage
-    * Insufficient queue depth 
-    * Overloaded storage
-    * Network congestion
-    * Host or monitoring unavailable
-    * High network utilization
-    * Multiple infrastructure problems
-
-* **Environment**
-
-    * Events imported from externally, e.g. from cloud technologies or custom extensions
+* Application
+* Services
+* Infrastructure
+* Environment
 
 <div align="center">
 <img width="900" src="img/Lab 1.2.3 impact levels.png">
