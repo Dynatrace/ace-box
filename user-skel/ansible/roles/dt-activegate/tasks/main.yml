@@ -35,4 +35,5 @@
     become_user: root
     shell:
       cmd: snap restart docker
+    ignore_errors: yes
   when: ansible_facts.services["dynatracegateway.service"] is not defined

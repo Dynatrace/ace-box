@@ -1,18 +1,20 @@
 ---
 - name: ActiveGate - Get all Synthetic nodes
-  uri:
-    url: "{{ dynatrace_tenant_url }}/api/v1/synthetic/nodes"
-    method: GET
-    headers:
-      Content-Type: "application/json"
-      Authorization: "Api-token {{ dynatrace_api_token }}"
-    return_content: no
-    status_code: 200, 201, 204
-  register: nodes_response_raw
-  until: "{{ nodes_response_raw.json | json_query(synthetic_nodes_query) }}"
-  retries: 15
-  delay: 10
-
-- set_fact:
-    dt_synthetic_node_id: "{{ nodes_response_raw.json | json_query(synthetic_nodes_query) | first }}"
-  when: nodes_response_raw is defined
+  block:
+  - uri:
+      url: "{{ dynatrace_tenant_url }}/api/v1/synthetic/nodes"
+      method: GET
+      headers:
+        Content-Type: "application/json"
+        Authorization: "Api-token {{ dynatrace_api_token }}"
+      return_content: no
+      status_code: 200, 201, 204
+    register: nodes_response_raw
+    until: "{{ nodes_response_raw.json | json_query(synthetic_nodes_query) }}"
+    retries: 15
+    delay: 10
+  - set_fact:
+      dt_synthetic_node_id: "{{ nodes_response_raw.json | json_query(synthetic_nodes_query) | first }}"
+  rescue:
+  - set_fact:
+      dt_synthetic_node_id: ""
