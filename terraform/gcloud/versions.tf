@@ -3,7 +3,7 @@ terraform {
 
   required_providers {
     google = ">= 4.24.0"
-    random = "~> 3.1.2"
+    random = "~> 3.3.2"
     local  = "~> 2.2.2"
   }
 }
