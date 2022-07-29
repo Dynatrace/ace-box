@@ -19,10 +19,10 @@
       name: gitea
       tasks_from: source-secret
   - set_fact:
-      git_username: "{{ gitea_username }}"
-      git_password: "{{ gitea_password }}"
-      git_access_token: "{{ gitea_access_token }}"
-      git_domain: "gitea.{{ ingress_domain }}"
+      git_username: "{{ gitea_username | default(None) }}"
+      git_password: "{{ gitea_password | default(None) }}"
+      git_access_token: "{{ gitea_access_token | default(None) }}"
+      git_domain: "gitea.{{ ingress_domain | default(None) }}"
   when: git_flavor is defined and git_flavor == "GITEA"
 
 - block:
@@ -34,9 +34,9 @@
       name: keptn
       tasks_from: source-endpoints
   - set_fact:
-      ca_endpoint: "{{ keptn_endpoint|default('') }}"
-      ca_bridge: "{{ keptn_bridge|default('') }}"
-      ca_api_token: "{{ keptn_api_token|default('') }}"
+      ca_endpoint: "{{ keptn_endpoint | default(None) }}"
+      ca_bridge: "{{ keptn_bridge | default(None) }}"
+      ca_api_token: "{{ keptn_api_token | default(None) }}"
   when: cloud_automation_flavor is defined and cloud_automation_flavor == "KEPTN"
 
 - block:
@@ -45,9 +45,9 @@
       name: cloudautomation
       tasks_from: source-secret
   - set_fact:
-      ca_endpoint: "{{ cloud_automation_endpoint|default('') }}"
-      ca_bridge: "{{ cloud_automation_bridge|default('') }}"
-      ca_api_token: "{{ cloud_automation_api_token|default('') }}"
+      ca_endpoint: "{{ cloud_automation_endpoint | default(None) }}"
+      ca_bridge: "{{ cloud_automation_bridge | default(None) }}"
+      ca_api_token: "{{ cloud_automation_api_token | default(None) }}"
   when: cloud_automation_flavor is defined and cloud_automation_flavor == "CLOUD_AUTOMATION"
 
 - block:
@@ -83,8 +83,10 @@
       name: "{{ dt_operator_sa_data.resources[0].secrets[0].name }}"
       namespace: "dynatrace"
     register: dt_operator_secret_data
+    when: dt_operator_sa_data.resources[0] is defined
   - set_fact:
       dt_operator_kube_bearer_token: "{{ dt_operator_secret_data.resources[0].data.token | b64decode }}"
+    when: dt_operator_secret_data.resources[0] is defined
 
 - name: Source DT Synthetic node id
   include_role:
@@ -97,15 +99,33 @@
       name: otel-collector
       tasks_from: source-endpoints
   - set_fact:
-      otel_endpoint: "{{ otel_internal_endpoint }}"
+      otel_endpoint: "{{ otel_internal_endpoint | default(None) }}"
 
-- name: Template Helm values file
-  ansible.builtin.template:
+- file:
+    path: "{{ role_path }}/files/helm"
+    state: directory
+
+- name: Template default Helm values file
+  template:
     src: jenkins-values.yml.j2
-    dest: "./roles/{{ role_name }}/files/jenkins-values.yml"
+    dest: "{{ role_path }}/files/helm/jenkins-values.yml"
     owner: "{{ ace_box_user }}"
     group: "{{ ace_box_user }}"
     mode: '0644'
+
+- name: Template additional Helm values file
+  template:
+    src: "{{ include_jenkins_value_file }}"
+    dest: "{{ role_path }}/files/helm/{{ include_jenkins_value_file | basename | replace('.j2', '') }}"
+    owner: "{{ ace_box_user }}"
+    group: "{{ ace_box_user }}"
+    mode: '0644'
+  when: include_jenkins_value_file is defined and include_jenkins_value_file != ""
+
+- name: Find all Jenkins Helm values files
+  find:
+    paths: "{{ role_path }}/files/helm"
+  register: jenkins_helm_value_files
 
 - name: Install
   kubernetes.core.helm:
@@ -116,5 +136,6 @@
     create_namespace: true
     wait: true
     wait_timeout: 30m
-    values_files:
-      - "./roles/{{ role_name }}/files/jenkins-values.yml"
+    values_files: "{{ jenkins_helm_value_files | json_query('files[*].path') }}"
+  when: not jenkins_skip_install
+

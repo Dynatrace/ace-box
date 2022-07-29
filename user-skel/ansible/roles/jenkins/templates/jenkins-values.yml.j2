@@ -47,50 +47,64 @@ controller:
           globalNodeProperties:
           - envVars:
               env:
+{% if ingress_protocol is defined and ingress_protocol != "" %}
               - key: "INGRESS_PROTOCOL"
-                value: "{{ ingress_protocol | default(None) }}"
-              - key: "INGRESS_DOMAIN"
-                value: "{{ ingress_domain | default(None) }}"
-              - key: "DOCKER_REGISTRY_URL"
-                value: "{{ docker_registry_url | default(None) }}"
+                value: "{{ ingress_protocol }}"
               - key: "GIT_PROTOCOL"
-                value: "{{ ingress_protocol | default(None) }}"
-              - key: "GIT_DOMAIN"
-                value: "{{ git_domain | default(None) }}"
-              - key: "SYNTH_NODE_ID"
-                value: "{{ dt_synthetic_node_id | default(None) }}"
-{% if demo_default|default(False) == True or demo_appsec|default(False) == True or hot_appsec|default(False) == True %}
-              - key: "GIT_ORG_DEMO"
-                value: "{{ git_org_demo | default(None) }}"
-              - key: "GIT_REPO_DEMO"
-                value: "{{ git_repo_demo | default(None) }}"
-              - key: "KEPTN_ENDPOINT"
-                value: "{{ ca_endpoint | default(None) }}"
-              - key: "KEPTN_BRIDGE"
-                value: "{{ ca_bridge | default(None) }}"
-              - key: "CA_ENDPOINT"
-                value: "{{ ca_endpoint | default(None) }}"
-              - key: "CA_BRIDGE"
-                value: "{{ ca_bridge | default(None) }}"
-              - key: "KUBE_API_ENDPOINT"
-                value: "{{ kubernetes_api_endpoint | default(None) }}"
+                value: "{{ ingress_protocol }}"
 {% endif %}
-{% if demo_monaco_gitops|default(False) == True %}
+{% if ingress_domain is defined and ingress_domain != "" %}
+              - key: "INGRESS_DOMAIN"
+                value: "{{ ingress_domain }}"
+{% endif %}
+{% if docker_registry_url is defined and docker_registry_url != "" %}
+              - key: "DOCKER_REGISTRY_URL"
+                value: "{{ docker_registry_url }}"
+{% endif %}
+{% if git_domain is defined and git_domain != "" %}
+              - key: "GIT_DOMAIN"
+                value: "{{ git_domain }}"
+{% endif %}
+{% if dt_synthetic_node_id is defined and dt_synthetic_node_id != "" %}
+              - key: "SYNTH_NODE_ID"
+                value: "{{ dt_synthetic_node_id }}"
+{% endif %}
+{% if git_org_demo is defined and git_org_demo != "" %}
               - key: "GIT_ORG_DEMO"
-                value: "{{ git_org_demo | default(None) }}"
+                value: "{{ git_org_demo }}"
+{% endif %}
+{% if git_repo_demo is defined and git_repo_demo != "" %}
+              - key: "GIT_REPO_DEMO"
+                value: "{{ git_repo_demo }}"
+{% endif %}
+{% if ca_endpoint is defined and ca_endpoint != "" %}
+              - key: "KEPTN_ENDPOINT"
+                value: "{{ ca_endpoint }}"
+{% endif %}
+{% if ca_bridge is defined and ca_bridge != "" %}
+              - key: "KEPTN_BRIDGE"
+                value: "{{ ca_bridge }}"
+{% endif %}
+{% if ca_endpoint is defined and ca_endpoint != "" %}
+              - key: "CA_ENDPOINT"
+                value: "{{ ca_endpoint }}"
+{% endif %}
+{% if ca_bridge is defined and ca_bridge != "" %}
+              - key: "CA_BRIDGE"
+                value: "{{ ca_bridge }}"
+{% endif %}
+{% if kubernetes_api_endpoint is defined and kubernetes_api_endpoint != "" %}
               - key: "KUBE_API_ENDPOINT"
-                value: "{{ kubernetes_api_endpoint | default(None) }}"
+                value: "{{ kubernetes_api_endpoint }}"
 {% endif %}
       library-config: |
         unclassified:
-{% if demo_monaco_gitops|default(False) == True %}
           giteaServers:
             servers:
             - credentialsId: "git-creds-ace"
               displayName: "gitea-acebox"
               manageHooks: true
-              serverUrl: "http://gitea.acebox-kr.ace-innovation.info"
-{% endif %}
+              serverUrl: "{{ ingress_protocol }}://{{ git_domain }}"
           globalLibraries:
             libraries:
             - name: "keptn-library"
@@ -135,41 +149,50 @@ controller:
         credentials:
           system:
             domainCredentials:
-{% if demo_default|default(False) == True or demo_appsec|default(False) == True or demo_autorem|default(False) == True or hot_appsec|default(False) == True or demo_monaco_gitops|default(False) == True %}
               - credentials:
+{% if git_username is defined and git_username != "" and git_password is defined and git_password != "" %}
                 - usernamePassword:
                     id: "git-creds-ace"
                     scope: GLOBAL
                     description: "Git credentials"
-                    username: "{{ git_username | default(None) }}"
-                    password: "{{ git_password | default(None) }}"
+                    username: "{{ git_username }}"
+                    password: "{{ git_password }}"
+{% endif %}
+{% if git_access_token is defined and git_access_token != "" %}
                 - string:
                     id: "git-access-token"
                     description: "Git Personal Access Token"
                     scope: GLOBAL
-                    secret: "{{ git_access_token | default(None) }}"
+                    secret: "{{ git_access_token }}"
+{% endif %}
+{% if dt_operator_kube_bearer_token is defined and dt_operator_kube_bearer_token != "" %}
                 - string:
                     id: "KUBE_BEARER_TOKEN"
                     scope: GLOBAL
                     description: "Dynatrace Operator Kubernetes token"
-                    secret: "{{ dt_operator_kube_bearer_token | default(None) }}"
+                    secret: "{{ dt_operator_kube_bearer_token }}"
+{% endif %}
+{% if ca_api_token is defined and ca_api_token != "" %}
                 - string:
                     id: "CA_API_TOKEN"
                     scope: GLOBAL
                     description: "Cloud Automation api token"
-                    secret: "{{ ca_api_token | default(None) }}"
+                    secret: "{{ ca_api_token }}"
+{% endif %}
+{% if dynatrace_tenant_url is defined and dynatrace_tenant_url != "" %}
                 - string:
                     id: "DT_TENANT_URL"
                     scope: GLOBAL
                     description: "Dynatrace environment URL"
-                    secret: "{{ dynatrace_tenant_url | default(None) }}"
+                    secret: "{{ dynatrace_tenant_url }}"
+{% endif %}
+{% if dynatrace_api_token is defined and dynatrace_api_token != "" %}
                 - string:
                     id: "DT_API_TOKEN"
                     scope: GLOBAL
                     description: "Dynatrace api token"
-                    secret: "{{ dynatrace_api_token | default(None) }}"
+                    secret: "{{ dynatrace_api_token }}"
 {% endif %}
-
       clouds-container-config: |
         jenkins:
           clouds:
@@ -188,28 +211,3 @@ controller:
 {% include 'container-kubegit.yml.j2' %}
 
 {% include 'container-monaco.yml.j2' %}
-{% if demo_default|default(False) == True %}
-
-      demo-default-jobs-config: |
-{% include 'demo-default-jobs.yml.j2' %}
-{% endif %}
-{% if demo_monaco_gitops|default(False) == True %}
-
-      demo-monaco-jobs-config: |
-{% include 'demo-monaco-jobs.yml.j2' %}
-{% endif %}
-{% if demo_appsec|default(False) == True %}
-
-      demo-appsec-jobs-config: |
-{% include 'demo-appsec-jobs.yml.j2' %}
-{% endif %}
-{% if demo_autorem|default(False) == True %}
-
-      demo-autorem-jobs-config: |
-{% include 'demo-autorem-jobs.yml.j2' %}
-{% endif %}
-{% if hot_appsec|default(False) == True %}
-
-      hot-appsec-jobs-config: |
-{% include 'hot-appsec-jobs.yml.j2' %}
-{% endif %}
