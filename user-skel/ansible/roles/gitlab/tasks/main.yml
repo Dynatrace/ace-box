@@ -34,9 +34,11 @@
       - "./roles/{{ role_name }}/files/gitlab-values.yml"
   register: gitlab_helm
 
+- include: roles/gitlab/tasks/source-endpoints.yml
+
 - name: Gitlab - Wait for API to be up
   uri:
-    url: "{{ ingress_protocol }}://gitlab.{{ ingress_domain }}/api/v4/projects"
+    url: "{{ gitlab_internal_endpoint }}/api/v4/projects"
     validate_certs: no
     status_code: 200
   register: result

@@ -1,8 +1,9 @@
+---
 - name: Gitlab - Ensure group variable "{{ gitlab_var_key }} exists"
   block:
   - name: Update var
     uri:
-      url: "{{ ingress_protocol }}://gitlab.{{ ingress_domain }}/api/v4/groups/{{ gitlab_group_id }}/variables/{{ gitlab_var_key }}"
+      url: "{{ gitlab_internal_endpoint }}/api/v4/groups/{{ gitlab_group_id }}/variables/{{ gitlab_var_key }}"
       validate_certs: false
       method: PUT
       status_code: [200, 201]
@@ -20,7 +21,7 @@
   rescue:
   - name: Create var
     uri:
-      url: "{{ ingress_protocol }}://gitlab.{{ ingress_domain }}/api/v4/groups/{{ gitlab_group_id }}/variables"
+      url: "{{ gitlab_internal_endpoint }}/api/v4/groups/{{ gitlab_group_id }}/variables"
       validate_certs: false
       method: POST
       status_code: [200, 201]

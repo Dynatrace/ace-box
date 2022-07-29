@@ -1,3 +1,4 @@
+---
 - name: Add mvisonneau chart repo
   kubernetes.core.helm_repository:
     name: mvisonneau
