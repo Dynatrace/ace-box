@@ -1,2 +1,3 @@
 ---
-default_use_case_ext_name: "my-use-case"
+use_case_ext_default_name: "my-use-case"
+use_case_ext_version: "HEAD"
