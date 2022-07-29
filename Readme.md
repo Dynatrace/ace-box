@@ -17,7 +17,9 @@ Vagrant (Local) or Terraform (Cloud) are used for spinning up the VM, Ansible is
     - [Vagrant cleanup](#vagrant-cleanup)
   - [Alt: Bring-your-own-VM](#alt-bring-your-own-vm)
   - [Default mode](#default-mode)
-    - [Configuration settings](#configuration-settings)
+  - [External use case](#external-use-case)
+    - [Curated roles](#curated-roles)
+  - [Configuration settings](#configuration-settings)
     - [Resource Requirements](#resource-requirements)
   - [Troubleshooting](#troubleshooting)
   - [Accessing ACE Dashboard](#accessing-ace-dashboard)
@@ -89,11 +91,11 @@ The recommended way of installing any ACE box version, local or cloud, is via Te
         | ca_tenant | no | Dynatrace Cloud Automation environment URL. **Note**: if not set, Keptn will be installed and used instead |
         | ca_api_token | no | Dynatrace Cloud Automation api token. **Note**: if not set, Keptn will be installed and used instead |
         | acebox_user | no | User, for which home directory will be provisioned (Default: "ace") |
-        | use_case | no | Use case, the ACE Box will be prepared for. Options are `demo_default` (Default), `demo_appsec`, `demo_autorem`, `demo_gitlab`, `demo_monaco_gitops` and `demo_all`  |
+        | use_case | no | Use case, the ACE Box will be prepared for. Options are:<ul> <li>`demo_default` (Default)</li><li>`demo_appsec`</li><li>`demo_autorem`</li><li>`demo_gitlab`</li><li>`demo_monaco_gitops`, `demo_all`</li><li>URL to an external repository (see below)</li></ul>|
 
-4. Run `terraform init`
-5. Run `terraform apply`
-6. Grab a coffee, this process will take some time...
+1. Run `terraform init`
+2. Run `terraform apply`
+3. Grab a coffee, this process will take some time...
 
 
 ### Useful Terraform Commands
@@ -193,8 +195,43 @@ By default, an ACE Box is prepared for a demo use case (i.e. "demo_default"). Th
 - A kubernetes ingress gets configured for all applications so it is easy to navigate
 - Dynatrace tag rules and request attributes get set up via the API
 
+## External use case
 
-### Configuration settings
+In addition to use cases provided natively by the ACE-Box, it is now possible to source external use cases. This allows using the ACE-Box as a platform to develop own use cases, demos, trainings, etc.
+
+An external use case can be sourced and provisioned by simply providing a link to the Git repository of the external use case. In order for the ACE-Box to understand such external use cases, they need to comply with a specific structure. Further information, a template, as well as examples of such a structure can be found [here](https://github.com/dynatrace-ace/ace-box-ext-template).
+
+To enable an external use case the Terraform `use_case` variable has to be set to the Git repository URL. For example:
+
+```
+...
+use_case = "https://<user>:<token>@github.com/my-org/my-ext-use-case.git"
+...
+```
+
+> Attention: You usually want to host your code in a private repository. Therefore, credentials need to be added to the URL. For public repositories, it is also possible to omit credentials.
+
+### Curated roles
+
+The following curated roles can be added to your external use case. See [template repository](https://github.com/dynatrace-ace/ace-box-ext-template) for examples.
+
+|Role|Description|
+|---|---|
+|awx|Installs AWX|
+|cloudautomation|Links an existing Cloud Automation instance|
+|dashboard|Installs the ACE-Box dashboard|
+|dt-activegate|Installs a Synthetic enabled ActiveGate|
+|dt-oneagent|Installs the OneAgent operator|
+|gitea|Installs Gitea|
+|gitlab|Installs Gitlab|
+|jenkins|Installs Jenkins|
+|keptn|Installs Keptn|
+|microk8s|Installs Microk8s|
+|monaco|Installs Monaco|
+|otel-collector|Installs an OpenTelemetry collector|
+|repository|Initializes and publishes a local repository to Gitea or Gitlab|
+
+## Configuration settings
 
 The ace-box comes with a certain number of features and settings that can be set/enabled/disabled. Adding and removing features will change the resource consumption. Most settings have default values and do not need to be set explicitly, but they can be overwritten if needed. Please refer to the ace cli instruction below.
 
@@ -264,6 +301,7 @@ $ ace --version
   `demo_gitlab` | Prepares ACE Box for a default demo, i.e. Quality Gates on GitLab |
   `demo_monaco_gitops` | Prepares ACE Box for a monaco gitops demo |
   `demo_all` | A combination of `demo_default` `demo_appsec` `demo_autorem` `demo_gitlab` `demo_monaco_gitops`. Please note that this will require a VM with more capacity|
+  `https://github.com/my-org/my-ext-use-case.git` | URL to repository hosting external use case |
 
   
 ### Available install components:
