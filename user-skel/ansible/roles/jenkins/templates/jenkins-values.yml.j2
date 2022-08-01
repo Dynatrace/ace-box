@@ -135,7 +135,7 @@ controller:
         credentials:
           system:
             domainCredentials:
-{% if demo_default|default(False) == True or demo_appsec|default(False) == True or demo_autorem|default(False) == True or hot_appsec|default(False) == True or hot_monaco|default(False) == True %}
+{% if demo_default|default(False) == True or demo_appsec|default(False) == True or demo_autorem|default(False) == True or hot_appsec|default(False) == True or demo_monaco_gitops|default(False) == True or hot_monaco|default(False) == True %}
               - credentials:
                 - usernamePassword:
                     id: "git-creds-ace"
