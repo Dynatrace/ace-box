@@ -113,16 +113,15 @@ Why is having a link between Dynatrace and your CMDB important?
 6. Add your Itop user and password within the `setEnv.sh`.
 7. Run to update the environment variables:
 `source ./setEnv.sh`.
+8. Run the script:
+`python3 smartscapeEnrich.py $ITOP_USER $ITOP_PWD`
 
-At this point, you've an user configured in order to communicate with Itop's API. The next step would be to run the CMDB Enrichment itself. For that, it has been created a `smartscapeEnrich.py` script which contains the following logic:
-- Reads all hosts in DT, retrieves the *toRelationship* field to understand the Process Groups running on it.
-- Creates a CI for each host. Get's the CI id and post it as a tag in Dynatrace (bi-directional traceability)
+Using the user created in the previous steps to communicate with Itop's API, the script will execute the CMDB Enrichment itself: 
+- Reading all hosts in Dynatrace, retrieving the *toRelationship* field to understand the Process Groups running on it.
+- Creates a CI for each host on Itop. Get's the CI id and post it as a tag in Dynatrace (bi-directional traceability)
 - Iterates through all Services of those PG and creates a Service CI, running on that host. Get's the CI id and post it as a tag in Dynatrace (bi-directional traceability)
 
 <img src="img/9.png" width="1250"/>
-
-8. Run the script:
-`python3 smartscapeEnrich.py $ITOP_USER $ITOP_PWD`
 
 
 ## 3.2 Enrich your Incident Tickets
@@ -132,7 +131,7 @@ At this point, you've an user configured in order to communicate with Itop's API
 1. After adding the *itop_user* and *itop_pwd* as environment variables in the previous exercise, the following script will update the Dynatrace configuration:
 `./executeMonaco.sh`
 
-Passing the variables to dynatreace monitoring-as-code
+Passing the variables to Dynatrace monitoring-as-code
 <div align="center">
 <img width="600" src="img/notification-yaml.png">
 </div>

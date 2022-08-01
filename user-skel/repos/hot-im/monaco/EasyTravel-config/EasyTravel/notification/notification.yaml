@@ -1,7 +1,7 @@
 config:
 - EasyTravel-msTeams: msTeams.json
 - EasyTravel-mail: email.json
-- EasyTravel-ITOP-AppMajor: itop_webhook.json
+- EasyTravel-ITOP-AppMajor: itop_webhook-CI.json
 
 EasyTravel-mail:
 - name: EasyTravel - mail 

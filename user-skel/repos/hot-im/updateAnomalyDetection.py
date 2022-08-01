@@ -11,15 +11,19 @@ headers["Content-Type"] = "application/json"
 
 # Update anomaly detection settings to GC suspension at 10%
 r = requests.get(DT_URL+'/api/config/v1/anomalyDetection/hosts', headers=headers)
+print(r)
 content = r.json()
 content['highGcActivityDetection']["customThresholds"] = {}
 content['highGcActivityDetection']["customThresholds"]['gcTimePercentage'] = 40
 content['highGcActivityDetection']["customThresholds"]['gcSuspensionPercentage'] = 10
 r = requests.put(DT_URL+'/api/config/v1/anomalyDetection/hosts', json.dumps(content), headers=headers)
+print(r)
 
 # Update anomaly detection settings to GC suspension at 10%
 r = requests.get(DT_URL+'/api/config/v1/anomalyDetection/services', headers=headers)
+print(r)
 content = r.json()
 content['responseTimeDegradation']["automaticDetection"]["loadThreshold"] = "ONE_REQUEST_PER_MINUTE"
 content['failureRateIncrease']["automaticDetection"]["loadThreshold"] = "ONE_REQUEST_PER_MINUTE"
-r = requests.put(DT_URL+'/api/config/v1/anomalyDetection/hosts', json.dumps(content), headers=headers)
+r = requests.put(DT_URL+'/api/config/v1/anomalyDetection/services', json.dumps(content), headers=headers)
+print(r)

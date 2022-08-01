@@ -37,32 +37,22 @@ sudo apt install wget -y
 wget -O Dynatrace-OneAgent-Linux-latest.sh "$DYNATRACE_URL/api/v1/deployment/installer/agent/unix/default/latest?arch=x86&flavor=default" --header="Authorization: Api-Token $DYNATRACE_PAASTOKEN"
 sudo /bin/sh Dynatrace-OneAgent-Linux-latest.sh --set-host-group=EasyTravel_APPID00274628_PROD_US
 
-#echo "Installing EasyTravel"
-chmod +x easyTravel.sh
-sed -i 's/\r$//' easyTravel.sh
-./easyTravel.sh
-
 # chmod scripts
-chmod +x ./simulate/disable500.sh
-sed -i 's/\r$//' ./simulate/disable500.sh
+chmod +x ./simulate/CPULoad.sh
+sed -i 's/\r$//' ./simulate/CPULoad.sh
 chmod +x ./simulate/easyTravelv1.sh
 sed -i 's/\r$//' ./simulate/easyTravelv1.sh
-chmod +x ./simulate/disableSlowLogin.sh
-sed -i 's/\r$//' ./simulate/disableSlowLogin.sh
-chmod +x ./simulate/enableSlowLogin.sh
-sed -i 's/\r$//' ./simulate/enableSlowLogin.sh
-chmod +x ./simulate/enable500.sh
-sed -i 's/\r$//' ./simulate/enable500.sh
+chmod +x ./simulate/disableSlowUserLogin.sh
+sed -i 's/\r$//' ./simulate/disableSlowUserLogin.sh
+chmod +x ./simulate/enableSlowUserLogin.sh
+sed -i 's/\r$//' ./simulate/enableSlowUserLogin.sh
 chmod +x ./simulate/easyTravelv2.sh
 sed -i 's/\r$//' ./simulate/easyTravelv2.sh
-chmod +x ./simulate/enableSlowLogin.sh
-sed -i 's/\r$//' ./simulate/enableSlowLogin.sh
-chmod +x ./simulate/SlowJourney.sh
-sed -i 's/\r$//' ./simulate/SlowJourney.sh
 
 # Set environment variables
 sed -i 's/\r$//' setEnv.sh
-source setEnv.sh
+chmod +x ./setEnv.sh
+source ./setEnv.sh
 
 python3 updateAnomalyDetection.py
 
@@ -71,3 +61,8 @@ echo "Running Dynatrace Monitoring as Code..."
 chmod +x executeMonaco.sh
 sed -i 's/\r$//' executeMonaco.sh
 source ./executeMonaco.sh
+
+#echo "Installing EasyTravel"
+chmod +x easyTravel.sh
+sed -i 's/\r$//' easyTravel.sh
+./easyTravel.sh

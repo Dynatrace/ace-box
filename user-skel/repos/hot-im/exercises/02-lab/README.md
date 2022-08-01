@@ -69,14 +69,14 @@ We just covered the first point in the Baselining Lab. This lab module will elab
 <details>
   <summary>Expand to see what has been pre-configured for you in this lab module</summary>
 
-* A script `SlowJourney.sh` has been prepared for you. When you run it, it will simulate traffic with unusually slow requests for the EasyTravel application.
+* A script `CPULoad.sh` has been prepared for you. When you run it, it will simulate traffic with unusually slow requests for the EasyTravel application.
 * Four alerting profiles have been pre-configured for you: `EasyTravel - Dev team`, `EasyTravel - Tier 1 Applications`, `EasyTravel - Tier 2 Applications` and `EasyTravel - Severe Alerts - Phase 1`.
 
 </details>
 
 ***Lab prerequisite:***
 
-Go to the command line and execute the script `./simulate/SlowJourney.sh`. This will simulate some response time degradations for the EasyTravel application and generate Dynatrace Problems for one of the exercises in [lab section 2.1.5](#215-how-to-optimize-your-issue-prioritization).
+Go to the command line and execute the script `./simulate/CPULoad.sh`. This will simulate some response time degradations for the EasyTravel application and generate Dynatrace Problems for one of the exercises in [lab section 2.1.5](#215-how-to-optimize-your-issue-prioritization).
 
 #### 2.1.1 Why it is important to reduce the number of alerts
 
@@ -124,11 +124,47 @@ To reduce (potential) incidents and tackle (potential) incident root causes whil
 
 ##### Fix severe issues with urgency
 
-***Demo:***
+***Exercise:***
 
-After receiving a `User action duration degradation` alert for a Tier 1 application, the DevOps team has been made aware of the impact on real users and of the foundational root cause of this incident: 1000 end users have gone through a bad user experience due to slow response times, introduced by a new release. To resolve the issue, a developer must rollback the deployment as soon as possible. **How to analyze this incident in Dynatrace?**
+1. Run `./simulate/enableSlowUserLogin.sh` to deploy a problematic release of EasyTravel, where users will experience login time of over 10 seconds. 
 
-> TO DO: Nacho to add demo instructions on where to click to troubleshoot and understand the issue
+After receiving a `Response time degradation` alert for a Tier 1 application, the DevOps team has been made aware of the impact on real users and of the foundational root 
+cause of this incident: 1.38k end users have gone through a bad user experience due to slow response times, introduced by a new release. To resolve the issue, a developer must 
+rollback the deployment as soon as possible. **How to analyze this incident in Dynatrace?**
+
+<div align="center">
+<img width="900" src="img/slowLogin-1.png">
+</div>
+
+The problem card shows already useful information to start considering into the analysis:
+- 1.38k service calls affected, which due the specific request affected, can be translated into the same number of users impacted.
+- Type of problem and entities affected.
+- Duration of the problem.
+- Baselines impacted. i.e. *The current response time (10 s) within the slowest 10% exceeds the auto-detected baseline (1.8 s) by 459 %*
+- Root cause found by Dynatrace.
+
+2. Click on *Analyze Response Time Degradation*. Dynatrace provides a direct link within the *Root Cause* section to jump directly to those transactions affected providing 
+detailed information about the distribution of the Response Time itself. Is the service responding slow because of calls to another service or database? Or the time is lost
+within the execution of the service?.
+
+<div align="center">
+<img width="900" src="img/slowLogin-2.png">
+</div>
+
+3. Since the problem seems to be related to the code execution, click on *View Method Hotspots* to get information about what classes and methods may be related to the issue.
+Switch to the *Hotspots* view to simplify the stacktrace analysis.
+
+<div align="center">
+<img width="900" src="img/slowLogin-3.png">
+</div>
+
+The response time increase seem to be related to a Object.wait when the user is trying to login
+
+<div align="center">
+<img width="900" src="img/slowLogin-4.png">
+</div>
+
+1. Run `./simulate/disableSlowUserLogin.sh` to rollback the feature and fix the issue. 
 
 ##### Move non-urgent fixes to your backlog
 
