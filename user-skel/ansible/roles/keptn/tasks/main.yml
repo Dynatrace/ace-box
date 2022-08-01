@@ -55,7 +55,7 @@
       continuous-delivery:
         enabled: true
         ingressConfig:
-          ingress_hostname_suffix: "acebox-tg.ace-innovation.info"
+          ingress_hostname_suffix: "{{ ingress_domain }}"
           istio_gateway: "default-gateway.istio-ingress"
   register: keptn_helm_chart
 
