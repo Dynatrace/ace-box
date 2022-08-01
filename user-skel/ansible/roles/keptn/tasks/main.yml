@@ -108,6 +108,7 @@
 
 - name: Keptn - Install JMeter service
   include: roles/keptn/tasks/jmeter-service.yml
+  when: keptn_jmeter_service_enabled
 
 - name: Keptn - Install Dynatrace service
   include: roles/keptn/tasks/dynatrace-service.yml
