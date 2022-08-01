@@ -59,7 +59,7 @@ spec:
   # Operator will create the corresponding VirtualService and ServiceEntry objects to allow access
   # to the Dynatrace cluster from the agent or the activeGate. Disabled by default.
   #
-  # enableIstio: false
+  enableIstio: {{ ingress_class == "istio" }}
 
   oneAgent:
     # Optional: enable classic fullstack monitoring and change its settings
