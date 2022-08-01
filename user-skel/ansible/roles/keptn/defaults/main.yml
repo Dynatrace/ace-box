@@ -11,7 +11,7 @@ keptn_jmeter_service_enabled: true
 keptn_helm_service_enabled: false
 keptn_synthetic_service_enabled: false
 keptn_test_collector_service_enabled: false
-keptn_job_executor_service_enabled: true
+keptn_job_executor_service_enabled: false
 keptn_job_executor_service_version: "0.2.3"
 keptn_job_executor_service_namespace: "keptn-jes"
 keptn_job_executor_service_subscriptions: "sh.keptn.event.remote-task.triggered"
