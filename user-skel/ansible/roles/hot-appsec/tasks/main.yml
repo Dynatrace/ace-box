@@ -72,6 +72,10 @@
   - { repo_target: "{{ hot_appsec_repo_name }}", repo_src: "{{ hot_appsec_source_repo }}", git_org: "{{ hot_appsec_org }}" }
   when: new_repo_created is defined and new_repo_created == true
 
+# Include use case specific Jenkins values
+- set_fact:
+    include_jenkins_value_file: "{{ role_path }}/templates/hot-appsec-jobs.yml.j2"
+
 - include_role:
     name: jenkins
 

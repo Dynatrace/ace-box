@@ -6,6 +6,12 @@
     var_key_to_set: "demo_all"
     var_value_to_set: true
 
+# Only Jenkins values are templated as a first step
+# This speeds up the deployment process as Jenkins is not
+# installed all over again for each demo
+- set_fact:
+    jenkins_skip_install: True
+
 - include_role:
     name: demo-default
 
@@ -13,10 +19,14 @@
     name: demo-appsec
 
 - include_role:
-    name: demo-autorem
-
-- include_role:
     name: demo-gitlab
 
 - include_role:
     name: demo-monaco-gitops
+
+# Last role also installs Jenkins
+- set_fact:
+    jenkins_skip_install: False
+
+- include_role:
+    name: demo-autorem

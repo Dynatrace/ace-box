@@ -9,11 +9,10 @@
   vars:
     packages:
     - snapd
-    # - parted
     - python3-jmespath
-    # - ntp
     - vim
     - git
+    - rsync
 
 - name: "Set global Git config"
   shell: |

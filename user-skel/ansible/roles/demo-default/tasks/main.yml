@@ -68,6 +68,10 @@
 - include_role:
     name: otel-collector
 
+# Include use case specific Jenkins values
+- set_fact:
+    include_jenkins_value_file: "{{ role_path }}/templates/demo-default-jobs.yml.j2"
+
 - include_role:
     name: jenkins
 

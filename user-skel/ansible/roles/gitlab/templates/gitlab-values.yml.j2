@@ -52,9 +52,9 @@ global:
   
     ## doc/charts/globals.md#configure-ingress-settings
     ingress:
-      class: public
+      class: {{ ingress_class }}
       configureCertmanager: false
-      enabled: true
+      enabled: {{ ingress_class != "istio" }}
       tls:
         enabled: false
       #   secretName:

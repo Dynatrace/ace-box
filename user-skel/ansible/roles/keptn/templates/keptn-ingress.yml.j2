@@ -3,7 +3,7 @@ kind: Ingress
 metadata:
   name: keptn-ingress
   annotations: 
-    kubernetes.io/ingress.class: public
+    kubernetes.io/ingress.class: "{{ ingress_class }}"
 spec:
   rules:
   - host: "{{ keptn_ingress_domain }}"

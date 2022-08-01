@@ -1,8 +1,9 @@
+---
 - name: Gitlab - Ensure group "{{ gitlab_group_name }} exists"
   block:
   - name: Lookup group
     uri:
-      url: "{{ ingress_protocol }}://gitlab.{{ ingress_domain }}/api/v4/groups?search={{ gitlab_group_name | urlencode }}"
+      url: "{{ gitlab_internal_endpoint }}/api/v4/groups?search={{ gitlab_group_name | urlencode }}"
       validate_certs: false
       method: GET
       status_code: [200, 201]
@@ -15,7 +16,7 @@
   rescue:
   - name: Gitlab - Create group"
     uri:
-      url: "{{ ingress_protocol }}://gitlab.{{ ingress_domain }}/api/v4/groups"
+      url: "{{ gitlab_internal_endpoint }}/api/v4/groups"
       validate_certs: false
       method: POST
       status_code: [200, 201]

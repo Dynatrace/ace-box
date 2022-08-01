@@ -1,3 +1,7 @@
+controller:
+  JCasC:
+    configScripts:
+      hot-appsec-jobs-config: |
         jobs:
           - script: >
               folder('demo-appsec')
@@ -9,7 +13,7 @@
                 }
                 definition {
                   cpsScm {
-                    scriptPath('jenkins/appsec/build.Jenkinsfile')
+                    scriptPath('jenkins/build.Jenkinsfile')
                     scm {
                       git {
                           remote { 
@@ -33,7 +37,7 @@
                 }
                 definition {
                   cpsScm {
-                    scriptPath('jenkins/appsec/deployStaging.Jenkinsfile')
+                    scriptPath('jenkins/deployStaging.Jenkinsfile')
                     scm {
                       git {
                           remote { 
@@ -57,7 +61,7 @@
                 }
                 definition {
                   cpsScm {
-                    scriptPath('jenkins/appsec/test_appsec.Jenkinsfile')
+                    scriptPath('jenkins/test_appsec.Jenkinsfile')
                     scm {
                       git {
                           remote { 
@@ -81,7 +85,7 @@
                 }
                 definition {
                   cpsScm {
-                    scriptPath('jenkins/appsec/deployProd.Jenkinsfile')
+                    scriptPath('jenkins/deployProd.Jenkinsfile')
                     scm {
                       git {
                           remote { 
@@ -99,11 +103,89 @@
               pipelineJob('demo-appsec/Monitoring as Code') {
                 definition {
                   cpsScm {
-                    scriptPath('jenkins/appsec/mac.Jenkinsfile')
+                    scriptPath('jenkins/mac.Jenkinsfile')
                     scm {
                       git {
                           remote { 
                             url('{{ ingress_protocol }}://{{ git_domain }}/{{ git_org_demo }}/{{ git_repo_demo }}')
+                            credentials('git-creds-ace')
+                          }
+                          branch('*/main')
+                      }
+                    }
+                    lightweight()
+                  }
+                }
+              }
+          - script: >
+              folder('hot-appsec')
+              description('Check out {{ ingress_protocol }}://{{ git_domain }}/{{ hot_appsec_org }}/{{ hot_appsec_repo_name }} for more information')
+          - script: >
+              pipelineJob('hot-appsec/1. Deploy Unguard') {
+                definition {
+                  cpsScm {
+                    scriptPath('jenkins/deploy.Jenkinsfile')
+                    scm {
+                      git {
+                          remote { 
+                            url('{{ ingress_protocol }}://{{ git_domain }}/{{ hot_appsec_org }}/{{ hot_appsec_repo_name }}')
+                            credentials('git-creds-ace')
+                          }
+                          branch('*/main')
+                      }
+                    }
+                    lightweight()
+                  }
+                }
+              }
+          - script: >
+              pipelineJob('hot-appsec/2. Monitoring as Code') {
+                parameters {
+                  stringParam('PROJECT', 'base', 'The name of the monaco project to deploy.')
+                }
+                definition {
+                  cpsScm {
+                    scriptPath('jenkins/monaco.Jenkinsfile')
+                    scm {
+                      git {
+                          remote { 
+                            url('{{ ingress_protocol }}://{{ git_domain }}/{{ hot_appsec_org }}/{{ hot_appsec_repo_name }}')
+                            credentials('git-creds-ace')
+                          }
+                          branch('*/main')
+                      }
+                    }
+                    lightweight()
+                  }
+                }
+              }
+          - script: >
+              pipelineJob('hot-appsec/3. Destroy Unguard') {
+                definition {
+                  cpsScm {
+                    scriptPath('jenkins/destroy.Jenkinsfile')
+                    scm {
+                      git {
+                          remote { 
+                            url('{{ ingress_protocol }}://{{ git_domain }}/{{ hot_appsec_org }}/{{ hot_appsec_repo_name }}')
+                            credentials('git-creds-ace')
+                          }
+                          branch('*/main')
+                      }
+                    }
+                    lightweight()
+                  }
+                }
+              }
+          - script: >
+              pipelineJob('hot-appsec/4. Monitoring as Code Cleanup') {
+                definition {
+                  cpsScm {
+                    scriptPath('jenkins/monacoclean.Jenkinsfile')
+                    scm {
+                      git {
+                          remote { 
+                            url('{{ ingress_protocol }}://{{ git_domain }}/{{ hot_appsec_org }}/{{ hot_appsec_repo_name }}')
                             credentials('git-creds-ace')
                           }
                           branch('*/main')

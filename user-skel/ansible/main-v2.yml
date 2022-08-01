@@ -64,3 +64,9 @@
   #   tags:
   #   - quality_gates
   #   - never
+
+  # External use case
+  - role: use-case-ext
+    tags:
+    - use_case_ext
+    - never

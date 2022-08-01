@@ -11,3 +11,4 @@ git_repo_demo: "ace"
 git_repo_monaco: "monaco"
 # git_org_demo_autorem: "demo"
 # git_repo_demo_autorem: "ace"
+jenkins_skip_install: False

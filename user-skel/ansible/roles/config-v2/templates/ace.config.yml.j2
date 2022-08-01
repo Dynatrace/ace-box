@@ -1,5 +1,6 @@
 ---
 # Ingress
+ingress_class: "{{ ingress_class | default('public') }}"
 ingress_domain: "{{ ingress_domain | default(None) }}"
 ingress_protocol: "{{ ingress_protocol | default(None) }}"
 # Git

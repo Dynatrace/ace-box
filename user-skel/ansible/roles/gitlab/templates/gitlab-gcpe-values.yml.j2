@@ -129,7 +129,7 @@ config:
   # # Complete configuration syntax reference available here:
   # # https://github.com/mvisonneau/gitlab-ci-pipelines-exporter/blob/master/docs/configuration_syntax.md
   gitlab:
-    url: http://gitlab.{{ ingress_domain }}
+    url: {{ gitlab_internal_endpoint }}
     token: {{ gitlab_oauth_token }}
     enable_tls_verify: false
     maximum_requests_per_second: 5
@@ -227,7 +227,7 @@ ingress:
 
   # ingress.annotations -- additional annotations for the ingress resource
   annotations:
-    kubernetes.io/ingress.provider: public
+    kubernetes.io/ingress.provider: "{{ ingress_class }}"
     # nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
 
   # ingress.path -- path on the exporter to point the root of the ingress

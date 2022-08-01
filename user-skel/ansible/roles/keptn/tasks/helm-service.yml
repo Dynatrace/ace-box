@@ -1,0 +1,9 @@
+---
+- name: Deploy Keptn Helm service
+  kubernetes.core.helm:
+    name: helm-service     
+    chart_ref: "https://github.com/keptn/keptn/releases/download/{{ keptn_version }}/helm-service-{{ keptn_version }}.tgz"
+    release_namespace: "{{ keptn_namespace }}"
+    create_namespace: true
+    wait: true
+    wait_timeout: 15m

@@ -52,22 +52,49 @@
           lookAndFeelUrl: "{{ keptn_look_and_feel_url }}"
         features:
           automaticProvisioningURL: "http://keptn-gitea-provisioner-service.{{ keptn_namespace }}"
+      continuous-delivery:
+        enabled: true
+        ingressConfig:
+          ingress_hostname_suffix: "{{ ingress_domain }}"
+          istio_gateway: "default-gateway.istio-ingress"
   register: keptn_helm_chart
 
-- name: Template ingress file
-  ansible.builtin.template:
-    src: keptn-ingress.yml.j2
-    dest: /tmp/keptn-ingress.yml
-    owner: "{{ ace_box_user }}"
-    group: "{{ ace_box_user }}"
-    mode: '0644'
+- name: Create Ingress
+  block:
+  - ansible.builtin.template:
+      src: keptn-ingress.yml.j2
+      dest: /tmp/keptn-ingress.yml
+      owner: "{{ ace_box_user }}"
+      group: "{{ ace_box_user }}"
+      mode: '0644'
+  - kubernetes.core.k8s:
+      state: present
+      src: /tmp/keptn-ingress.yml
+      namespace: "{{ keptn_namespace }}"
+    register: keptn_ingress
+  when: ingress_class != "istio"
 
-- name: Create ingress
+- name: Create VirtualService
   kubernetes.core.k8s:
     state: present
-    src: /tmp/keptn-ingress.yml
-    namespace: "{{ keptn_namespace }}"
-  register: keptn_ingress
+    definition:
+      apiVersion: networking.istio.io/v1alpha3
+      kind: VirtualService
+      metadata:
+        name: keptn
+        namespace: keptn
+      spec:
+        hosts:
+        - "{{ keptn_ingress_domain }}"
+        gateways:
+        - "istio-ingress/default-gateway"
+        http:
+        - route:
+          - destination:
+              host: api-gateway-nginx
+              port:
+                number: 80
+  when: ingress_class == "istio"
 
 - name: Keptn - Source Keptn secrets
   include: roles/keptn/tasks/source-secret.yml
@@ -81,6 +108,23 @@
 
 - name: Keptn - Install JMeter service
   include: roles/keptn/tasks/jmeter-service.yml
+  when: keptn_jmeter_service_enabled
 
 - name: Keptn - Install Dynatrace service
   include: roles/keptn/tasks/dynatrace-service.yml
+
+- name: Keptn - Install Helm service
+  include: roles/keptn/tasks/helm-service.yml
+  when: keptn_helm_service_enabled
+
+- name: Keptn - Install Synthetic service
+  include: roles/keptn/tasks/synthetic-service.yml
+  when: keptn_synthetic_service_enabled
+
+- name: Keptn - Install Collector service
+  include: roles/keptn/tasks/collector-service.yml
+  when: keptn_test_collector_service_enabled
+
+- name: Keptn - Install Job Executor service
+  include: roles/keptn/tasks/job-executor-service.yml
+  when: keptn_job_executor_service_enabled

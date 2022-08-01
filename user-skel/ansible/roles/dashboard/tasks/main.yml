@@ -1,11 +1,17 @@
 ---
-- name: Encrpyt http basic auth password
-  set_fact:
-    password_encrypted: "{{ dashboard_password | password_hash('md5') }}"
+- name: Create BasicAuth for NGINX Ingress
+  block:
+  - set_fact:
+      password_encrypted: "{{ dashboard_password | password_hash('md5') }}"
+  - set_fact:
+      authb64encoded: "{{ [dashboard_user, password_encrypted] | join(':') | b64encode }}"
+  when: ingress_class != "istio"
 
-- name: Encode http basic auth credentials
-  set_fact:
-    authb64encoded: "{{ [dashboard_user, password_encrypted] | join(':') | b64encode }}"
+- name: Create BasicAuth for Istio Ingress
+  block:
+  - set_fact:
+      authb64encoded: "{{ [dashboard_user, dashboard_password] | join(':') | b64encode }}"
+  when: ingress_class == "istio"
 
 - name: Source Gitea secrets
   include_role:
@@ -51,40 +57,52 @@
     src: helm-chart/
     dest: /tmp/dashboard-helm-chart/
 
-- name: Run ace dashboard
-  shell: >
-    /snap/bin/helm upgrade -i ace-dashboard /tmp/dashboard-helm-chart --namespace {{ dashboard_namespace }} --create-namespace
-    --set domain={{ ingress_domain }}
-    --set authb64encoded={{ authb64encoded }}
-    --set image={{ dashboard_image }}
-    --set env.SIMPLENODEAPP_URL_STAGING={{ ingress_protocol }}://simplenodeservice.staging.{{ ingress_domain }}
-    --set env.SIMPLENODEAPP_URL_PRODUCTION={{ ingress_protocol }}://simplenodeservice.production.{{ ingress_domain }}
-    --set env.SIMPLENODEAPP_URL_CANARY={{ ingress_protocol }}://simplenodeservice.canary.{{ ingress_domain }}
-    --set env.JENKINS_URL={{ ingress_protocol }}://jenkins.{{ ingress_domain }}
-    --set env.JENKINS_USER={{ jenkins_username | default(None) }}
-    --set env.JENKINS_PASSWORD={{ jenkins_password | default(None) }}
-    --set env.GITEA_URL={{ ingress_protocol }}://gitea.{{ ingress_domain }}
-    --set env.GITEA_USER={{ gitea_username | default(None) }}
-    --set env.GITEA_PASSWORD={{ gitea_password | default(None) }}
-    --set env.GITEA_PAT={{ gitea_access_token | default(None) }}
-    --set env.GITLAB_URL={{ ingress_protocol }}://gitlab.{{ ingress_domain }}
-    --set env.GITLAB_USER={{ gitlab_username | default(None) }}
-    --set env.GITLAB_PASSWORD={{ gitlab_password | default(None) }}
-    --set env.GITLAB_OAUTH={{ gitlab_oauth_token | default(None) }}
-    --set env.AWX_URL={{ ingress_protocol }}://awx.{{ ingress_domain }}
-    --set env.AWX_USER={{ awx_admin_username | default(None) }}
-    --set env.AWX_PASSWORD={{ awx_admin_password | default(None) }}
-    --set env.KEPTN_API_URL={{ keptn_endpoint | default(None) }}
-    --set env.KEPTN_API_TOKEN={{ keptn_api_token | default(None) }}
-    --set env.KEPTN_BRIDGE_URL={{ keptn_bridge | default(None) }}
-    --set env.KEPTN_BRIDGE_USER={{ keptn_bridge_user | default(None) }}
-    --set env.KEPTN_BRIDGE_PASSWORD={{ keptn_bridge_password | default(None) }}
-    --set env.DT_TENANT_URL={{ dynatrace_tenant_url | default(None) }}
-    --set env.CLOUD_AUTOMATION_API_URL={{ cloud_automation_endpoint | default(None) }}
-    --set env.CLOUD_AUTOMATION_API_TOKEN={{ cloud_automation_api_token | default(None) }}
-    --set env.CLOUD_AUTOMATION_BRIDGE_URL={{ cloud_automation_bridge | default(None) }}
-    --set env.QUALITY_GATES_PROVIDER={{ cloud_automation_flavor | default(None) }}
-    --set env.K8S_PROVIDER=MICROK8S
+- name: Install
+  kubernetes.core.helm:
+    name: ace-dashboard
+    chart_ref: /tmp/dashboard-helm-chart
+    release_namespace: "{{ dashboard_namespace }}"
+    create_namespace: true
+    wait: true
+    wait_timeout: 15m
+    values:
+      domain: "{{ ingress_domain }}"
+      authb64encoded: "{{ authb64encoded }}"
+      image: "{{ dashboard_image }}"
+      ingress:
+        enabled: "{{ ingress_class != 'istio' }}"
+        class: "{{ ingress_class }}"
+      virtualservice:
+        enabled: "{{ ingress_class == 'istio' }}"
+      env:
+        SIMPLENODEAPP_URL_STAGING: "{{ ingress_protocol }}://simplenodeservice.staging.{{ ingress_domain }}"
+        SIMPLENODEAPP_URL_PRODUCTION: "{{ ingress_protocol }}://simplenodeservice.production.{{ ingress_domain }}"
+        SIMPLENODEAPP_URL_CANARY: "{{ ingress_protocol }}://simplenodeservice.canary.{{ ingress_domain }}"
+        JENKINS_URL: "{{ ingress_protocol }}://jenkins.{{ ingress_domain }}"
+        JENKINS_USER: "{{ jenkins_username | default(None) }}"
+        JENKINS_PASSWORD: "{{ jenkins_password | default(None) }}"
+        GITEA_URL: "{{ ingress_protocol }}://gitea.{{ ingress_domain }}"
+        GITEA_USER: "{{ gitea_username | default(None) }}"
+        GITEA_PASSWORD: "{{ gitea_password | default(None) }}"
+        GITEA_PAT: "{{ gitea_access_token | default(None) }}"
+        GITLAB_URL: "{{ ingress_protocol }}://gitlab.{{ ingress_domain }}"
+        GITLAB_USER: "{{ gitlab_username | default(None) }}"
+        GITLAB_PASSWORD: "{{ gitlab_password | default(None) }}"
+        GITLAB_OAUTH: "{{ gitlab_oauth_token | default(None) }}"
+        AWX_URL: "{{ ingress_protocol }}://awx.{{ ingress_domain }}"
+        AWX_USER: "{{ awx_admin_username | default(None) }}"
+        AWX_PASSWORD: "{{ awx_admin_password | default(None) }}"
+        KEPTN_API_URL: "{{ keptn_endpoint | default(None) }}"
+        KEPTN_API_TOKEN: "{{ keptn_api_token | default(None) }}"
+        KEPTN_BRIDGE_URL: "{{ keptn_bridge | default(None) }}"
+        KEPTN_BRIDGE_USER: "{{ keptn_bridge_user | default(None) }}"
+        KEPTN_BRIDGE_PASSWORD: "{{ keptn_bridge_password | default(None) }}"
+        DT_TENANT_URL: "{{ dynatrace_tenant_url | default(None) }}"
+        CLOUD_AUTOMATION_API_URL: "{{ cloud_automation_endpoint | default(None) }}"
+        CLOUD_AUTOMATION_API_TOKEN: "{{ cloud_automation_api_token | default(None) }}"
+        CLOUD_AUTOMATION_BRIDGE_URL: "{{ cloud_automation_bridge | default(None) }}"
+        QUALITY_GATES_PROVIDER: "{{ cloud_automation_flavor | default(None) }}"
+        K8S_PROVIDER: "MICROK8S"
 
 - name: Print some dashboard config
   debug:

@@ -34,6 +34,28 @@
     - /tmp/gitea-values.yml
   register: gitea
 
+- name: Create Gitea VirtualService
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: networking.istio.io/v1alpha3
+      kind: VirtualService
+      metadata:
+        name: gitea
+        namespace: gitea
+      spec:
+        hosts:
+        - "{{ gitea_domain }}"
+        gateways:
+        - "istio-ingress/default-gateway"
+        http:
+        - route:
+          - destination:
+              host: gitea-http
+              port:
+                number: 3000
+  when: ingress_class == "istio"
+
 - name: Source endpoints
   include: roles/gitea/tasks/source-endpoints.yml
 
