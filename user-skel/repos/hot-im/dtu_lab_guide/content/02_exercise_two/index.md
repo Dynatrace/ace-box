@@ -13,7 +13,7 @@ This phase represents the *people and process* aspect of our delivery framework:
 > *How do we do that?* - You will do so by reviewing alerts from Dynatrace on at least a weekly basis. For each alert type, you’ll need to take one out of three actions: improve your application, remove any false positives (if necessary) or optimize your issue prioritization. By doing this regular exercise, you’ll have had enough exposure and hands-on experience with alerts in Dynatrace, for you to be able to translate them to your incident management world. More specifically, with your main product owners and the administrator of your incident management system, you will need to map the metadata and automatically determined severity and impact levels in Dynatrace to the terminology and fields in your incident management platform before designing the technical integration.
 
 <div align="center">
-<img width="800" src="img/4-step approach.png">
+<img width="800" src="../../assets/images/4-step approach.png">
 </div>
 
 In this second lab, the **Consolidation Lab**, we will prepare ourselves and the organization for the actual integration by focusing on the most important alerts first. We will get hands-on in our lab environments with alerting profiles, maintenance windows, frequent issue detection, failure detection and anomaly detection settings in Dynatrace. Then we will share our best practices on how to design the alert-to-incident lifecycle for your organization.
@@ -23,7 +23,7 @@ The Consolidation Lab contains two modules:
 * [**Map Dynatrace Alerts to Incident Tickets**](#22-map-dynatrace-alerts-to-incident-tickets) (theory)
 
 <div align="center">
-<img width="900" src="img/Lab 2.png">
+<img width="900" src="../../assets/images/Lab 2.png">
 </div>
 
 ## Learning objectives
@@ -87,7 +87,7 @@ What is a healthy number of alerts? You will need to respect your “alerting bu
 If we get spammed with alerts, we lose the big picture and it becomes a **risk that we ignore important alerts**.
 
 <div align="left">
-<img width="500" src="img/Lab 2.1.1 alerting budget.png">
+<img width="500" src="../../assets/images/Lab 2.1.1 alerting budget.png">
 </div>
 
 Effective use of alerts is a continuous responsibility and activity.
@@ -133,7 +133,7 @@ cause of this incident: 1.38k end users have gone through a bad user experience 
 rollback the deployment as soon as possible. **How to analyze this incident in Dynatrace?**
 
 <div align="center">
-<img width="900" src="img/slowLogin-1.png">
+<img width="900" src="../../assets/images/slowLogin-1.png">
 </div>
 
 The problem card shows already useful information to start considering into the analysis:
@@ -148,20 +148,20 @@ detailed information about the distribution of the Response Time itself. Is the 
 within the execution of the service?.
 
 <div align="center">
-<img width="900" src="img/slowLogin-2.png">
+<img width="900" src="../../assets/images/slowLogin-2.png">
 </div>
 
 3. Since the problem seems to be related to the code execution, click on *View Method Hotspots* to get information about what classes and methods may be related to the issue.
 Switch to the *Hotspots* view to simplify the stacktrace analysis.
 
 <div align="center">
-<img width="900" src="img/slowLogin-3.png">
+<img width="900" src="../../assets/images/slowLogin-3.png">
 </div>
 
 The response time increase seem to be related to a Object.wait when the user is trying to login
 
 <div align="center">
-<img width="900" src="img/slowLogin-4.png">
+<img width="900" src="../../assets/images/slowLogin-4.png">
 </div>
 
 1. Run `./simulate/disableSlowUserLogin.sh` to rollback the feature and fix the issue. 
@@ -242,7 +242,7 @@ To find services in your Dynatrace environment that might need tweaking, assess 
 A common scenario is that there are some disks which are not critical when they reach their limits of storage, e.g. disks that store logs. **How to exclude low disk alerts for non critical disks?** 
 
 <div align="center">
-<img width="600" src="img/23.png">
+<img width="600" src="../../assets/images/23.png">
 </div>
 
 There are two options:
@@ -276,7 +276,7 @@ In this lab exercise, we want to tweak the disk options settings globally.
 2. Go to *Preferences* > *Disk options* in the settings menu.
 
 <div align="center">
-<img width="600" src="img/24.png">
+<img width="600" src="../../assets/images/24.png">
 </div>
 
 ##### Disable alerting during maintenance or deployments
@@ -363,7 +363,7 @@ Dynatrace's auto-detected anomalies will always correspond to some severity-impa
 You may want to exclude specific non-severe events from being sent to your incident management tool because they do not require a human response, e.g. `Connectivity problem` or `High latency`. You will need to identify which anomalies (event types) account for the highest amount or percentage of Problems in Dynatrace. **How to exclude certain events from alerting?**
 
 <div align="center">
-<img width="900" src="img/problems-per-eventType-casa.png">
+<img width="900" src="../../assets/images/problems-per-eventType-casa.png">
 </div>
 
 You can exclude non-severe alerts in the same way we did in lab [2.1.3](#213-improve-your-application).
@@ -405,11 +405,11 @@ You can leverage the different filters available on the Problems page (*Observe 
 > TO DO: Nacho to sort the number of problems by decreasing number
 
 <div align="center">
-<img width="900" src="img/problems-per-tag.png">
+<img width="900" src="../../assets/images/problems-per-tag.png">
 </div>
 
 <div align="center">
-<img width="900" src="img/problems-per-eventType.png">
+<img width="900" src="../../assets/images/problems-per-eventType.png">
 </div>
 
 #### Summary of Lab 2 Module 1 (Take Action on Intelligent Answers)
@@ -480,7 +480,7 @@ You have two main options:
     This requires you to populate your CMDB with Dynatrace entity IDs from the Smartscape topology. We will integrate Dynatrace with a CMDB in the Integration Lab.
 
 <div align="center">
-<img width="400" src="img/Lab 2.2.3 DT-CMDB.png">
+<img width="400" src="../../assets/images/Lab 2.2.3 DT-CMDB.png">
 </div>
 
 2. **Direct mapping of a Dynatrace tag (e.g. AppID, CI, ...) to the incident field**
@@ -488,7 +488,7 @@ You have two main options:
     This requires you to import your CIs into Dynatrace, e.g. from your CMDB
 
 <div align="center">
-<img width="400" src="img/Lab 2.2.3 CMDB-DT.png">
+<img width="400" src="../../assets/images/Lab 2.2.3 CMDB-DT.png">
 </div>
 
 If you are looking at integrating Dynatrace with ServiceNow, use the [Service Graph Connector for Observability - Dynatrace](https://store.servicenow.com/sn_appstore_store.do#!/store/application/878f63d9072860107add6a77c4a93520/1.4.0?referer=%2Fstore%2Fsearch%3Flistingtype%3Dallintegrations%25253Bancillary_app%25253Bcertified_apps%25253Bcontent%25253Bindustry_solution%25253Boem%25253Butility%25253Btemplate%26q%3Ddynatrace&sl=sh) to automate your CMDB and automate CI binding. I.e. this out-of-the-box connector will populate the ServiceNow CMDB with entities from the Smartscape, ingest events through Event Management and correlate those events to the discovered CIs.
@@ -503,13 +503,13 @@ Most common scenarios:
 1. Direct mapping of Dynatrace **severity levels** (MVP)
 
 <div align="center">
-<img width="300" src="img/Lab 2.2.4 point 1.png">
+<img width="300" src="../../assets/images/Lab 2.2.4 point 1.png">
 </div>
 
 2. Mapping based on Dynatrace **severity + impact level**
 
 <div align="center">
-<img width="900" src="img/Lab 2.2.4 point 2.png">
+<img width="900" src="../../assets/images/Lab 2.2.4 point 2.png">
 </div>
 
 3. Mapping based on Dynatrace **severity + impact level + tag** (e.g. critical apps)
@@ -523,11 +523,11 @@ Most common scenarios:
 Based on how you have defined the auto-assignment of tickets to the right support group, as well as the auto-determinitation of severity, you are now ready to define the complete (default) alert-to-incident lifecycle. You can find an example below.
 
 <div align="center">
-<img width="900" src="img/Lab 2.2.5 point 1.png">
+<img width="900" src="../../assets/images/Lab 2.2.5 point 1.png">
 </div>
 
 <div align="center">
-<img width="900" src="img/Lab 2.2.5 point 2.png">
+<img width="900" src="../../assets/images/Lab 2.2.5 point 2.png">
 </div>
 
 💡 Dynatrace ACE Services can help you design your automated ticketing strategy.

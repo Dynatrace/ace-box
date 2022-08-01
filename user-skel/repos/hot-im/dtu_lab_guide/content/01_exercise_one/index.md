@@ -15,7 +15,7 @@ This phase can be referred to as the *learning period*: while Dynatrace learns t
 Depending on your Dynatrace training plan and the amount of people that need to be trained, this phase will take 1 week or more, so Dynatrace can capture weekly traffic patterns and so we can gather a significant sample of alerts from Dynatrace.
 
 <div align="center">
-<img width="800" src="img/4-step approach.png">
+<img width="800" src="../../assets/images/4-step approach.png">
 </div>
 
 > TO DO: Julie to update image
@@ -29,7 +29,7 @@ The Baselining Lab contains two modules:
 * [**Davis AI & Alerting**](#12-davis-ai--alerting) (exercises)
 
 <div align="center">
-<img width="700" src="img/Lab 1.png">
+<img width="700" src="../../assets/images/Lab 1.png">
 </div>
 
 ## Learning objectives
@@ -91,7 +91,7 @@ The **Smartscape topology** will capture and visualize the entities in your IT e
 4. Click on the technology icon of the process on the left. (Then click on the technology icon of the service to expand all services.) This will show you the full stack for the Apache Tomcat process you selected.
 
 <div align="center">
-<img width="900" src="img/Lab 1.1.1 ex 4.png">
+<img width="900" src="../../assets/images/Lab 1.1.1 ex 4.png">
 </div>
 
 5. Click on the cloud icon of the data center on the left. This will show you everything that is running in this data center.
@@ -108,7 +108,7 @@ The **Smartscape topology** will capture and visualize the entities in your IT e
 4. Click on *View service flow*.
 
 <div align="center">
-<img width="900" src="img/Lab 1.1.2 ex 4.png">
+<img width="900" src="../../assets/images/Lab 1.1.2 ex 4.png">
 </div>
 
 5. Click on the last service in the chain, the `easyTravelBusiness` database. Note that in Dynatrace, databases are treated as external services. 
@@ -131,13 +131,13 @@ In this section, we want to demonstrate that all captured **metrics** (as well a
     * Load
 
 <div align="center">
-<img width="600" src="img/EasyTravelWebserver.png">
+<img width="600" src="../../assets/images/EasyTravelWebserver.png">
 </div>
 
 3. Go to the overview page of the Apache HTTP Server process of this service.
 
 <div align="center">
-<img width="600" src="img/link-to-PG.png">
+<img width="600" src="../../assets/images/link-to-PG.png">
 </div>
 
 4. Look at the important metrics that are automatically baselined for processes:
@@ -147,7 +147,7 @@ In this section, we want to demonstrate that all captured **metrics** (as well a
     * Technology specific metrics
 
 <div align="center">
-<img width="900" src="img/PG-view.png">
+<img width="900" src="../../assets/images/PG-view.png">
 </div>
 
 #### 1.1.4 Metadata or tags
@@ -194,7 +194,7 @@ Following Dynatrace best practices, where possible, you should not configure tag
   * Annotations
 
 <div align="center">
-<img width="900" src="img/Lab 1.1.5 MaaS.png">
+<img width="900" src="../../assets/images/Lab 1.1.5 MaaS.png">
 </div>
 
 > TO DO: Julie to update image
@@ -295,7 +295,7 @@ A brief overview of the auto-determined severities and impact levels in Dynatrac
 * Environment
 
 <div align="center">
-<img width="900" src="img/Lab 1.2.3 impact levels.png">
+<img width="900" src="../../assets/images/Lab 1.2.3 impact levels.png">
 </div>
 
 #### 1.2.4 How to filter alerts?
