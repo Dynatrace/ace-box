@@ -2,7 +2,17 @@
 
 * [Learning Objectives](#learning-objectives)
 * [1.1 Advanced Observability](#11-advanced-observability)
+  * [Entities in the Smartscape topology](#111-entities-in-the-smartscape-topology)
+  * [Distributed traces (PurePaths)](#112-distributed-traces-purepaths)
+  * [Metrics](#113-metrics)
+  * [Metadata or tags](114-metadata-or-tags)
+  * [How to set up automated propagation of metadata for incident classification](#115-how-to-set-up-automated-propagation-of-metadata-for-incident-classification)
 * [1.2 Davis AI & Alerting](#12-davis-ai--alerting)
+  * [What is a Problem in Dynatrace?](#121-what-is-a-problem-in-dynatrace)
+  * [How the AI reduces alert noise and determines the root cause](#122-how-the-ai-reduces-alert-noise-and-determines-the-root-cause)
+  * [What are the different alert types?](#123-what-are-the-different-alert-types)
+  * [How to filter alerts?](#124-how-to-filter-alerts)
+  * [How to send alerts to external systems?](#125-how-to-send-alerts-to-external-systems)
 
 ## Lab 1 | Baselining | Incident Management Workshop 
 
