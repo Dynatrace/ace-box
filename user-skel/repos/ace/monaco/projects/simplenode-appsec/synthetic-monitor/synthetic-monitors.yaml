@@ -4,7 +4,7 @@ config:
   
 health-staging:
     - name: "webcheck.simplenode-appsec.staging"
-    - url: "http://simplenodeservice.staging.{{ .Env.INGRESS_DOMAIN }}/api/invoke?url=https://www.dynatrace.com"
+    - url: "http://simplenodeservice.simplenodeappsec-staging.{{ .Env.INGRESS_DOMAIN }}/api/invoke?url=https://www.dynatrace.com"
     - description: "Health Check for simplenode in staging"
     - location: "/infrastructure/synthetic-location/acebox.id"
     - managementZoneId: "/simplenode/management-zone/management-zone-staging.id"
@@ -14,7 +14,7 @@ health-staging:
 
 health-prod:
     - name: "webcheck.simplenode-appsec.production"
-    - url: "http://simplenodeservice.production.{{ .Env.INGRESS_DOMAIN }}/api/invoke?url=https://www.dynatrace.com"
+    - url: "http://simplenodeservice.simplenodeappsec-production.{{ .Env.INGRESS_DOMAIN }}/api/invoke?url=https://www.dynatrace.com"
     - description: "Health Check for simplenode in production"
     - location: "/infrastructure/synthetic-location/acebox.id"
     - managementZoneId: "/simplenode/management-zone/management-zone-prod.id"
