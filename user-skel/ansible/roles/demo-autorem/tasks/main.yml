@@ -69,9 +69,9 @@
     git_domain: "{{ gitea_domain }}"
     git_remote: "gitea"
   loop:
-  - { repo_target: "{{ git_repo_demo_autorem }}", repo_src: "/home/{{ ace_box_user }}/repos/auto-remediation/ace-demo-canary", git_org: "{{ git_org_demo_autorem }}" }
-  - { repo_target: "{{ git_repo_demo_autorem }}-awx", repo_src: "/home/{{ ace_box_user }}/repos/auto-remediation/ace-demo-canary-awx", git_org: "{{ git_org_demo_autorem }}" }
-  - { repo_target: "{{ git_repo_demo_autorem }}-docs", repo_src: "/home/{{ ace_box_user }}/repos/auto-remediation/ace-demo-canary-docs", git_org: "{{ git_org_demo_autorem }}" }
+  - { repo_target: "{{ git_repo_demo_autorem }}", repo_src: "{{ role_path }}/files/repos/auto-remediation/ace-demo-canary", git_org: "{{ git_org_demo_autorem }}" }
+  - { repo_target: "{{ git_repo_demo_autorem }}-awx", repo_src: "{{ role_path }}/files/repos/auto-remediation/ace-demo-canary-awx", git_org: "{{ git_org_demo_autorem }}" }
+  - { repo_target: "{{ git_repo_demo_autorem }}-docs", repo_src: "{{ role_path }}/files/repos/auto-remediation/ace-demo-canary-docs", git_org: "{{ git_org_demo_autorem }}" }
 
 # Include use case specific Jenkins values
 - set_fact:

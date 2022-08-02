@@ -1,4 +1,3 @@
 ---
-demo_autorem_source_repo: "/home/{{ ace_box_user }}/repos/auto-remediation"
 git_org_demo_autorem: "demo"
 git_repo_demo_autorem: "auto-remediation"

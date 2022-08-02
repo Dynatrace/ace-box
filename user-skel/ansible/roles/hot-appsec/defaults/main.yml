@@ -1,7 +1,5 @@
 ---
-demo_appsec_source_repo: "/home/{{ ace_box_user }}/repos/ace"
 demo_appsec_org: "demo"
 demo_appsec_repo_name: "ace"
-hot_appsec_source_repo: "/home/{{ ace_box_user }}/repos/hot/hot-appsec"
 hot_appsec_org: "hot"
 hot_appsec_repo_name: "appsec"
