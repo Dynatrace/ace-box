@@ -5,7 +5,7 @@
 * [3.2 Enrich your Incident Tickets](#32-enrich-your-incident-tickets)
 * [3.3 Bidirectional Traceability](#33-bidirectional-traceability)
 
-# Lab 3 | Integration | Incident Management Workshop 
+## Lab 3 | Integration | Incident Management Workshop 
 
 Dynatrace's 4-step approach to Automate Incident Management & Drive AIOps started with the Baselining phase, where we let Dynatrace learn the behavior of your application and detect incidents automatically. This was followed by the Consolidation phase, in which we defined the alert-to-incident lifecycle and reduced the amount of alerts to a healthy amount for the first phase of our gradual rollout. As soon as we have a blueprint design of the integration with your incident management process, we can move onto the **Integration phase**.
 
@@ -28,7 +28,7 @@ The Integration Lab contains three modules:
 <img width="900" src="../../assets/images/Lab-3.png">
 </div>
 
-## Learning objectives
+### Learning objectives
 
 ##### Enrich your CMDB
 
@@ -58,7 +58,7 @@ What you’ll learn:
 * How to set up one-click troubleshooting in incident tickets
 * How to set up one-click incident tracking in Dynatrace
 
-## 3.1 Enrich your CMDB
+### 3.1 Enrich your CMDB
 
 > TO DO: Add intro
 
@@ -124,7 +124,7 @@ Using the user created in the previous steps to communicate with Itop's API, the
 <img src="../../assets/images/lab3-9.png" width="1250"/>
 
 
-## 3.2 Enrich your Incident Tickets
+### 3.2 Enrich your Incident Tickets
 
 > TO DO: Add intro
 
@@ -201,7 +201,7 @@ in the context within which most memory was allocated and combine this informati
 14. After providing the resolution details within the ticket, run `./simulate/easyTravelv1.sh` to rollback the bad release 
 and bring back the application to a healthy state.
 
-## 3.3 Bidirectional Traceability
+### 3.3 Bidirectional Traceability
 
 > TO DO: Add intro
 

@@ -4,7 +4,7 @@
 * [1.1 Advanced Observability](#11-advanced-observability)
 * [1.2 Davis AI & Alerting](#12-davis-ai--alerting)
 
-# Lab 1 | Baselining | Incident Management Workshop 
+## Lab 1 | Baselining | Incident Management Workshop 
 
 Dynatrace's 4-step approach to Automate Incident Management & Drive AIOps starts with the **Baselining phase**. This phase starts right after the deployment of the OneAgent and is the moment where the agent starts collecting all relevant monitoring data and the AI engine starts baselining important metrics and detecting anomalies automatically. 
 
@@ -32,7 +32,7 @@ The Baselining Lab contains two modules:
 <img width="700" src="../../assets/images/Lab 1.png">
 </div>
 
-## Learning objectives
+### Learning objectives
 
 ##### Advanced Observability
 
@@ -57,7 +57,7 @@ What you’ll learn:
 * How to filter alerts
 * How to send alerts to external systems
 
-## 1.1 Advanced Observability
+### 1.1 Advanced Observability
 
 Once the OneAgent is installed, Dynatrace will detect **entities & their relationships** in your IT landscape. The most important entity types are hosts, processes, services, databases, applications and synthetic monitors.
 
@@ -217,7 +217,7 @@ Entities should be organized by YOU using **metadata**, **tags** and/or **manage
 
 The above ingredients, with AI applied on top, form the base of modern AIOps.
 
-## 1.2 Davis AI & Alerting
+### 1.2 Davis AI & Alerting
 
 As stated in the previous lab module, baselining will start right after installing the OneAgent. When heading to the Problems page in Dynatrace, you will see that, most probably, Problems have already been opened based on anomalies detected for your application. In this lab module, we will learn what those Problems or alerts from Dynatrace are, how to filter for them and how to push them to external systems. 
 

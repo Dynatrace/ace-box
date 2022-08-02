@@ -4,7 +4,7 @@
 * [2.1 Take Action on Intelligent Answers](#21-take-action-on-intelligent-answers)
 * [2.2 Map Dynatrace Alerts to Incident Tickets](#22-map-dynatrace-alerts-to-incident-tickets)
 
-# Lab 2 | Consolidation | Incident Management Workshop 
+## Lab 2 | Consolidation | Incident Management Workshop 
 
 Dynatrace's 4-step approach to Automate Incident Management & Drive AIOps started with the Baselining phase, where we let Dynatrace learn the behavior of your application and detect incidents automatically. As soon as you understand how alerts from Dynatrace work, we can move onto the **Consolidation phase**.
 
@@ -26,7 +26,7 @@ The Consolidation Lab contains two modules:
 <img width="900" src="../../assets/images/Lab 2.png">
 </div>
 
-## Learning objectives
+### Learning objectives
 
 ##### Take Action on Intelligent Answers
 
@@ -54,7 +54,7 @@ What you’ll learn:
   * How to design the auto-assignment of tickets to the right support group
   * How to design the auto-determination of severity, impact, urgency or priority in your incident management system
 
-## 2.1 Take Action on Intelligent Answers
+### 2.1 Take Action on Intelligent Answers
 
 To avoid an alert storm, there are two main steps to take:
 
@@ -106,7 +106,7 @@ Which apps or areas need action first? To define the order of priority, consider
 > TO DO: Julie to blur application names
 
 <div align="center">
-<img width="900" src="img/problems-per-tag.png">
+<img width="900" src="../../assets/images/problems-per-tag.png">
 </div>
 
 Once you have prioritized your apps or areas for consolidation, you are ready to start taking action on the alerts to reduce their number. For effective use of alerting, try to prioritize & categorize (will fix / won’t fix):
@@ -195,7 +195,7 @@ Dynatrace will automatically detect failures. Out-of-the-box failure detection w
 For instance, “dataValidationException” is an *expected* exception that is gracefully dealt with, so Dynatrace will not consider this as a failed request.
 
 <div align="center">
-<img width="600" src="img/19.png">
+<img width="600" src="../../assets/images/19.png">
 </div>
 
 If your application has special error handling, it is important to remove the false positives. Why?
@@ -217,7 +217,7 @@ To find services in your Dynatrace environment that might need tweaking, assess 
 5. This service has a constant 100% failure rate. To find out the reason for this high failure rate, look at the requests under *View distributed traces*.
 
 <div align="center">
-<img width="900" src="img/16.png">
+<img width="900" src="../../assets/images/16.png">
 </div>
 
 6. Click on the failed request.
@@ -228,13 +228,13 @@ To find services in your Dynatrace environment that might need tweaking, assess 
 11. Add the expection you want to ignore for this service's failure detection: `org.apache.http.conn.HttpHostConnectException`
 
 <div align="center">
-<img width="900" src="img/17.png">
+<img width="900" src="../../assets/images/17.png">
 </div>
 
 12. Wait a couple of minutes and check how the failure rate has now decreased to 0%. We have successfully removed the false positive.
 
 <div align="center">
-<img width="900" src="img/18.png">
+<img width="900" src="../../assets/images/18.png">
 </div>
 
 ##### Tweak anomaly detection
@@ -373,7 +373,7 @@ You can exclude non-severe alerts in the same way we did in lab [2.1.3](#213-imp
 You may only want to get notified immediately for severe issues. Or you may not find it worth investigating issues that are detected for a couple of minutes only. **How to exclude alerts for issues that are shorter than a certain timeframe of choice?**
 
 <div align="center">
-<img width="900" src="img/25.png">
+<img width="900" src="../../assets/images/25.png">
 </div>
 
 ***Exercise:***
