@@ -43,5 +43,6 @@
 - block:
   - name: Delete existing Cloud Automation secret dynatrace
     shell: "/usr/local/bin/keptn delete secret dynatrace --scope=dynatrace-service"
+    ignore_errors: yes
   - name: Create Cloud Automation secret dynatrace
     shell: "/usr/local/bin/keptn create secret dynatrace --from-literal=DT_TENANT={{ dynatrace_tenant_url }} --from-literal=DT_API_TOKEN={{ dynatrace_api_token }} --scope=dynatrace-service"
