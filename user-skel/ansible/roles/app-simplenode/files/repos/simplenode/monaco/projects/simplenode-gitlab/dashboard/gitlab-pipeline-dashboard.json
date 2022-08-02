@@ -1,6 +1,6 @@
 {
     "dashboardMetadata": {
-      "name": "GitLab Pipeline Dashboard",
+      "name": "{{.name}}",
       "shared": false,
       "owner": "admin",
       "popularity": 10,

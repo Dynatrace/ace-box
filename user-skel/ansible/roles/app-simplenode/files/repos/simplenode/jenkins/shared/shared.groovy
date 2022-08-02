@@ -16,7 +16,7 @@ def getTagRulesForPGIEvent() {
 }
 
 def readMetaData() {
-    def conf = readYaml file: "manifests/staging/dt_meta.yaml"
+    def conf = readYaml file: "jenkins/shared/dt_meta.yaml"
 
     def return_meta = ""
     for (meta_entry in conf.metadata) {
@@ -35,7 +35,7 @@ def readMetaData() {
 }
 
 def readTags() {
-    def conf = readYaml file: "manifests/staging/dt_meta.yaml"
+    def conf = readYaml file: "jenkins/shared/dt_meta.yaml"
 
     def return_tag = ""
     for (tag_entry in conf.tags) {

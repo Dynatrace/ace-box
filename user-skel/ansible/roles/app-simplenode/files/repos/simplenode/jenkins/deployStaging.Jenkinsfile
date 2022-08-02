@@ -14,8 +14,8 @@ pipeline {
     environment {
         DT_API_TOKEN = credentials('DT_API_TOKEN')
         DT_TENANT_URL = credentials('DT_TENANT_URL')
-        TARGET_NAMESPACE = "simplenodeappsec-staging"
-        PROJ_NAME = "simplenodeproject-appsec"
+        TARGET_NAMESPACE = "simplenode-staging"
+        PROJ_NAME = "simplenodeproject"
     }
     stages {
         stage('Update spec') {
@@ -26,19 +26,6 @@ pipeline {
                     env.DT_CUSTOM_PROP = sharedLib.readMetaData() + " " + generateDynamicMetaData()
                     env.DT_TAGS = sharedLib.readTags() + " " + generateDynamicTags()
                 }
-                // container('git') {
-                //     withCredentials([usernamePassword(credentialsId: 'git-creds-ace', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-                //         sh "git config --global user.email ${env.GITHUB_USER_EMAIL}"
-                //         sh "git clone ${env.GIT_PROTOCOL}://${GIT_USERNAME}:${GIT_PASSWORD}@${env.GIT_DOMAIN}/${env.GIT_ORG_DEMO}/${env.GIT_REPO_DEMO}"
-                //         sh "cd ${env.GIT_REPO_DEMO}/ && sed 's#value: \"DT_CUSTOM_PROP_PLACEHOLDER\".*#value: \"${env.DT_CUSTOM_PROP}\"#' manifests/${env.APP_NAME}.yml > manifests/staging/${env.APP_NAME}.yml"
-                //         sh "cd ${env.GIT_REPO_DEMO}/ && sed -i 's#value: \"DT_TAGS_PLACEHOLDER\".*#value: \"${env.DT_TAGS}\"#' manifests/staging/${env.APP_NAME}.yml"
-                //         sh "cd ${env.GIT_REPO_DEMO}/ && sed -i 's#value: \"NAMESPACE_PLACEHOLDER\".*#value: \"staging\"#' manifests/staging/${env.APP_NAME}.yml"
-                //         sh "cd ${env.GIT_REPO_DEMO}/ && sed -i 's#image: .*#image: ${env.TAG_STAGING}#' manifests/staging/${env.APP_NAME}.yml"
-                //         sh "cd ${env.GIT_REPO_DEMO}/ && git add manifests/staging/${env.APP_NAME}.yml && git commit -m 'Update ${env.APP_NAME} version ${env.BUILD}'"
-                //         sh "cd ${env.GIT_REPO_DEMO}/ && git push ${env.GIT_PROTOCOL}://${GIT_USERNAME}:${GIT_PASSWORD}@${env.GIT_DOMAIN}/${env.GIT_ORG_DEMO}/${env.GIT_REPO_DEMO}"
-                //         sh "rm -rf ${env.GIT_REPO_DEMO}"
-                //     }
-                // }
             }
         }     
         stage('Deploy via Helm') {
@@ -46,10 +33,7 @@ pipeline {
                 checkout scm
                 container('helm') {
                     sh "sed -e \"s|DOMAIN_PLACEHOLDER|${env.INGRESS_DOMAIN}|\" -e \"s|ENVIRONMENT_PLACEHOLDER|${env.TARGET_NAMESPACE}|\" -e \"s|IMAGE_PLACEHOLDER|${env.TAG_STAGING}|\" -e \"s|VERSION_PLACEHOLDER|${env.BUILD}.0.0|\" -e \"s|BUILD_PLACEHOLDER|${env.ART_VERSION}|\" -e \"s|DT_TAGS_PLACEHOLDER|${env.DT_TAGS}|\" -e \"s|DT_CUSTOM_PROP_PLACEHOLDER|${env.DT_CUSTOM_PROP}|\" helm/simplenodeservice/values.yaml > helm/simplenodeservice/values-gen.yaml"
-                     //sh "sed -i 's|INGRESS_DOMAIN_PLACEHOLDER|simplenode.staging.${env.INGRESS_DOMAIN}|g' manifests/staging/${env.APP_NAME}.yml"
-                     //sh "kubectl -n staging apply -f manifests/staging/${env.APP_NAME}.yml"
-                     //sh "cat helm/simplenodeservice/values-gen.yaml"
-                     sh "helm upgrade -i ${env.APP_NAME}-staging helm/simplenodeservice -f helm/simplenodeservice/values-gen.yaml --namespace ${env.TARGET_NAMESPACE} --create-namespace --wait"
+                    sh "helm upgrade -i ${env.APP_NAME}-staging helm/simplenodeservice -f helm/simplenodeservice/values-gen.yaml --namespace ${env.TARGET_NAMESPACE} --create-namespace --wait"
                 }
             }
         }
@@ -108,22 +92,3 @@ def generateDynamicTags() {
     returnValue += "BUILD=${env.ART_VERSION} "
     return returnValue;
 }
-
-
-
-// def getTagRules() {
-//     def tagMatchRules = [
-//         [
-//             "meTypes": [ "PROCESS_GROUP_INSTANCE"],
-//             tags: [
-//                 ["context": "ENVIRONMENT", "key": "DT_RELEASE_BUILD_VERSION", "value": "${env.ART_VERSION}"],
-//                 ["context": "KUBERNETES", "key": "app.kubernetes.io/name", "value": "${env.APP_NAME}"],
-//                 ["context": "KUBERNETES", "key": "app.kubernetes.io/part-of", "value": "simplenode-app"],
-//                 ["context": "KUBERNETES", "key": "app.kubernetes.io/component", "value": "api"],
-//                 ["context": "CONTEXTLESS", "key": "environment", "value": "${env.TARGET_NAMESPACE}"]
-//             ]
-//         ]
-//     ]
-
-//     return tagMatchRules
-// }

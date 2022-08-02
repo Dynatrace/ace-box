@@ -1,0 +1,10 @@
+---
+- name: Publish simplenode repository
+  include_role:
+    name: repository
+  vars:
+    repo_src: "{{ item.repo_src }}"
+    git_org: "{{ item.git_org }}"
+    git_repo: "{{ item.repo_target }}"
+  loop:
+  - { repo_target: "{{ repo_name }}", repo_src: "{{ role_path }}/files/repos/simplenode", git_org: "{{ git_org_name }}" }

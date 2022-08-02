@@ -1,5 +1,0 @@
-config:
-    - gitlab-dashboard: "gitlab-pipeline-dashboard.json"
-  
-gitlab-dashboard:
-    - name: "GitLab Pipeline Dashboard"

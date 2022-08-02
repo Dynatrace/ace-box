@@ -1,4 +1,3 @@
 ---
-demo_default_source_repo: "/home/{{ ace_box_user }}/repos/ace"
 demo_default_org: "demo"
 demo_default_repo_name: "ace"

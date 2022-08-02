@@ -52,17 +52,14 @@
     gitea_repo: "{{ demo_default_repo_name }}"
 
 - include_role:
-    name: repository
+    name: app-simplenode
   vars:
-    repo_src: "{{ item.repo_src }}"
-    git_org: "{{ item.git_org }}"
-    git_repo: "{{ item.repo_target }}"
     git_username: "{{ gitea_username }}"
     git_password: "{{ gitea_password }}"
     git_domain: "{{ gitea_domain }}"
     git_remote: "gitea"
-  loop:
-  - { repo_target: "{{ demo_default_repo_name }}", repo_src: "{{ demo_default_source_repo }}", git_org: "{{ demo_default_org }}" }
+    git_org_name: "{{ demo_default_org }}"
+    repo_name: "{{ demo_default_repo_name }}"
   when: new_repo_created is defined and new_repo_created == true
 
 - include_role:

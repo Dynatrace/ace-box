@@ -49,17 +49,15 @@
     gitlab_prj_namespace_id: "{{ gitlab_group_id }}"
 
 - include_role:
-    name: repository
+    name: app-simplenode
   vars:
-    repo_src: "{{ item.repo_src }}"
-    git_org: "{{ item.git_org }}"
-    git_repo: "{{ item.repo_target }}"
     git_username: "root"
     git_password: "{{ gitlab_password }}"
     git_domain: "{{ gitlab_domain }}"
     git_remote: "gitlab"
-  loop:
-  - { repo_target: "{{ gitlab_demo_default_repo_name }}", repo_src: "{{ demo_default_source_repo }}", git_org: "{{ gitlab_demo_default_group }}" }
+    git_org_name: "{{ gitlab_demo_default_group }}"
+    repo_name: "{{ gitlab_demo_default_repo_name }}"
+  when: new_repo_created is defined and new_repo_created == true
 
 - include_role:
     name: dashboard

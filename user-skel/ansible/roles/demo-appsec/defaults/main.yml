@@ -1,4 +1,3 @@
 ---
-demo_appsec_source_repo: "/home/{{ ace_box_user }}/repos/ace"
 demo_appsec_org: "demo"
 demo_appsec_repo_name: "appsec"
