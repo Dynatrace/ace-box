@@ -4,7 +4,7 @@
     name: config-v2
     tasks_from: set-var
   vars:
-    var_key_to_set: "demo_appsec"
+    var_key_to_set: "demo_security_gates_jenkins"
     var_value_to_set: true
 
 - include_role:
@@ -43,14 +43,14 @@
     name: gitea
     tasks_from: create-organization
   vars:
-    gitea_org: "{{ demo_appsec_org }}"
+    gitea_org: "{{ demo_security_gates_jenkins_org }}"
 
 - include_role:
     name: gitea
     tasks_from: create-repository
   vars:
-    gitea_org: "{{ demo_appsec_org }}"
-    gitea_repo: "{{ demo_appsec_repo_name }}"
+    gitea_org: "{{ demo_security_gates_jenkins_org }}"
+    gitea_repo: "{{ demo_security_gates_jenkins_repo_name }}"
 
 - include_role:
     name: app-simplenode
@@ -59,8 +59,8 @@
     git_password: "{{ gitea_password }}"
     git_domain: "{{ gitea_domain }}"
     git_remote: "gitea"
-    git_org_name: "{{ demo_appsec_org }}"
-    repo_name: "{{ demo_appsec_repo_name }}"
+    git_org_name: "{{ demo_security_gates_jenkins_org }}"
+    repo_name: "{{ demo_security_gates_jenkins_repo_name }}"
   when: new_repo_created is defined and new_repo_created == true
 
 # Include use case specific Jenkins values
@@ -69,6 +69,10 @@
 
 - include_role:
     name: jenkins
+  vars: 
+    demo_repo: "{{ demo_security_gates_jenkins_repo_name }}"
+    demo_org: "{{ demo_security_gates_jenkins_org }}"
+    demo_jenkins_folder: "{{ demo_security_gates_jenkins_folder }}"
 
 - include_role:
     name: dashboard

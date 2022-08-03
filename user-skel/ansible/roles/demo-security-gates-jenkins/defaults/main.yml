@@ -1,0 +1,4 @@
+---
+demo_security_gates_jenkins_org: "demo"
+demo_security_gates_jenkins_repo_name: "security-gates-jenkins"
+demo_security_gates_jenkins_folder: "demo-security-gates-jenkins"

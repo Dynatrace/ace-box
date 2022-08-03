@@ -4,10 +4,10 @@ controller:
       demo-appsec-jobs-config: |
         jobs:
           - script: >
-              folder('demo-appsec')
-              description('Check out {{ ingress_protocol }}://{{ git_domain }}/{{ git_org_demo }}/{{ git_repo_demo }}/src/branch/main/demo/appsec for more information')
+              folder('{{ demo_jenkins_folder }}')
+              description('Check out {{ ingress_protocol }}://{{ git_domain }}/{{ demo_org }}/{{ demo_repo }}/src/branch/main/demo/appsec for more information')
           - script: >
-              pipelineJob('demo-appsec/1. Build') {
+              pipelineJob('{{ demo_jenkins_folder }}/1. Build') {
                 parameters {
                   choiceParam('BUILD', ['1','2','3','4','5'], 'Select the build you want to deploy (affects application behavior, github.com/grabnerandi/simplenodeservice for more details)')
                 }
@@ -17,7 +17,7 @@ controller:
                     scm {
                       git {
                           remote { 
-                            url('{{ ingress_protocol }}://{{ git_domain }}/{{ git_org_demo }}/{{ git_repo_demo }}')
+                            url('{{ ingress_protocol }}://{{ git_domain }}/{{ demo_org }}/{{ demo_repo }}')
                             credentials('git-creds-ace')
                           }
                           branch('*/main')
@@ -28,7 +28,7 @@ controller:
                 }
               }
           - script: >
-              pipelineJob('demo-appsec/2. Deploy') {
+              pipelineJob('{{ demo_jenkins_folder }}/2. Deploy') {
                 parameters {
                   stringParam('APP_NAME', 'simplenodeservice', 'The name of the service to deploy.')
                   stringParam('TAG_STAGING', '', 'The image of the service to deploy.')
@@ -41,7 +41,7 @@ controller:
                     scm {
                       git {
                           remote { 
-                            url('{{ ingress_protocol }}://{{ git_domain }}/{{ git_org_demo }}/{{ git_repo_demo }}')
+                            url('{{ ingress_protocol }}://{{ git_domain }}/{{ demo_org }}/{{ demo_repo }}')
                             credentials('git-creds-ace')
                           }
                           branch('*/main')
@@ -52,7 +52,7 @@ controller:
                 }
               }
           - script: >
-              pipelineJob('demo-appsec/3. Test') {
+              pipelineJob('{{ demo_jenkins_folder }}/3. Test') {
                 parameters {
                   stringParam('APP_NAME', 'simplenodeservice', 'The name of the service to deploy.')
                   stringParam('BUILD', '', 'The version of the service to deploy.')
@@ -65,7 +65,7 @@ controller:
                     scm {
                       git {
                           remote { 
-                            url('{{ ingress_protocol }}://{{ git_domain }}/{{ git_org_demo }}/{{ git_repo_demo }}')
+                            url('{{ ingress_protocol }}://{{ git_domain }}/{{ demo_org }}/{{ demo_repo }}')
                             credentials('git-creds-ace')
                           }
                           branch('*/main')
@@ -76,7 +76,7 @@ controller:
                 }
               }
           - script: >
-              pipelineJob('demo-appsec/4. Deploy production') {
+              pipelineJob('{{ demo_jenkins_folder }}/4. Deploy production') {
                 parameters {
                   stringParam('APP_NAME', 'simplenodeservice', 'The name of the service to deploy.')
                   stringParam('TAG_STAGING', '', 'The image of the service to deploy.')
@@ -89,7 +89,7 @@ controller:
                     scm {
                       git {
                           remote { 
-                            url('{{ ingress_protocol }}://{{ git_domain }}/{{ git_org_demo }}/{{ git_repo_demo }}')
+                            url('{{ ingress_protocol }}://{{ git_domain }}/{{ demo_org }}/{{ demo_repo }}')
                             credentials('git-creds-ace')
                           }
                           branch('*/main')
@@ -100,14 +100,14 @@ controller:
                 }
               }
           - script: >
-              pipelineJob('demo-appsec/Monitoring as Code') {
+              pipelineJob('{{ demo_jenkins_folder }}/Monitoring as Code') {
                 definition {
                   cpsScm {
                     scriptPath('jenkins/appsec/mac.Jenkinsfile')
                     scm {
                       git {
                           remote { 
-                            url('{{ ingress_protocol }}://{{ git_domain }}/{{ git_org_demo }}/{{ git_repo_demo }}')
+                            url('{{ ingress_protocol }}://{{ git_domain }}/{{ demo_org }}/{{ demo_repo }}')
                             credentials('git-creds-ace')
                           }
                           branch('*/main')
