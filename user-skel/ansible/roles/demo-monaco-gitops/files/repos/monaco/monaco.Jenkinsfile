@@ -84,7 +84,7 @@ pipeline {
                         def response = httpRequest contentType: 'APPLICATION_JSON',
                             httpMode: 'POST',
                             requestBody: requestBody,
-                            url: "${GIT_PROTOCOL}://${GIT_DOMAIN}/api/v1/repos/${GIT_ORG_DEMO}/monaco/pulls",
+                            url: "${GIT_PROTOCOL}://${GIT_DOMAIN}/api/v1/repos/${GIT_ORG_DEMO}/monaco-gitops/pulls",
                             customHeaders: [[maskValue: true, name: 'Authorization', value: "token ${encodedPassword}"]],
                             validResponseCodes: "100:201", 
                             ignoreSslErrors: true

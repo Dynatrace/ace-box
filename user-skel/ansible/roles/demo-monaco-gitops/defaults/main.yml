@@ -1,3 +1,7 @@
 ---
 monaco_default_org: "demo"
 monaco_default_repo_name: "monaco"
+
+demo_monaco_gitops_org: "demo"
+demo_monaco_gitops_repo_name: "monaco-gitops"
+demo_monaco_gitops_folder: "demo-quality-gates-jenkins"

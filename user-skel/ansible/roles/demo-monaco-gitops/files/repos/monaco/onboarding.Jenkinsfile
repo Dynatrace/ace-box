@@ -32,7 +32,7 @@ pipeline {
                     sh "find projects/${env.MON_PROJECT_NAME}/base/ -type f -name '*.yaml' -exec sed -i 's#SKIP_WEBCHECK_PLACEHOLDER#${env.MON_SKIP_APP}#g' {} +"
                     sh "git add ."
                     sh "git commit -m 'Created project config for: ${env.MON_PROJECT_NAME}'"
-                    sh "git push ${GIT_PROTOCOL}://${GIT_USERNAME}:${encodedPassword}@${GIT_DOMAIN}/${env.GIT_ORG_DEMO}/monaco.git"
+                    sh "git push ${GIT_PROTOCOL}://${GIT_USERNAME}:${encodedPassword}@${GIT_DOMAIN}/${env.GIT_ORG_DEMO}/monaco-gitops.git"
                 }
             }
           }

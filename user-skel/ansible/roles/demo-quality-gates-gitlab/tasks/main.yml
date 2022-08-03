@@ -3,7 +3,7 @@
     name: config-v2
     tasks_from: set-var
   vars:
-    var_key_to_set: "demo_gitlab"
+    var_key_to_set: "demo_quality_gates_gitlab"
     var_value_to_set: true
 
 - include_role:

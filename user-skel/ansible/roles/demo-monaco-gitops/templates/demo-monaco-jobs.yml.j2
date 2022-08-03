@@ -4,9 +4,9 @@ controller:
       demo-monaco-jobs-config: |
         jobs:
         - script: >
-            folder('demo-monaco-gitops')
+            folder('{{ demo_jenkins_folder }}')
         - script: >
-            pipelineJob('demo-monaco-gitops/Onboard Application') {
+            pipelineJob('{{ demo_jenkins_folder }}/Onboard Application') {
               parameters {
                 stringParam('MON_PROJECT_NAME', 'myFirstProject', 'The name of the Monaco project to onboard.')
                 stringParam('MON_APP_NAME', 'myApp', 'The name of Application to onboard.')
@@ -23,7 +23,7 @@ controller:
                   scm {
                     git {
                         remote { 
-                          url('{{ ingress_protocol }}://{{ git_domain }}/{{ git_org_demo }}/{{ git_repo_monaco }}')
+                          url('{{ ingress_protocol }}://{{ git_domain }}/{{ demo_org }}/{{ demo_repo }}')
                           credentials('git-creds-ace')
                         }
                         branch('*/main')
