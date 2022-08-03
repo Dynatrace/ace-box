@@ -13,13 +13,13 @@
     jenkins_skip_install: True
 
 - include_role:
-    name: demo-default
+    name: demo-quality-gates-jenkins
 
 - include_role:
-    name: demo-appsec
+    name: demo-security-gates-jenkins
 
 - include_role:
-    name: demo-gitlab
+    name: demo-quality-gates-gitlab
 
 - include_role:
     name: demo-monaco-gitops
@@ -29,4 +29,4 @@
     jenkins_skip_install: False
 
 - include_role:
-    name: demo-autorem
+    name: demo-auto-remediation-ansible
