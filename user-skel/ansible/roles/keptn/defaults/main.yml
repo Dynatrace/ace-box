@@ -2,7 +2,7 @@
 keptn_version: "0.16.1"
 keptn_dynatrace_service_version: "0.23.0"
 keptn_namespace: "keptn"
-keptn_ingress_domain: "keptn.{{ ingress_domain }}"
+keptn_ingress_domain: "cloudautomation.{{ ingress_domain }}"
 keptn_cli_download_location: "/tmp/keptn"
 # uncomment to give keptn the cloud automation look and feel
 keptn_look_and_feel_url: "https://d2ixiz0hn5ywb5.cloudfront.net/branding.zip"
