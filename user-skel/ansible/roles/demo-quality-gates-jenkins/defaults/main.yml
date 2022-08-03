@@ -1,0 +1,4 @@
+---
+demo_quality_gates_jenkins_org: "demo"
+demo_quality_gates_jenkins_repo_name: "quality-gates-jenkins"
+demo_quality_gates_jenkins_folder: "demo-quality-gates-jenkins"
