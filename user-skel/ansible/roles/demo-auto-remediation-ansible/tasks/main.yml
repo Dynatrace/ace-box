@@ -4,7 +4,7 @@
     name: config-v2
     tasks_from: set-var
   vars:
-    var_key_to_set: "demo_autorem"
+    var_key_to_set: "demo_auto_remediation_ansible"
     var_value_to_set: true
 
 - include_role:
@@ -35,28 +35,28 @@
     name: gitea
     tasks_from: create-organization
   vars:
-    gitea_org: "{{ git_org_demo_autorem }}"
+    gitea_org: "{{ demo_auto_remediation_org }}"
 
 - include_role:
     name: gitea
     tasks_from: create-repository
   vars:
-    gitea_org: "{{ git_org_demo_autorem }}"
-    gitea_repo: "{{ git_repo_demo_autorem }}"
+    gitea_org: "{{ demo_auto_remediation_org }}"
+    gitea_repo: "{{ demo_auto_remediation_repo_name }}"
 
 - include_role:
     name: gitea
     tasks_from: create-repository
   vars:
-    gitea_org: "{{ git_org_demo_autorem }}"
-    gitea_repo: "{{ git_repo_demo_autorem }}-docs"
+    gitea_org: "{{ demo_auto_remediation_org }}"
+    gitea_repo: "{{ demo_auto_remediation_repo_name }}-docs"
 
 - include_role:
     name: gitea
     tasks_from: create-repository
   vars:
-    gitea_org: "{{ git_org_demo_autorem }}"
-    gitea_repo: "{{ git_repo_demo_autorem }}-awx"
+    gitea_org: "{{ demo_auto_remediation_org }}"
+    gitea_repo: "{{ demo_auto_remediation_repo_name }}-awx"
 
 - include_role:
     name: repository
@@ -69,8 +69,8 @@
     git_domain: "{{ gitea_domain }}"
     git_remote: "gitea"
   loop:
-  - { repo_target: "{{ git_repo_demo_autorem }}-awx", repo_src: "{{ role_path }}/files/repos/ace-demo-canary-awx", git_org: "{{ git_org_demo_autorem }}" }
-  - { repo_target: "{{ git_repo_demo_autorem }}-docs", repo_src: "{{ role_path }}/files/repos/ace-demo-canary-docs", git_org: "{{ git_org_demo_autorem }}" }
+  - { repo_target: "{{ demo_auto_remediation_repo_name }}-awx", repo_src: "{{ role_path }}/files/repos/ace-demo-canary-awx", git_org: "{{ demo_auto_remediation_org }}" }
+  - { repo_target: "{{ demo_auto_remediation_repo_name }}-docs", repo_src: "{{ role_path }}/files/repos/ace-demo-canary-docs", git_org: "{{ demo_auto_remediation_org }}" }
   when: new_repo_created is defined and new_repo_created == true
 
 - include_role:
@@ -80,8 +80,8 @@
     git_password: "{{ gitea_password }}"
     git_domain: "{{ gitea_domain }}"
     git_remote: "gitea"
-    git_org_name: "{{ git_org_demo_autorem }}"
-    repo_name: "{{ git_repo_demo_autorem }}"
+    git_org_name: "{{ demo_auto_remediation_org }}"
+    repo_name: "{{ demo_auto_remediation_repo_name }}"
   when: new_repo_created is defined and new_repo_created == true
 
 # Include use case specific Jenkins values
@@ -90,6 +90,10 @@
 
 - include_role:
     name: jenkins
+  vars:
+    demo_repo: "{{ demo_auto_remediation_repo_name }}"
+    demo_org: "{{ demo_auto_remediation_org }}"
+    demo_jenkins_folder: "{{ demo_auto_remediation_folder }}"
 
 - include_role:
     name: awx

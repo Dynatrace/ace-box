@@ -4,16 +4,16 @@ controller:
       demo-autorem-jobs-config: |
         jobs:            
         - script: >
-            folder('demo-auto-remediation')
+            folder('{{ demo_jenkins_folder }}')
         - script: >
-            pipelineJob('demo-auto-remediation/1. Build images') {
+            pipelineJob('{{ demo_jenkins_folder }}/1. Build images') {
               definition {
                 cpsScm {
                   scriptPath('jenkins/canary/01_build_images.Jenkinsfile')
                   scm {
                     git {
                         remote { 
-                          url('{{ ingress_protocol }}://{{ git_domain }}/{{ git_org_demo_autorem }}/{{ git_repo_demo_autorem }}')
+                          url('{{ ingress_protocol }}://{{ git_domain }}/{{ demo_org }}/{{ demo_repo }}')
                           credentials('git-creds-ace')
                         }
                         branch('*/main')
@@ -24,14 +24,14 @@ controller:
               }
             }
         - script: >
-            pipelineJob('demo-auto-remediation/2. Monaco') {
+            pipelineJob('{{ demo_jenkins_folder }}/2. Monaco') {
               definition {
                 cpsScm {
                   scriptPath('jenkins/canary/02_monaco.Jenkinsfile')
                   scm {
                     git {
                         remote { 
-                          url('{{ ingress_protocol }}://{{ git_domain }}/{{ git_org_demo_autorem }}/{{ git_repo_demo_autorem }}')
+                          url('{{ ingress_protocol }}://{{ git_domain }}/{{ demo_org }}/{{ demo_repo }}')
                           credentials('git-creds-ace')
                         }
                         branch('*/main')
@@ -42,7 +42,7 @@ controller:
               }
             }
         - script: >
-            pipelineJob('demo-auto-remediation/3. Deploy') {
+            pipelineJob('{{ demo_jenkins_folder }}/3. Deploy') {
               parameters {
                 stringParam('IMAGE_NAME', 'ace/simplenodeservice', 'The image name of the service to deploy.')
                 stringParam('IMAGE_TAG', '', 'The image tag of the service to deploy.')
@@ -55,7 +55,7 @@ controller:
                   scm {
                     git {
                         remote { 
-                          url('{{ ingress_protocol }}://{{ git_domain }}/{{ git_org_demo_autorem }}/{{ git_repo_demo_autorem }}')
+                          url('{{ ingress_protocol }}://{{ git_domain }}/{{ demo_org }}/{{ demo_repo }}')
                           credentials('git-creds-ace')
                         }
                         branch('*/main')
@@ -66,14 +66,14 @@ controller:
               }
             }
         - script: >
-            pipelineJob('demo-auto-remediation/4. Generate Load') {
+            pipelineJob('{{ demo_jenkins_folder }}/4. Generate Load') {
               definition {
                 cpsScm {
                   scriptPath('jenkins/canary/04_generate_load.Jenkinsfile')
                   scm {
                     git {
                         remote { 
-                          url('{{ ingress_protocol }}://{{ git_domain }}/{{ git_org_demo_autorem }}/{{ git_repo_demo_autorem }}')
+                          url('{{ ingress_protocol }}://{{ git_domain }}/{{ demo_org }}/{{ demo_repo }}')
                           credentials('git-creds-ace')
                         }
                         branch('*/main')
@@ -84,7 +84,7 @@ controller:
               }
             }
         - script: >
-            pipelineJob('demo-auto-remediation/5. Shift traffic') {
+            pipelineJob('{{ demo_jenkins_folder }}/5. Shift traffic') {
               parameters {
                 stringParam('CANARY_WEIGHT', '0', 'Weight of traffic that will be routed to service.')
                 stringParam('REMEDIATION_URL', '0', 'Remediation script to call if canary release fails.')
@@ -95,7 +95,7 @@ controller:
                   scm {
                     git {
                         remote { 
-                          url('{{ ingress_protocol }}://{{ git_domain }}/{{ git_org_demo_autorem }}/{{ git_repo_demo_autorem }}')
+                          url('{{ ingress_protocol }}://{{ git_domain }}/{{ demo_org }}/{{ demo_repo }}')
                           credentials('git-creds-ace')
                         }
                         branch('*/main')
