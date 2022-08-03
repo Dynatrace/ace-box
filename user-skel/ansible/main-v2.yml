@@ -17,28 +17,34 @@
     - demo_all
     - never
 
-  # Use case - Quality Gates demo
+  # Use case - Quality Gates with Jenkins demo
   - role: demo-default
     tags:
     - demo_default
     - never
 
-  # Use case - AppSec demo
-  - role: demo-appsec
+  # Use case - Quality Gates with Jenkins demo
+  - role: demo-quality-gates-jenkins
     tags:
-    - demo_appsec
+    - demo_quality_gates_jenkins
+    - never
+
+  # Use case - Security Gates with Jenkins demo
+  - role: demo-security-gates-jenkins
+    tags:
+    - demo_security_gates_jenkins
     - never
 
   # Use case - Auto remediation demo
-  - role: demo-autorem
+  - role: demo-auto-remediation-ansible
     tags:
-    - demo_autorem
+    - demo_auto_remediation_ansible
     - never
   
-  # Use case - Auto remediation demo
-  - role: demo-gitlab
+  # Use case - Quality Gates with Gitlab demo
+  - role: demo-quality-gates-gitlab
     tags:
-    - demo_gitlab
+    - demo_quality_gates_gitlab
     - never
   
   # Use case - Monaco GitOps demo

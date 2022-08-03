@@ -35,9 +35,10 @@ uninstall_targets = [
 ]
 enable_targets = [
     'demo_default',
-    'demo_appsec',
-    'demo_autorem',
-    'demo_gitlab',
+    'demo_quality_gates_jenkins',
+    'demo_security_gates_jenkins',
+    'demo_auto_remediation_ansible',
+    'demo_quality_gates_gitlab',
     'demo_all',
     'demo_monaco_gitops',
     'hot_appsec'
