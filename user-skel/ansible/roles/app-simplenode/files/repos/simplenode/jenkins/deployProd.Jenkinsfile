@@ -13,6 +13,7 @@ pipeline {
         DT_TENANT_URL = credentials('DT_TENANT_URL')
         STAGING_NAMESPACE = "simplenode-staging"
         TARGET_NAMESPACE = "simplenode-production"
+		RELEASE_NAME = "${env.APP_NAME}-production"
     }
     agent {
         label 'kubegit'
@@ -39,7 +40,7 @@ pipeline {
                 }
                 container('helm') {
                     sh "cat helm/simplenodeservice/values-gen.yaml"
-                    sh "helm upgrade -i ${env.APP_NAME}-production helm/simplenodeservice -f helm/simplenodeservice/values-gen.yaml --namespace ${env.TARGET_NAMESPACE} --create-namespace --wait"
+                    sh "helm upgrade -i ${env.RELEASE_NAME} helm/simplenodeservice -f helm/simplenodeservice/values-gen.yaml --namespace ${env.TARGET_NAMESPACE} --create-namespace --wait"
                 }
             }
         }

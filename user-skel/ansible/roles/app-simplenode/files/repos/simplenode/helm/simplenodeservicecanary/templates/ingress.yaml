@@ -3,10 +3,9 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
-    meta.helm.sh/release-name: {{ .Release.Name }}
-    kubernetes.io/ingress.class: public
-    nginx.ingress.kubernetes.io/canary: {{ if .Values.isCanary }}"true"{{ else }}"false"{{ end }}
-    nginx.ingress.kubernetes.io/canary-weight: "{{ .Values.canaryWeight }}"
+    kubernetes.io/ingress.class: "{{ .Values.ingress.class }}"
+    nginx.ingress.kubernetes.io/canary: {{ if .Values.ingress.isCanary }}"true"{{ else }}"false"{{ end }}
+    nginx.ingress.kubernetes.io/canary-weight: "{{ .Values.ingress.canaryWeight }}"
   labels:
     app: {{ .Chart.Name }}
     version: {{ .Values.version }}

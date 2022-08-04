@@ -16,6 +16,7 @@ pipeline {
         DT_TENANT_URL = credentials('DT_TENANT_URL')
         TARGET_NAMESPACE = "simplenodeappsec-staging"
         PROJ_NAME = "simplenodeproject-appsec"
+		RELEASE_NAME = "${env.APP_NAME}-staging"
     }
     stages {
         stage('Update spec') {
@@ -33,7 +34,7 @@ pipeline {
                 checkout scm
                 container('helm') {
                     sh "sed -e \"s|DOMAIN_PLACEHOLDER|${env.INGRESS_DOMAIN}|\" -e \"s|ENVIRONMENT_PLACEHOLDER|${env.TARGET_NAMESPACE}|\" -e \"s|IMAGE_PLACEHOLDER|${env.TAG_STAGING}|\" -e \"s|VERSION_PLACEHOLDER|${env.BUILD}.0.0|\" -e \"s|BUILD_PLACEHOLDER|${env.ART_VERSION}|\" -e \"s|DT_TAGS_PLACEHOLDER|${env.DT_TAGS}|\" -e \"s|DT_CUSTOM_PROP_PLACEHOLDER|${env.DT_CUSTOM_PROP}|\" helm/simplenodeservice/values.yaml > helm/simplenodeservice/values-gen.yaml"
-                    sh "helm upgrade -i ${env.APP_NAME}-staging helm/simplenodeservice -f helm/simplenodeservice/values-gen.yaml --namespace ${env.TARGET_NAMESPACE} --create-namespace --wait"
+                    sh "helm upgrade -i ${env.RELEASE_NAME} helm/simplenodeservice -f helm/simplenodeservice/values-gen.yaml --namespace ${env.TARGET_NAMESPACE} --create-namespace --wait"
                 }
             }
         }

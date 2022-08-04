@@ -11,7 +11,7 @@ metadata:
     app.kubernetes.io/version: "{{ .Values.version }}"
     app.kubernetes.io/managed-by: "Helm"
     chart: "{{ .Chart.Name }}"
-    app.kubernetes.io/part-of: "simplenode-app"
+    app.kubernetes.io/part-of: "{{ .Release.Name }}"
   name: {{ .Chart.Name }}
 spec:
   replicas: 1
@@ -25,7 +25,7 @@ spec:
         app.kubernetes.io/name: "{{ .Chart.Name }}"
         app.kubernetes.io/version: "{{ .Values.version }}"
         app.kubernetes.io/managed-by: "Helm"
-        app.kubernetes.io/part-of: "simplenode-app"
+        app.kubernetes.io/part-of: "{{ .Release.Name }}"
         app.kubernetes.io/component: "api"
     spec:
       containers:

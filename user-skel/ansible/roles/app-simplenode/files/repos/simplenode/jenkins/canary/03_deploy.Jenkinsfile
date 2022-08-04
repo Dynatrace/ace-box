@@ -7,16 +7,19 @@ pipeline {
 		string(name: 'IMAGE_TAG', defaultValue: '1.0.3', description: 'The image tag of the service to deploy.', trim: true)
 		string(name: 'CANARY_WEIGHT', defaultValue: '0', description: 'Weight of traffic that will be routed to service.', trim: true)
 		booleanParam(name: 'IS_CANARY', defaultValue: false, description: 'Is canary version of service.')
+    string(name: 'RELEASE_BUILD_VERSION', defaultValue: '', description: 'Unique id describing the build', trim: true)
 	}
 	environment {
-		APP_NAME = "simplenodeservice-canary"
 		CANARY_VERSION = "${params.IS_CANARY ? 'v2' : 'v1'}"
-		RELEASE_NAME = "${env.APP_NAME}-${env.CANARY_VERSION}"
-		NAMESPACE = "canary"
+		TARGET_NAMESPACE = "canary"
 		APPLICATION_BUILD_VERSION = "${params.IMAGE_TAG}"
 		IMAGE_FULL = "${env.DOCKER_REGISTRY_URL}/${params.IMAGE_NAME}:${params.IMAGE_TAG}"
 		DT_API_TOKEN = credentials('DT_API_TOKEN')
 		DT_TENANT_URL = credentials('DT_TENANT_URL')
+		APP_NAME = "simplenodeservice"
+		RELEASE_NAME = "${env.APP_NAME}-canary-${env.CANARY_VERSION}"
+		// ART_VERSION only required for shared.groovy
+		ART_VERSION = "${params.RELEASE_BUILD_VERSION}"
 	}
 	agent {
 		label 'kubegit'
@@ -30,10 +33,11 @@ pipeline {
 					--set image=${env.IMAGE_FULL} \
 					--set domain=${env.INGRESS_DOMAIN} \
 					--set version=${env.CANARY_VERSION} \
-					--set build_version=${params.IMAGE_TAG} \
-					--set isCanary=${params.IS_CANARY} \
-					--set canaryWeight=${params.CANARY_WEIGHT} \
-					--namespace ${env.NAMESPACE} --create-namespace \
+					--set build_version=${params.RELEASE_BUILD_VERSION} \
+					--set ingress.class=public \
+					--set ingress.isCanary=${params.IS_CANARY} \
+					--set ingress.canaryWeight=${params.CANARY_WEIGHT} \
+					--namespace ${env.TARGET_NAMESPACE} --create-namespace \
 					--wait"
 				}
 			}
@@ -43,8 +47,10 @@ pipeline {
 				script {
 					sleep(time:150,unit:"SECONDS")
 		
+					def rootDir = pwd()
+					def sharedLib = load "${rootDir}/jenkins/shared/shared.groovy"
 					def status = event.pushDynatraceDeploymentEvent (
-						tagRule: generateTagRules(),
+						tagRule: sharedLib.getTagRulesForPGIEvent(),
 						deploymentName: "${env.RELEASE_NAME} deployed",
 						deploymentVersion: "${env.CANARY_VERSION}",
 						deploymentProject: "simplenode-app",
@@ -57,21 +63,4 @@ pipeline {
 			}
 		}      
 	}
-}
-
-def generateTagRules() {
-	def tagMatchRules = [
-		[
-			"meTypes": [ "PROCESS_GROUP_INSTANCE" ],
-			tags: [
-				["context": "ENVIRONMENT", "key": "DT_APPLICATION_BUILD_VERSION", "value": "${env.APPLICATION_BUILD_VERSION}"],
-				["context": "KUBERNETES", "key": "app.kubernetes.io/name", "value": "simplenodeservice"],
-				["context": "KUBERNETES", "key": "app.kubernetes.io/part-of", "value": "simplenode-app"],
-				["context": "KUBERNETES", "key": "app.kubernetes.io/component", "value": "api"],
-				["context": "CONTEXTLESS", "key": "environment", "value": "${env.NAMESPACE}"]
-			]
-		]
-	]
-
-	return tagMatchRules
 }
