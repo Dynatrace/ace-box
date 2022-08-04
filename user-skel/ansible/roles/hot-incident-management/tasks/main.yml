@@ -59,6 +59,8 @@
 
 #Pass variables and execute setup script
 - name: Incident Mgmt. Lab Setup
+  become: true
+  become_user: root
   shell: 
     cmd: "DYNATRACE_URL={{ dynatrace_tenant_url }} DYNATRACE_PAASTOKEN={{ dynatrace_paas_token }} DYNATRACE_APITOKEN={{ dynatrace_api_token }} sh /home/{{ ace_box_user }}/repos/hot-im/setup.sh"
     chdir: "/home/{{ ace_box_user }}/repos/hot-im/"
