@@ -1,0 +1,12 @@
+{
+  "type": "ANSIBLETOWER",
+  "name": "{{ .name }}",
+  "alertingProfile": "{{ .alertingProfileId }}",
+  "active": true,
+  "jobTemplateURL": "{{ .awxJobTemplateURL }}",
+  "acceptAnyCertificate": true,
+  "username": "{{ .awxUsername }}",
+  "password": "{{ .awxPassword }}",
+  "jobTemplateID": "{{ .awxJobTemplateID }}",
+  "customMessage": ""
+}
