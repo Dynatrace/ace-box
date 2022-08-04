@@ -81,13 +81,12 @@ var init = function(newBuildNumber) {
 
 	switch(buildNumber) {
 		case 2:
-			//failInvokeRequestPercentage = 50;
 			minSleep = 600;
 			break;
 		case 4: 
 			minSleep = minSleep * 2;
 			if(inProduction) {
-				failInvokeRequestPercentage = 20;
+				failInvokeRequestPercentage = 50;
 			}
 			break;
 		case 5:
