@@ -40,7 +40,7 @@ pipeline {
 					def rootDir = pwd()
 					def sharedLib = load "${rootDir}/jenkins/shared/shared.groovy"
 					def status = event.pushDynatraceConfigurationEvent (
-						tagRule : sharedLib.getTagRulesForPGIEvent(),
+						tagRule : sharedLib.getTagRulesForServiceEvent(),
 						description : "${env.RELEASE_NAME} canary weight set to ${params.CANARY_WEIGHT}%",
 						source : "Jenkins",
 						configuration : "Load Balancer",
@@ -52,18 +52,4 @@ pipeline {
       }
     }
 	}
-}
-
-def generateTagRules() {
-	def tagMatchRules = [
-		[
-			"meTypes": [ "SERVICE" ],
-			tags: [
-				["context": "CONTEXTLESS", "key": "environment", "value": "${env.TARGET_NAMESPACE}"],
-				["context": "CONTEXTLESS", "key": "app", "value": "simplenodeservice"]
-			]
-		]
-	]
-
-	return tagMatchRules
 }
