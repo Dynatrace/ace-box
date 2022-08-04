@@ -4,25 +4,25 @@ kind: Deployment
 metadata:
   labels:
     app: "{{ .Chart.Name }}"
-    version: {{ .Values.version }}
+    version: "{{ .Values.version }}"
     app.kubernetes.io/name: "{{ .Chart.Name }}"
     app.kubernetes.io/component: "api"
     app.kubernetes.io/version: "{{ .Values.build_version }}"
     app.kubernetes.io/managed-by: "Helm"
     chart: "{{ .Chart.Name }}"
     app.kubernetes.io/part-of: "{{ .Release.Name }}"
-  name: {{ .Release.Name }}
+  name: "{{ .Release.Name }}"
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Chart.Name }}
-      version: {{ .Values.version }}
+      app: "{{ .Chart.Name }}"
+      version: "{{ .Values.version }}"
   template:
     metadata:
       labels:
-        app: {{ .Chart.Name }}
-        version: {{ .Values.version }}
+        app: "{{ .Chart.Name }}"
+        version: "{{ .Values.version }}"
         app.kubernetes.io/name: "{{ .Chart.Name }}"
         app.kubernetes.io/version: "{{ .Values.build_version }}"
         app.kubernetes.io/managed-by: "Helm"
@@ -43,7 +43,7 @@ spec:
         - name: DT_RELEASE_BUILD_VERSION
           value: "{{ .Values.build_version }}"
         - name: DT_RELEASE_PRODUCT
-          value: "simplenode-app-canary"
+          value: "{{ .Chart.Name }}"
         - name: DT_RELEASE_STAGE
           value: "{{ .Release.Namespace }}"
         resources:
