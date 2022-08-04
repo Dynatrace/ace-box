@@ -35,7 +35,7 @@ init_cloudautomation:
   image: dynatraceace/keptn-gitlab-runner:2.2
   stage: init
   variables: 
-    KEPTN_PROJECT: simplenodeproject-gitlab
+    KEPTN_PROJECT: simplenode-gitlab
     KEPTN_SERVICE: simplenodeservice
     KEPTN_STAGE: staging
     KEPTN_SOURCE: gitlab
