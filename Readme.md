@@ -2,56 +2,21 @@
 
 The ace-box is an all-in-one Autonomous Cloud Enablement machine that you can use as a portable sandbox, demo and testing environment. 
 
-## Check out [Troubleshooting](#troubleshooting) before reaching out!
-
 Vagrant (Local) or Terraform (Cloud) are used for spinning up the VM, Ansible is used for setting up the various components.
 - [Welcome to the ACE-BOX](#welcome-to-the-ace-box)
-  - [Check out Troubleshooting before reaching out!](#check-out-troubleshooting-before-reaching-out)
-  - [Release notes](#release-notes)
-  - [Deployment Modes](#deployment-modes)
-  - [Components](#components)
   - [Installation](#installation)
+    - [Available use cases:](#available-use-cases)
     - [Useful Terraform Commands](#useful-terraform-commands)
   - [Alt: Local installation with Vagrant](#alt-local-installation-with-vagrant)
-    - [SSH into the box](#ssh-into-the-box)
-    - [Vagrant cleanup](#vagrant-cleanup)
   - [Alt: Bring-your-own-VM](#alt-bring-your-own-vm)
   - [Default mode](#default-mode)
   - [External use case](#external-use-case)
-    - [Curated roles](#curated-roles)
   - [Configuration settings](#configuration-settings)
     - [Resource Requirements](#resource-requirements)
   - [Troubleshooting](#troubleshooting)
   - [Accessing ACE Dashboard](#accessing-ace-dashboard)
   - [Behind the scenes](#behind-the-scenes)
   - [ACE-CLI](#ace-cli)
-    - [Available commands (ace-cli version 0.0.1, can also be retrieved by running `ace --help`):](#available-commands-ace-cli-version-001-can-also-be-retrieved-by-running-ace---help)
-    - [Available use cases:](#available-use-cases)
-    - [Available install components:](#available-install-components)
-    - [Available uninstall components:](#available-uninstall-components)
-
-
-## Release notes
-Please check [RELEASE_NOTES.md](RELEASE_NOTES.md)
-
-## Deployment Modes
-The ACE-BOX comes in two deployment modes based on your requirement:
-
-  1. Local installation (on your workstation) using vagrant
-  2. Cloud installation using terraform
-
-## Components
-ACE-BOX comes with the following components
-
-| Component | Version |
-|----|-------|
-| microk8s | 1.18 |
-| jenkins | lts (222.4 at time of writing) |
-| helm | 3 |
-| oneagent | latest |
-| activegate for private synthetic node | latest |
-| ace dashboard | built on the spot |
-| gitea local git server | 1.11.6 |
 
 
 ## Installation
@@ -97,6 +62,20 @@ The recommended way of installing any ACE box version, local or cloud, is via Te
 2. Run `terraform apply`
 3. Grab a coffee, this process will take some time...
 
+### Available use cases:
+
+  Use Case | k8s | OneAgent | Synth AG | Jenkins | Gitea | Registry | GitLab | AWX | Keptn | Dashboard | Notes |
+  -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- |
+  `demo_default` | x | x | x | x | x | x |  |  | x | x | See `demo_quality_gates_jenkins` |
+  `demo_quality_gates_jenkins` | x | x | x | x | x | x |  |  | x | x | Demo flow for Quality Gates using Jenkins/Gitea/Cloud Automation |
+  `demo_security_gates_jenkins` | x | x | x | x | x | x |  |  | x |  x | Demo flow for Security Gates using Jenkins/Gitea/Cloud Automation |
+  `demo_quality_gates_gitlab` | x | x | x |  |  |  | x |  | x |  x | Demo flow for Quality Gates using GitLab/Cloud Automation |
+  `demo_auto_remediation_ansible` | x | x | x | x | x | x |  | x |  | x | Demo flow for Quality Gates using Jenkins/Gitea/Cloud Automation |
+  `demo_monaco_gitops` | x | x | x | x | x | x |  |  |  | x | Demo flow for Quality Gates using Jenkins/Gitea/Cloud Automation |
+
+  > Note: When specifying Cloud Automation instance details, Keptn will not be deployed
+
+  > Note: You can also enter a link to an external repository (e.g.: `https://github.com/my-org/my-ext-use-case.git`) if you want to load an external use case. See [External Use Case](#external-use-case) for more details
 
 ### Useful Terraform Commands
 
@@ -108,77 +87,14 @@ Command  | Result
 
 
 ## Alt: Local installation with Vagrant
-The local version can also be installed via Vagrant without the need for Terraform:
-
-1. Check prereqs:
-    - A workstation with at least **16GB of RAM** and **4 CPU cores (non-virtualized)**
-    - Virtualbox installed (6.1.x tested)
-    - Vagrant installed (2.2.7 tested)
-    - Dynatrace tenant (prod or sprint, dev not recommended)
-    - Hyper-V disabled on Windows machines, check [Troubleshooting](#troubleshooting) for more information
-1. Go to folder `./terraform/vagrant/`
-2. Create `ace.config.yml` e.g. by renaming `ace.config.yml.tpl` in place or copying from `refs`)
-3. Set required variables:
-    ```
-    ---
-    dynatrace:
-      tenant:     "https://....dynatrace.com"
-      apitoken:   "dt0c01...."
-      paastoken:  "dt0c01...."
-    ...
-    ```
-4. Run `vagrant up`
-5. Grab a coffee, this process will take some time...
-
-**Note:** The first time you might need to enter your passord at least once.
-
-**Note:** Windows users will be asked to confirm security notifications a couple of times during the provisioning process, so keep an eye out for them.
-
-### SSH into the box
-Execute `vagrant ssh` to gain access to the VM
-
-### Vagrant cleanup
-
-Vagrant offers many commands to deal with the VM, check the below:
-
-Command  | Result
--------- | -------
-`vagrant destroy` | stops and deletes all traces of the vagrant machine |
-`vagrant halt` | stops the vagrant machine - i.e. shutting down your workstation |
-`vagrant suspend` | suspends the machine - i.e. sleep your workstation |
-`vagrant resume` | resume a suspended vagrant machine |
-`vagrant up` | starts and provisions the vagrant environment |
-`vagrant box update` | update the base box from time to time to ensure it is the latest version. While provisioning a message will be shown that there are updates available |
+Check [Vagrant instructions](terraform/vagrant/Readme.md)
 
 
 ## Alt: Bring-your-own-VM
 
-Bringing your own Ubuntu Virtual Machine has not been tested, but should be possible:
+Bringing your own Ubuntu Virtual Machine has not been tested, but should be possible.
 
-1. Check prereqs:
-    - An Ubuntu 18.04 virtual machine (Ubuntu 18.04 LTS "minimal" tested)
-    - A public IP address
-    - Port 80 and/or 443 exposed
-    - A non-root user to run the script actions needs to be created (e.g. `ace`)
-    - Repository cloned to VM
-2. Run initialization script:
-    ```
-    $ cd user-skel
-    $ ./init.sh
-    ```
-  This will install all necessary dependencies including the ace-cli.
-
-3. Prepare ACE-Box by running the ace-cli and providing required values when prompted:
-      ```
-      $ ace prepare
-      ```
-
-4. Enable ACE-Box use case:
-      ```
-      $ ace enable demo_default
-      ```
-5. Grab a coffee, this process will take some time...
-
+Check out [BYO VM](docs/byo-vm.md) documentation for more details.
 
 ## Default mode
 
@@ -199,37 +115,7 @@ By default, an ACE Box is prepared for a demo use case (i.e. "demo_default"). Th
 
 In addition to use cases provided natively by the ACE-Box, it is now possible to source external use cases. This allows using the ACE-Box as a platform to develop own use cases, demos, trainings, etc.
 
-An external use case can be sourced and provisioned by simply providing a link to the Git repository of the external use case. In order for the ACE-Box to understand such external use cases, they need to comply with a specific structure. Further information, a template, as well as examples of such a structure can be found [here](https://github.com/dynatrace-ace/ace-box-ext-template).
-
-To enable an external use case the Terraform `use_case` variable has to be set to the Git repository URL. For example:
-
-```
-...
-use_case = "https://<user>:<token>@github.com/my-org/my-ext-use-case.git"
-...
-```
-
-> Attention: You usually want to host your code in a private repository. Therefore, credentials need to be added to the URL. For public repositories, it is also possible to omit credentials.
-
-### Curated roles
-
-The following curated roles can be added to your external use case. See [template repository](https://github.com/dynatrace-ace/ace-box-ext-template) for examples.
-
-|Role|Description|
-|---|---|
-|awx|Installs AWX|
-|cloudautomation|Links an existing Cloud Automation instance|
-|dashboard|Installs the ACE-Box dashboard|
-|dt-activegate|Installs a Synthetic enabled ActiveGate|
-|dt-oneagent|Installs the OneAgent operator|
-|gitea|Installs Gitea|
-|gitlab|Installs Gitlab|
-|jenkins|Installs Jenkins|
-|keptn|Installs Keptn|
-|microk8s|Installs Microk8s|
-|monaco|Installs Monaco|
-|otel-collector|Installs an OpenTelemetry collector|
-|repository|Initializes and publishes a local repository to Gitea or Gitlab|
+Check out [External Use Case](docs/external-use-case.md) documentation for more info.
 
 ## Configuration settings
 
@@ -247,19 +133,9 @@ Gitea | 2 mCores, 250MB RAM
 
 
 ## Troubleshooting
-1. During testing it was found that when spinning up the VM while being connected to the corporate VPN it would sometimes have connectivity issues. It is best to disconnect from the VPN while provisioning. This will also drastically speed up the provision process. VPN issues manifests themselves mainly in Jenkins being empty (no pipelines or plugins installed) after provisioning. If you have this, turn off VPN and re-provision.
-2. Some users had issues with (old) customer vpn software that was installed - not even connected -  causing issues with the virtual network adaptors. If you are having issues provisioning the VM, uninstall them when possible
-3. If you are using a Windows workstation, ensure that Hyper-V native virtualization has been disabled as it clashes with virtualbox. Hyper-V support is on the roadmap. Check this [doc](https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v) on how to disable Hyper-V
-4. If at any given time the provisioning fails, it is best to execute a `vagrant destroy` followed by a `vagrant up`
-5. During testing there were some cases where Jenkins plugins refused to install while provisioning which renders the installation useless for the other usecases. In that case, it is best to execute a `vagrant destroy` followed by a `vagrant up`
-6. On Windows machines the following error might occur `Stderr: VBoxManage.exe: error: Failed to open/create the internal network 'HostInterfaceNetworking-VirtualBox Host-Only Ethernet Adapter #2' (VERR_INTNET_FLT_IF_NOT_FOUND)`. It was found that disabling and enabling the network adaptor solved the issue
-7. On Windows machines it might be that a `vagrant ssh` `gives vagrant@127.0.0.1: Permission denied (publickey,gssapi-keyex,gssapi-with-mic)` or similar. A common cause is that a privatekey file has too many people with access. This was seen when the repo was cloned in a subfolder of the C drive on Dynatrace laptops. It is suggested to use a subfolder of your home directory.
-8. Your DNS settings might hinder the provisioning of the ace-box as the name does not resolve. It mainly manifests itself when it is waiting for gitea to be up. If you get a message like the below, you are most likely affected. The best way to go around it, is by changing the DNS settings on your network adaptor and point to for example the google DNS servers (8.8.8.8 and 8.8.4.4). A quick google search should tell you how to do that for your particular OS.
-    ```
-    FAILED - RETRYING: Gitea - Wait for API to be up (1 retries left).
-    fatal: [ace-box]: FAILED! => {"attempts": 60, "changed": false, "content": "", "elapsed": 0, "msg": "Status code was -1 and not [200]: Request failed: <urlopen error [Errno -5] No address associated with hostname>", "redirected": false, "status": -1, "url": "http://gitea.192.168.50.10.nip.io/api/v1/admin/orgs?access_token=1c8d4fcef25b3ae2a15d17d29be64c2c7aa22501"}
-    ```
-9. Dynatrace Operator installation fails with "Error: Cluster already exists: ...": If you ever had a cluster created before please remove it from https://<dynatrace tenant>/#settings/kubernetesmonitoring;gf=all
+1. For Vagrant troubleshooting, check [Vagrant](terraform/vagrant/Readme.md#troubleshooting)
+2. Make sure that the cloud account you are using for provisioning has sufficient permissions to create all the resources in the particular region
+   
 
 ## Accessing ACE Dashboard
 At the end of the provisioning, an ACE Dashboard gets created with more information on how to use the ACE-BOX. Check out [ACE Dashboard](Dashboard.md) for more details.
@@ -275,51 +151,4 @@ Spinning up an ACE-Box can be split into two main parts:
    4) Once the VM is prepared, the actual installation happens by running `ace install default`
 
 ## ACE-CLI
-`ACE-Box` comes with an including management tool called 'ace-cli'. This cli tool can be used to prepare and/or install the ACE-Box or certain components.
-
-```
-$ ace --version
-```
-
-### Available commands (ace-cli version 0.0.1, can also be retrieved by running `ace --help`):
-
-  Command | Result |
-  -- | -- |
-  `prepare` | Prepares ACE-Box for further use (e.g. persists domain, protocol settings) |
-  `enable <use case>` | Prepares ACE-Box for a use case by installing set of components (see table below) |
-  `install <component>` | Installs ACE-Box or components thereof (see table below) |
-  `uninstall <component>` | Uninstalls ACE-Box or components thereof (see table below) |
-  `set <config>` | Updates ACE-Box config. <config> can be any of key=value, e.g. `$ace set foo=bar` |
-
-### Available use cases:
-
-  Component | Result |
-  -- | -- |
-  `demo_default` | Prepares ACE Box for a default demo, i.e. Quality Gates on Jenkins |
-  `demo_appsec` | Prepares ACE Box for an AppSec demo, i.e. AppSec Quality Gates on Jenkins |
-  `demo_autorem` | Prepares ACE Box for an auto remediation demo, i.e. Jenkins canary traffic shift with AWX |
-  `demo_gitlab` | Prepares ACE Box for a default demo, i.e. Quality Gates on GitLab |
-  `demo_monaco_gitops` | Prepares ACE Box for a monaco gitops demo |
-  `demo_all` | A combination of `demo_default` `demo_appsec` `demo_autorem` `demo_gitlab` `demo_monaco_gitops`. Please note that this will require a VM with more capacity|
-  `https://github.com/my-org/my-ext-use-case.git` | URL to repository hosting external use case |
-
-  
-### Available install components:
-
-  Component | Result |
-  -- | -- |
-  `microk8s` | Installs and configures MicroK8S |
-  `gitea` | Installs and configures Gitea |
-  `gitlab` | Installs and configures Gitlab |
-  `dynatrace` | Installs and configures Dynatrace OneAgent and ActiveGate |
-  `repositories` | Installs and configures Git Repositories |
-  `keptn` | Installs and configures Keptn |
-  `monaco` | Installs and configures Monaco |
-  `jenkins` | Installs and configures Jenkins |
-  `dashboard` | Installs and configures the dashboard |
-  `awx` | Installs AWX |
-
-
-### Available uninstall components:
-
-Please refer to `$ ace --help` for available commands
+Check out the [ACE CLI](docs/ace-cli.md) page for more details.
