@@ -109,7 +109,7 @@
     organization: "{{ organization.id }}"
     state: present
     scm_type: git
-    scm_url: "{{ git_url }}/{{ git_org_demo_autorem }}/{{ git_repo_demo_autorem }}-awx"
+    scm_url: "{{ git_url }}/{{ demo_auto_remediation_org }}/{{ demo_auto_remediation_repo_name }}-awx"
     scm_branch: main
     scm_clean: true
     scm_delete_on_update: false

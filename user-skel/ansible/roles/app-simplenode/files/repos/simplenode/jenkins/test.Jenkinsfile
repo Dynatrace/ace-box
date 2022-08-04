@@ -15,8 +15,8 @@ pipeline {
         choice(name: 'QG_MODE', choices: ['yaml','dashboard'], description: 'Use yaml or dashboard for QG')
     }
     environment {
-        TARGET_NAMESPACE = 'simplenode-staging'
-        PROJECT = 'simplenodeproject'
+        TARGET_NAMESPACE = 'simplenode-jenkins-staging'
+        PROJECT = 'simplenode-jenkins'
         MONITORING = 'dynatrace'
         VU = 1
         LOOPCOUNT = 100

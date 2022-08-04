@@ -3,10 +3,10 @@ config:
     - management-zone-prod: "management-zone.json"
 
 management-zone-staging:
-    - environment: "simplenodeappsec-staging"
-    - name: "simplenodeappsec-staging"
+    - environment: "simplenode-appsec-staging"
+    - name: "simplenode-appsec-staging"
 
 management-zone-prod:
-    - environment: "simplenodeappsec-production"
-    - name: "simplenodeappsec-production"
+    - environment: "simplenode-appsec-production"
+    - name: "simplenode-appsec-production"
 

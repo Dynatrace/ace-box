@@ -8,6 +8,6 @@ dashboard-staging:
     - managementZoneName: "/simplenode-appsec/management-zone/management-zone-staging.name"
 
 dashboard-qg:
-    - name: "KQG;project=simplenodeproject-appsec;service=simplenodeservice;stage=staging"
+    - name: "KQG;project=simplenode-appsec;service=simplenodeservice;stage=staging"
     - managementZoneId: "/simplenode-appsec/management-zone/management-zone-staging.id"
     - managementZoneName: "/simplenode-appsec/management-zone/management-zone-staging.name"

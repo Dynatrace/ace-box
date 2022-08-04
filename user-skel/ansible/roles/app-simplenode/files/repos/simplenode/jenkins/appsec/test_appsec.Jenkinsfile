@@ -15,8 +15,8 @@ pipeline {
         choice(name: 'QG_MODE', choices: ['yaml','dashboard'], description: 'Use yaml or dashboard for QG')
     }
     environment {
-        TARGET_NAMESPACE = 'simplenodeappsec-staging'
-        PROJECT = 'simplenodeproject-appsec'
+        TARGET_NAMESPACE = 'simplenode-appsec-staging'
+        PROJECT = 'simplenode-appsec'
         MONITORING = 'dynatrace'
         VU = 1
         LOOPCOUNT = 500
