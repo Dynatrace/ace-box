@@ -1,4 +1,3 @@
 ---
 dt_operator_release: "v0.3.0"
 dt_operator_namespace: "dynatrace"
-host_group: "PROD_US"
