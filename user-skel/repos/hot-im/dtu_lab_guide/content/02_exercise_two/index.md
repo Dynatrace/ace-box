@@ -1,10 +1,4 @@
-**Table of Contents**
-
-* [Learning Objectives](#learning-objectives)
-* [2.1 Take Action on Intelligent Answers](#21-take-action-on-intelligent-answers)
-* [2.2 Map Dynatrace Alerts to Incident Tickets](#22-map-dynatrace-alerts-to-incident-tickets)
-
-## Lab 2 | Consolidation | Incident Management Workshop 
+## Consolidation 
 
 Dynatrace's 4-step approach to Automate Incident Management & Drive AIOps started with the Baselining phase, where we let Dynatrace learn the behavior of your application and detect incidents automatically. As soon as you understand how alerts from Dynatrace work, we can move onto the **Consolidation phase**.
 
