@@ -1,11 +1,4 @@
-**Table of Contents**
-
-* [Learning objectives](#learning-objectives)
-* [3.1 Enrich your CMDB](#31-enrich-your-cmdb)
-* [3.2 Enrich your Incident Tickets](#32-enrich-your-incident-tickets)
-* [3.3 Bidirectional Traceability](#33-bidirectional-traceability)
-
-## Lab 3 | Integration | Incident Management Workshop 
+## Integration 
 
 Dynatrace's 4-step approach to Automate Incident Management & Drive AIOps started with the Baselining phase, where we let Dynatrace learn the behavior of your application and detect incidents automatically. This was followed by the Consolidation phase, in which we defined the alert-to-incident lifecycle and reduced the amount of alerts to a healthy amount for the first phase of our gradual rollout. As soon as we have a blueprint design of the integration with your incident management process, we can move onto the **Integration phase**.
 
