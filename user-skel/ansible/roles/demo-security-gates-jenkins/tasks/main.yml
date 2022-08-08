@@ -69,10 +69,14 @@
 
 - include_role:
     name: jenkins
-  vars: 
+    tasks_from: template-values-file
+  vars:
     demo_repo: "{{ demo_security_gates_jenkins_repo_name }}"
     demo_org: "{{ demo_security_gates_jenkins_org }}"
     demo_jenkins_folder: "{{ demo_security_gates_jenkins_folder }}"
+
+- include_role:
+    name: jenkins
 
 - include_role:
     name: dashboard

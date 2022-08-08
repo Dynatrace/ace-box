@@ -74,10 +74,14 @@
 
 - include_role:
     name: jenkins
-  vars: 
+    tasks_from: template-values-file
+  vars:
     demo_repo: "{{ demo_monaco_gitops_repo_name }}"
     demo_org: "{{ demo_monaco_gitops_org }}"
     demo_jenkins_folder: "{{ demo_monaco_gitops_folder }}"
+
+- include_role:
+    name: jenkins
 
 - include_role:
     name: dashboard

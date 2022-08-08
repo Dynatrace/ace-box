@@ -113,15 +113,6 @@
     group: "{{ ace_box_user }}"
     mode: '0644'
 
-- name: Template additional Helm values file
-  template:
-    src: "{{ include_jenkins_value_file }}"
-    dest: "{{ role_path }}/files/helm/{{ include_jenkins_value_file | basename | replace('.j2', '') }}"
-    owner: "{{ ace_box_user }}"
-    group: "{{ ace_box_user }}"
-    mode: '0644'
-  when: include_jenkins_value_file is defined and include_jenkins_value_file != ""
-
 - name: Find all Jenkins Helm values files
   find:
     paths: "{{ role_path }}/files/helm"

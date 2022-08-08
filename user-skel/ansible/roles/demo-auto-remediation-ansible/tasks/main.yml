@@ -90,10 +90,14 @@
 
 - include_role:
     name: jenkins
+    tasks_from: template-values-file
   vars:
     demo_repo: "{{ demo_auto_remediation_repo_name }}"
     demo_org: "{{ demo_auto_remediation_org }}"
     demo_jenkins_folder: "{{ demo_auto_remediation_folder }}"
+
+- include_role:
+    name: jenkins
 
 - include_role:
     name: awx
