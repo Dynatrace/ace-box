@@ -18,14 +18,9 @@
     - never
 
   # Use case - Quality Gates with Jenkins demo
-  - role: demo-default
-    tags:
-    - demo_default
-    - never
-
-  # Use case - Quality Gates with Jenkins demo
   - role: demo-quality-gates-jenkins
     tags:
+    - demo_default
     - demo_quality_gates_jenkins
     - never
 
