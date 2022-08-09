@@ -1,6 +1,6 @@
 pipeline {
   parameters {
-    string(name: 'ENDPOINT', defaultValue: 'http://simplenodeservice.STAGE.11.22.33.44.xip.io', description: 'The URL Endpoint of your SimpleNodeService, e.g: http://simplenode.production.10.23.23.43.xip.io', trim: true)
+    string(name: 'ENDPOINT', defaultValue: 'http://simplenodeservice-STAGE.11.22.33.44.xip.io', description: 'The URL Endpoint of your SimpleNodeService, e.g: http://simplenode.production.10.23.23.43.xip.io', trim: true)
     string(name: 'PRODUCTION', defaultValue: 'Production', description: 'Production or non Production Load', trim: true)
   }
   agent {

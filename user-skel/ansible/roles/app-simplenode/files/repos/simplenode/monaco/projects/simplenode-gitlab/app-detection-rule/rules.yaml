@@ -6,12 +6,12 @@ config:
 app-detect-simplenode-staging:
   - name: "/simplenode-gitlab/application/app-simplenode-staging.name"
   - applicationId: "/simplenode-gitlab/application/app-simplenode-staging.id"
-  - pattern: "http://simplenodeservice.simplenode-gitlab-staging.{{ .Env.INGRESS_DOMAIN }}"
+  - pattern: "{{ .Env.INGRESS_PROTOCOL }}://simplenodeservice-simplenode-gitlab-staging.{{ .Env.INGRESS_DOMAIN }}"
 
 app-detect-simplenode-prod:
   - name: "/simplenode-gitlab/application/app-simplenode-prod.name"
   - applicationId: "/simplenode-gitlab/application/app-simplenode-prod.id"
-  - pattern: "http://simplenodeservice.simplenode-gitlab-production.{{ .Env.INGRESS_DOMAIN }}"
+  - pattern: "{{ .Env.INGRESS_PROTOCOL }}://simplenodeservice-simplenode-gitlab-production.{{ .Env.INGRESS_DOMAIN }}"
 
   
 # Below examples to apply certain configuration on a tenant basis

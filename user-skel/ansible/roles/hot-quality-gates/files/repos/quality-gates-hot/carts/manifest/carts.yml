@@ -82,7 +82,7 @@ metadata:
   namespace: dev
 spec:
   rules:
-  - host: carts.dev.INGRESS_DOMAIN_PLACEHOLDER
+  - host: carts-dev.INGRESS_DOMAIN_PLACEHOLDER
     http:
       paths:
       - backend:

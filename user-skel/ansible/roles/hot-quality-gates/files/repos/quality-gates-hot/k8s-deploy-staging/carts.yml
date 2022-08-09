@@ -80,7 +80,7 @@ metadata:
   namespace: staging
 spec:
   rules:
-  - host: carts.staging.INGRESS_DOMAIN_PLACEHOLDER
+  - host: carts-staging.INGRESS_DOMAIN_PLACEHOLDER
     http:
       paths:
       - backend:

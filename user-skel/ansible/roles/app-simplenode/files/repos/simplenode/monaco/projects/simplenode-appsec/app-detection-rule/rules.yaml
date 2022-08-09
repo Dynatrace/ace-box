@@ -6,12 +6,12 @@ config:
 app-detect-simplenode-staging:
   - name: "/simplenode-appsec/application/app-simplenode-staging.name"
   - applicationId: "/simplenode-appsec/application/app-simplenode-staging.id"
-  - pattern: "http://simplenodeservice.simplenodeappsec-staging.{{ .Env.INGRESS_DOMAIN }}"
+  - pattern: "{{ .Env.INGRESS_PROTOCOL }}://simplenodeservice-simplenodeappsec-staging.{{ .Env.INGRESS_DOMAIN }}"
 
 app-detect-simplenode-prod:
   - name: "/simplenode-appsec/application/app-simplenode-prod.name"
   - applicationId: "/simplenode-appsec/application/app-simplenode-prod.id"
-  - pattern: "http://simplenodeservice.simplenodeappsec-production.{{ .Env.INGRESS_DOMAIN }}"
+  - pattern: "{{ .Env.INGRESS_PROTOCOL }}://simplenodeservice-simplenodeappsec-production.{{ .Env.INGRESS_DOMAIN }}"
 
   
 # Below examples to apply certain configuration on a tenant basis

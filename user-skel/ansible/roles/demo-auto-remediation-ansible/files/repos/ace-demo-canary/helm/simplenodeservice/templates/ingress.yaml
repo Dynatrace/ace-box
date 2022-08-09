@@ -17,7 +17,7 @@ metadata:
   name: {{ .Release.Name }}
 spec:
   rules:
-  - host: {{ .Chart.Name }}.{{ .Release.Namespace }}.{{ .Values.domain }}
+  - host: {{ .Chart.Name }}-{{ .Release.Namespace }}.{{ .Values.domain }}
     http:
       paths:
       - backend:

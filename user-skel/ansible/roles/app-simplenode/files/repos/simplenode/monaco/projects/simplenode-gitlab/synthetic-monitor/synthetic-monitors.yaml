@@ -4,7 +4,7 @@ config:
   
 health-staging:
     - name: "webcheck.simplenode-gitlab.staging"
-    - url: "http://simplenodeservice.simplenode-gitlab-staging.{{ .Env.INGRESS_DOMAIN }}/api/invoke?url=https://www.dynatrace.com"
+    - url: "{{ .Env.INGRESS_PROTOCOL }}://simplenodeservice-simplenode-gitlab-staging.{{ .Env.INGRESS_DOMAIN }}/api/invoke?url=https://www.dynatrace.com"
     - description: "Health Check for simplenode-gitlab in staging"
     - location: "/infrastructure/synthetic-location/acebox.id"
     - managementZoneId: "/simplenode-gitlab/management-zone/management-zone-staging.id"
@@ -14,7 +14,7 @@ health-staging:
 
 health-prod:
     - name: "webcheck.simplenode-gitlab.production"
-    - url: "http://simplenodeservice.simplenode-gitlab-production.{{ .Env.INGRESS_DOMAIN }}/api/invoke?url=https://www.dynatrace.com"
+    - url: "{{ .Env.INGRESS_PROTOCOL }}://simplenodeservice-simplenode-gitlab-production.{{ .Env.INGRESS_DOMAIN }}/api/invoke?url=https://www.dynatrace.com"
     - description: "Health Check for simplenode-gitlab in production"
     - location: "/infrastructure/synthetic-location/acebox.id"
     - managementZoneId: "/simplenode-gitlab/management-zone/management-zone-prod.id"
