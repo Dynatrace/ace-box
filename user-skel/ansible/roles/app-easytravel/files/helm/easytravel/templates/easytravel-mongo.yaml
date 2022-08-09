@@ -6,7 +6,7 @@ metadata:
   name: mongo-credentials
 type: Opaque
 data:
-  ET_DATABASE_LOCATION: easytravel-mongodb:27017
-  ET_MONGO_AUTH_DB: admin
-  ET_DATABASE_USER: etAdmin
-  ET_DATABASE_PASSWORD: adminadmin
+  ET_DATABASE_LOCATION: ZWFzeXRyYXZlbC1tb25nb2RiOjI3MDE3Cg== #easytravel-mongodb:27017
+  ET_MONGO_AUTH_DB: YWRtaW4K #admin
+  ET_DATABASE_USER: ZXRBZG1pbgo= #etAdmin
+  ET_DATABASE_PASSWORD: YWRtaW5hZG1pbgo= #adminadmin
