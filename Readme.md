@@ -56,18 +56,18 @@ The recommended way of installing any ACE box version, local or cloud, is via Te
         | ca_tenant | no | Dynatrace Cloud Automation environment URL. **Note**: if not set, Keptn will be installed and used instead |
         | ca_api_token | no | Dynatrace Cloud Automation api token. **Note**: if not set, Keptn will be installed and used instead |
         | acebox_user | no | User, for which home directory will be provisioned (Default: "ace") |
-        | use_case | no | Use case, the ACE Box will be prepared for. Options are:<ul> <li>`demo_default` (Default)</li><li>`demo_appsec`</li><li>`demo_autorem`</li><li>`demo_gitlab`</li><li>`demo_monaco_gitops`, `demo_all`</li><li>URL to an external repository (see below)</li></ul>|
+        | use_case | no | Use case, the ACE Box will be prepared for. Options are:<ul> <li>`demo_default` (Default)</li><li>`demo_quality_gates_jenkins`</li><li>`demo_security_gates_jenkins`</li><li>`demo_quality_gates_gitlab`</li><li>`demo_auto_remediation_ansible`</li><li>`demo_all`</li><li>`demo_monaco_gitops`<li>URL to an external repository (see below)</li></ul>|
 
-1. Run `terraform init`
-2. Run `terraform apply`
-3. Grab a coffee, this process will take some time...
+4. Run `terraform init`
+5. Run `terraform apply`
+6. Grab a coffee, this process will take some time...
 
 ### Available use cases:
 
   Use Case | k8s | OneAgent | Synth AG | Jenkins | Gitea | Registry | GitLab | AWX | Keptn | Dashboard | Notes |
   -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- |
-  `demo_default` | x | x | x | x | x | x |  |  | x | x | See `demo_quality_gates_jenkins` |
-  `demo_quality_gates_jenkins` | x | x | x | x | x | x |  |  | x | x | Demo flow for Quality Gates using Jenkins/Gitea/Cloud Automation |
+  `demo_default` | x | x | x | x | x | x |  |  | x | x | See `demo_quality_gates_jenkins` below. `demo_default` and `demo_quality_gates_jenkins` can be used interchangeably. |
+  `demo_quality_gates_jenkins` | x | x | x | x | x | x |  |  | x | x | Demo flow for Quality Gates using Jenkins/Gitea/Cloud Automation. `demo_default` and `demo_quality_gates_jenkins` can be used interchangeably. |
   `demo_security_gates_jenkins` | x | x | x | x | x | x |  |  | x |  x | Demo flow for Security Gates using Jenkins/Gitea/Cloud Automation |
   `demo_quality_gates_gitlab` | x | x | x |  |  |  | x |  | x |  x | Demo flow for Quality Gates using GitLab/Cloud Automation |
   `demo_auto_remediation_ansible` | x | x | x | x | x | x |  | x |  | x | Demo flow for Quality Gates using Jenkins/Gitea/Cloud Automation |
