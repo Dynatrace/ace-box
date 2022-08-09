@@ -6,12 +6,12 @@ config:
 app-detect-simplenode-staging:
   - name: "/simplenode/application/app-simplenode-staging.name"
   - applicationId: "/simplenode/application/app-simplenode-staging.id"
-  - pattern: "{{ .Env.INGRESS_PROTOCOL }}://simplenodeservice-simplenode-staging.{{ .Env.INGRESS_DOMAIN }}"
+  - pattern: "{{ .Env.INGRESS_PROTOCOL }}://simplenodeservice-simplenode-jenkins-staging.{{ .Env.INGRESS_DOMAIN }}"
 
 app-detect-simplenode-prod:
   - name: "/simplenode/application/app-simplenode-prod.name"
   - applicationId: "/simplenode/application/app-simplenode-prod.id"
-  - pattern: "{{ .Env.INGRESS_PROTOCOL }}://simplenodeservice-simplenode-production.{{ .Env.INGRESS_DOMAIN }}"
+  - pattern: "{{ .Env.INGRESS_PROTOCOL }}://simplenodeservice-simplenode-jenkins-production.{{ .Env.INGRESS_DOMAIN }}"
 
 # Below examples to apply certain configuration on a tenant basis
 # rule.dev:
