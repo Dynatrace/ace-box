@@ -27,11 +27,13 @@ install_targets = [
     'jenkins',
     'dashboard',
     'awx',
-    'cloudautomation'
+    'cloudautomation',
+    'app_easytravel'
 ]
 uninstall_targets = [
     'gitlab',
-    'jenkins'
+    'jenkins',
+    'app_easytravel'
 ]
 enable_targets = [
     'demo_default',

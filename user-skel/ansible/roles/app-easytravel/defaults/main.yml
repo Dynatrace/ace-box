@@ -1,0 +1,3 @@
+---
+easytravel_namespace: "easytravel"
+easytravel_domain: "easytravel.{{ ingress_domain }}"

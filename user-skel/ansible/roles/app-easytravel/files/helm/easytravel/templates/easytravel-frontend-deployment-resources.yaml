@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}-frontend
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}-frontend
+      product: {{ .Chart.Name }}
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}-frontend
+        product: {{ .Chart.Name }}
+      annotations:
+        support.contact: "demoability@dynatrace.com"
+        support.channel: "#team-demoability"
+    spec:
+      containers:
+      - env:
+        - name: CATALINA_OPTS
+          value: -Dconfig.apmServerDefault=APM -Xmx525m -Djava.security.egd=file:/dev/./urandom
+        - name: ET_BACKEND_URL
+          value: http://{{ .Chart.Name }}-backend:8080
+        image: dynatrace/easytravel-frontend:{{ .Values.config.frontend.tag }}
+        imagePullPolicy: "Always"
+        name: {{ .Chart.Name }}-frontend
+        ports:
+        - containerPort: 8080
+        resources:
+          limits:
+            cpu: 150m
+            memory: 2000Mi
+          requests:
+            cpu: 100m
+            memory: 1000Mi
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 8080
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 8080
+            scheme: HTTP
+          periodSeconds: 60
+          initialDelaySeconds: 240
+          successThreshold: 1
+          timeoutSeconds: 1
+      restartPolicy: Always

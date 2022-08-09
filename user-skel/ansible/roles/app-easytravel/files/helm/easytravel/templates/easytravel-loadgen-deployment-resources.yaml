@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loadgen
+spec:
+  selector:
+    matchLabels:
+      app: loadgen
+      product: {{ .Chart.Name }}
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: loadgen
+        product: {{ .Chart.Name }}
+      annotations:
+        support.contact: "demoability@dynatrace.com"
+        support.channel: "#team-demoability"
+    spec:
+      containers:
+      - env:
+        - name: ET_APM_SERVER_DEFAULT
+          value: APM
+        - name: ET_WWW_URL
+          value: http://easytravel-www:80
+        - name: ET_FRONTEND_URL
+          value: http://easytravel-www:80
+        - name: ET_BACKEND_URL
+          value: http://easytravel-backend:8080
+        - name: ET_PROBLEMS
+          value: "DatabaseCleanup"
+        - name: ET_PROBLEMS_DELAY
+          value: "0"
+        - name: ET_VISIT_NUMBER
+          value: "5"
+        image: dynatrace/easytravel-loadgen:{{ .Values.config.loadgen.tag }}
+        name: {{ .Chart.Name }}-loadgen
+        resources:
+          limits:
+            cpu: 100m
+            memory: 768Mi
+          requests:
+            cpu: 50m
+            memory: 500Mi
+      restartPolicy: Always

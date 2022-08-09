@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}-pluginservice
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}-pluginservice
+      product: {{ .Chart.Name }}
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}-pluginservice
+        product: {{ .Chart.Name }}
+      annotations:
+        support.contact: "demoability@dynatrace.com"
+        support.channel: "#team-demoability"
+    spec:
+      containers:
+      - env:
+        - name: CATALINA_OPTS
+          value: -Dconfig.apmServerDefault=APM -Djava.security.egd=file:/dev/./urandom
+        image: robjahn/easytravel-pluginservice:k8s
+        imagePullPolicy: "Always"
+        name: {{ .Chart.Name }}-pluginservice
+        ports:
+        - containerPort: 8080
+        resources:
+          limits:
+            cpu: 100m
+            memory: 512Mi
+          requests:
+            cpu: 50m
+            memory: 300Mi
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /PluginService/ping
+            port: 8080
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+      restartPolicy: Always

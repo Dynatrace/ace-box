@@ -1,0 +1,12 @@
+- name: Deploy Easytravel
+  kubernetes.core.helm:
+    name: easytravel
+    chart_ref: "{{ role_path }}/files/helm/easytravel"
+    release_namespace: "{{ easytravel_namespace }}"
+    create_namespace: true
+    wait: true
+    wait_timeout: 30m
+    values:
+      config:
+        ingress:
+          domain: "{{ easytravel_domain }}"

@@ -98,6 +98,13 @@
         - dashboard
     tags:
     - dashboard
+  - include_role:
+      name: app-easytravel
+      apply:
+        tags:
+        - app_easytravel
+    tags:
+    - app_easytravel
   # - name: Uninstall Gitlab
   #   include_tasks:
   #     file: roles/gitlab/tasks/uninstall.yml

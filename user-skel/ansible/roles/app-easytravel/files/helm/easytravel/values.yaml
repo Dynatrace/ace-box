@@ -1,0 +1,28 @@
+
+build_version: BUILD_PLACEHOLDER
+version: VERSION_PLACEHOLDER
+dt_tags: DT_TAGS_PLACEHOLDER
+dt_custom_prop: DT_CUSTOM_PROP_PLACEHOLDER
+image: IMAGE_PLACEHOLDER
+environment: ENVIRONMENT_PLACEHOLDER
+
+# microk8s >1.20 expects class "public"
+
+
+config:
+  ingress:
+    class: public
+    domain: "easytravel.mydomain.com"
+  frontend:
+    tag: "latest"
+  backend:
+    tag: "latest"
+  loadgen:
+    #tag: "2.0.0.3256"
+    tag: "latest"
+  www:
+    tag: "latest"
+  mongodb:
+    tag: "latest"
+  pluginservice:
+    tag: "latest"
