@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Chart.Name }}-pluginservice
+  name: {{ .Release.Name }}-pluginservice
 spec:
   selector:
     matchLabels:
-      app: {{ .Chart.Name }}-pluginservice
-      product: {{ .Chart.Name }}
+      app: {{ .Release.Name }}-pluginservice
+      product: {{ .Release.Name }}
   replicas: 1
   template:
     metadata:
       labels:
-        app: {{ .Chart.Name }}-pluginservice
-        product: {{ .Chart.Name }}
+        app: {{ .Release.Name }}-pluginservice
+        product: {{ .Release.Name }}
       annotations:
-        support.contact: "demoability@dynatrace.com"
-        support.channel: "#team-demoability"
+        support.contact: "ace.innovation@dynatrace.com"
+        support.channel: "#help-acebox"
     spec:
       containers:
       - env:
@@ -23,7 +23,7 @@ spec:
           value: -Dconfig.apmServerDefault=APM -Djava.security.egd=file:/dev/./urandom
         image: robjahn/easytravel-pluginservice:k8s
         imagePullPolicy: "Always"
-        name: {{ .Chart.Name }}-pluginservice
+        name: {{ .Release.Name }}-pluginservice
         ports:
         - containerPort: 8080
         resources:

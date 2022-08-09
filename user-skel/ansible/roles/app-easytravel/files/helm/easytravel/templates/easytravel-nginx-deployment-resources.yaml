@@ -1,32 +1,30 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Chart.Name }}-www
-  namespace: {{ .Chart.Name }}
+  name: {{ .Release.Name }}-www
+  namespace: {{ .Release.Name }}
 spec:
   selector:
     matchLabels:
-      app: {{ .Chart.Name }}-www
-      product: {{ .Chart.Name }}
+      app: {{ .Release.Name }}-www
+      product: {{ .Release.Name }}
   replicas: 1
   template:
     metadata:
       labels:
-        app: {{ .Chart.Name }}-www
-        product: {{ .Chart.Name }}
+        app: {{ .Release.Name }}-www
+        product: {{ .Release.Name }}
       annotations:
-        support.contact: "demoability@dynatrace.com"
-        support.channel: "#team-demoability"
+        support.contact: "ace.innovation@dynatrace.com"
+        support.channel: "#help-acebox"
     spec:
       containers:
-      - env:
-        - name: ET_FRONTEND_LOCATION
-          value: {{ .Chart.Name }}-frontend:8080
-        - name: ET_BACKEND_LOCATION
-          value: {{ .Chart.Name }}-backend:8080
+      - envFrom:
+        - configMapRef:
+            name: easytravel-config
         image: dynatrace/easytravel-nginx:{{ .Values.config.backend.tag }}
         imagePullPolicy: "Always"
-        name: {{ .Chart.Name }}-www
+        name: {{ .Release.Name }}-www
         ports:
         - containerPort: 80
         - containerPort: 8080

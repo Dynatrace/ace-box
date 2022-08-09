@@ -2,13 +2,13 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: {{ .Chart.Name }}-frontend
-  name: {{ .Chart.Name }}-frontend
+    app: {{ .Release.Name }}-frontend
+  name: {{ .Release.Name }}-frontend
 spec:
   ports:
   - name: "8080"
     port: 8080
     targetPort: 8080
   selector:
-    app: {{ .Chart.Name }}-frontend
+    app: {{ .Release.Name }}-frontend
   type: ClusterIP

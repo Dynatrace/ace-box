@@ -1,31 +1,31 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Chart.Name }}-frontend
+  name: {{ .Release.Name }}-frontend
 spec:
   selector:
     matchLabels:
-      app: {{ .Chart.Name }}-frontend
-      product: {{ .Chart.Name }}
+      app: {{ .Release.Name }}-frontend
+      product: {{ .Release.Name }}
   replicas: 1
   template:
     metadata:
       labels:
-        app: {{ .Chart.Name }}-frontend
-        product: {{ .Chart.Name }}
+        app: {{ .Release.Name }}-frontend
+        product: {{ .Release.Name }}
       annotations:
-        support.contact: "demoability@dynatrace.com"
-        support.channel: "#team-demoability"
+        support.contact: "ace.innovation@dynatrace.com"
+        support.channel: "#help-acebox"
     spec:
       containers:
-      - env:
-        - name: CATALINA_OPTS
-          value: -Dconfig.apmServerDefault=APM -Xmx525m -Djava.security.egd=file:/dev/./urandom
-        - name: ET_BACKEND_URL
-          value: http://{{ .Chart.Name }}-backend:8080
+      - envFrom:
+        - configMapRef:
+            name: easytravel-config
+        - secretRef:
+            name: mongo-credentials
         image: dynatrace/easytravel-frontend:{{ .Values.config.frontend.tag }}
         imagePullPolicy: "Always"
-        name: {{ .Chart.Name }}-frontend
+        name: {{ .Release.Name }}-frontend
         ports:
         - containerPort: 8080
         resources:

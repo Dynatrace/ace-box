@@ -1,41 +1,31 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Chart.Name }}-backend
+  name: {{ .Release.Name }}-backend
 spec:
   selector:
     matchLabels:
-      app: {{ .Chart.Name }}-backend
-      product: {{ .Chart.Name }}
+      app: {{ .Release.Name }}-backend
+      product: {{ .Release.Name }}
   replicas: 1
   template:
     metadata:
       labels:
-        app: {{ .Chart.Name }}-backend
-        product: {{ .Chart.Name }}
+        app: {{ .Release.Name }}-backend
+        product: {{ .Release.Name }}
       annotations:
         support.contact: "ace.innovation@dynatrace.com"
         support.channel: "#help-acebox"
     spec:
       containers:
-      - env:
-        - name: CATALINA_OPTS
-          value: -Dconfig.apmServerDefault=APM -Xmx300m -Djava.security.egd=file:/dev/./urandom
-        - name: ET_DATABASE_LOCATION
-          value: easytravel-mongodb:27017
-        - name: ET_MONGO_AUTH_DB
-          value: admin
-        - name: ET_DATABASE_USER
-          value: etAdmin
-        - name: ET_DATABASE_PASSWORD
-          value: adminadmin
-        - name: ET_PLUGIN_SERVICE_LOCATION
-          value: easytravel-pluginservice:8080
-        - name: ET_BACKEND_URL
-          value: http://easytravel-backend:8080
-        image: dynatrace/easytravel-backend:{{ .Values.config.backend.tag }}
+      - image: dynatrace/easytravel-backend:{{ .Values.config.backend.tag }}
         imagePullPolicy: "Always"
-        name: {{ .Chart.Name }}-backend
+        name: {{ .Release.Name }}-backend
+        envFrom:
+        - configMapRef:
+            name: easytravel-config
+        - secretRef:
+            name: mongo-credentials
         resources:
           limits:
             cpu: 200m

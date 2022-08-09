@@ -1,0 +1,12 @@
+---
+#Example - Don't source control actual secrets
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mongo-credentials
+type: Opaque
+data:
+  ET_DATABASE_LOCATION: easytravel-mongodb:27017
+  ET_MONGO_AUTH_DB: admin
+  ET_DATABASE_USER: etAdmin
+  ET_DATABASE_PASSWORD: adminadmin

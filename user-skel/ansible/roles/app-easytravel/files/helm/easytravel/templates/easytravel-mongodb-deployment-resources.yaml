@@ -1,26 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Chart.Name }}-mongodb
+  name: {{ .Release.Name }}-mongodb
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Chart.Name }}-mongodb
-      product: {{ .Chart.Name }}
+      app: {{ .Release.Name }}-mongodb
+      product: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ .Chart.Name }}-mongodb
-        product: {{ .Chart.Name }}
+        app: {{ .Release.Name }}-mongodb
+        product: {{ .Release.Name }}
       annotations:
-        support.contact: "demoability@dynatrace.com"
-        support.channel: "#team-demoability"
+        support.contact: "ace.innovation@dynatrace.com"
+        support.channel: "#help-acebox"
     spec:
       containers:
       - image: dynatrace/easytravel-mongodb:{{ .Values.config.backend.tag }}
         imagePullPolicy: "Always"
-        name: {{ .Chart.Name }}-mongodb
+        name: {{ .Release.Name }}-mongodb
         ports:
         - containerPort: 27017
         - containerPort: 28017

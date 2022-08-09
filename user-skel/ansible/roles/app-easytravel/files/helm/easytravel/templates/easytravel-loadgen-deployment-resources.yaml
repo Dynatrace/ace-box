@@ -6,35 +6,23 @@ spec:
   selector:
     matchLabels:
       app: loadgen
-      product: {{ .Chart.Name }}
+      product: {{ .Release.Name }}
   replicas: 1
   template:
     metadata:
       labels:
         app: loadgen
-        product: {{ .Chart.Name }}
+        product: {{ .Release.Name }}
       annotations:
-        support.contact: "demoability@dynatrace.com"
-        support.channel: "#team-demoability"
+        support.contact: "ace.innovation@dynatrace.com"
+        support.channel: "#help-acebox"
     spec:
       containers:
-      - env:
-        - name: ET_APM_SERVER_DEFAULT
-          value: APM
-        - name: ET_WWW_URL
-          value: http://easytravel-www:80
-        - name: ET_FRONTEND_URL
-          value: http://easytravel-www:80
-        - name: ET_BACKEND_URL
-          value: http://easytravel-backend:8080
-        - name: ET_PROBLEMS
-          value: "DatabaseCleanup"
-        - name: ET_PROBLEMS_DELAY
-          value: "0"
-        - name: ET_VISIT_NUMBER
-          value: "5"
+      - envFrom:
+        - configMapRef:
+            name: easytravel-config
         image: dynatrace/easytravel-loadgen:{{ .Values.config.loadgen.tag }}
-        name: {{ .Chart.Name }}-loadgen
+        name: {{ .Release.Name }}-loadgen
         resources:
           limits:
             cpu: 100m
