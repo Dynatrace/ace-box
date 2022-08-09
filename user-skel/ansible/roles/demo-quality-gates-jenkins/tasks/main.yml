@@ -81,7 +81,4 @@
     name: jenkins
 
 - include_role:
-    name: app-easytravel
-
-- include_role:
     name: dashboard
