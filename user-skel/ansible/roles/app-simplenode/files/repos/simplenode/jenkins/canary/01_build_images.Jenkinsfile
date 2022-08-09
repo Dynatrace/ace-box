@@ -39,11 +39,15 @@ pipeline {
 						}
 						stage('Deploy good build'){
 							steps {
+                script {
+									env.GIT_HASH_SHORT = sh(returnStdout: true, script: "echo ${env.GIT_COMMIT} | cut -c1-6 | tr -d '\n'")
+								}
 								build job: "demo-auto-remediation/3. Deploy",
 								wait: false,
 								parameters: [
 									string(name: 'IMAGE_NAME', value: "${env.IMAGE_NAME}"),
-									string(name: 'IMAGE_TAG', value: "${env.IMAGE_TAG}")
+									string(name: 'IMAGE_TAG', value: "${env.IMAGE_TAG}"),
+                  string(name: 'RELEASE_BUILD_VERSION', value: "${env.IMAGE_TAG}-${env.GIT_HASH_SHORT}")
 								]
 							}
 						}
@@ -72,13 +76,17 @@ pipeline {
 						}
 						stage('Deploy faulty build'){
 							steps {
+                script {
+									env.GIT_HASH_SHORT = sh(returnStdout: true, script: "echo ${env.GIT_COMMIT} | cut -c1-6 | tr -d '\n'")
+								}
 								build job: "demo-auto-remediation/3. Deploy",
 								wait: false,
 								parameters: [
 									string(name: 'IMAGE_NAME', value: "${env.IMAGE_NAME}"),
 									string(name: 'IMAGE_TAG', value: "${env.IMAGE_TAG}"),
 									booleanParam(name: 'IS_CANARY', value: true),
-									string(name: 'CANARY_WEIGHT', value: "25")
+									string(name: 'CANARY_WEIGHT', value: "0"),
+                  string(name: 'RELEASE_BUILD_VERSION', value: "${env.IMAGE_TAG}-${env.GIT_HASH_SHORT}")
 								]
 							}
 						}
@@ -98,6 +106,5 @@ pipeline {
 				wait: false
 			}
 		}
-
 	}
 }

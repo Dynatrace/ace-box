@@ -1,11 +1,28 @@
 def getTagRulesForPGIEvent() {
     def tagMatchRules = [
         [
-            "meTypes": [ "PROCESS_GROUP_INSTANCE"],
+            "meTypes": ["PROCESS_GROUP_INSTANCE"],
             tags: [
                 ["context": "ENVIRONMENT", "key": "DT_RELEASE_BUILD_VERSION", "value": "${env.ART_VERSION}"],
                 ["context": "KUBERNETES", "key": "app.kubernetes.io/name", "value": "${env.APP_NAME}"],
-                ["context": "KUBERNETES", "key": "app.kubernetes.io/part-of", "value": "simplenode-app"],
+                ["context": "KUBERNETES", "key": "app.kubernetes.io/part-of", "value": "${env.RELEASE_NAME}"],
+                ["context": "KUBERNETES", "key": "app.kubernetes.io/component", "value": "api"],
+                ["context": "CONTEXTLESS", "key": "environment", "value": "${env.TARGET_NAMESPACE}"]
+            ]
+        ]
+    ]
+
+    return tagMatchRules
+}
+
+def getTagRulesForServiceEvent() {
+    def tagMatchRules = [
+        [
+            "meTypes": ["SERVICE"],
+            tags: [
+                ["context": "ENVIRONMENT", "key": "DT_RELEASE_BUILD_VERSION", "value": "${env.ART_VERSION}"],
+                ["context": "KUBERNETES", "key": "app.kubernetes.io/name", "value": "${env.APP_NAME}"],
+                ["context": "KUBERNETES", "key": "app.kubernetes.io/part-of", "value": "${env.RELEASE_NAME}"],
                 ["context": "KUBERNETES", "key": "app.kubernetes.io/component", "value": "api"],
                 ["context": "CONTEXTLESS", "key": "environment", "value": "${env.TARGET_NAMESPACE}"]
             ]

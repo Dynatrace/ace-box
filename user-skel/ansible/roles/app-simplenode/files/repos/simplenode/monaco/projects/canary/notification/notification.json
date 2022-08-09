@@ -1,0 +1,12 @@
+{
+  "type": "ANSIBLETOWER",
+  "name": "{{ .name }}",
+  "alertingProfile": "{{ .alertingProfileId }}",
+  "active": true,
+  "jobTemplateURL": "{{ .Env.AWX_REMEDIATION_URL }}",
+  "acceptAnyCertificate": true,
+  "username": "{{ .Env.AWX_ADMIN_USER }}",
+  "password": "{{ .Env.AWX_ADMIN_PASSWORD }}",
+  "jobTemplateID": "{{ .Env.AWX_REMEDIATION_TEMPLATE_ID }}",
+  "customMessage": ""
+}

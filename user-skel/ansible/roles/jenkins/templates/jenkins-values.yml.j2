@@ -9,7 +9,11 @@ controller:
     enabled: true
     hostName: jenkins.{{ ingress_domain }}
     annotations:
-      kubernetes.io/ingress.class: public
+      kubernetes.io/ingress.class: {{ ingress_class }}
+{% if ingress_protocol is defined and ingress_protocol == "https" %}
+      nginx.ingress.kubernetes.io/proxy-redirect-from: http
+      nginx.ingress.kubernetes.io/proxy-redirect-to: https
+{% endif %}
   jenkinsUrlProtocol: {{ ingress_protocol }}
   installPlugins:
     - command-launcher:1.6

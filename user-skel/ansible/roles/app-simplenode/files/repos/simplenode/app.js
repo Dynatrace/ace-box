@@ -1,7 +1,7 @@
 const EMPTY = "<EMPTY>";
 var port = process.env.PORT || 8080,
-    http = require('http'),
-    fs = require('fs'),
+	http = require('http'),
+	fs = require('fs'),
 	os = require('os'),
 	sem = require('semver'),
 	dttags = process.env.DT_TAGS || EMPTY,
@@ -14,7 +14,7 @@ var port = process.env.PORT || 8080,
 	keptn_project = process.env.KEPTN_PROJECT || EMPTY,
 	keptn_stage = process.env.KEPTN_STAGE || EMPTY,
 	keptn_service = process.env.KEPTN_SERVICE || EMPTY,
-    html = fs.readFileSync('index.html').toString().replace("HOSTNAME", os.hostname()); //  + " with DT_TAGS=" + dttags + "\nDT_CUSTOM_PROP=" + dtcustprops + "\nDT_CLUSTER_ID=" + dtclusterid);
+  html = fs.readFileSync('index.html').toString().replace("HOSTNAME", os.hostname()); //  + " with DT_TAGS=" + dttags + "\nDT_CUSTOM_PROP=" + dtcustprops + "\nDT_CLUSTER_ID=" + dtclusterid);
 	sver = sem.valid('1.2.3') // semver is loaded for a medium level appsec vulneraility
 
 // ======================================================================
@@ -50,7 +50,9 @@ var init = function(newBuildNumber) {
 
 	// CHECK IF WE ARE RUNNING "In Production"
 	// first we check if somebody set the deployment_group_name env-variable
-	inProduction = process.env.DT_APPLICATION_ENVIRONMENT && (process.env.DT_APPLICATION_ENVIRONMENT.includes("production")||process.env.DT_APPLICATION_ENVIRONMENT.includes("canary"))  ;
+	inProduction = process.env.DT_RELEASE_STAGE && 
+		(process.env.DT_RELEASE_STAGE.includes("production") || process.env.DT_RELEASE_STAGE.includes("canary"));
+	
 	// second we check whether our host or podname includes blue or green in its name - we use this for blue/green deployments in production
 	if(!inProduction) {
 		inProduction = os.hostname().includes("green") || os.hostname().includes("blue");
@@ -79,13 +81,12 @@ var init = function(newBuildNumber) {
 
 	switch(buildNumber) {
 		case 2:
-			//failInvokeRequestPercentage = 50;
 			minSleep = 600;
 			break;
 		case 4: 
 			minSleep = minSleep * 2;
 			if(inProduction) {
-				failInvokeRequestPercentage = 20;
+				failInvokeRequestPercentage = 50;
 			}
 			break;
 		case 5:

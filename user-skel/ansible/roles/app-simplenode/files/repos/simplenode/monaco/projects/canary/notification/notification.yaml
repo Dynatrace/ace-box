@@ -1,0 +1,9 @@
+config:
+  - simplenode.canary: "notification.json"
+
+simplenode.canary:
+  - name: "ace-demo-canary"
+  - alertingProfileId: "/canary/alerting-profile/simplenode.canary.id"
+  # As of August 2022, Monaco fails due to missing environment values
+  # even when the specific project requiring those values is not targeted.
+  # Workaround: Seems to work when env substituation is done in .json files.

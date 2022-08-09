@@ -2,53 +2,50 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    meta.helm.sh/release-name: "{{ .Release.Name }}"
   labels:
     app: "{{ .Chart.Name }}"
-    version: {{ .Values.version }}
+    version: "{{ .Values.version }}"
     app.kubernetes.io/name: "{{ .Chart.Name }}"
     app.kubernetes.io/component: "api"
-    app.kubernetes.io/version: "{{ .Values.version }}"
+    app.kubernetes.io/version: "{{ .Values.build_version }}"
     app.kubernetes.io/managed-by: "Helm"
     chart: "{{ .Chart.Name }}"
-    app.kubernetes.io/part-of: "simplenode-app-canary"
-  name: {{ .Release.Name }}
+    app.kubernetes.io/part-of: "{{ .Release.Name }}"
+  name: "{{ .Release.Name }}"
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Chart.Name }}
-      version: {{ .Values.version }}
+      app: "{{ .Chart.Name }}"
+      version: "{{ .Values.version }}"
   template:
     metadata:
       labels:
-        app: {{ .Chart.Name }}
-        version: {{ .Values.version }}
+        app: "{{ .Chart.Name }}"
+        version: "{{ .Values.version }}"
         app.kubernetes.io/name: "{{ .Chart.Name }}"
-        app.kubernetes.io/version: "{{ .Values.version }}"
+        app.kubernetes.io/version: "{{ .Values.build_version }}"
         app.kubernetes.io/managed-by: "Helm"
-        app.kubernetes.io/part-of: "simplenode-app-canary"
+        app.kubernetes.io/part-of: "{{ .Release.Name }}"
         app.kubernetes.io/component: "api"
     spec:
       containers:
       - name: {{ .Chart.Name }}
         image: {{ .Values.image }}
+        imagePullPolicy: Always
         env:
-        # - name: DT_TAGS
-        #   value: {{ .Values.dt_tags }}
-        # - name: DT_CUSTOM_PROP
-        #   value: {{ .Values.dt_custom_prop }}
-        - name: DT_APPLICATION_RELEASE_VERSION
+        - name: DT_TAGS
+          value: {{ .Values.dt_tags }}
+        - name: DT_CUSTOM_PROP
+          value: {{ .Values.dt_custom_prop }}
+        - name: DT_RELEASE_VERSION
           value: "{{ .Values.version }}"
-        - name: DT_APPLICATION_BUILD_VERSION
+        - name: DT_RELEASE_BUILD_VERSION
           value: "{{ .Values.build_version }}"
-        - name: DT_APPLICATION_NAME
-          value: "simplenode-app-canary"
-        - name: DT_APPLICATION_ENVIRONMENT
+        - name: DT_RELEASE_PRODUCT
+          value: "{{ .Chart.Name }}"
+        - name: DT_RELEASE_STAGE
           value: "{{ .Release.Namespace }}"
-        - name: DT_CLUSTER_ID
-          value: "simplenodeservice-canary"
         resources:
           limits:
             cpu: 200m
