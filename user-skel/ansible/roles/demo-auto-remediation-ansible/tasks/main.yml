@@ -78,7 +78,6 @@
   vars:
     git_username: "{{ gitea_username }}"
     git_password: "{{ gitea_password }}"
-    git_domain: "{{ gitea_domain }}"
     git_remote: "gitea"
     git_org_name: "{{ demo_auto_remediation_org }}"
     repo_name: "{{ demo_auto_remediation_repo_name }}"
@@ -95,6 +94,7 @@
     demo_repo: "{{ demo_auto_remediation_repo_name }}"
     demo_org: "{{ demo_auto_remediation_org }}"
     demo_jenkins_folder: "{{ demo_auto_remediation_folder }}"
+    git_domain: "gitea.{{ ingress_domain }}"
 
 - include_role:
     name: jenkins

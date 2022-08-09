@@ -59,7 +59,6 @@
     git_repo: "{{ item.repo_target }}"
     git_username: "{{ gitea_username }}"
     git_password: "{{ gitea_password }}"
-    git_domain: "{{ gitea_domain }}"
     git_remote: "gitea"
   loop:
   - { repo_target: "{{ demo_monaco_gitops_repo_name }}", repo_src: "{{ role_path }}/files/repos/monaco", git_org: "{{ demo_monaco_gitops_org }}" }
@@ -79,6 +78,7 @@
     demo_repo: "{{ demo_monaco_gitops_repo_name }}"
     demo_org: "{{ demo_monaco_gitops_org }}"
     demo_jenkins_folder: "{{ demo_monaco_gitops_folder }}"
+    git_domain: "gitea.{{ ingress_domain }}"
 
 - include_role:
     name: jenkins
