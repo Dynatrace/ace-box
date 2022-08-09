@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #INGRESS_DOMAIN=$1
-#ENDPOINT="http://simplenodeservice.canary.$INGRESS_DOMAIN/api/invoke?url=https://www.dynatrace.com"
+#ENDPOINT="$INGRESS_PROTOCOL://simplenodeservice-canary.$INGRESS_DOMAIN/api/invoke?url=https://www.dynatrace.com"
 ENDPOINT=$1
 
 invoke () {

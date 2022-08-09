@@ -14,7 +14,7 @@ metadata:
   name: {{ .Chart.Name }}
 spec:
   rules:
-  - host: {{ .Chart.Name }}.{{ .Values.environment }}.{{ .Values.domain }}
+  - host: {{ .Chart.Name }}-{{ .Values.environment }}.{{ .Values.domain }}
     http:
       paths:
       - backend:

@@ -5,4 +5,4 @@ config:
 app-detect-simplenode-canary:
   - name: "/canary/application/app-simplenode-canary.name"
   - applicationId: "/canary/application/app-simplenode-canary.id"
-  - pattern: "http://simplenodeservice.canary.{{ .Env.INGRESS_DOMAIN }}"
+  - pattern: "{{ .Env.INGRESS_PROTOCOL }}://simplenodeservice-canary.{{ .Env.INGRESS_DOMAIN }}"
