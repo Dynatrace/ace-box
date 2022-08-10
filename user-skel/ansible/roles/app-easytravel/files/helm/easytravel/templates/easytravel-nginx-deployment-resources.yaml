@@ -19,10 +19,19 @@ spec:
         support.channel: "#help-acebox"
     spec:
       containers:
-      - envFrom:
+      - env:
+        - name: DT_RELEASE_VERSION
+          value: {{ .Values.config.www.tag }}
+        - name: DT_RELEASE_BUILD_VERSION
+          value: {{ .Values.config.www.tag }}
+        - name: DT_RELEASE_STAGE
+          value: {{ .Release.Namespace }}
+        - name: DT_RELEASE_PRODUCT
+          value: {{ .Release.Name }}
+        envFrom:
         - configMapRef:
             name: easytravel-config
-        image: dynatrace/easytravel-nginx:{{ .Values.config.backend.tag }}
+        image: dynatrace/easytravel-nginx:{{ .Values.config.www.tag }}
         imagePullPolicy: "Always"
         name: {{ .Release.Name }}-www
         ports:
@@ -43,7 +52,7 @@ spec:
             scheme: HTTP
           periodSeconds: 10
           successThreshold: 1
-          timeoutSeconds: 1
+          timeoutSeconds: 10
         livenessProbe:
           failureThreshold: 3
           httpGet:
@@ -53,5 +62,5 @@ spec:
           periodSeconds: 60
           initialDelaySeconds: 240
           successThreshold: 1
-          timeoutSeconds: 1
+          timeoutSeconds: 10
       restartPolicy: Always

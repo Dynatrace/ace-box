@@ -14,4 +14,8 @@ data:
   ET_PROBLEMS_DELAY: "0"
   ET_VISIT_NUMBER: "2"
   ET_APM_SERVER_DEFAULT: APM
-  CATALINA_OPTS: "-Dconfig.apmServerDefault=APM -XX:+UseContainerSupport -XX:MaxRAMPercentage=80"
+  CATALINA_OPTS: "-Dconfig.apmServerDefault=APM -XX:+UseContainerSupport -XX:MaxRAMPercentage=80 -Djava.security.egd=file:/dev/./urandom"
+  ET_DATABASE_LOCATION: easytravel-mongodb:27017
+  ET_MONGO_AUTH_DB: admin
+  ET_DATABASE_USER: etAdmin
+  ET_DATABASE_PASSWORD: adminadmin

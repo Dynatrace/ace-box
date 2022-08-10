@@ -21,6 +21,15 @@ spec:
       - image: dynatrace/easytravel-mongodb:{{ .Values.config.backend.tag }}
         imagePullPolicy: "Always"
         name: {{ .Release.Name }}-mongodb
+        env:
+        - name: DT_RELEASE_VERSION
+          value: {{ .Values.config.mongodb.tag }}
+        - name: DT_RELEASE_BUILD_VERSION
+          value: {{ .Values.config.mongodb.tag }}
+        - name: DT_RELEASE_STAGE
+          value: {{ .Release.Namespace }}
+        - name: DT_RELEASE_PRODUCT
+          value: {{ .Release.Name }}
         ports:
         - containerPort: 27017
         - containerPort: 28017

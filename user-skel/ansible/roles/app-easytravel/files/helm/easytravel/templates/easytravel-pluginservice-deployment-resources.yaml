@@ -19,9 +19,15 @@ spec:
     spec:
       containers:
       - env:
-        - name: CATALINA_OPTS
-          value: -Dconfig.apmServerDefault=APM -Djava.security.egd=file:/dev/./urandom
-        image: robjahn/easytravel-pluginservice:k8s
+        - name: DT_RELEASE_VERSION
+          value: {{ .Values.config.pluginservice.tag }}
+        - name: DT_RELEASE_BUILD_VERSION
+          value: {{ .Values.config.pluginservice.tag }}
+        - name: DT_RELEASE_STAGE
+          value: {{ .Release.Namespace }}
+        - name: DT_RELEASE_PRODUCT
+          value: {{ .Release.Name }}
+        image: dynatrace/easytravel-pluginservice:{{ .Values.config.pluginservice.tag }}
         imagePullPolicy: "Always"
         name: {{ .Release.Name }}-pluginservice
         ports:

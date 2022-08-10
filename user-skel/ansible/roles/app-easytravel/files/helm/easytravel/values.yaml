@@ -9,7 +9,8 @@ config:
   loadgen:
     #tag: "2.0.0.3256"
     tag: "latest"
-    problems: "BadCacheSynchronization,CPULoad,DatabaseCleanup,DatabaseSlowdown,FetchSizeTooSmall,JourneySearchError404,JourneySearchError500,LoginProblems,MobileErrors,TravellersOptionBox"
+    #problems: "BadCacheSynchronization,CPULoad,DatabaseCleanup,DatabaseSlowdown,FetchSizeTooSmall,JourneySearchError404,JourneySearchError500,LoginProblems,MobileErrors,TravellersOptionBox"
+    problems: "DatabaseSlowdown"
   www:
     tag: "latest"
   mongodb:

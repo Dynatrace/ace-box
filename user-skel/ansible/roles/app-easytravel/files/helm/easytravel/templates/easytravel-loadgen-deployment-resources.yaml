@@ -21,6 +21,15 @@ spec:
       - envFrom:
         - configMapRef:
             name: easytravel-config
+        env:
+        - name: DT_RELEASE_VERSION
+          value: {{ .Values.config.loadgen.tag }}
+        - name: DT_RELEASE_BUILD_VERSION
+          value: {{ .Values.config.loadgen.tag }}
+        - name: DT_RELEASE_STAGE
+          value: {{ .Release.Namespace }}
+        - name: DT_RELEASE_PRODUCT
+          value: {{ .Release.Name }}
         image: dynatrace/easytravel-loadgen:{{ .Values.config.loadgen.tag }}
         name: {{ .Release.Name }}-loadgen
         resources:
