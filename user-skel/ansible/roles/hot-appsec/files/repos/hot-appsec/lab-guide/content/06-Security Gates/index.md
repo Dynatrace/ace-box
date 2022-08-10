@@ -120,7 +120,7 @@ This view can be filtered by the management zone **monaco-mz-staging** that was 
 
 We will see here both the old version (Release version 1.0.0) and the new version (Release version 5.0.0) deployed here.
 
-Click on the **simplenodeservice.staging** entry that corresponds with **Release version 5.0.0** within the Release inventory. This opens the **Release details** screen:
+Click on the **simplenodeservice.simplenode-appsec-staging** entry that corresponds with **Release version 5.0.0** within the Release inventory. This opens the **Release details** screen:
 
 ![](../../assets/images/7-release-details.png)
 

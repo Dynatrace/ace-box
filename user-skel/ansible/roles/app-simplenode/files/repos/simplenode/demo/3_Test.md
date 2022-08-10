@@ -60,7 +60,7 @@ stage('Run performance test') {
                 def status = jmeter.executeJmeterTest ( 
                     scriptName: "jmeter/simplenodeservice_load.jmx",
                     resultsDir: "perfCheck_${env.APP_NAME}_staging_${BUILD_NUMBER}",
-                    serverUrl: "simplenodeservice.staging", 
+                    serverUrl: "simplenodeservice.${env.TARGET_NAMESPACE}", 
                     serverPort: 80,
                     checkPath: '/health',
                     vuCount: env.VU.toInteger(),
@@ -273,7 +273,7 @@ Modifying these files in gitea will affect the Quality Gate evaluation.
 
 Once you have shown this, go back into Dynatrace.
 
-Go to the **simplenodeservice.staging** Service (either via the _Process Group_ in the _Release details_ screen you were at before, or directly via _Transactions and Services_).
+Go to the **simplenodeservice.simplenode-jenkins-staging** Service (either via the _Process Group_ in the _Release details_ screen you were at before, or directly via _Transactions and Services_).
 
 From within the screen, create a new _Multidimensional analysis view_ 
 
