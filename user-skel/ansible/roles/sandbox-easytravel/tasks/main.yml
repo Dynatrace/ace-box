@@ -1,0 +1,29 @@
+---
+- include_role:
+    name: config-v2
+    tasks_from: set-var
+  vars:
+    var_key_to_set: "sandbox_easytravel"
+    var_value_to_set: true
+
+- include_role:
+    name: microk8s
+
+- include_role:
+    name: dt-activegate
+
+- include_role:
+    name: dt-oneagent
+
+- include_role:
+    name: monaco
+
+- include_role:
+    name: monaco
+    tasks_from: dt-cleanup
+
+- include_role:
+    name: app-easytravel
+
+- include_role:
+    name: dashboard

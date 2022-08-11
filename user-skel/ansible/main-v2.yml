@@ -54,6 +54,12 @@
     - hot_appsec
     - never
 
+  # Use case - Sandbox with EasyTravel
+  - role: sandbox-easytravel
+    tags:
+    - sandbox_easytravel
+    - never
+
   # Use case - Monaco GitOps hands-on training
   # - role: hot-monaco-gitops
   #   tags:
