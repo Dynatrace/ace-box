@@ -45,22 +45,22 @@ spec:
             cpu: 100m
             memory: 1000Mi
         readinessProbe:
-          failureThreshold: 3
+          failureThreshold: 10
           httpGet:
             path: /
             port: 8080
             scheme: HTTP
-          periodSeconds: 10
+          periodSeconds: 15
           successThreshold: 1
           timeoutSeconds: 10
         livenessProbe:
-          failureThreshold: 3
+          failureThreshold: 10
           httpGet:
             path: /
             port: 8080
             scheme: HTTP
-          periodSeconds: 60
-          initialDelaySeconds: 240
+          periodSeconds: 30
+          initialDelaySeconds: 120
           successThreshold: 1
           timeoutSeconds: 10
       restartPolicy: Always

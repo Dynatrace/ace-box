@@ -1,3 +1,6 @@
 ---
-easytravel_namespace: "easytravel"
+easytravel_namespace: "easytravel-prod"
 easytravel_domain: "easytravel.{{ ingress_domain }}"
+easytravel_angular_domain: "easytravel-angular.{{ ingress_domain }}"
+easytravel_visit_number: 5
+easytravel_apply_monaco: true

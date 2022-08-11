@@ -2,7 +2,10 @@ config:
   ingress:
     class: public
     domain: "easytravel.mydomain.com"
+    angular_domain: "easytravel-angular.mydomain.com"
   frontend:
+    tag: "latest"
+  angular_frontend:
     tag: "latest"
   backend:
     tag: "latest"
@@ -11,6 +14,9 @@ config:
     tag: "latest"
     #problems: "BadCacheSynchronization,CPULoad,DatabaseCleanup,DatabaseSlowdown,FetchSizeTooSmall,JourneySearchError404,JourneySearchError500,LoginProblems,MobileErrors,TravellersOptionBox"
     problems: "DatabaseSlowdown"
+    visitNumber: "5" #visits generated per minute
+  loadgen_angular:
+    tag: "latest"
   www:
     tag: "latest"
   mongodb:

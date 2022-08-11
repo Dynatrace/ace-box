@@ -1,0 +1,7 @@
+---
+- name: Monaco - Apply Configuration for Project
+  shell:
+    cmd: /usr/local/bin/monaco -e={{ role_path }}/files/environments.yaml -p {{ monaco_project }} {{ monaco_projects_root }}
+  environment:
+    DT_ENV_URL: "{{ dynatrace_tenant_url }}"
+    DT_API_TOKEN: "{{ dynatrace_api_token }}"

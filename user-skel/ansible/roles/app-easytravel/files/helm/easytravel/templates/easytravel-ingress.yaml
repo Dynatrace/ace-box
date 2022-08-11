@@ -24,3 +24,30 @@ spec:
               number: 80
         path: /
         pathType: ImplementationSpecific
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    meta.helm.sh/release-name: {{ .Release.Name }}
+    kubernetes.io/ingress.class: {{ .Values.config.ingress.class }}
+  labels:
+    app: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: Helm
+    chart: {{ .Release.Name }}
+    heritage: Helm
+    release: {{ .Release.Name }}
+  name: {{ .Release.Name }}-angular
+spec:
+  rules:
+  - host: {{ .Values.config.ingress.angular_domain }}
+    http:
+      paths:
+      - backend:
+          service:
+            name: {{ .Release.Name }}-www-angular
+            port: 
+              number: 80
+        path: /
+        pathType: ImplementationSpecific

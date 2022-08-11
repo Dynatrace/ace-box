@@ -1,17 +1,23 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-www
+  name: {{ .Release.Name }}-angular-frontend
 spec:
+  replicas: 1
   selector:
     matchLabels:
-      app: {{ .Release.Name }}-www
+      app: {{ .Release.Name }}-angular-frontend
       product: {{ .Release.Name }}
-  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
   template:
     metadata:
       labels:
-        app: {{ .Release.Name }}-www
+        app: {{ .Release.Name }}-angular-frontend
         product: {{ .Release.Name }}
       annotations:
         support.contact: "ace.innovation@dynatrace.com"
@@ -20,9 +26,9 @@ spec:
       containers:
       - env:
         - name: DT_RELEASE_VERSION
-          value: {{ .Values.config.www.tag }}
+          value: {{ .Values.config.angular_frontend.tag }}
         - name: DT_RELEASE_BUILD_VERSION
-          value: {{ .Values.config.www.tag }}
+          value: {{ .Values.config.angular_frontend.tag }}
         - name: DT_RELEASE_STAGE
           value: {{ .Release.Namespace }}
         - name: DT_RELEASE_PRODUCT
@@ -30,37 +36,35 @@ spec:
         envFrom:
         - configMapRef:
             name: easytravel-config
-        image: dynatrace/easytravel-nginx:{{ .Values.config.www.tag }}
-        imagePullPolicy: "Always"
-        name: {{ .Release.Name }}-www
+        image: dynatrace/easytravel-angular-frontend:{{ .Values.config.angular_frontend.tag }}
+        imagePullPolicy: Always
+        name: {{ .Release.Name }}-angular-frontend
         ports:
-        - containerPort: 80
         - containerPort: 8080
-        - containerPort: 9079
+          protocol: TCP
+        - containerPort: 8280
+          protocol: TCP
         resources:
-          limits:
-            cpu: 100m
-            memory: 150Mi
           requests:
-            cpu: 50m
-            memory: 90Mi
+            memory: "700Mi"
+          limits:
+            memory: "700Mi"
         readinessProbe:
-          failureThreshold: 3
+          failureThreshold: 10
           httpGet:
             path: /
-            port: 80
+            port: 8080
             scheme: HTTP
-          periodSeconds: 10
+          periodSeconds: 15
           successThreshold: 1
           timeoutSeconds: 10
         livenessProbe:
-          failureThreshold: 3
+          failureThreshold: 10
           httpGet:
             path: /
-            port: 80
+            port: 8080
             scheme: HTTP
-          periodSeconds: 60
-          initialDelaySeconds: 240
+          periodSeconds: 30
+          initialDelaySeconds: 120
           successThreshold: 1
           timeoutSeconds: 10
-      restartPolicy: Always
