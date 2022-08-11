@@ -1,0 +1,29 @@
+{
+    "name": "{{ .name }}",
+    "rules": [
+      {
+        "type": "PROCESS_GROUP",
+        "enabled": true,
+        "valueFormat": "{{ .valueFormat }}",
+        "propagationTypes": [
+          "PROCESS_GROUP_TO_SERVICE"
+        ],
+        "conditions": [
+          {
+            "key": {
+              "attribute": "PROCESS_GROUP_PREDEFINED_METADATA",
+              "dynamicKey": "{{ .dynamicKey }}",
+              "type": "PROCESS_PREDEFINED_METADATA_KEY"
+            },
+            "comparisonInfo": {
+              "type": "STRING",
+              "operator": "EXISTS",
+              "value": null,
+              "negate": false,
+              "caseSensitive": null
+            }
+          }
+        ]
+      }
+    ]
+  }

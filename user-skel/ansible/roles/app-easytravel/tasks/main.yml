@@ -5,8 +5,36 @@
     release_namespace: "{{ easytravel_namespace }}"
     create_namespace: true
     wait: true
-    wait_timeout: 30m
+    wait_timeout: 10m
     values:
       config:
         ingress:
           domain: "{{ easytravel_domain }}"
+          angular_domain: "{{ easytravel_angular_domain }}"
+        loadgen:
+          visitNumber: "{{ easytravel_visit_number }}"
+
+- set_fact:
+    monaco_projects_folder: "{{ role_path }}/files/monaco/projects"
+
+- name: Source Private Synthetic Node ID
+  include_role:
+    name: dt-activegate
+    tasks_from: source-node-id
+  when: dt_synthetic_node_id is not defined 
+
+- name: Apply Monitoring as Code
+  include_role:
+    name: monaco
+    tasks_from: apply-monaco
+    apply:
+      environment:
+        INGRESS_DOMAIN: "{{ ingress_domain }}"
+        SYNTH_NODE_ID: "{{ dt_synthetic_node_id }}"
+        APP_NAMESPACE: "{{ easytravel_namespace }}"
+  vars:
+    monaco_project: "easytravel"
+    monaco_projects_root: "{{ monaco_projects_folder }}" 
+  when: easytravel_apply_monaco|bool == true
+
+        

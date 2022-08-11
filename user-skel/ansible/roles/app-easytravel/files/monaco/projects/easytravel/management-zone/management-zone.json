@@ -1,0 +1,45 @@
+{
+    "name": "{{ .name }}",
+    "rules": [
+        {
+            "type": "PROCESS_GROUP",
+            "enabled": true,
+            "propagationTypes": [
+                "PROCESS_GROUP_TO_SERVICE"
+            ],
+            "conditions": [
+                {
+                    "key": {
+                        "attribute": "PROCESS_GROUP_TAGS"
+                    },
+                    "comparisonInfo": {
+                        "type": "TAG",
+                        "operator": "EQUALS",
+                        "value": {
+                            "context": "CONTEXTLESS",
+                            "key": "environment",
+                            "value": "{{ .environment }}"
+                        },
+                        "negate": false
+                    }
+                }
+            ]
+        }
+    ],
+    "dimensionalRules": [],
+    "entitySelectorBasedRules": [
+        {
+            "enabled": true,
+            "entitySelector": "type(\"HTTP_CHECK\"),entityName(\"{{ .applicationEntityName }}\")"
+        },
+        {
+            "enabled": true,
+            "entitySelector": "type(\"APPLICATION\"),entityName(\"{{ .httpCheckEntityName }}\")"
+        },
+        {
+            "enabled": true,
+            "entitySelector": "type(\"SYNTHETIC_TEST\"),entityName(\"{{ .browserMonEntityName }}\")"
+        }
+    ]
+}
+

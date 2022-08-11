@@ -1,0 +1,9 @@
+config:
+    - management-zone-easytravel: "management-zone.json"
+
+management-zone-easytravel:
+    - environment: "{{ .Env.APP_NAMESPACE }}"
+    - name: "{{ .Env.APP_NAMESPACE }}"
+    - applicationEntityName: "webcheck.easytravel"
+    - httpCheckEntityName: "app.easytravel"
+    - browserMonEntityName: "browser.easytravel"

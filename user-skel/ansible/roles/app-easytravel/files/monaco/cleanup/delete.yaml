@@ -1,0 +1,11 @@
+# To delete configs, reference them here.
+
+delete: 
+  - "app-detection-rule/app.easytravel.prod"
+  - "app-detection-rule/app.easytravel-angular.prod"
+  - "application-web/app.easytravel.prod"
+  - "application-web/app.easytravel-angular.prod"
+  - "auto-tag/easytravel"
+  - "management-zone/easytravel"
+  - "synthetic-monitor/webcheck.easytravel.prod"
+  - "synthetic-monitor/webcheck.easytravel-angular.prod"

@@ -1,0 +1,9 @@
+config:
+    - app-easytravel-prod: "easytravel.json"
+    - app-easytravel-angular-prod: "easytravel-angular.json"
+  
+app-easytravel-prod:
+    - name: "app.easytravel.prod"
+
+app-easytravel-angular-prod:
+    - name: "app.easytravel-angular.prod"
