@@ -1,0 +1,13 @@
+---
+useCases:
+  demo-security-gates-jenkins:
+    previews:
+    - section: demo-security-gates-jenkins
+      description: Staging
+      url: "{{ ingress_protocol }}://simplenodeservice.simplenode-appsec-staging.{{ ingress_domain }}"
+    - section: demo-security-gates-jenkins
+      description: Production
+      url: "{{ ingress_protocol }}://simplenodeservice.simplenode-appsec-production.{{ ingress_domain }}"
+    guides:
+    - description: "Security Gates, Monitoring as a Service and Monitoring as Code - Demo using Jenkins, Gitea and Cloud Automation"
+      url: "{{ ingress_protocol }}://gitea.{{ ingress_domain }}/demo/security-gates-jenkins/src/branch/main/demo/appsec"
