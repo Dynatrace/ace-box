@@ -83,6 +83,7 @@
       virtualservice:
         enabled: "{{ ingress_class == 'istio' }}"
     values_files: "{{ dashboard_helm_value_files | json_query('files[*].path') }}"
+  when: not dashboard_skip_install
 
 - name: Print some dashboard config
   debug:
