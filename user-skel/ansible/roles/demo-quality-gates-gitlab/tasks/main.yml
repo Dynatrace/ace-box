@@ -59,5 +59,13 @@
     repo_name: "{{ gitlab_demo_default_repo_name }}"
   when: new_repo_created is defined and new_repo_created == true
 
+# Include use case specific Dahboard values
+- set_fact:
+    include_dashboard_value_file: "{{ role_path }}/templates/demo-quality-gates-gitlab-dashboard.yml.j2"
+
+- include_role:
+    name: dashboard
+    tasks_from: template-values-file
+
 - include_role:
     name: dashboard
