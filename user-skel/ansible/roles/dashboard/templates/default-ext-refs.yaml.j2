@@ -1,0 +1,84 @@
+---
+extRefs:
+{% if dynatrace_tenant_url is defined %}
+  Dynatrace:
+    url: "{{ dynatrace_tenant_url }}"
+{% endif %}
+{% if jenkins_username is defined and jenkins_password is defined %}
+  Jenkins:
+    url: "{{ ingress_protocol }}://jenkins.{{ ingress_domain }}"
+    creds:
+    - description: Username
+      type: text
+      value: "{{ jenkins_username }}"
+    - description: Password
+      type: password
+      value: "{{ jenkins_password }}"
+{% endif %}
+{% if gitea_username is defined and gitea_password is defined %}
+  Gitea:
+    url: "{{ ingress_protocol }}://gitea.{{ ingress_domain }}"
+    creds:
+    - description: Username
+      type: text
+      value: "{{ gitea_username }}"
+    - description: Password
+      type: password
+      value: "{{ gitea_password }}"
+    - description: Token
+      type: password
+      value: "{{ gitea_access_token | default(None) }}"
+{% endif %}
+{% if gitlab_username is defined and gitlab_password is defined %}
+  Gitlab:
+    url: "{{ ingress_protocol }}://gitlab.{{ ingress_domain }}"
+    creds:
+    - description: Username
+      type: text
+      value: "{{ gitlab_username }}"
+    - description: Password
+      type: password
+      value: "{{ gitlab_password }}"
+    - description: Token
+      type: password
+      value: "{{ gitlab_oauth_token | default(None) }}"
+{% endif %}
+{% if awx_admin_username is defined and awx_admin_password is defined %}
+  AWX:
+    url: "{{ ingress_protocol }}://awx.{{ ingress_domain }}"
+    creds:
+    - description: Username
+      type: text
+      value: "{{ awx_admin_username }}"
+    - description: Password
+      type: password
+      value: "{{ awx_admin_password }}"
+{% endif %}
+{% if cloud_automation_flavor is defined and cloud_automation_flavor == "CLOUD_AUTOMATION" and cloud_automation_bridge is defined %}
+  Cloud Automation:
+    url: "{{ cloud_automation_bridge }}"
+    creds:
+    - description: API url
+      type: text
+      value: "{{ cloud_automation_endpoint | default(None) }}"
+    - description: API token
+      type: password
+      value: "{{ cloud_automation_api_token | default(None) }}"
+{% endif %}
+{% if cloud_automation_flavor is defined and cloud_automation_flavor == "KEPTN" and keptn_bridge is defined and keptn_bridge_user is defined and keptn_bridge_password is defined %}
+  Cloud Automation:
+    url: "{{ keptn_bridge }}"
+    creds:
+    - description: Username
+      type: text
+      value: "{{ keptn_bridge_user }}"
+    - description: Password
+      type: password
+      value: "{{ keptn_bridge_password }}"
+    - description: API url
+      type: text
+      value: "{{ keptn_endpoint | default(None) }}"
+    - description: API token
+      type: password
+      value: "{{ keptn_api_token | default(None) }}"
+{% endif %}

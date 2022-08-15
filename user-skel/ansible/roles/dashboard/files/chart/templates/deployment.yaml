@@ -36,6 +36,10 @@ spec:
                   name: {{ $secret.name }}
                   key: {{ $secret.key | quote }}
             {{- end }}
+            - name: ACE_USE_CASES
+              value: "{{ $.Values.useCases | toJson | b64enc }}"
+            - name: ACE_EXT_REFS
+              value: "{{ $.Values.extRefs | toJson | b64enc }}"
           ports:
             - name: http
               containerPort: 3000

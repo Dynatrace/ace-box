@@ -10,6 +10,5 @@ spec:
     - port: 80
       protocol: TCP
       targetPort: 3000
-      #nodePort: {{ .Values.nodeport }}
   selector:
     app: {{ .Chart.Name }}
