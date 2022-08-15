@@ -6,7 +6,6 @@ import Dynatrace from './dynatrace'
 import Gitea from './gitea'
 import Gitlab from './gitlab'
 import Jenkins from './jenkins'
-import Keptn from './keptn'
 import Kubernetes from './kubernetes'
 
 type ToolTabsProps = {}
@@ -28,7 +27,7 @@ const ToolTabs: FunctionComponent<ToolTabsProps> = () => {
     AWX: (
       <Awx />
     ),
-    CA: (
+    'CLOUD AUTOMATION': (
       <Cloudautomation />
     ),
     DYNATRACE: (
@@ -42,9 +41,6 @@ const ToolTabs: FunctionComponent<ToolTabsProps> = () => {
     ),
     JENKINS: (
       <Jenkins />
-    ),
-    KEPTN: (
-      <Keptn />
     ),
     KUBERNETES: (
       <Kubernetes />
