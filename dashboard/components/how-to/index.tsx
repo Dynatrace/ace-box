@@ -1,93 +1,72 @@
-import React, { useState, useContext, FunctionComponent } from 'react'
-import CredentialProvider from '../credentials/provider'
-import type { CredentialProps } from '../credentials/provider'
-import Jenkins from './jenkins'
+import React, { useState, FunctionComponent, useEffect } from 'react'
+import { useExtRefs } from '../ext-refs/lib'
+import Awx from './awx'
+import Cloudautomation from './cloudautomation'
+import Dynatrace from './dynatrace'
 import Gitea from './gitea'
 import Gitlab from './gitlab'
+import Jenkins from './jenkins'
 import Keptn from './keptn'
-import Dynatrace from './dynatrace'
 import Kubernetes from './kubernetes'
-import Awx from './awx'
-import CloudAutomation from './cloudautomation'
-
-type TabsProps = {
-  [tab: string]: FunctionComponent
-}
-
-type CredentialsProps = {
-  jenkins: CredentialProps
-	gitea: CredentialProps
-	gitlab: CredentialProps
-	awx: CredentialProps
-	keptnBridge: CredentialProps
-	keptnApi: CredentialProps
-	dynatrace: CredentialProps
-	cloudAutomation: CredentialProps
-  kubernetes: CredentialProps
-}
-
-const generateTabOptions = ({ dynatrace, jenkins, gitea, keptnBridge, kubernetes, awx, gitlab, cloudAutomation }: CredentialsProps) => {
-  const tabs: TabsProps = {}
-
-  if (dynatrace.isEnabled) {
-    tabs['Dynatrace'] = Dynatrace
-  }
-
-  if (jenkins.isEnabled) {
-    tabs['Jenkins'] = Jenkins
-  }
-
-  if (gitea.isEnabled) {
-    tabs['Gitea'] = Gitea
-  }
-
-  if (keptnBridge.isEnabled) {
-    tabs['Keptn'] = Keptn
-  }
-
-  if (kubernetes.isEnabled) {
-    tabs['Kubernetes'] = Kubernetes
-  }
-
-  if (awx.isEnabled) {
-    tabs['Awx'] = Awx
-  }
-
-  if (gitlab.isEnabled) {
-    tabs['Gitlab'] = Gitlab
-  }
-
-  if (cloudAutomation.isEnabled) {
-    tabs['CloudAutomation'] = CloudAutomation
-  }
-
-  return tabs
-}
 
 type ToolTabsProps = {}
 
 const ToolTabs: FunctionComponent<ToolTabsProps> = () => {
-  const credentials = useContext(CredentialProvider)
-  const tabs = generateTabOptions(credentials)
-  const defaultTab = Object.keys(tabs).length > 0 ? Object.keys(tabs)[0] : null
+  const { extRefs } = useExtRefs()
 
-  const [activeTab, setActiveTab] = useState(defaultTab)
-  const ActiveTabContent = tabs[activeTab || '']
+  const [activeTab, setActiveTab] = useState<any>(null)
+
+  useEffect(() => {
+    const isExtRefsDefined = Object.keys(extRefs).length > 0
+    if (isExtRefsDefined) {
+      const defaultExtRefName = Object.keys(extRefs)[0]
+      setActiveTab(defaultExtRefName)
+    }
+  }, [extRefs])
+
+  const howTos: {[key:string]:any} = {
+    AWX: (
+      <Awx />
+    ),
+    CA: (
+      <Cloudautomation />
+    ),
+    DYNATRACE: (
+      <Dynatrace />
+    ),
+    GITEA: (
+      <Gitea />
+    ),
+    GITLAB: (
+      <Gitlab />
+    ),
+    JENKINS: (
+      <Jenkins />
+    ),
+    KEPTN: (
+      <Keptn />
+    ),
+    KUBERNETES: (
+      <Kubernetes />
+    )
+  }
+
+  const isBuiltInHowTo = !!activeTab && activeTab.toUpperCase() in howTos
 
   return (
     <>
       <div className="tabs" style={{ marginBottom: "13px" }}>
         {
-          Object.keys(tabs).map((tab, key) => {
-            const isActive = tab === activeTab
+          Object.keys(extRefs).map((extRefName, key) => {
+            const isActive = extRefName === activeTab
 
             return (
               <button
                 key={key}
                 className={`tab ${isActive ? "is-active" : ""}`}
-                onClick={() => setActiveTab(tab)}
+                onClick={() => setActiveTab(extRefName)}
               >
-                {tab}
+                {extRefName}
               </button>
             )
           })
@@ -96,7 +75,11 @@ const ToolTabs: FunctionComponent<ToolTabsProps> = () => {
       <div>
         {
           activeTab
-            ? <ActiveTabContent />
+            ? isBuiltInHowTo
+              ? howTos[activeTab.toUpperCase()]
+              : <div>
+                  <p dangerouslySetInnerHTML={{ __html: extRefs[activeTab].description }} />
+                </div>
             : <>No tools set up yet...</>
         }
       </div>
@@ -107,12 +90,6 @@ const ToolTabs: FunctionComponent<ToolTabsProps> = () => {
 type HowToProps = {}
 
 const HowTo: FunctionComponent<HowToProps> = () => {
-  const { awx, gitea, gitlab } = useContext(CredentialProvider)
-  const { href: giteaHref } = gitea
-  const { href: gitlabHref } = gitlab
-  const { isEnabled: isAwxEnabled } = awx
-  const { isEnabled: isGitLabEnabled } = gitlab
-
   return (
     <div>
       <>
@@ -131,34 +108,6 @@ const HowTo: FunctionComponent<HowToProps> = () => {
         </p>
       </>
       <ToolTabs />
-      <>
-        <h2>Use Cases</h2>
-        <p>
-          The following list shows use cases currently supported by ACE Box. Please follow the link for step-by-step instructions.
-        </p>
-        <dl className="definition-list">
-          <dt>Quality Gates, Monitoring as a Service and Monitoring as Code - Demo using <b>Jenkins, Gitea and Cloud Automation</b></dt>
-          <dd><a href={`${giteaHref}/demo/ace`} target="_blank" rel="noreferrer">Step-by-step instructions</a></dd>
-          {/* Commenting as not part of demo flow -- needs to be enhanced in future<dt>Monaco - Hands-on Training</dt>
-          <dd><a href={`${giteaHref}/monaco-hot/monaco-hot`}>Step-by-step instructions</a></dd>
-          <dt>Quality Gates - Hands-on Training</dt>
-          <dd><a href={`${giteaHref}/quality-gates-hot/lab-guides`} target="_blank" rel="noreferrer">Step-by-step instructions</a></dd> */}
-          {
-            isAwxEnabled &&
-              <>
-                <dt>Canary deployment and auto remediation - Demo using <b>Jenkins, Gitea and AWX</b></dt>
-                <dd><a href={`${giteaHref}/demo/auto-remediation-docs`} target="_blank" rel="noreferrer">Step-by-step instructions</a></dd>
-              </>
-          }
-          {
-            isGitLabEnabled &&
-              <>
-                <dt>Quality Gates, Monitoring as a Service and Monitoring as Code - Demo using <b>GitLab and Cloud Automation</b></dt>
-                <dd><a href={`${gitlabHref}/demo/ace/-/tree/main/demo/gitlab`} target="_blank" rel="noreferrer">Step-by-step instructions</a></dd>
-              </>
-          }
-        </dl>
-      </>
     </div>
   )
 }

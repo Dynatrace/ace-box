@@ -30,7 +30,7 @@ const Details: FunctionComponent<DetailsProps> = ({ title, href, credentials }) 
               <div style={{ display: "grid", gridTemplateColumns: "auto", rowGap: "10px" }}>
                 {
                   isCredentialsPresent && (credentials || []).map((Credential, key) =>
-                    <Credential key={key} />
+                    Credential
                   )
                 }
               </div>

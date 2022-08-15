@@ -1,14 +1,12 @@
 import { FunctionComponent } from 'react'
-import JenkinsDetailedLink from '../../components/credentials/jenkins'
-import GiteaDetailedLink from '../../components/credentials/gitea'
-import GitlabDetailedLink from '../../components/credentials/gitlab'
-import AwxDetailedLink from '../../components/credentials/awx'
-import KeptnBridgeDetailedLink from '../../components/credentials/keptn-bridge'
-import KeptnApiDetailedLink from '../../components/credentials/keptn-api'
-import DynatraceDetailedLink from '../../components/credentials/dynatrace'
-import CloudAutomationDetailedLink from '../../components/credentials/cloudautomation'
+import { useExtRefs } from '../ext-refs/lib'
+import AceBoxCredential from '../ext-refs/templates/CredentialTemplate'
+import Details from './templates/details'
 
-const AceBoxLinks: FunctionComponent<any> = () =>
+const AceBoxLinks: FunctionComponent<any> = () => {
+  const { extRefs } = useExtRefs()
+
+  return (
     <div>
       <h2>Links</h2>
       <div className="section">
@@ -20,16 +18,35 @@ const AceBoxLinks: FunctionComponent<any> = () =>
               <th>Details</th>
             </tr>
           </thead>
-          <JenkinsDetailedLink />
-          <GiteaDetailedLink />
-          <GitlabDetailedLink />
-          <AwxDetailedLink />
-          <KeptnBridgeDetailedLink />
-          <KeptnApiDetailedLink />
-          <DynatraceDetailedLink />
-          <CloudAutomationDetailedLink />
+          {
+            Object.keys(extRefs).map((extRefName, key) => {
+              const extRef = extRefs[extRefName]
+
+              const credentials = extRef.creds?.map((credentialSet, credentialSetKey) => {
+                return (
+                  <AceBoxCredential
+                    key={`${key}-${credentialSetKey}`}
+                    name={credentialSet.description}
+                    type={credentialSet.type}
+                    value={credentialSet.value}
+                  />
+                )
+              })
+
+              return (
+                <Details
+                  key={key}
+                  title={extRefName}
+                  href={extRef.url}
+                  credentials={credentials}
+                />
+              )
+            })
+          }
         </table>
       </div>
     </div>
+  )
+}
 
 export { AceBoxLinks as default }

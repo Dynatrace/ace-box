@@ -1,54 +1,43 @@
 import { FunctionComponent } from 'react'
 import Head from 'next/head'
 import HowToComponent from '../components/how-to/index'
-import CredentialProvider from '../components/credentials/provider'
+import { UseCasesComponent } from '../components/use-cases/index'
 
-import {
-  getKubernetesCredentials,
-  getJenkinsCredentials,
-	getGiteaCredentials,
-	getGitlabCredentials,
-	getAwxCredentials,
-	getKeptnBridgeCredentials,
-	getKeptnApiCredentials,
-	getDynatraceCredentials,
-  getCloudAutomationCredentials
-} from '../libs/credentials'
+import { getUseCases } from '../components/use-cases/lib'
+import { UseCaseContextProvider } from '../components/use-cases/Context'
+import { getExtRefs } from '../components/ext-refs/lib'
+import { ExtRefsContextProvider } from '../components/ext-refs/Context'
 
-const Home: FunctionComponent<any> = ({ kubernetes, jenkins, gitea, gitlab, awx, keptnBridge, keptnApi, dynatrace, cloudAutomation }) =>
-  <CredentialProvider.Provider value={{ kubernetes, jenkins, gitea, gitlab, awx, keptnBridge, keptnApi, dynatrace, cloudAutomation }}>
-    <Head>
-      <title>ACE Dashboard</title>
-      <meta name="description" content="ACE Dashboard" />
-      <link rel="icon" href="/favicon.ico" />
-    </Head>
-    <HowToComponent />
-  </CredentialProvider.Provider>
+const Home: FunctionComponent<any> = ({ credentials, useCases, extRefs }) =>
+  <UseCaseContextProvider
+    value={useCases}
+  >
+    <ExtRefsContextProvider
+      value={extRefs}
+    >
+      <Head>
+        <title>ACE Dashboard</title>
+        <meta name='description' content='ACE Dashboard' />
+        <link rel='icon' href='/favicon.ico' />
+      </Head>
+      <HowToComponent />
+      <UseCasesComponent />
+    </ExtRefsContextProvider>
+  </UseCaseContextProvider>
 
 const getServerSideProps = async () => {
-  const kubernetes = getKubernetesCredentials()
-  const jenkins = getJenkinsCredentials()
-  const gitea = getGiteaCredentials()
-	const gitlab = getGitlabCredentials()
-	const awx = getAwxCredentials()
-	const keptnBridge = getKeptnBridgeCredentials()
-	const keptnApi = getKeptnApiCredentials()
-	const dynatrace = getDynatraceCredentials()
-  const cloudAutomation = getCloudAutomationCredentials()
+  const useCases = getUseCases()
+  const extRefs = getExtRefs()
 
   return {
     props: {
-      kubernetes,
-      jenkins,
-      gitea,
-      gitlab,
-      awx,
-      keptnBridge,
-      keptnApi,
-      dynatrace,
-      cloudAutomation
+      useCases,
+      extRefs
     }
   }
 }
 
-export { Home as default, getServerSideProps }
+export {
+  Home as default,
+  getServerSideProps
+}

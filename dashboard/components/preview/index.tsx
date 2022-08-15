@@ -1,54 +1,58 @@
-import { useState, useEffect, useContext, FunctionComponent } from 'react'
-import PreviewProvider from './provider'
+import { useState, useEffect, FunctionComponent } from 'react'
+import { useUseCases } from '../use-cases/lib'
 
 type PreviewProps = {
   isAwxEnabled?: boolean
 }
 
 const Preview: FunctionComponent<PreviewProps> = ({ isAwxEnabled }) => {
-  const { staging, production, canary } = useContext(PreviewProvider)
-
-  const stagingHref = staging.href
-  const productionHref = production.href
-  const canaryHref = canary.href
+  const { previews } = useUseCases()
+  const arePreviewsDefined = previews.length > 0
 
   const [iframeKey, setIframeKey] = useState(Math.random().toString(36).substring(7))
 
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      setIframeKey(Math.random().toString(36).substring(7))
-    }, 10000)
-
-    return () => clearInterval(intervalId)
+    if (arePreviewsDefined) {
+      const intervalId = setInterval(() => {
+        setIframeKey(Math.random().toString(36).substring(7))
+      }, 10000)
+  
+      return () => clearInterval(intervalId)
+    }
   }, [])
 
   return (
     <div>
-      <h2>Deployment preview - Demo</h2>
-      <div className="section">
-        <div className="column column--1-of-2">
-          <h3>Staging</h3>
-          <iframe title="staging" key={iframeKey} id="iframe1" height="600px" width="100%" src={stagingHref} />
-          <div>({stagingHref})</div>
-        </div>
-        <div className="column column--1-of-2">
-          <h3>Production</h3>
-          <iframe title="production" key={iframeKey} id="iframe1" height="600px" width="100%" src={productionHref} />
-          <div>({productionHref})</div>
-        </div>
-      </div>
       {
-        isAwxEnabled &&
-          <>
-            <h2>Deployment preview - Demo Canary</h2>
-            <div className="section">
-              <div className="column column--1-of-2">
-                <h3>Canary</h3>
-                <iframe title="canary" key={iframeKey} id="iframe3" height="600px" width="100%" src={canaryHref} />
-                <div>({canaryHref})</div>
-              </div>
+        previews.map((previewSection, sectionKey) =>
+          <div
+            key={sectionKey}
+            style={{
+              marginBottom: '20px'
+            }}
+          >
+            <h2>{previewSection.section}</h2>
+            <div
+              className="section"
+            >
+            {
+              previewSection.previews.map((preview, previewKey) =>
+                <div
+                  key={previewKey}
+                  className="column column--1-of-2"
+                  style={{
+                    marginBottom: '20px'
+                  }}
+                >
+                  <h3>{preview.description}</h3>
+                  <iframe title="staging" key={iframeKey} id="iframe1" height="600px" width="100%" src={preview.url} />
+                  <div>({preview.url})</div>
+                </div>
+              )
+            }
             </div>
-          </>
+          </div>
+        )
       }
     </div>
   )

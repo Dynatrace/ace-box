@@ -1,52 +1,29 @@
 import { FunctionComponent } from 'react'
 import Head from 'next/head'
 import LinksComponent from '../components/links/index'
-import CredentialProvider from '../components/credentials/provider'
 
-import {
-  getJenkinsCredentials,
-	getGiteaCredentials,
-	getGitlabCredentials,
-	getAwxCredentials,
-	getKeptnBridgeCredentials,
-	getKeptnApiCredentials,
-	getDynatraceCredentials,
-  getCloudAutomationCredentials,
-  getKubernetesCredentials
-} from '../libs/credentials'
+import { getExtRefs } from '../components/ext-refs/lib'
+import { ExtRefsContextProvider } from '../components/ext-refs/Context'
 
-const Links: FunctionComponent<any> = ({ kubernetes, jenkins, gitea, gitlab, awx, keptnBridge, keptnApi, dynatrace, cloudAutomation }) =>
-  <CredentialProvider.Provider value={{ kubernetes, jenkins, gitea, gitlab, awx, keptnBridge, keptnApi, dynatrace, cloudAutomation }}>
+const Links: FunctionComponent<any> = ({ credentials, extRefs }) =>
+  <ExtRefsContextProvider
+    value={extRefs}
+  >
     <Head>
       <title>ACE Dashboard - Links</title>
       <meta name="description" content="ACE Dashboard" />
       <link rel="icon" href="/favicon.ico" />
     </Head>
     <LinksComponent />
-  </CredentialProvider.Provider>
+  </ExtRefsContextProvider>
 
 const getServerSideProps = async () => {
-  const kubernetes = getKubernetesCredentials()
-  const jenkins = getJenkinsCredentials()
-  const gitea = getGiteaCredentials()
-	const gitlab = getGitlabCredentials()
-	const awx = getAwxCredentials()
-	const keptnBridge = getKeptnBridgeCredentials()
-	const keptnApi = getKeptnApiCredentials()
-	const dynatrace = getDynatraceCredentials()
-  const cloudAutomation = getCloudAutomationCredentials()
+
+  const extRefs = getExtRefs()
 
   return {
     props: {
-      kubernetes,
-      jenkins,
-      gitea,
-      gitlab,
-      awx,
-      keptnBridge,
-      keptnApi,
-      dynatrace,
-      cloudAutomation
+      extRefs
     }
   }
 }
