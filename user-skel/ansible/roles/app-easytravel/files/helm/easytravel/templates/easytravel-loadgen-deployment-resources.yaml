@@ -51,7 +51,7 @@ spec:
     matchLabels:
       app: loadgen-angular
       product: {{ .Release.Name }}
-  replicas: 1
+  replicas: {{ .Values.config.loadgen_angular.replicas }}
   template:
     metadata:
       labels:

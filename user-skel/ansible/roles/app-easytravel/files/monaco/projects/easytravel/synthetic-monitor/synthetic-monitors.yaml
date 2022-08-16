@@ -2,6 +2,7 @@ config:
     - health-easytravel-prod: "health-check-monitor.json"
     - health-easytravel-angular-prod: "health-check-monitor.json"
     - browser-easytravel-prod-home: "easytravel-browser-monitor.json"
+    - browser-easytravel-angular-prod-home: "easytravel-browser-monitor.json"
   
 health-easytravel-prod:
     - name: "webcheck.easytravel.prod"

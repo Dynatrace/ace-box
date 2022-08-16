@@ -15,6 +15,7 @@ data:
   ET_PROBLEMS: "{{ .Values.config.loadgen.problems }}"
   ET_PROBLEMS_DELAY: "0"
   ET_VISIT_NUMBER: "{{ .Values.config.loadgen.visitNumber }}"
+  MAX_CHROME_DRIVERS: "{{ .Values.config.loadgen.visitNumber }}"
   ET_APM_SERVER_DEFAULT: APM
   CATALINA_OPTS: "-Dconfig.apmServerDefault=APM -XX:+UseContainerSupport -XX:MaxRAMPercentage=80 -Djava.security.egd=file:/dev/./urandom"
   ET_DATABASE_LOCATION: easytravel-mongodb:27017

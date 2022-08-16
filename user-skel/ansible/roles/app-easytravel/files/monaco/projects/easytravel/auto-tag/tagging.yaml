@@ -2,5 +2,5 @@ config:
     - tagging-easytravel-prod: "tagging.json"
   
 tagging-easytravel-prod:
-    - name: "{{ .Env.APP_NAMESPACE }}"
+    - name: "easytravel-prod"
     - namespace: "{{ .Env.APP_NAMESPACE }}"

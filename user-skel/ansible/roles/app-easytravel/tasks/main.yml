@@ -11,30 +11,38 @@
         ingress:
           domain: "{{ easytravel_domain }}"
           angular_domain: "{{ easytravel_angular_domain }}"
+        frontend:
+          tag: "{{ easytravel_image_tag }}"
+        backend:
+          tag: "{{ easytravel_image_tag }}"
         loadgen:
           visitNumber: "{{ easytravel_visit_number }}"
+          tag: "{{ easytravel_image_tag }}"
+        loadgen_angular: 
+          replicas: "{{ easytravel_headless_replicas }}"
+          tag: "{{ easytravel_image_tag }}"
+        www:
+          tag: "{{ easytravel_image_tag }}"
+        mongodb:
+          tag: "{{ easytravel_image_tag }}"
+        pluginservice:
+          tag: "{{ easytravel_image_tag }}"
 
-- set_fact:
-    monaco_projects_folder: "{{ role_path }}/files/monaco/projects"
+# Below is done to overcome instrumentation issues when first deploying ET WWW Nginx
+- name: Easytravel www - scale down
+  kubernetes.core.k8s_scale:
+    api_version: v1
+    kind: Deployment
+    name: easytravel-www
+    namespace: "{{ easytravel_namespace }}"
+    replicas: 0
+    wait_timeout: 60
 
-- name: Source Private Synthetic Node ID
-  include_role:
-    name: dt-activegate
-    tasks_from: source-node-id
-  when: dt_synthetic_node_id is not defined 
-
-- name: Apply Monitoring as Code
-  include_role:
-    name: monaco
-    tasks_from: apply-monaco
-    apply:
-      environment:
-        INGRESS_DOMAIN: "{{ ingress_domain }}"
-        SYNTH_NODE_ID: "{{ dt_synthetic_node_id }}"
-        APP_NAMESPACE: "{{ easytravel_namespace }}"
-  vars:
-    monaco_project: "easytravel"
-    monaco_projects_root: "{{ monaco_projects_folder }}" 
-  when: easytravel_apply_monaco|bool == true
-
-        
+- name: Easytravel www - scale up
+  kubernetes.core.k8s_scale:
+    api_version: v1
+    kind: Deployment
+    name: easytravel-www
+    namespace: "{{ easytravel_namespace }}"
+    replicas: 1
+    wait_timeout: 60

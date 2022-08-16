@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: {{ .Release.Name }}-angular-frontend
 spec:
-  replicas: 1
+  replicas: {{ .Values.config.angular_frontend.replicas }}
   selector:
     matchLabels:
       app: {{ .Release.Name }}-angular-frontend

@@ -7,7 +7,7 @@ spec:
     matchLabels:
       app: {{ .Release.Name }}-backend
       product: {{ .Release.Name }}
-  replicas: 1
+  replicas: {{ .Values.config.backend.replicas }}
   template:
     metadata:
       labels:
@@ -50,7 +50,7 @@ spec:
             path: /
             port: 8080
             scheme: HTTP
-          periodSeconds: 15
+          periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 10
         livenessProbe:

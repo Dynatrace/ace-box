@@ -75,7 +75,7 @@ The recommended way of installing any ACE box version, local or cloud, is via Te
 
   > Note: When specifying Cloud Automation instance details, Keptn will not be deployed
 
-  > Note: You can also enter a link to an external repository (e.g.: `https://github.com/my-org/my-ext-use-case.git`) if you want to load an external use case. See [External Use Case](#external-use-case) for more details
+  > Note: You can also enter a link to an external repository (e.g.: `https://github.com/my-org/my-ext-use-case.git`) if you want to load an external use case. See [External Use Case](#external-use-case) for more details and examples
 
 ### Useful Terraform Commands
 

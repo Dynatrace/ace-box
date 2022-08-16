@@ -33,3 +33,9 @@ The following curated roles can be added to your external use case. See [templat
 |monaco|Installs Monaco|
 |otel-collector|Installs an OpenTelemetry collector|
 |repository|Initializes and publishes a local repository to Gitea or Gitlab|
+
+## Example external use cases
+
+|Name|Description|
+|---|---|
+|[ace-box-sandbox-easytravel](https://github.com/dynatrace-ace/ace-box-sandbox-easytravel)|A simple ace-box with EasyTravel monitored by Dynatrace|

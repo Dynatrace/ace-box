@@ -6,9 +6,9 @@ config:
 app-detect-easytravel-prod:
   - name: "/easytravel/application-web/app-easytravel-prod.name"
   - applicationId: "/easytravel/application-web/app-easytravel-prod.id"
-  - pattern: "http://easytravel.{{ .Env.INGRESS_DOMAIN }}"
+  - pattern: "easytravel.{{ .Env.INGRESS_DOMAIN }}"
 
 app-detect-easytravel-angular-prod:
   - name: "/easytravel/application-web/app-easytravel-angular-prod.name"
   - applicationId: "/easytravel/application-web/app-easytravel-angular-prod.id"
-  - pattern: "http://easytravel-angular.{{ .Env.INGRESS_DOMAIN }}"
+  - pattern: "easytravel-angular.{{ .Env.INGRESS_DOMAIN }}"

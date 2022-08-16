@@ -5,10 +5,13 @@ config:
     angular_domain: "easytravel-angular.mydomain.com"
   frontend:
     tag: "latest"
+    replicas: "1"
   angular_frontend:
     tag: "latest"
+    replicas: "1"
   backend:
     tag: "latest"
+    replicas: "1"
   loadgen:
     #tag: "2.0.0.3256"
     tag: "latest"
@@ -17,8 +20,10 @@ config:
     visitNumber: "5" #visits generated per minute
   loadgen_angular:
     tag: "latest"
+    replicas: "1"
   www:
     tag: "latest"
+    replicas: "1"
   mongodb:
     tag: "latest"
   pluginservice:

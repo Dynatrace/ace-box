@@ -7,7 +7,7 @@ spec:
     matchLabels:
       app: {{ .Release.Name }}-www
       product: {{ .Release.Name }}
-  replicas: 1
+  replicas: {{ .Values.config.www.replicas }}
   template:
     metadata:
       labels:
