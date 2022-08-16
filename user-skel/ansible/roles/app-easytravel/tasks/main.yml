@@ -11,6 +11,7 @@
         ingress:
           domain: "{{ easytravel_domain }}"
           angular_domain: "{{ easytravel_angular_domain }}"
+          class: "{{ ingress_class }}"
         frontend:
           tag: "{{ easytravel_image_tag }}"
         backend:
