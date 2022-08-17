@@ -2,8 +2,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    meta.helm.sh/release-name: "{{ .Chart.Name }}"
   labels:
     app: "{{ .Chart.Name }}"
     app.kubernetes.io/name: "{{ .Chart.Name }}"
@@ -11,7 +9,7 @@ metadata:
     app.kubernetes.io/version: "{{ .Values.version }}"
     app.kubernetes.io/managed-by: "Helm"
     chart: "{{ .Chart.Name }}"
-    app.kubernetes.io/part-of: "{{ .Release.Name }}"
+    app.kubernetes.io/part-of: "{{ .Chart.Name }}"
   name: {{ .Chart.Name }}
 spec:
   replicas: 1
@@ -25,7 +23,7 @@ spec:
         app.kubernetes.io/name: "{{ .Chart.Name }}"
         app.kubernetes.io/version: "{{ .Values.version }}"
         app.kubernetes.io/managed-by: "Helm"
-        app.kubernetes.io/part-of: "{{ .Release.Name }}"
+        app.kubernetes.io/part-of: "{{ .Chart.Name }}"
         app.kubernetes.io/component: "api"
     spec:
       containers:
@@ -41,7 +39,7 @@ spec:
         - name: DT_RELEASE_BUILD_VERSION
           value: "{{ .Values.build_version }}"
         - name: DT_RELEASE_PRODUCT
-          value: "simplenode-app"
+          value: "{{ .Chart.Name }}"
         - name: DT_RELEASE_STAGE
           value: "{{ .Release.Namespace }}"
         resources:

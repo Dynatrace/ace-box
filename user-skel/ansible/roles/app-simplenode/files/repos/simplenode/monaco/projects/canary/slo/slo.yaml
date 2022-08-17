@@ -3,5 +3,5 @@ config:
 
 simplenode-canary:
   - name: "ace-demo-canary"
-  - DT_APPLICATION_NAME: "simplenode-app"
+  - DT_RELEASE_PRODUCT: "simplenodeservice"
   - namespace: "canary"

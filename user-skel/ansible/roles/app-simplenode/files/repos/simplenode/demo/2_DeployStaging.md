@@ -71,7 +71,7 @@ spec:
     - name: DT_RELEASE_BUILD_VERSION # sets the Release Build in Dynatrace
       value: "{{ .Values.build_version }}"
     - name: DT_RELEASE_PRODUCT # sets the Product in Dynatrace
-      value: "simplenode-app"
+      value: "{{ .Chart.Name }}"
     - name: DT_RELEASE_STAGE # sets the Release Stage in Dynatrace
       value: "{{ .Release.Namespace }}"
 ```

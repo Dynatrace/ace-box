@@ -16,7 +16,7 @@ pipeline {
         DT_TENANT_URL = credentials('DT_TENANT_URL')
         TARGET_NAMESPACE = "simplenode-jenkins-staging"
         PROJ_NAME = "simplenodeproject-jenkins"
-		    RELEASE_NAME = "${env.APP_NAME}-staging"
+		RELEASE_NAME = "${env.APP_NAME}-staging"
     }
     stages {
         stage('Update spec') {

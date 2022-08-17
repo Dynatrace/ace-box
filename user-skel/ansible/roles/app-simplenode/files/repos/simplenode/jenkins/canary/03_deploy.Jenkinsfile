@@ -53,7 +53,7 @@ pipeline {
 						tagRule: sharedLib.getTagRulesForPGIEvent(),
 						deploymentName: "${env.RELEASE_NAME} deployed",
 						deploymentVersion: "${env.CANARY_VERSION}",
-						deploymentProject: "simplenode-app",
+						deploymentProject: "simplenodeservice",
 						customProperties : [
 							"Jenkins Build Number": "${params.IMAGE_TAG}",
 							"Approved by": "ACE"

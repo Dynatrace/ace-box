@@ -21,7 +21,7 @@ pipeline {
         VU = 1
         LOOPCOUNT = 500
         COMPONENT = 'api'
-        PARTOF = 'simplenode-app'
+        PARTOF = 'simplenodeservice'
         KEPTN_API_TOKEN = credentials('CA_API_TOKEN')
         DT_API_TOKEN = credentials('DT_API_TOKEN')
         DT_TENANT_URL = credentials('DT_TENANT_URL')
@@ -201,20 +201,3 @@ pipeline {
         }  
     }
 }
-
-// def getTagRules() {
-//     def tagMatchRules = [
-//         [
-//             "meTypes": [ "PROCESS_GROUP_INSTANCE"],
-//             tags: [
-//                 ["context": "ENVIRONMENT", "key": "DT_RELEASE_BUILD_VERSION", "value": "${env.ART_VERSION}"],
-//                 ["context": "KUBERNETES", "key": "app.kubernetes.io/name", "value": "${env.APP_NAME}"],
-//                 ["context": "KUBERNETES", "key": "app.kubernetes.io/part-of", "value": "simplenode-app"],
-//                 ["context": "KUBERNETES", "key": "app.kubernetes.io/component", "value": "api"],
-//                 ["context": "CONTEXTLESS", "key": "environment", "value": "${env.ENVIRONMENT}"]
-//             ]
-//         ]
-//     ]
-
-//     return tagMatchRules
-// }

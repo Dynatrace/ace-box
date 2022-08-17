@@ -5,7 +5,7 @@ variables:
   BUILD_ID: '1'  # 1, 2, 3 or 4
   DT_RELEASE_VERSION: 'v$BUILD_ID.0.2'
   DT_RELEASE_BUILD_VERSION: '$BUILD_ID.0.2'
-  DT_RELEASE_PRODUCT: 'simplenode-app'
+  DT_RELEASE_PRODUCT: 'simplenodeservice'
   DT_RELEASE_STAGE: 'simplenode-gitlab-staging'
   DT_RELEASE_STAGE_PRODUCTION: 'simplenode-gitlab-production'
 
