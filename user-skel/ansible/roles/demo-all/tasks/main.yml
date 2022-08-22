@@ -33,3 +33,12 @@
 
 - include_role:
     name: demo-auto-remediation-ansible
+
+# After Jenkins is installed, demo flows shall be triggered
+- include_role:
+    name: demo-quality-gates-jenkins
+    tasks_from: trigger-demo
+
+- include_role:
+    name: demo-security-gates-jenkins
+    tasks_from: trigger-demo

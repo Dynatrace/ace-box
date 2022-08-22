@@ -80,6 +80,11 @@
 - include_role:
     name: jenkins
 
+# Trigger jenkins build
+- include_tasks:
+    file: trigger-demo.yml
+  when: jenkins_skip_install is not defined or (jenkins_skip_install is defined and not jenkins_skip_install)
+
 # Include use case specific Dashboard values
 - set_fact:
     include_dashboard_value_file: "{{ role_path }}/templates/demo-quality-gates-jenkins-dashboard.yml.j2"

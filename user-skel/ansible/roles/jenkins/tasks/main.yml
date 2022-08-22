@@ -131,3 +131,4 @@
   when: not jenkins_skip_install
 
 - include_tasks: roles/jenkins/tasks/create-token.yml
+  when: not jenkins_skip_install
