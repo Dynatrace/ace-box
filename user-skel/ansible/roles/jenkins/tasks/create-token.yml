@@ -33,6 +33,9 @@
     body:
       newTokenName: "admin-token"
   register: existing_jenkins_token_raw
+  retries: 10
+  delay: 5
+  until: existing_jenkins_token_raw is not failed
 
 - set_fact:
     jenkins_token_regex_match: "{{ existing_jenkins_token_raw.content | regex_search('admin-token') }}"
