@@ -189,6 +189,8 @@ gitea:
     repository:
       ENABLE_PUSH_CREATE_USER: true
       ENABLE_PUSH_CREATE_ORG: true
+    server:
+      ROOT_URL: {{ ingress_protocol }}://{{ gitea_domain }}
 
   podAnnotations: {}
 
