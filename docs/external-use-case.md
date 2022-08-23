@@ -14,6 +14,16 @@ use_case = "https://<user>:<token>@github.com/my-org/my-ext-use-case.git"
 
 > Attention: You usually want to host your code in a private repository. Therefore, credentials need to be added to the URL. For public repositories, it is also possible to omit credentials.
 
+## Versioning
+
+At one point, you probably want to create a hardened release of the external repository you're working on. This is particularly important when an external use case is used as part of a hands-on tarining, etc.
+
+A specific ref (version or branch) can be targeted by appending `@my-version` it to the `use_case` variable, e.g.:
+
+```
+use_case = "https://<user>:<token>@github.com/my-org/my-ext-use-case.git@v1.0.0"
+```
+
 ## Curated roles
 
 The following curated roles can be added to your external use case. See [template repository](https://github.com/dynatrace-ace/ace-box-ext-template) for examples.
