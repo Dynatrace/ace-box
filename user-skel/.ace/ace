@@ -52,6 +52,15 @@ def is_external_use_case(use_case):
     else:
         return False
 
+def get_external_use_case_version(use_case):
+    extracted_parts = use_case.split('.git@')
+
+    is_versioned = len(extracted_parts) > 1
+    if is_versioned:
+        return f"{extracted_parts[0]}.git", extracted_parts[-1]
+    else:
+        return use_case, 'HEAD'
+
 def check_enable_targets(ctx, param, value):
     if is_external_use_case(value):
         return value
@@ -452,10 +461,13 @@ def enable(
     if is_external_use_case(target):
         logging.info('Detected external use case')
 
+        external_use_case_src, external_use_case_version = get_external_use_case_version(target)
+
         subprocess.run((
                 f'ansible-playbook main-v2.yml --extra-vars "'
                 f'ace_box_user={user} '
-                f'use_case_ext_src={target}'
+                f'use_case_ext_src={external_use_case_src} '
+                f'use_case_ext_version={external_use_case_version}'
                 '" '
                 f'--tags "use_case_ext"'
             ),
