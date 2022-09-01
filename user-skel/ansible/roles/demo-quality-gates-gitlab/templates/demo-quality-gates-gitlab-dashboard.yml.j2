@@ -4,10 +4,10 @@ useCases:
     previews:
     - section: demo-quality-gates-gitlab
       description: Staging
-      url: "{{ ingress_protocol }}://simplenodeservice.simplenode-gitlab-staging.{{ ingress_domain }}"
+      url: "{{ ingress_protocol }}://simplenodeservice-simplenode-gitlab-staging.{{ ingress_domain }}"
     - section: demo-quality-gates-gitlab
       description: Production
-      url: "{{ ingress_protocol }}://simplenodeservice.simplenode-gitlab-production.{{ ingress_domain }}"
+      url: "{{ ingress_protocol }}://simplenodeservice-simplenode-gitlab-production.{{ ingress_domain }}"
     guides:
     - description: "Quality Gates, Monitoring as a Service and Monitoring as Code - Demo using GitLab and Cloud Automation"
       url: "{{ ingress_protocol }}://gitlab.{{ ingress_domain }}.info/{{ gitlab_demo_default_group }}/{{ gitlab_demo_default_repo_name }}/-/tree/main/demo/gitlab"

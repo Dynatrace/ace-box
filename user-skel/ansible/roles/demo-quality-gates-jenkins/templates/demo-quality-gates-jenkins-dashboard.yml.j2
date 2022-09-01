@@ -4,10 +4,10 @@ useCases:
     previews:
     - section: demo-quality-gates-jenkins
       description: Staging
-      url: "{{ ingress_protocol }}://simplenodeservice.simplenode-jenkins-staging.{{ ingress_domain }}"
+      url: "{{ ingress_protocol }}://simplenodeservice-simplenode-jenkins-staging.{{ ingress_domain }}"
     - section: demo-quality-gates-jenkins
       description: Production
-      url: "{{ ingress_protocol }}://simplenodeservice.simplenode-jenkins-production.{{ ingress_domain }}"
+      url: "{{ ingress_protocol }}://simplenodeservice-simplenode-jenkins-production.{{ ingress_domain }}"
     guides:
     - description: "Quality Gates, Monitoring as a Service and Monitoring as Code - Demo using Jenkins, Gitea and Cloud Automation"
       url: "{{ ingress_protocol }}://gitea.{{ ingress_domain }}/demo/quality-gates-jenkins/src/branch/main/demo"
