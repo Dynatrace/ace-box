@@ -154,4 +154,5 @@ module "provisioner" {
   ca_tenant        = var.ca_tenant
   ca_api_token     = var.ca_api_token
   use_case         = var.use_case
+  extra_vars       = var.extra_vars
 }

@@ -72,3 +72,8 @@ variable "use_case" {
   description = "Use cases the ACE-Box will be enabled for."
   default     = "demo_default"
 }
+
+variable "extra_vars" {
+  type    = map(string)
+  default = {}
+}
