@@ -1,6 +1,6 @@
 ---
 - set_fact:
-    monaco_projects_folder: "{{ role_path }}/files/monaco/projects"
+    monaco_projects_folder: "{{ role_path }}/files/repos/unguard/monaco/projects"
 
 - name: Source Private Synthetic Node ID
   include_role:
