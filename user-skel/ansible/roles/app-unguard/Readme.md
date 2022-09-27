@@ -30,7 +30,7 @@ Variables that can be set are as follows:
 ```yaml
 ---
 unguard_namespace: "unguard" # namespace that Unguard will be deployed in
-unguard_image_tag: "0.0.1" #image tag to deploy for all Unguard images
+unguard_image_tag: "0.0.2" #image tag to deploy for all Unguard images
 ```
 
 ### Configure Dynatrace using Monaco
@@ -40,7 +40,7 @@ unguard_image_tag: "0.0.1" #image tag to deploy for all Unguard images
 ```yaml
 - include_role:
     name: app-unguard
-    tasks_from: apply-monaco
+    tasks_from: configure-monaco
 ```
 
 To delete the configuration again:

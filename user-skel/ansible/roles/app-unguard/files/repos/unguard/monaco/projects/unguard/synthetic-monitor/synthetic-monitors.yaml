@@ -10,7 +10,7 @@ unguard-http:
     - managementZoneId: "/base/management-zone/unguard.id"
     - tag: "unguard"
     - applicationId: "/base/application/app-unguard.id"
-    - enabled: "true"
+    - enabled: "{{ .Env.INCL_SYNTH }}"
 
 unguard-clickpath:
     - name: "unguard.clickpath"
@@ -20,4 +20,4 @@ unguard-clickpath:
     - managementZoneId: "/base/management-zone/unguard.id"
     - tag: "unguard"
     - applicationId: "/base/application/app-unguard.id"
-    - enabled: "true"
+    - enabled: "{{ .Env.INCL_SYNTH }}"
