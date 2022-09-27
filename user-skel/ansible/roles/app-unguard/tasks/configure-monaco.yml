@@ -17,7 +17,7 @@
         INGRESS_DOMAIN: "{{ ingress_domain }}"
         SYNTH_NODE_ID: "{{ dt_synthetic_node_id }}"
         APP_NAMESPACE: "{{ unguard_namespace }}"
-        KUBE_API_ENDPOINT: "{{ kubernetes_api_endpoint }}""
+        KUBE_API_ENDPOINT: "{{ kubernetes_api_endpoint }}"
       #  INCL_SYNTH: "false"  # learn what it is for
   vars:
     monaco_project: "unguard"
