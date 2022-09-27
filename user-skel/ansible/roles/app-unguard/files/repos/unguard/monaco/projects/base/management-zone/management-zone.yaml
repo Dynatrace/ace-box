@@ -1,0 +1,5 @@
+config:
+  - unguard: unguard.json
+unguard:
+  - name: unguard
+  - appname: unguard

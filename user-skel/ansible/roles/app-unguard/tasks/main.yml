@@ -45,4 +45,4 @@
         userSimulatorCronJob:
           deploy: false
 
-- include_tasks: configure-monaco.yml
+#- include_tasks: configure-monaco.yml

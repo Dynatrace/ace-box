@@ -1,0 +1,19 @@
+config:
+- ACEBox-containernamenamespace: ACEBox-containernamenamespace.json
+- NodeJSNaming: NodeJSNaming.json
+- JavaSpringbootNaming: JavaSpringbootNaming.json
+- PostgresNaming: PostgresNaming.json
+- MongoDBNaming: MongoDBNaming.json
+- ProcessGroupExeNameProcessGroupKubernetesBasePodName: ProcessGroupExeNameProcessGroupKubernetesBasePodName.json
+ACEBox-containernamenamespace:
+- name: ACE Box - containername.namespace
+JavaSpringbootNaming:
+- name: Java Springboot Naming
+MongoDBNaming:
+- name: MongoDB Naming
+NodeJSNaming:
+- name: NodeJS Naming
+PostgresNaming:
+- name: Postgres Naming
+ProcessGroupExeNameProcessGroupKubernetesBasePodName:
+- name: ' {ProcessGroup:ExeName} {ProcessGroup:KubernetesBasePodName}'
