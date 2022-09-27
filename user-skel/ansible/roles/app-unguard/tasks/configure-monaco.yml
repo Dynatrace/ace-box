@@ -13,6 +13,12 @@
 - set_fact:
     kubernetes_api_endpoint: "https://{{ kubernetes_svc_data.resources[0].spec.clusterIP }}"
 
+- name: Source Dynatrace Operator ServiceAccount
+  kubernetes.core.k8s_info:
+    kind: ServiceAccount
+    name: "dynatrace-kubernetes-monitoring"
+    namespace: "dynatrace"
+  register: dt_operator_sa_data
 - name: Source Dynatrace Operator Secret
   kubernetes.core.k8s_info:
     kind: Secret
