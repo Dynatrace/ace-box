@@ -2,6 +2,17 @@
 - set_fact:
     monaco_projects_folder: "{{ role_path }}/files/repos/unguard/monaco/projects"
 
+# this is copied from gitlab configure yaml to set the kubernetes_api_endpoint to be used by monaco
+#- block:
+- name: Source Kubernetes endpoint
+  kubernetes.core.k8s_info:
+    kind: Service
+    name: "kubernetes"
+    namespace: "default"
+  register: kubernetes_svc_data
+- set_fact:
+    kubernetes_api_endpoint: "https://{{ kubernetes_svc_data.resources[0].spec.clusterIP }}"
+
 - name: Source Private Synthetic Node ID
   include_role:
     name: dt-activegate
