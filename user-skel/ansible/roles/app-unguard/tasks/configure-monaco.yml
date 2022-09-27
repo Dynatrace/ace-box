@@ -13,6 +13,15 @@
 - set_fact:
     kubernetes_api_endpoint: "https://{{ kubernetes_svc_data.resources[0].spec.clusterIP }}"
 
+- name: Source Dynatrace Operator Secret
+  kubernetes.core.k8s_info:
+    kind: Secret
+    name: "{{ dt_operator_sa_data.resources[0].secrets[0].name }}"
+    namespace: "dynatrace"
+  register: dt_operator_secret_data
+- set_fact:
+    dt_operator_kube_bearer_token: "{{ dt_operator_secret_data.resources[0].data.token | b64decode }}"
+
 - name: Source Private Synthetic Node ID
   include_role:
     name: dt-activegate
@@ -29,6 +38,7 @@
         SYNTH_NODE_ID: "{{ dt_synthetic_node_id }}"
         APP_NAMESPACE: "{{ unguard_namespace }}"
         KUBE_API_ENDPOINT: "{{ kubernetes_api_endpoint }}"
+        KUBE_BEARER_TOKEN: "{{ dt_operator_kube_bearer_token }}"
       #  INCL_SYNTH: "false"  # learn what it is for
   vars:
     monaco_project: "unguard"
