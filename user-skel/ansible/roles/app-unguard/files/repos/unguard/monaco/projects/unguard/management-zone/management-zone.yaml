@@ -1,5 +1,0 @@
-config:
-  - unguard-management-zone: management-zone.json
-
-unguard-management-zone:
-  - name: unguard
