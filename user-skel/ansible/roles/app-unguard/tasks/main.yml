@@ -44,5 +44,3 @@
           simulatePrivateRanges: false
         userSimulatorCronJob:
           deploy: false
-
-#- include_tasks: configure-monaco.yml
