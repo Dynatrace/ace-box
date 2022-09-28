@@ -11,8 +11,10 @@ dt_paas_token = ""
 # If left empty, a VPC will be created for you. If you want to repurpose an existing VPC
 # simply provide it's id and the id of a subnet the EC2 instances will be launched in.
 #
-vpc_id    = ""
-subnet_id = ""
+vpc_id                    = ""
+subnet_id                 = ""
+bastion_security_group_id = ""
+ingress_cidr_blocks       = ["127.0.0.1/32"]
 
 #
 # Use case
