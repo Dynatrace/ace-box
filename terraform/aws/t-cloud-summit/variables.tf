@@ -83,3 +83,12 @@ variable "extra_vars" {
 variable "attendee_configs_csv_path" {
   type = string
 }
+
+variable "ingress_cidr_blocks" {
+  description = "Ingress CIDR blocks that will be whitelisted to access port 80, 8080 and 16443"
+  default     = ["127.0.0.1/32"]
+}
+
+variable "bastion_security_group_id" {
+  description = "Security group of bastion host that will be granted access to port 22"
+}

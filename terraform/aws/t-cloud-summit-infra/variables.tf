@@ -34,3 +34,8 @@ variable "disk_size" {
   description = "Size of disk that will be available to ace-box instance"
   default     = 60
 }
+
+variable "ingress_cidr_blocks" {
+  description = "Ingress CIDR blocks that will be whitelisted to access bastion host on port 22"
+  default     = ["127.0.0.1/32"]
+}
