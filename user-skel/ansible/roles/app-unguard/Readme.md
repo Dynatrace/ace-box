@@ -30,10 +30,20 @@ Variables that can be set are as follows:
 ```yaml
 ---
 unguard_namespace: "unguard" # namespace that Unguard will be deployed in
-unguard_image_tag: "0.0.2" #image tag to deploy for all Unguard images
+unguard_image_tag: "0.0.2" # image tag to deploy for all Unguard images
+unguard_user_auth_service_image_tag: "0.0.1" # user_auth_service currently working version
+unguard_simulate_private_ranges: "true" # enable / disable simulating private ranges on user simulator service
+unguard_deploy_user_simulator_cronjob: "false" # enable / disable user simulator cronjob 
 ```
 
 ### Configure Dynatrace using Monaco
+
+To enable monaco:
+
+```yaml
+- include_role:
+    name: monaco
+```
 
 > Note: the below configures Dynatrace with the monaco project embedded in the role
 
@@ -43,7 +53,7 @@ unguard_image_tag: "0.0.2" #image tag to deploy for all Unguard images
     tasks_from: apply-dt-configuration
 ```
 
-To delete the configuration again:
+To delete the configuration:
 
 ```yaml
 - include_role:
