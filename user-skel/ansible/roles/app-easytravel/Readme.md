@@ -16,8 +16,6 @@ This role depends on the following roles to be deployed beforehand:
 - include_role:
     name: dt-oneagent
 
-- include_role:
-    name: monaco
 ```
 
 ### Deploying EasyTravel
@@ -41,6 +39,13 @@ easytravel_image_tag: "2.0.0.3356" #image tag to deploy for all EasyTravel image
 
 ### Configure Dynatrace using Monaco
 
+To enable monaco:
+
+```yaml
+- include_role:
+    name: monaco
+```
+
 > Note: the below configures Dynatrace with the monaco project embedded in the role
 
 ```yaml
@@ -56,3 +61,24 @@ To delete the configuration again:
     name: app-easytravel
     tasks_from: delete-monaco
 ```
+
+Dynatrace Configurations List:
+
+    Infrastructure:
+      - "auto-tag/app"
+      - "auto-tag/environment"
+      - "conditional-naming-processgroup/ACE Box - containername.namespace"
+      - "conditional-naming-service/app.environment"
+      - "synthetic-location/ACE-BOX"
+    
+    Easy Travel Aplication Specific:
+        - "app-detection-rule/app.easytravel.prod"
+        - "app-detection-rule/app.easytravel-angular.prod"
+        - "application-web/app.easytravel.prod"
+        - "application-web/app.easytravel-angular.prod"
+        - "auto-tag/easytravel-prod"
+        - "management-zone/easytravel-prod"
+        - "synthetic-monitor/webcheck.easytravel.prod"
+        - "synthetic-monitor/webcheck.easytravel-angular.prod"
+        - "synthetic-monitor/browser.easytravel-angular.prod.home"
+        - "synthetic-monitor/browser.easytravel.prod.home"
