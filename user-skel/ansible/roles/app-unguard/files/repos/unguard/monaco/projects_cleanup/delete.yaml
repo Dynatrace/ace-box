@@ -1,6 +1,6 @@
 delete: 
     - "app-detection-rule/unguard"
-    - "application-web/unguard"
+    - "application/unguard"
     - "auto-tag/app"
     - "auto-tag/environment"
     - "management-zone/unguard"
@@ -16,3 +16,4 @@ delete:
     - "synthetic-monitor/unguard.http"
     - "synthetic-monitor/unguard.clickpath"
     - "kubernetes-credentials/ACE-BOX"
+    - "request-attributes/X-Client-Ip"

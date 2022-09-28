@@ -67,7 +67,7 @@ Dynatrace Configurations List:
       - "synthetic-location/ACE-BOX"
     
     Unguard Aplication Specific:
-        - "application-web/unguard"
+        - "application/unguard"
         - "app-detection-rule/unguard"
         - "dashboard/Application Security Issues"
         - "management-zone/unguard"
