@@ -63,7 +63,7 @@ Dynatrace Configurations List:
       - "conditional-naming-processgroup/Postgres Naming"
       - "conditional-naming-processgroup/ {ProcessGroup:ExeName} {ProcessGroup:KubernetesBasePodName}"
       - "conditional-naming-service/app.environment"
-  -   - "kubernetes-credentials/ACE-BOX"
+      - "kubernetes-credentials/ACE-BOX"
       - "synthetic-location/ACE-BOX"
     
     Unguard Aplication Specific:
