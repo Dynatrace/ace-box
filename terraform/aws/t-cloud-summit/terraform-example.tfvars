@@ -8,8 +8,8 @@ dt_paas_token = ""
 #
 # Custom VPC
 #
-# If left empty, a VPC will be created for you. If you want to repurpose an existing VPC
-# simply provide it's id and the id of a subnet the EC2 instances will be launched in.
+# Repurpose an existing VPC by providing it's id and 
+# the id of a subnet the EC2 instances will be launched in.
 #
 vpc_id                    = ""
 subnet_id                 = ""
