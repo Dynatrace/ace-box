@@ -3,6 +3,6 @@ config:
   - app-detect-unguard: "rule.json"
   
 app-detect-unguard:
-  - name: "/base/application/app-unguard.name"
-  - applicationId: "/base/application/app-unguard.id"
+  - name: "/unguard/application/app-unguard.name"
+  - applicationId: "/unguard/application/app-unguard.id"
   - pattern: "unguard.{{ .Env.INGRESS_DOMAIN }}"
