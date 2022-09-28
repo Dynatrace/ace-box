@@ -39,9 +39,9 @@
         proxyService: 
           tag: "{{ unguard_image_tag }}"
         userAuthService: 
-          tag: "0.0.1"
+          tag: "{{ unguard_user_auth_service_image_tag }}"
         userSimulator:
           tag: "{{ unguard_image_tag }}"
-          simulatePrivateRanges: false
+          simulatePrivateRanges: "{{ unguard_simulate_private_ranges }}"
         userSimulatorCronJob:
-          deploy: false
+          deploy: "{{ unguard_deploy_user_simulator_cronjob }}"
