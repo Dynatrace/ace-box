@@ -40,7 +40,7 @@ unguard_image_tag: "0.0.2" #image tag to deploy for all Unguard images
 ```yaml
 - include_role:
     name: app-unguard
-    tasks_from: apply-dt-config
+    tasks_from: apply-dt-configuration
 ```
 
 To delete the configuration again:
@@ -48,7 +48,7 @@ To delete the configuration again:
 ```yaml
 - include_role:
     name: app-unguard
-    tasks_from: delete-dt-config
+    tasks_from: delete-dt-configuration
 ```
 
 Dynatrace Configurations List:
