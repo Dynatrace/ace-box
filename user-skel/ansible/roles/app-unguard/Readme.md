@@ -50,3 +50,28 @@ To delete the configuration again:
     name: app-unguard
     tasks_from: delete-dt-config
 ```
+
+Dynatrace Configurations List:
+
+    Infrastructure:
+      - "auto-tag/app"
+      - "auto-tag/environment"
+      - "conditional-naming-processgroup/ACE Box - containername.namespace"
+      - "conditional-naming-processgroup/Java Springboot Naming"
+      - "conditional-naming-processgroup/MongoDB Naming"
+      - "conditional-naming-processgroup/NodeJS Naming"
+      - "conditional-naming-processgroup/Postgres Naming"
+      - "conditional-naming-processgroup/ {ProcessGroup:ExeName} {ProcessGroup:KubernetesBasePodName}"
+      - "conditional-naming-service/app.environment"
+  -   - "kubernetes-credentials/ACE-BOX"
+      - "synthetic-location/ACE-BOX"
+    
+    Unguard Aplication Specific:
+        - "application-web/unguard"
+        - "app-detection-rule/unguard"
+        - "dashboard/Application Security Issues"
+        - "management-zone/unguard"
+        - "request-attributes/X-Client-Ip"
+        - "synthetic-monitor/unguard.http"
+        - "synthetic-monitor/unguard.clickpath"
+
