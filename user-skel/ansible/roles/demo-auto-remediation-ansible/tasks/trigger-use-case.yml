@@ -1,0 +1,11 @@
+---
+- include_role:
+    name: jenkins
+    tasks_from: source-endpoints
+
+- include_role:
+    name: jenkins
+    tasks_from: source-secret
+
+- name: Trigger build
+  command:  "curl -k -X POST {{ jenkins_internal_endpoint }}/job/{{ demo_auto_remediation_folder | urlencode() }}/job/{{ '1. Build images' | urlencode() }}/build?delay=0sec --user {{ jenkins_username }}:{{ jenkins_api_token }} --data-urlencode json='{{ {\"parameter\": []} | to_json }}'"

@@ -72,6 +72,8 @@
     name: jenkins
     tasks_from: template-values-file
   vars:
+    git_username: "{{ gitea_username }}"
+    git_token: "{{ gitea_access_token }}"
     demo_repo: "{{ demo_quality_gates_jenkins_repo_name }}"
     demo_org: "{{ demo_quality_gates_jenkins_org }}"
     demo_jenkins_folder: "{{ demo_quality_gates_jenkins_folder }}"

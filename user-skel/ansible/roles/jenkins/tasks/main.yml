@@ -130,3 +130,5 @@
     values_files: "{{ jenkins_helm_value_files | json_query('files[*].path') }}"
   when: not jenkins_skip_install
 
+- include_tasks: roles/jenkins/tasks/create-token.yml
+  when: not jenkins_skip_install

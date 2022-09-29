@@ -11,4 +11,4 @@ Before detecting an issue, an issue most occur. We therefore start a load genera
 
     ![jenkins_pipeline_load](../assets/images/jenkins_pipeline_load.png)
 
-> Note: "4. Generate Load" will start are never-ending loop which calls our service(s). If you wish to stop the loop, stop the Jenkins build.
+> Note: "4. Generate Load" will start a never-ending loop which calls our service(s). If you wish to stop the loop, stop the Jenkins build.
