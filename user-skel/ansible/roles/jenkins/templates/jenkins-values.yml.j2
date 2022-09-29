@@ -108,10 +108,6 @@ controller:
               - key: "CA_BRIDGE"
                 value: "{{ ca_bridge }}"
 {% endif %}
-{% if kubernetes_api_endpoint is defined and kubernetes_api_endpoint != "" %}
-              - key: "KUBE_API_ENDPOINT"
-                value: "{{ kubernetes_api_endpoint }}"
-{% endif %}
       library-config: |
         unclassified:
           giteaServers:
@@ -179,13 +175,6 @@ controller:
                     description: "Git Personal Access Token"
                     scope: GLOBAL
                     secret: "{{ git_access_token }}"
-{% endif %}
-{% if dt_operator_kube_bearer_token is defined and dt_operator_kube_bearer_token != "" %}
-                - string:
-                    id: "KUBE_BEARER_TOKEN"
-                    scope: GLOBAL
-                    description: "Dynatrace Operator Kubernetes token"
-                    secret: "{{ dt_operator_kube_bearer_token }}"
 {% endif %}
 {% if ca_api_token is defined and ca_api_token != "" %}
                 - string:

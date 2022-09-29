@@ -15,4 +15,3 @@ delete:
     - "synthetic-location/ACE-BOX"
     - "synthetic-monitor/unguard.http"
     - "synthetic-monitor/unguard.clickpath"
-    - "kubernetes-credentials/ACE-BOX"

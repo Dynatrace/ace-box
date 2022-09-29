@@ -19,10 +19,6 @@
     name: monaco
 
 - include_role:
-    name: monaco
-    tasks_from: dt-cleanup
-
-- include_role:
     name: gitea
 
 - include_role:

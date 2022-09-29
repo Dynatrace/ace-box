@@ -28,32 +28,6 @@
       ca_api_token: "{{ cloud_automation_api_token }}"
   when: cloud_automation_flavor is defined and cloud_automation_flavor == "CLOUD_AUTOMATION"
 
-- block:
-  - name: Source Kubernetes endpoint
-    kubernetes.core.k8s_info:
-      kind: Service
-      name: "kubernetes"
-      namespace: "default"
-    register: kubernetes_svc_data
-  - set_fact:
-      kubernetes_api_endpoint: "https://{{ kubernetes_svc_data.resources[0].spec.clusterIP }}"
-
-- block:
-  - name: Source Dynatrace Operator ServiceAccount
-    kubernetes.core.k8s_info:
-      kind: ServiceAccount
-      name: "dynatrace-kubernetes-monitoring"
-      namespace: "dynatrace"
-    register: dt_operator_sa_data
-  - name: Source Dynatrace Operator Secret
-    kubernetes.core.k8s_info:
-      kind: Secret
-      name: "{{ dt_operator_sa_data.resources[0].secrets[0].name }}"
-      namespace: "dynatrace"
-    register: dt_operator_secret_data
-  - set_fact:
-      dt_operator_kube_bearer_token: "{{ dt_operator_secret_data.resources[0].data.token | b64decode }}"
-
 - name: Source DT Synthetic node id
   include_role:
     name: dt-activegate
@@ -73,6 +47,4 @@
     - { key: 'KEPTN_ENDPOINT', value: '{{ ca_endpoint | default(None) | replace("/api","") }}' }
     - { key: 'DT_TENANT_URL', value: '{{ dynatrace_tenant_url }}' }
     - { key: 'DT_API_TOKEN', value: '{{ dynatrace_api_token }}' }
-    - { key: 'KUBE_BEARER_TOKEN', value: '{{ dt_operator_kube_bearer_token | default(None) }}' }
-    - { key: 'KUBE_API_ENDPOINT', value: '{{ kubernetes_api_endpoint | default(None) }}' }
     - { key: 'SYNTH_NODE_ID', value: '{{ dt_synthetic_node_id | default(None) }}' }
