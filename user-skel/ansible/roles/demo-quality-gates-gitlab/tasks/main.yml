@@ -19,10 +19,6 @@
     name: monaco
 
 - include_role:
-    name: monaco
-    tasks_from: dt-cleanup
-
-- include_role:
     name: keptn
   when: cloud_automation_flavor is defined and cloud_automation_flavor == "KEPTN"
 

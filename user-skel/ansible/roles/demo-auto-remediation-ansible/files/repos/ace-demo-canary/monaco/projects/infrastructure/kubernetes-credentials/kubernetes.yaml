@@ -1,7 +1,0 @@
-config: 
-    - acebox: "kubernetes.json"
-  
-acebox:
-    - name: "ACE-BOX"
-    - endpointUrl: "https://{{ .Env.INGRESS_DOMAIN }}:16443"
-    - authToken: "{{ .Env.KUBE_BEARER_TOKEN }}"
