@@ -1,8 +1,8 @@
 {
     "active": true,
     "label": "{{ .name }}",
-    "endpointUrl": "{{ .endpointUrl }}",
-    "authToken": "{{ .authToken }}",
+    "endpointUrl": "{{ .Env.KUBE_API_ENDPOINT }}",
+    "authToken": "{{ .Env.KUBE_BEARER_TOKEN }}",
     "eventsIntegrationEnabled": true,
     "workloadIntegrationEnabled": true,
     "prometheusExportersIntegrationEnabled": true,

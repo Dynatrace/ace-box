@@ -3,5 +3,8 @@ config:
   
 acebox:
     - name: "ACE-BOX"
-    - endpointUrl: "{{ .Env.KUBE_API_ENDPOINT }}"
-    - authToken: "{{ .Env.KUBE_BEARER_TOKEN }}"
+    # endpointUrl and authToken are sourced from environment in json file.
+    # This is a workaround until Monaco offers the option to skip 
+    # environment variable validation when a project is not deployed.
+    # - endpointUrl: ""
+    # - authToken: ""
