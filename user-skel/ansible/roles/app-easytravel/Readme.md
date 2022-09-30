@@ -41,12 +41,8 @@ easytravel_image_tag: "2.0.0.3356" #image tag to deploy for all EasyTravel image
 
 To enable monaco:
 
-```yaml
-- include_role:
-    name: monaco
-```
 
-> Note: the below configures Dynatrace with the monaco project embedded in the role
+> Note: the below deploys monaco and configures Dynatrace with the monaco project embedded in the role
 
 ```yaml
 - include_role:
