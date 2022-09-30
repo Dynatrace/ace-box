@@ -1,3 +1,6 @@
+@Library('ace@v1.1') ace 
+def event = new com.dynatrace.ace.Event()
+
 ENVS_FILE = "monaco/environments.yaml"
 
 pipeline {
@@ -55,6 +58,22 @@ pipeline {
 					script {
 						sh "monaco -v -e=$ENVS_FILE -p=canary monaco/projects"
 					}
+				}
+			}
+		}
+		stage('Dynatrace configuration event') {
+			steps {
+				script {
+					def rootDir = pwd()
+					def sharedLib = load "${rootDir}/jenkins/shared/shared.groovy"
+					def status = event.pushDynatraceConfigurationEvent (
+						tagRule: sharedLib.getTagRulesForApplicationEvent("ace-demo-canary"),
+						description: "Monaco deployment successful",
+						configuration: "Monaco",
+						customProperties: [
+							"Approved by": "ACE"
+						]
+					)
 				}
 			}
 		}

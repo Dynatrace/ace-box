@@ -3,9 +3,11 @@ config:
     - tagging-prod: "tagging.json"
   
 tagging-staging:
-    - name: "mac-staging"
-    - namespace: "staging"
+    - name: "simplenode-jenkins-staging"
+    - namespace: "simplenode-jenkins-staging"
+    - applicationName: "/simplenode/application/app-simplenode-staging.name"
 
 tagging-prod:
-    - name: "mac-prod"
-    - namespace: "production"
+    - name: "simplenode-jenkins-prod"
+    - namespace: "simplenode-jenkins-production"
+    - applicationName: "/simplenode/application/app-simplenode-prod.name"

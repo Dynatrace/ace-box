@@ -3,9 +3,11 @@ config:
     - tagging-prod: "tagging.json"
   
 tagging-staging:
-    - name: "mac-staging"
+    - name: "simplenode-gitlab-staging"
     - namespace: "simplenode-gitlab-staging"
+    - applicationName: "/simplenode-gitlab/application/app-simplenode-staging.name"
 
 tagging-prod:
-    - name: "mac-prod"
+    - name: "simplenode-gitlab-prod"
     - namespace: "simplenode-gitlab-production"
+    - applicationName: "/simplenode-gitlab/application/app-simplenode-prod.name"
