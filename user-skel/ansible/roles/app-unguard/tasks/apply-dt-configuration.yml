@@ -34,6 +34,10 @@
     tasks_from: source-node-id
   when: dt_synthetic_node_id is not defined 
 
+- name: Deploy Monaco
+  include_role:
+    name: monaco
+
 - name: Unguard - Configure Monitoring as Code
   include_role:
     name: monaco
@@ -45,7 +49,7 @@
         APP_NAMESPACE: "{{ unguard_namespace }}"
         KUBE_API_ENDPOINT: "{{ kubernetes_api_endpoint }}"
         KUBE_BEARER_TOKEN: "{{ dt_operator_kube_bearer_token }}"
-        INCL_SYNTH: "true"  
+        SKIP_SYNTH: "false"
   vars:
     monaco_project: ""  #"synthetic" - if you want to execute a specific monaco project, enter the name of the project
     monaco_projects_root: "{{ monaco_projects_folder }}" 

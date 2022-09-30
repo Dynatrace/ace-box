@@ -8,6 +8,10 @@
     tasks_from: source-node-id
   when: dt_synthetic_node_id is not defined 
 
+- name: Deploy Monaco
+  include_role:
+    name: monaco
+    
 - name: Easytravel - Apply Monitoring as Code
   include_role:
     name: monaco
@@ -17,7 +21,7 @@
         INGRESS_DOMAIN: "{{ ingress_domain }}"
         SYNTH_NODE_ID: "{{ dt_synthetic_node_id }}"
         APP_NAMESPACE: "{{ easytravel_namespace }}"
-        INCL_SYNTH: "false"
+        SKIP_SYNTH: "false"
   vars:
     monaco_project: "easytravel"
     monaco_projects_root: "{{ monaco_projects_folder }}" 
