@@ -38,14 +38,7 @@ unguard_deploy_user_simulator_cronjob: "false" # enable / disable user simulator
 
 ### Configure Dynatrace using Monaco
 
-To enable monaco:
-
-```yaml
-- include_role:
-    name: monaco
-```
-
-> Note: the below configures Dynatrace with the monaco project embedded in the role
+> Note: the below deploys monaco and configures Dynatrace with the monaco project embedded in the role
 
 ```yaml
 - include_role:
