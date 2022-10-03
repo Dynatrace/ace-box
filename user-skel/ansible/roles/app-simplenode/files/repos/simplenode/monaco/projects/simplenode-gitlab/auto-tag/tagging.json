@@ -43,6 +43,28 @@
             }
           }
         ]
+      },
+      {
+        "type": "APPLICATION",
+        "enabled": true,
+        "valueFormat": null,
+        "normalization": "LEAVE_TEXT_AS_IS",
+        "propagationTypes": [],
+        "conditions": [
+          {
+            "key": {
+              "attribute": "WEB_APPLICATION_NAME",
+              "type": "STATIC"
+            },
+            "comparisonInfo": {
+              "type": "STRING",
+              "operator": "EQUALS",
+              "value": "{{ .applicationName }}",
+              "negate": false,
+              "caseSensitive": true
+            }
+          }
+        ]
       }
     ]
   }

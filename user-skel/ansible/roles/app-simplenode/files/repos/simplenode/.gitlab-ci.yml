@@ -31,6 +31,34 @@ monaco:
     - monaco -v -dry-run -e=monaco/environments.yaml -p=simplenode-gitlab monaco/projects
     - monaco -v -e=monaco/environments.yaml -p=simplenode-gitlab monaco/projects
 
+monaco_config_event_staging:
+  extends: .dynatrace_event
+  stage: init
+  needs: ["monaco"]
+  variables:
+    DYNATRACE_ENV_URL: "$DT_TENANT_URL"
+    DYNATRACE_API_TOKEN: "$DT_API_TOKEN"
+    EVENT_TYPE: "CUSTOM_CONFIGURATION"
+    ATTACH_RULES_FILE: "dynatrace/dynatrace.application-attachrules.yaml"
+    DT_APPLICATION_TAG: "simplenode-gitlab-staging"
+    DESCRIPTION: "Monaco deployment successful"
+    CONFIGURATION: "Monaco"
+    CUSTOM_PROPERTIES: '{"Approved by": "ACE"}'
+
+monaco_config_event_prod:
+  extends: .dynatrace_event
+  stage: init
+  needs: ["monaco"]
+  variables:
+    DYNATRACE_ENV_URL: "$DT_TENANT_URL"
+    DYNATRACE_API_TOKEN: "$DT_API_TOKEN"
+    EVENT_TYPE: "CUSTOM_CONFIGURATION"
+    ATTACH_RULES_FILE: "dynatrace/dynatrace.application-attachrules.yaml"
+    DT_APPLICATION_TAG: "simplenode-gitlab-prod"
+    DESCRIPTION: "Monaco deployment successful"
+    CONFIGURATION: "Monaco"
+    CUSTOM_PROPERTIES: '{"Approved by": "ACE"}'
+
 init_cloudautomation:
   image: dynatraceace/keptn-gitlab-runner:2.2
   stage: init
