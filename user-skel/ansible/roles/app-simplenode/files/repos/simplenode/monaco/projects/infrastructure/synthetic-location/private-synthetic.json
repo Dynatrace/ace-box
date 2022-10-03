@@ -7,6 +7,6 @@
     "latitude": 42.3673,
     "longitude": -83.1329,
     "nodes": [
-      "{{ .nodeId }}"
+      "{{ .Env.SYNTH_NODE_ID }}"
     ]
   }

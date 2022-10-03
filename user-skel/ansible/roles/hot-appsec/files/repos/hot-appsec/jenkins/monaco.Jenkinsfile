@@ -10,7 +10,6 @@ pipeline {
     environment {
         DT_API_TOKEN = credentials('DT_API_TOKEN')
         DT_TENANT_URL = credentials('DT_TENANT_URL')
-        KUBE_BEARER_TOKEN = credentials('KUBE_BEARER_TOKEN')
     }
     stages {
         stage('Dynatrace Unguard config - Validate') {

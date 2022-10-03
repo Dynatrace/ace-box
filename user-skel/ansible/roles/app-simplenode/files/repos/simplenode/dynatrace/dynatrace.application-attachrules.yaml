@@ -1,0 +1,8 @@
+---
+attachRules:
+  tagRule:
+  - meTypes:
+    - APPLICATION
+    tags:
+    - context: CONTEXTLESS
+      key: ${DT_APPLICATION_TAG}

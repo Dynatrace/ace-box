@@ -20,10 +20,6 @@
     name: monaco
 
 - include_role:
-    name: monaco
-    tasks_from: dt-cleanup
-
-- include_role:
     name: gitea
 
 - include_role:
@@ -91,10 +87,17 @@
     name: jenkins
     tasks_from: template-values-file
   vars:
+    git_username: "{{ gitea_username }}"
+    git_token: "{{ gitea_access_token }}"
     demo_repo: "{{ demo_auto_remediation_repo_name }}"
     demo_org: "{{ demo_auto_remediation_org }}"
     demo_jenkins_folder: "{{ demo_auto_remediation_folder }}"
     git_domain: "gitea.{{ ingress_domain }}"
+
+# Create AWX secret before Jenkins so AWX credentials can be configured in Jenkins
+- include_role:
+    name: awx
+    tasks_from: create-secrets
 
 - include_role:
     name: jenkins
@@ -112,3 +115,7 @@
 
 - include_role:
     name: dashboard
+
+# Trigger use case at the very end to make sure all tools are available
+- include_tasks:
+    file: trigger-use-case.yml

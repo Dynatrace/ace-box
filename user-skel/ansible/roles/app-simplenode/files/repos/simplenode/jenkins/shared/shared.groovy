@@ -32,6 +32,19 @@ def getTagRulesForServiceEvent() {
     return tagMatchRules
 }
 
+def getTagRulesForApplicationEvent(applicationTag) {
+    def tagMatchRules = [
+        [
+            "meTypes": ["APPLICATION"],
+            tags: [
+                ["context": "CONTEXTLESS", "key": applicationTag]
+            ]
+        ]
+    ]
+
+    return tagMatchRules
+}
+
 def readMetaData() {
     def conf = readYaml file: "jenkins/shared/dt_meta.yaml"
 

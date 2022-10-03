@@ -120,40 +120,6 @@
     controller_username: "{{ awx_admin_username }}"
   register: project
 
-- block:
-  - name: AWX - Retrieve Jenkins Crumb
-    uri:
-      url: "{{ jenkins_internal_endpoint }}/crumbIssuer/api/json"
-      user: "{{ jenkins_username }}"
-      password: "{{ jenkins_password }}"
-      force_basic_auth: yes
-      validate_certs: false
-      method: GET
-      status_code: [200, 201, 204]
-      return_content: yes
-      headers:
-        Content-Type: "application/json"
-    register: jenkins_crumb_raw
-  - name: AWX - Generate Jenkins API token
-    uri:
-      url: "{{ jenkins_internal_endpoint }}/user/{{ jenkins_username }}/descriptorByName/jenkins.security.ApiTokenProperty/generateNewToken"
-      user: "{{ jenkins_username }}"
-      password: "{{ jenkins_password }}"
-      force_basic_auth: yes
-      validate_certs: false
-      method: POST
-      status_code: [200, 201, 204]
-      return_content: yes
-      headers:
-        Cookie: "{{ jenkins_crumb_raw.cookies_string }}"
-        Jenkins-Crumb: "{{ jenkins_crumb_raw.json.crumb }}"
-      body_format: form-urlencoded
-      body:
-        newTokenName: "ace-demo-canary-AWX-{{ ansible_date_time.iso8601 }}"
-    register: jenkins_token_raw
-  - set_fact:
-      jenkins_api_token: "{{ jenkins_token_raw.json.data.tokenValue }}"
-
 - name: Create remediation inventory
   awx.awx.inventory:
     name: "Auto Remediation Inventory"
