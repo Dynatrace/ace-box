@@ -1,18 +1,22 @@
-- include_role:
+- name: Gitea - Deploy
+  include_role:
     name: gitea
 
-- include_role:
+- name: Gitea - Source Secret
+  include_role:
     name: gitea
     tasks_from: source-secret
   when: gitea_access_token is not defined or gitea_username is not defined or gitea_password is not defined
 
-- include_role:
+- name: Gitea - Create Organization
+  include_role:
     name: gitea
     tasks_from: create-organization
   vars:
     gitea_org: "{{ unguard_git_org_name }}"
 
-- include_role:
+- name: Gitea - Create Repository
+  include_role:
     name: gitea
     tasks_from: create-repository
   vars:

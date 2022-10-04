@@ -8,14 +8,14 @@
     name: gitlab
     tasks_from: source-secret
 
-- name: Gitlab - Ensure Group
+- name: Gitlab - Create Group
   include_role:
     name: gitlab
     tasks_from: ensure-group
   vars:
     gitlab_group_name: "{{ unguard_git_org_name }}"
 
-- name: Gitlab - Ensure Project
+- name: Gitlab - Create Project
   include_role:
     name: gitlab
     tasks_from: ensure-project
