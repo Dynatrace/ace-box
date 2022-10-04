@@ -89,12 +89,6 @@ unguard_git_org_name: ""
 unguard_git_repo_name: "unguard"
 ```
 
-```yaml
-- include_role:
-    name: app-unguard
-    tasks_from: apply-dt-configuration
-```
-
 Upload to Gitlab:
 
 ```yaml
