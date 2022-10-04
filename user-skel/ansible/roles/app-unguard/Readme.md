@@ -29,11 +29,12 @@ Variables that can be set are as follows:
 
 ```yaml
 ---
+# application deployment parameters
 unguard_namespace: "unguard" # namespace that Unguard will be deployed in
 unguard_image_tag: "0.0.2" # image tag to deploy for all Unguard images
 unguard_user_auth_service_image_tag: "0.0.1" # user_auth_service currently working version
-unguard_simulate_private_ranges: "true" # enable / disable simulating private ranges on user simulator service
-unguard_deploy_user_simulator_cronjob: "false" # enable / disable user simulator cronjob 
+unguard_simulate_private_ranges: "true" # enable/disable simulating private ranges on user simulator service
+unguard_deploy_user_simulator_cronjob: "false" # enable/disable user simulator cronjob 
 ```
 
 ### Configure Dynatrace using Monaco
@@ -78,3 +79,34 @@ Dynatrace Configurations List:
         - "synthetic-monitor/unguard.http"
         - "synthetic-monitor/unguard.clickpath"
 
+### Upload codebase into a Git repository
+
+Variables that can be set are as follows:
+
+```yaml
+---
+unguard_git_org_name: ""
+unguard_git_repo_name: "unguard"
+```
+
+```yaml
+- include_role:
+    name: app-unguard
+    tasks_from: apply-dt-configuration
+```
+
+Upload to Gitlab:
+
+```yaml
+- include_role:
+    name: app-unguard
+    tasks_from: upload-to-gitlab
+```
+
+Upload to Gitea:
+
+```yaml
+- include_role:
+    name: app-unguard
+    tasks_from: upload-to-gitea
+```
