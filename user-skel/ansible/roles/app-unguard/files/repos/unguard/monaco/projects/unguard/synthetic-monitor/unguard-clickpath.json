@@ -1,7 +1,7 @@
 {
     "name": "{{ .name }}",
     "frequencyMin": 5,
-    "enabled": true,
+    "enabled": {{ .skipDeployment }},
     "type": "BROWSER",
     "createdFrom": "GUI",
     "script": {
