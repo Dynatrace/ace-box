@@ -19,19 +19,6 @@
     gitea_org: "{{ unguard_git_org_name }}"
     gitea_repo: "{{ unguard_git_repo_name }}"
 
-- include_role:
-    name: gitea
-    tasks_from: create-organization
-  vars:
-    gitea_org: "{{ unguard_git_org_name }}"
-
-- include_role:
-    name: gitea
-    tasks_from: create-repository
-  vars:
-    gitea_org: "{{ unguard_git_org_name }}"
-    gitea_repo: "{{ unguard_git_repo_name }}"
-
 - name: Publish Unguard repository to Gitea
   include_role:
     name: repository

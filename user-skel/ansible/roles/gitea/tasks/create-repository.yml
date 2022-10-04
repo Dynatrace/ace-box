@@ -17,7 +17,7 @@
   register: get_repo_result
 
 - block:
-  - name:  "Create repo {{ gitea_org }}"
+  - name:  "Create repo {{ gitea_repo }}"
     uri:
       url: "{{ gitea_internal_endpoint }}/api/v1/orgs/{{ gitea_org }}/repos?access_token={{ gitea_access_token }}"
       method: POST

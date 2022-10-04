@@ -7,5 +7,5 @@ unguard_simulate_private_ranges: "true"
 unguard_deploy_user_simulator_cronjob: "false"
 
 # git repo related parameters
-unguard_git_org_name: ""
+unguard_git_org_name: "demo"
 unguard_git_repo_name: "unguard"

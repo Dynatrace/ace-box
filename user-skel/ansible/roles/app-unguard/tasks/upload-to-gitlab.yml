@@ -1,5 +1,12 @@
-- include_role:
+- name: Gitlab - Deploy
+  include_role:
     name: gitlab
+    tasks_from: deploy
+
+- name: Gitlab - Source Secret
+  include_role:
+    name: gitlab
+    tasks_from: source-secret
 
 - name: Gitlab - Ensure Group
   include_role:
@@ -29,16 +36,5 @@
     git_remote: "gitlab"
   loop:
   - { repo_target: "{{ unguard_git_repo_name }}", repo_src: "{{ role_path }}/files/repos/unguard", git_org: "{{ unguard_git_org_name }}" }
-  when: new_repo_created is defined and new_repo_created == true
 
-# - include_role:
-#     name: app-simplenode
-#   vars:
-#     git_username: "root"
-#     git_password: "{{ gitlab_password }}"
-#     git_domain: "{{ gitlab_domain }}"
-#     git_remote: "gitlab"
-#     git_org_name: "{{ gitlab_demo_default_group }}"
-#     repo_name: "{{ gitlab_demo_default_repo_name }}"
-#   when: new_repo_created is defined and new_repo_created == true
 
