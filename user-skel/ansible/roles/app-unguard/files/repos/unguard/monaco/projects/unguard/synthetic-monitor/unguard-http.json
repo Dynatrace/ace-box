@@ -1,7 +1,7 @@
 {
     "name": "{{ .name }}",
     "frequencyMin": 1,
-    "enabled": {{ .skipDeployment }},
+    "enabled": "{{ .skipDeployment }}",
     "type": "HTTP",
     "script": {
       "version": "1.0",
