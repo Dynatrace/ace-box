@@ -2,8 +2,6 @@
 - set_fact:
     monaco_projects_folder: "{{ role_path }}/files/repos/unguard/monaco/projects"
 
-# this is copied from gitlab configure yaml to set the kubernetes_api_endpoint to be used by monaco
-#- block:
 - name: Source Kubernetes endpoint
   kubernetes.core.k8s_info:
     kind: Service
@@ -51,5 +49,5 @@
         KUBE_BEARER_TOKEN: "{{ dt_operator_kube_bearer_token }}"
         SKIP_SYNTH: "false"
   vars:
-    monaco_project: ""  #"synthetic" - if you want to execute a specific monaco project, enter the name of the project
+    monaco_project: ""
     monaco_projects_root: "{{ monaco_projects_folder }}" 
