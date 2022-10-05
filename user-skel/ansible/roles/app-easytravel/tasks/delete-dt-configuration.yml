@@ -1,0 +1,10 @@
+---
+- set_fact:
+    monaco_projects_folder: "{{ role_path }}/files/monaco/projects_cleanup"
+
+- name: Easytravel - Cleanup Monitoring as Code
+  include_role:
+    name: monaco
+    tasks_from: apply-monaco
+  vars:
+    monaco_projects_root: "{{ monaco_projects_folder }}" 
