@@ -85,8 +85,8 @@ Variables that can be set are as follows:
 
 ```yaml
 ---
-unguard_git_org_name: ""
-unguard_git_repo_name: "unguard"
+easytravel_git_org_name: "demo"
+easytravel_git_repo_name: "easytravel"
 ```
 
 Upload to Gitlab:
