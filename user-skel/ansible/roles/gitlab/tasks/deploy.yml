@@ -47,6 +47,3 @@
   delay: 1
   when: gitlab_helm.changed
 
-#- include: roles/gitlab/tasks/configure.yml
-
-#- include: roles/gitlab/tasks/deploy-gcpe.yml
