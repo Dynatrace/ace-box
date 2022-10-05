@@ -1,0 +1,12 @@
+
+- name: Publish Unguard repository to a Git Repo
+  include_role:
+    name: repository
+  vars:
+    repo_src: "{{ item.repo_src }}"
+    git_org: "{{ item.git_org }}"
+    git_repo: "{{ item.repo_target }}"
+  loop:
+  - { repo_target: "{{ unguard_git_repo_name }}", repo_src: "{{ role_path }}/files/repos/unguard", git_org: "{{ unguard_git_org_name }}" }
+  #when: new_repo_created is defined and new_repo_created == true
+

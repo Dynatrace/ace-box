@@ -13,28 +13,18 @@
     name: gitlab
     tasks_from: ensure-group
   vars:
-    gitlab_group_name: "{{ unguard_git_org_name }}"
+    gitlab_group_name: "{{ git_org }}"
 
 - name: Gitlab - Create Project
   include_role:
     name: gitlab
     tasks_from: ensure-project
   vars:
-    gitlab_prj: "{{ unguard_git_repo_name }}"
+    gitlab_prj: "{{ git_repo }}"
     gitlab_prj_namespace_id: "{{ gitlab_group_id }}"
 
-- name: Publish Unguard repository to Gitlab
-  include_role:
-    name: repository
-  vars:
-    repo_src: "{{ item.repo_src }}"
-    git_org: "{{ item.git_org }}"
-    git_repo: "{{ item.repo_target }}"
+- name: Set gitlab secrets facts
+  set_fact:
     git_username: "{{ gitlab_username }}"
     git_password: "{{ gitlab_password }}"
     git_domain: "{{ gitlab_domain }}"
-    git_remote: "gitlab"
-  loop:
-  - { repo_target: "{{ unguard_git_repo_name }}", repo_src: "{{ role_path }}/files/repos/unguard", git_org: "{{ unguard_git_org_name }}" }
-
-
