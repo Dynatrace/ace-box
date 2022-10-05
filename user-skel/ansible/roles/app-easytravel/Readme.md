@@ -47,7 +47,7 @@ To enable monaco:
 ```yaml
 - include_role:
     name: app-easytravel
-    tasks_from: apply-monaco
+    tasks_from: apply-dt-configuration
 ```
 
 To delete the configuration again:
@@ -55,7 +55,7 @@ To delete the configuration again:
 ```yaml
 - include_role:
     name: app-easytravel
-    tasks_from: delete-monaco
+    tasks_from: delete-dt-configuration
 ```
 
 Dynatrace Configurations List:
@@ -78,3 +78,29 @@ Dynatrace Configurations List:
         - "synthetic-monitor/webcheck.easytravel-angular.prod"
         - "synthetic-monitor/browser.easytravel-angular.prod.home"
         - "synthetic-monitor/browser.easytravel.prod.home"
+   
+  ### Upload codebase into a Git repository
+
+Variables that can be set are as follows:
+
+```yaml
+---
+unguard_git_org_name: ""
+unguard_git_repo_name: "unguard"
+```
+
+Upload to Gitlab:
+
+```yaml
+- include_role:
+    name: app-easytravel
+    tasks_from: upload-to-gitlab
+```
+
+Upload to Gitea:
+
+```yaml
+- include_role:
+    name: app-easytravel
+    tasks_from: upload-to-gitea
+```
