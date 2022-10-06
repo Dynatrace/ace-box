@@ -29,7 +29,7 @@ spec:
             - name: FRONTEND_ADDR
               value: "{{ .Chart.Name }}.{{ .Values.ingress.domain }}/ui"
             - name: SIMULATE_PRIVATE_RANGES
-              value: "{{ .Values.unguard.userSimulator.simulatePrivateRanges | default 'false'}}"
+              value: "{{ .Values.unguard.userSimulator.simulatePrivateRanges | default false}}"
             - name: DT_RELEASE_VERSION
               value: "{{ .Values.unguard.userSimulator.tag }}"
             - name: DT_RELEASE_BUILD_VERSION

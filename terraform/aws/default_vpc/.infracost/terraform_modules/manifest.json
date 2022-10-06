@@ -1,0 +1,1 @@
+{"Modules":[{"Key":"ssh_key","Source":"../../modules/ssh","Dir":"..\\..\\modules\\ssh"},{"Key":"provisioner","Source":"../../modules/ace-box-provisioner","Dir":"..\\..\\modules\\ace-box-provisioner"},{"Key":"security_group","Source":"registry.terraform.io/terraform-aws-modules/security-group/aws","Version":"4.13.0","Dir":".infracost\\terraform_modules\\security_group"}]}
