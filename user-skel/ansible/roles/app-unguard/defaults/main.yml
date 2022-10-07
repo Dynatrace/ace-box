@@ -5,3 +5,6 @@ unguard_image_tag: "0.0.2"
 unguard_user_auth_service_image_tag: "0.0.1"
 unguard_simulate_private_ranges: "true"
 unguard_deploy_user_simulator_cronjob: "false"
+
+# dynatrace monaco configurations 
+unguard_skip_synthetic_monitor: "true"

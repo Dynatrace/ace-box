@@ -10,14 +10,7 @@ This role depends on the following roles to be deployed beforehand:
 - include_role:
     name: microk8s
 
-- include_role:
-    name: dt-activegate
-
-- include_role:
-    name: dt-oneagent
-
 ```
-
 ### Deploying Unguard
 
 ```yaml
@@ -36,15 +29,25 @@ unguard_user_auth_service_image_tag: "0.0.1" # user_auth_service currently worki
 unguard_simulate_private_ranges: "true" # enable/disable simulating private ranges on user simulator service
 unguard_deploy_user_simulator_cronjob: "false" # enable/disable user simulator cronjob 
 ```
+### (Optional) To enable Observability with Dynatrace OneAgent
 
-### Configure Dynatrace using Monaco
+```yaml
+- include_role:
+    name: dt-oneagent
+```
 
-> Note: the below deploys monaco and configures Dynatrace with the monaco project embedded in the role
+### (Optional) Configure Dynatrace using Monaco
+
+> The below deploys monaco and configures Dynatrace with the monaco project embedded in the role
+> 
+> Note: To enable Private Synthetic Monitor for Unguard via Dynatrace ActiveGate, set the "unguard_skip_synthetic_monitor" variable as "false". The default value is "true"
 
 ```yaml
 - include_role:
     name: app-unguard
     tasks_from: apply-dt-configuration
+  vars:
+    unguard_skip_synthetic_monitor: "false"
 ```
 
 To delete the configuration:
@@ -68,7 +71,7 @@ Dynatrace Configurations List:
       - "conditional-naming-processgroup/ {ProcessGroup:ExeName} {ProcessGroup:KubernetesBasePodName}"
       - "conditional-naming-service/app.environment"
       - "kubernetes-credentials/ACE-BOX"
-      - "synthetic-location/ACE-BOX"
+      - "synthetic-location/ACE-BOX"  # if set unguard_skip_synthetic_monitor: "false"
     
     Unguard Aplication Specific:
         - "application/unguard"
@@ -76,5 +79,5 @@ Dynatrace Configurations List:
         - "dashboard/Application Security Issues"
         - "management-zone/unguard"
         - "request-attributes/X-Client-Ip"
-        - "synthetic-monitor/unguard.http"
-        - "synthetic-monitor/unguard.clickpath"
+        - "synthetic-monitor/unguard.http" # if set unguard_skip_synthetic_monitor: "false"
+        - "synthetic-monitor/unguard.clickpath" # if set unguard_skip_synthetic_monitor: "false"

@@ -26,12 +26,18 @@
 - set_fact:
     dt_operator_kube_bearer_token: "{{ dt_operator_secret_data.resources[0].data.token | b64decode }}"
 
+# deploy dt activegate if a use case requires a private synthetic monitor
+- include_role:
+    name: dt-activegate
+  when: unguard_skip_synthetic_monitor == "false"
+
 - name: Source Private Synthetic Node ID
   include_role:
     name: dt-activegate
     tasks_from: source-node-id
-  when: dt_synthetic_node_id is not defined 
+  when: unguard_skip_synthetic_monitor == "false" and dt_synthetic_node_id is not defined 
 
+# deploy monaco and apply configurations
 - name: Deploy Monaco
   include_role:
     name: monaco
@@ -43,11 +49,11 @@
     apply:
       environment:
         INGRESS_DOMAIN: "{{ ingress_domain }}"
-        SYNTH_NODE_ID: "{{ dt_synthetic_node_id }}"
         APP_NAMESPACE: "{{ unguard_namespace }}"
         KUBE_API_ENDPOINT: "{{ kubernetes_api_endpoint }}"
         KUBE_BEARER_TOKEN: "{{ dt_operator_kube_bearer_token }}"
-        SKIP_SYNTH: "false"
+        SKIP_SYNTH: "{{ unguard_skip_synthetic_monitor }}"
+        SYNTH_NODE_ID: "{{ dt_synthetic_node_id | default(None) }}"
   vars:
     monaco_project: ""
     monaco_projects_root: "{{ monaco_projects_folder }}" 
