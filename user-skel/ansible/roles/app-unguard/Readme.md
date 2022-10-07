@@ -27,7 +27,10 @@ unguard_namespace: "unguard" # namespace that Unguard will be deployed in
 unguard_image_tag: "0.0.2" # image tag to deploy for all Unguard images
 unguard_user_auth_service_image_tag: "0.0.1" # user_auth_service currently working version
 unguard_simulate_private_ranges: "true" # enable/disable simulating private ranges on user simulator service
-unguard_deploy_user_simulator_cronjob: "false" # enable/disable user simulator cronjob 
+unguard_deploy_user_simulator_cronjob: "false" # enable/disable user simulator cronjob
+
+# dynatrace monaco configurations 
+skip_synthetic_monitor: "true" # enable/disable synthetic monitor for the application
 ```
 ### (Optional) To enable Observability with Dynatrace OneAgent
 
