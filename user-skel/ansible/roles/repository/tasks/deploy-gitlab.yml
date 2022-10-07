@@ -1,0 +1,30 @@
+- name: Gitlab - Deploy
+  include_role:
+    name: gitlab
+    tasks_from: deploy
+
+- name: Gitlab - Source Secret
+  include_role:
+    name: gitlab
+    tasks_from: source-secret
+
+- name: Gitlab - Create Group
+  include_role:
+    name: gitlab
+    tasks_from: ensure-group
+  vars:
+    gitlab_group_name: "{{ git_org }}"
+
+- name: Gitlab - Create Project
+  include_role:
+    name: gitlab
+    tasks_from: ensure-project
+  vars:
+    gitlab_prj: "{{ git_repo }}"
+    gitlab_prj_namespace_id: "{{ gitlab_group_id }}"
+
+- name: Set gitlab secrets facts
+  set_fact:
+    git_username: "{{ gitlab_username }}"
+    git_password: "{{ gitlab_password }}"
+    git_domain: "{{ gitlab_domain }}"

@@ -1,4 +1,14 @@
 ---
+
+- name: Deploy Gitea if git_remote is gitea
+  include_tasks: deploy-gitea.yml
+  when: gitea_internal_endpoint is not defined and git_remote == "gitea"
+
+
+- name: Deploy Gitlab if git_remote is gitea
+  include: roles/repository/tasks/deploy-gitlab.yml
+  when: gitlab_internal_endpoint is not defined and git_remote == "gitlab"
+
 - ansible.builtin.command: git init
   args:
     chdir: "{{ repo_src }}"

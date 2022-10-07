@@ -52,6 +52,10 @@
     name: awx
     tasks_from: source-secrets
 
+- file:
+    path: "{{ role_path }}/files/helm-values"
+    state: directory
+
 - name: Template default-ext-refs
   template:
     src: default-ext-refs.yaml.j2

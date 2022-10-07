@@ -1,0 +1,30 @@
+- name: Gitea - Deploy
+  include_role:
+    name: gitea
+
+- name: Gitea - Source Secret
+  include_role:
+    name: gitea
+    tasks_from: source-secret
+  when: gitea_access_token is not defined or gitea_username is not defined or gitea_password is not defined
+
+- name: Gitea - Create Organization
+  include_role:
+    name: gitea
+    tasks_from: create-organization
+  vars:
+    gitea_org: "{{ git_org }}"
+
+- name: Gitea - Create Repository
+  include_role:
+    name: gitea
+    tasks_from: create-repository
+  vars:
+    gitea_org: "{{ git_org }}"
+    gitea_repo: "{{ git_repo }}"
+
+- name: Set gitea secrets facts
+  set_fact:
+    git_username: "{{ gitea_username }}"
+    git_password: "{{ gitea_password }}"
+    git_domain: "{{ gitea_domain }}"
