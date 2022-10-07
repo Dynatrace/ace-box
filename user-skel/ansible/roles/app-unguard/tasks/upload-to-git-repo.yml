@@ -7,6 +7,4 @@
     git_org: "{{ item.git_org }}"
     git_repo: "{{ item.repo_target }}"
   loop:
-  - { repo_target: "{{ unguard_git_repo_name }}", repo_src: "{{ role_path }}/files/repos/unguard", git_org: "{{ unguard_git_org_name }}" }
-  #when: new_repo_created is defined and new_repo_created == true
-
+  - { repo_target: "{{ git_repo_name }}", repo_src: "{{ role_path }}/files/repos/unguard", git_org: "{{ git_org_name }}" }
