@@ -7,4 +7,4 @@ unguard_simulate_private_ranges: "true"
 unguard_deploy_user_simulator_cronjob: "false"
 
 # dynatrace monaco configurations 
-unguard_skip_synthetic_monitor: "true"
+skip_synthetic_monitor: "true"

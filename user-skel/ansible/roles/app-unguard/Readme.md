@@ -40,14 +40,14 @@ unguard_deploy_user_simulator_cronjob: "false" # enable/disable user simulator c
 
 > The below deploys monaco and configures Dynatrace with the monaco project embedded in the role
 > 
-> Note: To enable Private Synthetic Monitor for Unguard via Dynatrace ActiveGate, set the "unguard_skip_synthetic_monitor" variable as "false". The default value is "true"
+> Note: To enable Private Synthetic Monitor for Unguard via Dynatrace ActiveGate, set the "skip_synthetic_monitor" variable as "false". The default value is "true"
 
 ```yaml
 - include_role:
     name: app-unguard
     tasks_from: apply-dt-configuration
   vars:
-    unguard_skip_synthetic_monitor: "false"
+    skip_synthetic_monitor: "false"
 ```
 
 To delete the configuration:
@@ -71,7 +71,7 @@ Dynatrace Configurations List:
       - "conditional-naming-processgroup/ {ProcessGroup:ExeName} {ProcessGroup:KubernetesBasePodName}"
       - "conditional-naming-service/app.environment"
       - "kubernetes-credentials/ACE-BOX"
-      - "synthetic-location/ACE-BOX"  # if set unguard_skip_synthetic_monitor: "false"
+      - "synthetic-location/ACE-BOX"  # if set skip_synthetic_monitor: "false"
     
     Unguard Aplication Specific:
         - "application/unguard"
@@ -79,5 +79,5 @@ Dynatrace Configurations List:
         - "dashboard/Application Security Issues"
         - "management-zone/unguard"
         - "request-attributes/X-Client-Ip"
-        - "synthetic-monitor/unguard.http" # if set unguard_skip_synthetic_monitor: "false"
-        - "synthetic-monitor/unguard.clickpath" # if set unguard_skip_synthetic_monitor: "false"
+        - "synthetic-monitor/unguard.http" # if set skip_synthetic_monitor: "false"
+        - "synthetic-monitor/unguard.clickpath" # if set skip_synthetic_monitor: "false"
