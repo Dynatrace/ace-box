@@ -29,10 +29,8 @@ unguard_user_auth_service_image_tag: "0.0.1" # user_auth_service currently worki
 unguard_simulate_private_ranges: "true" # enable/disable simulating private ranges on user simulator service
 unguard_deploy_user_simulator_cronjob: "false" # enable/disable user simulator cronjob
 
-# dynatrace monaco configurations 
-skip_synthetic_monitor: "true" # enable/disable synthetic monitor for the application
 ```
-### (Optional) To enable Observability with Dynatrace OneAgent
+### (Optional) To enable observability with Dynatrace OneAgent
 
 ```yaml
 - include_role:
@@ -43,7 +41,7 @@ skip_synthetic_monitor: "true" # enable/disable synthetic monitor for the applic
 
 > The below deploys monaco and configures Dynatrace with the monaco project embedded in the role
 > 
-> Note: To enable Private Synthetic Monitor for Unguard via Dynatrace ActiveGate, set the "skip_synthetic_monitor" variable as "false". The default value is "true"
+> Note: To enable private synthetic monitor for Unguard via Dynatrace ActiveGate, set the "skip_synthetic_monitor" variable as "false". The default value is "true"
 
 ```yaml
 - include_role:
