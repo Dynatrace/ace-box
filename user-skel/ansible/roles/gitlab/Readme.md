@@ -30,7 +30,8 @@ gitlab_gcpe_tag: "v0.5.3"
 
 ### Other Tasks in the Role
 
-"source-endpoints" task fetches the internal endpoint for the gitlab service
+#### "source-endpoints" 
+This task fetches the internal endpoint for the gitlab service
 
 ```yaml
 - include_role:
@@ -38,7 +39,8 @@ gitlab_gcpe_tag: "v0.5.3"
     tasks_from: source-endpoints
 ```
 
-"source-endpoints-external" task fetches the external endpoint for the gitlab service
+#### "source-endpoints-external" 
+This task fetches the external endpoint for the gitlab service
 
 ```yaml
 - include_role:
@@ -46,7 +48,8 @@ gitlab_gcpe_tag: "v0.5.3"
     tasks_from: source-endpoints-external
 ```
 
-"configure" task sources Keptn, Cloud Automation secrets and Dynatrace Synthetic node ID (if they exists) to set Gitlab variables to be used for the relevant pipelines.
+#### "configure" 
+This task sources Keptn, Cloud Automation secrets and Dynatrace Synthetic node ID (if they exists) to set Gitlab variables to be used for the relevant pipelines.
 
 ```yaml
 - include_role:
@@ -54,11 +57,12 @@ gitlab_gcpe_tag: "v0.5.3"
     tasks_from: configure
 ```
 
-"deploy-gcpe" task deploys gcpe (gitlab-ci-pipelines-exporter) under the gitlab namespace.
+#### "deploy-gcpe" 
+This task deploys gcpe (gitlab-ci-pipelines-exporter) under the gitlab namespace.
 
 Note: gitlab-ci-pipelines-exporter allows you to monitor your GitLab CI pipelines with Prometheus or any monitoring solution supporting the OpenMetrics format.
 
-https://github.com/mvisonneau/gitlab-ci-pipelines-exporter
+For the details: https://github.com/mvisonneau/gitlab-ci-pipelines-exporter
 
 
 ```yaml
@@ -67,7 +71,8 @@ https://github.com/mvisonneau/gitlab-ci-pipelines-exporter
     tasks_from: deploy-gcpe
 ```
 
-"source-secret" task sources the "gitlab-initial-root-password" information from a secret created during gitlab installation. It then generates an oauth token to be used to connect to the Gitlab service.
+#### "source-secret" 
+This task sources the "gitlab-initial-root-password" information from a secret created during gitlab installation. It then generates an oauth token to be used to connect to the Gitlab service.
 
 ```yaml
 - include_role:
@@ -75,7 +80,8 @@ https://github.com/mvisonneau/gitlab-ci-pipelines-exporter
     tasks_from: source-secret
 ```
 
-"ensure-group" task creates a group if not exists with the name defined under "gitlab_group_name" variable
+#### "ensure-group" 
+This task creates a group if not exists with the name defined under "gitlab_group_name" variable
 
 ```yaml
 - include_role:
@@ -85,7 +91,8 @@ https://github.com/mvisonneau/gitlab-ci-pipelines-exporter
     gitlab_group_name: "{{ <gitlab group name> }}" # specify a gitlab group name to be created
 ```
 
-"ensure-group-var" task creates a group variable in key/value format
+#### "ensure-group-var" 
+This task creates a group variable in key/value format
 
 ```yaml
 - include_role:
@@ -97,7 +104,8 @@ https://github.com/mvisonneau/gitlab-ci-pipelines-exporter
     gitlab_var_value: "{{ <a gitlab variable value> }}" # specify a gitlab variable value to be created
 ```
 
-"ensure-project" task creates a project under a group if not exists
+#### "ensure-project" 
+This task creates a project under a group if not exists
 
 ```yaml
 - include_role:
@@ -108,7 +116,8 @@ https://github.com/mvisonneau/gitlab-ci-pipelines-exporter
     gitlab_prj_namespace_id: "{{ <gitlab group id> }}"
 ```
 
-"uninstall" task uninstalls gitlab and gcpe via helm
+#### "uninstall" 
+This task uninstalls gitlab and gcpe via helm
 
 ```yaml
 - include_role:
