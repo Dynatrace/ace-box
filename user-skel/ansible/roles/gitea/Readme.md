@@ -29,7 +29,8 @@ gitea_helm_chart_version: "4.1.1"
 
 ### Other Tasks in the Role
 
-"create-secret" task creates a secret that includes gitea username and password
+#### "create-secret" 
+This task creates a secret that includes gitea username and password
 
 ```yaml
 - include_role:
@@ -37,7 +38,8 @@ gitea_helm_chart_version: "4.1.1"
     tasks_from: create-secret
 ```
 
-"source-secret" task fetches the username, password information from a secret created during gitea installation
+#### "source-secret" 
+This task fetches the username, password information from a secret created during gitea installation
 
 ```yaml
 - include_role:
@@ -45,7 +47,8 @@ gitea_helm_chart_version: "4.1.1"
     tasks_from: source-secret
 ```
 
-"source-endpoints" task fetches the internal endpoint for the gitea service
+#### "source-endpoints" 
+This task fetches the internal endpoint for the gitea service
 
 ```yaml
 - include_role:
@@ -53,7 +56,8 @@ gitea_helm_chart_version: "4.1.1"
     tasks_from: source-endpoints
 ```
 
-"create-organization" task creates an organization on gitea
+#### "create-organization" 
+This task creates an organization on gitea
 
 ```yaml
 - include_role:
@@ -61,7 +65,8 @@ gitea_helm_chart_version: "4.1.1"
     tasks_from: create-organization
 ```
 
-"create-repository" task creates a repository under an organization
+#### "create-repository" 
+This task creates a repository under an organization
 
 ```yaml
 - include_role:
@@ -69,7 +74,8 @@ gitea_helm_chart_version: "4.1.1"
     tasks_from: create-repository
 ```
 
-"uninstall" task uninstalls gitea via helm
+#### "uninstall" 
+This task uninstalls gitea via helm
 
 ```yaml
 - include_role:
