@@ -9,13 +9,6 @@ This role depends on the following roles to be deployed beforehand:
 ```yaml
 - include_role:
     name: microk8s
-
-- include_role:
-    name: dt-activegate
-
-- include_role:
-    name: dt-oneagent
-
 ```
 
 ### Deploying EasyTravel
@@ -37,25 +30,44 @@ easytravel_headless_replicas: 3 #number of headless loadgen replicas
 easytravel_image_tag: "2.0.0.3356" #image tag to deploy for all EasyTravel images
 ```
 
+### (Optional) To enable observability with Dynatrace OneAgent
+
+```yaml
+- include_role:
+    name: dt-oneagent
+```
+
+### (Optional) To install Dynatrace Activegate to enable synthetic monitoring
+
+```yaml
+- include_role:
+    name: dt-activegate
+```
+
 ### Configure Dynatrace using Monaco
 
 To enable monaco:
 
-
-> Note: the below deploys monaco and configures Dynatrace with the monaco project embedded in the role
-
 ```yaml
-- include_role:
-    name: app-easytravel
-    tasks_from: apply-dt-configuration
+- name: Deploy Monaco
+  include_role:
+    name: monaco
 ```
 
-To delete the configuration again:
+> Note: the below applies Dynatrace configurations with the monaco project embedded in the role
 
 ```yaml
 - include_role:
     name: app-easytravel
-    tasks_from: delete-dt-configuration
+    tasks_from: apply-monaco
+```
+
+To delete the configuration:
+
+```yaml
+- include_role:
+    name: app-easytravel
+    tasks_from: delete-monaco
 ```
 
 Dynatrace Configurations List:
@@ -78,29 +90,3 @@ Dynatrace Configurations List:
         - "synthetic-monitor/webcheck.easytravel-angular.prod"
         - "synthetic-monitor/browser.easytravel-angular.prod.home"
         - "synthetic-monitor/browser.easytravel.prod.home"
-   
-  ### Upload codebase into a Git repository
-
-Variables that can be set are as follows:
-
-```yaml
----
-easytravel_git_org_name: "demo"
-easytravel_git_repo_name: "easytravel"
-```
-
-Upload to Gitlab:
-
-```yaml
-- include_role:
-    name: app-easytravel
-    tasks_from: upload-to-gitlab
-```
-
-Upload to Gitea:
-
-```yaml
-- include_role:
-    name: app-easytravel
-    tasks_from: upload-to-gitea
-```
