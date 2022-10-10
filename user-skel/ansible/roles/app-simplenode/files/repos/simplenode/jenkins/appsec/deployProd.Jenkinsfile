@@ -32,7 +32,7 @@ pipeline {
                     -e \"s|CONTAINER_IMAGE_PLACEHOLDER|${env.CONTAINER_IMAGE}|\" \
                     -e \"s|ENVIRONMENT_PLACEHOLDER|${env.TARGET_NAMESPACE}|\" \
                     -e \"s|IMAGE_PLACEHOLDER|`kubectl -n ${env.STAGING_NAMESPACE} get deployment -o jsonpath='{.items[*].spec.template.spec.containers[0].image}' --field-selector=metadata.name=${env.APP_NAME}`|\" \
-                    -e \"s|VERSION_PLACEHOLDER|${env.ART_VERSION}|\" \
+                    -e \"s|VERSION_PLACEHOLDER|${env.BUILD}.0.0|\" \
                     -e \"s|BUILD_PLACEHOLDER|${env.ART_VERSION}|\" \
                     -e \"s|DT_TAGS_PLACEHOLDER|${env.DT_TAGS}|\" \
                     -e \"s|DT_CUSTOM_PROP_PLACEHOLDER|${env.DT_CUSTOM_PROP}|\" \

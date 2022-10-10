@@ -1,5 +1,5 @@
 ---
-gitea_version: "1.14.6"
+gitea_version: "1.17.2"
 gitea_domain: "gitea.{{ ingress_domain }}"
 gitea_username: "dynatrace"
 gitea_password: "dynatrace"

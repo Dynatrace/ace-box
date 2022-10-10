@@ -100,11 +100,5 @@ pipeline {
 				wait: false
 			}
 		}
-		stage('Generate Load') {
-			steps {
-				build job: "demo-auto-remediation/4. Generate Load",
-				wait: false
-			}
-		}
 	}
 }

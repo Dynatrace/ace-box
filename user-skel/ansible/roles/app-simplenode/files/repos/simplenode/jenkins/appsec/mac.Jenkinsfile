@@ -1,3 +1,6 @@
+@Library('ace@v1.1') ace 
+def event = new com.dynatrace.ace.Event()
+
 ENVS_FILE = "monaco/environments.yaml"
 
 pipeline {
@@ -5,7 +8,6 @@ pipeline {
         label 'ace'
     }
     environment {
-        KUBE_BEARER_TOKEN = credentials('KUBE_BEARER_TOKEN')
         KEPTN_API_TOKEN = credentials('CA_API_TOKEN')
         DT_API_TOKEN = credentials('DT_API_TOKEN')
         DT_TENANT_URL = credentials('DT_TENANT_URL')
@@ -47,6 +49,34 @@ pipeline {
                     }
                 }
 			}
-		}       
+		} 
+        stage('Dynatrace configuration event') {
+            steps {
+                script {
+                    def rootDir = pwd()
+                    def sharedLib = load "${rootDir}/jenkins/shared/shared.groovy"
+                    def status = event.pushDynatraceConfigurationEvent (
+                        tagRule: sharedLib.getTagRulesForApplicationEvent("simplenodeappsec-staging"),
+                        description: "Monaco deployment successful",
+                        configuration: "Monaco",
+                        customProperties: [
+                            "Approved by": "ACE"
+                        ]
+                    )
+                }
+                script {
+                    def rootDir = pwd()
+                    def sharedLib = load "${rootDir}/jenkins/shared/shared.groovy"
+                    def status = event.pushDynatraceConfigurationEvent (
+                        tagRule: sharedLib.getTagRulesForApplicationEvent("simplenodeappsec-prod"),
+                        description: "Monaco deployment successful",
+                        configuration: "Monaco",
+                        customProperties: [
+                            "Approved by": "ACE"
+                        ]
+                    )
+                }
+            }
+        }      
     }
 }

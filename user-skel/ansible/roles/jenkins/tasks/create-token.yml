@@ -1,0 +1,58 @@
+---
+- name: Trying to create Jenkins token
+  block:
+  - set_fact:
+      retry_count: "{{ 0 if retry_count is undefined else retry_count | int + 1 }}"
+  - include_tasks: roles/jenkins/tasks/source-endpoints.yml
+  - name: Retrieve Jenkins Crumb
+    uri:
+      url: "{{ jenkins_internal_endpoint }}/crumbIssuer/api/json"
+      user: "{{ jenkins_username }}"
+      password: "{{ jenkins_password }}"
+      force_basic_auth: yes
+      validate_certs: false
+      method: GET
+      status_code: [200, 201, 204]
+      return_content: yes
+      headers:
+        Content-Type: "application/json"
+    register: jenkins_crumb_raw
+  - name: Generate Jenkins API token
+    uri:
+      url: "{{ jenkins_internal_endpoint }}/user/{{ jenkins_username }}/descriptorByName/jenkins.security.ApiTokenProperty/generateNewToken"
+      user: "{{ jenkins_username }}"
+      password: "{{ jenkins_password }}"
+      force_basic_auth: yes
+      validate_certs: false
+      method: POST
+      status_code: [200, 201, 204]
+      return_content: yes
+      headers:
+        Cookie: "{{ jenkins_crumb_raw.cookies_string }}"
+        Jenkins-Crumb: "{{ jenkins_crumb_raw.json.crumb }}"
+      body_format: form-urlencoded
+      body:
+        newTokenName: "admin-token-{{ ansible_date_time.iso8601 }}"
+    register: jenkins_token_raw
+  - set_fact:
+      jenkins_api_token: "{{ jenkins_token_raw.json.data.tokenValue }}"
+  - name: Create Jenkins admin token
+    kubernetes.core.k8s:
+      name: jenkins-admin-token
+      api_version: v1
+      kind: Secret
+      state: present
+      namespace: "{{ jenkins_namespace }}"
+      resource_definition:
+        type: Opaque
+        data:
+          jenkins_api_token: "{{ jenkins_api_token | b64encode }}"    
+  rescue:
+    - fail:
+        msg: Maximum retries
+      when: retry_count | int == 12
+    - debug:
+        msg: "Token creation failed. Next attempt will be started after a short wait."
+    - pause:
+        seconds: 10
+    - include_tasks: roles/jenkins/tasks/create-token.yml

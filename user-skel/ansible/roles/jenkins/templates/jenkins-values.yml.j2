@@ -16,26 +16,37 @@ controller:
 {% endif %}
   jenkinsUrlProtocol: {{ ingress_protocol }}
   installPlugins:
-    - command-launcher:1.6
-    - kubernetes:1.30.11
-    - kubernetes-credentials-provider:0.20
-    - workflow-job:1145.v7f2433caa07f
+    - command-launcher:84.v4a_97f2027398
+    - kubernetes:3697.v771155683e38
+    - kubernetes-credentials-provider:1.196.va_55f5e31e3c2
+    - workflow-job:1189.va_d37a_e9e4eda_
+    - workflow-scm-step:400.v6b_89a_1317c9a_
+    - workflow-cps-global-lib:588.v576c103a_ff86
+    - pipeline-model-api:2.2114.v2654ca_721309
     - workflow-aggregator:2.6
-    - credentials-binding:1.27.1
-    - git:4.11.1
+    - credentials-binding:523.vd859a_4b_122e6
+    - git:4.11.5
+    - git-client:3.11.2
     - google-oauth-plugin:1.0.6
     - google-source-plugin:0.4
     - performance:3.20
-    - github-branch-source:2.11.3
-    - job-dsl:1.78.3
+    - github-branch-source:1687.v7618247e672d
+    - job-dsl:1.81
     - pipeline-build-step:2.18
-    - docker-plugin:1.2.3
-    - blueocean:1.25.2
-    - configuration-as-code:1.55.1
-    - http_request:1.12
-    - pipeline-utility-steps:2.11.0
+    - docker-plugin:1.2.9
+    - docker-commons:1.21
+    - blueocean:1.25.6
+    - configuration-as-code:1512.vb_79d418d5fc8
+    - http_request:1.16
+    - pipeline-utility-steps:2.13.0
     - ansible:1.1
-    - gitea:1.4.1
+    - gitea:1.4.3
+    - github:1.34.5
+    - cloudbees-bitbucket-branch-source:785.ve724eb_44e286
+    - favorite:2.4.1
+    - junit:1119.1121.vc43d0fc45561
+    - lockable-resources:2.16
+    - pipeline-input-step:449.v77f0e8b_845c4
     - opentelemetry:2.7.1
   installLatestPlugins: false
   JCasC:
@@ -96,10 +107,6 @@ controller:
 {% if ca_bridge is defined and ca_bridge != "" %}
               - key: "CA_BRIDGE"
                 value: "{{ ca_bridge }}"
-{% endif %}
-{% if kubernetes_api_endpoint is defined and kubernetes_api_endpoint != "" %}
-              - key: "KUBE_API_ENDPOINT"
-                value: "{{ kubernetes_api_endpoint }}"
 {% endif %}
       library-config: |
         unclassified:
@@ -168,13 +175,6 @@ controller:
                     description: "Git Personal Access Token"
                     scope: GLOBAL
                     secret: "{{ git_access_token }}"
-{% endif %}
-{% if dt_operator_kube_bearer_token is defined and dt_operator_kube_bearer_token != "" %}
-                - string:
-                    id: "KUBE_BEARER_TOKEN"
-                    scope: GLOBAL
-                    description: "Dynatrace Operator Kubernetes token"
-                    secret: "{{ dt_operator_kube_bearer_token }}"
 {% endif %}
 {% if ca_api_token is defined and ca_api_token != "" %}
                 - string:

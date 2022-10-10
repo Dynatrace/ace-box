@@ -1,0 +1,23 @@
+config:
+    - unguard-http: "unguard-http.json"
+    - unguard-clickpath: "unguard-clickpath.json"
+  
+unguard-http:
+    - name: "unguard.http"
+    - url: "http://unguard.{{ .Env.INGRESS_DOMAIN }}/ui"
+    - description: "HTTP Monitor for unguard"
+    - location: "/infrastructure/synthetic-location/acebox.id"
+    - managementZoneId: "/unguard/management-zone/unguard.id"
+    - tag: "unguard"
+    - applicationId: "/unguard/application/app-unguard.id"
+    - skipDeployment: "{{ .Env.SKIP_SYNTH }}"
+
+unguard-clickpath:
+    - name: "unguard.clickpath"
+    - url: "http://unguard.{{ .Env.INGRESS_DOMAIN }}/ui"
+    - description: "ClickPath for unguard"
+    - location: "/infrastructure/synthetic-location/acebox.id"
+    - managementZoneId: "/unguard/management-zone/unguard.id"
+    - tag: "unguard"
+    - applicationId: "/unguard/application/app-unguard.id"
+    - skipDeployment: "{{ .Env.SKIP_SYNTH }}"

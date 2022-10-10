@@ -43,6 +43,7 @@ override.tf.json
 *tfplan*
 *.terraform.lock.hcl
 **/ace-box.conf.yml
+**/.infracost/*
 
 # Nodejs
 *.env*

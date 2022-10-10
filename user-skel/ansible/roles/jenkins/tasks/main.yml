@@ -60,34 +60,6 @@
   - set_fact:
       docker_registry_url: "localhost:{{ container_registry_svc_data.resources[0].spec.ports[0].nodePort }}"
 
-- block:
-  - name: Source Kubernetes endpoint
-    kubernetes.core.k8s_info:
-      kind: Service
-      name: "kubernetes"
-      namespace: "default"
-    register: kubernetes_svc_data
-  - set_fact:
-      kubernetes_api_endpoint: "https://{{ kubernetes_svc_data.resources[0].spec.clusterIP }}"
-
-- block:
-  - name: Source Dynatrace Operator ServiceAccount
-    kubernetes.core.k8s_info:
-      kind: ServiceAccount
-      name: "dynatrace-kubernetes-monitoring"
-      namespace: "dynatrace"
-    register: dt_operator_sa_data
-  - name: Source Dynatrace Operator Secret
-    kubernetes.core.k8s_info:
-      kind: Secret
-      name: "{{ dt_operator_sa_data.resources[0].secrets[0].name }}"
-      namespace: "dynatrace"
-    register: dt_operator_secret_data
-    when: dt_operator_sa_data.resources[0] is defined
-  - set_fact:
-      dt_operator_kube_bearer_token: "{{ dt_operator_secret_data.resources[0].data.token | b64decode }}"
-    when: dt_operator_secret_data.resources[0] is defined
-
 - name: Source DT Synthetic node id
   include_role:
     name: dt-activegate
@@ -130,3 +102,5 @@
     values_files: "{{ jenkins_helm_value_files | json_query('files[*].path') }}"
   when: not jenkins_skip_install
 
+- include_tasks: roles/jenkins/tasks/create-token.yml
+  when: not jenkins_skip_install
