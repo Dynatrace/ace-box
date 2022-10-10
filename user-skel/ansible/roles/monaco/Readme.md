@@ -20,13 +20,14 @@ monaco_version: "v1.6.0"
 
 ### Other Tasks in the Role
 
-"apply-monaco" task applies configuration of the selected projects under the monaco projects root folder.
+#### "apply-monaco" 
+This task applies configuration of the selected projects under the monaco projects root folder.
 You need to specify them as input variables shown under "vars" parameter. 
 
 You can also apply environment variables that is needed for monaco configurations under "apply.environment" parameter.
 
 ```yaml
-  include_role:
+- include_role:
     name: monaco
     tasks_from: apply-monaco
     apply:
