@@ -37,6 +37,13 @@ unguard_deploy_user_simulator_cronjob: "false" # enable/disable user simulator c
     name: dt-oneagent
 ```
 
+### (Optional) To install Dynatrace Activegate to enable synthetic monitoring
+
+```yaml
+- include_role:
+    name: dt-activegate
+```
+
 ### (Optional) Configure Dynatrace using Monaco
 
 > The below deploys monaco and configures Dynatrace with the monaco project embedded in the role
