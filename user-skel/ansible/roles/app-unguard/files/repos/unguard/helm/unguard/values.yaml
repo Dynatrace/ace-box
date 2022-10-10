@@ -8,22 +8,22 @@ ingress:
 unguard:
   adService:
     image: dynatraceace/unguard-ad-service
-    tag: 0.0.1
+    tag: 0.0.2
   frontend: 
     image: dynatraceace/unguard-frontend
-    tag: 0.0.1
+    tag: 0.0.2
   microblogService: 
     image: dynatraceace/unguard-microblog-service
-    tag: 0.0.1
+    tag: 0.0.2
   proxyService: 
     image: dynatraceace/unguard-proxy-service
-    tag: 0.0.1
+    tag: 0.0.2
   userAuthService: 
     image: dynatraceace/unguard-user-auth-service
     tag: 0.0.1
   userSimulator:
     image: dynatraceace/unguard-user-simulator
-    tag: 0.0.1
-    simulatePrivateRanges: false
+    tag: 0.0.2
+    simulatePrivateRanges: true
   userSimulatorCronJob:
     deploy: false
