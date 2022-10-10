@@ -1,0 +1,47 @@
+---
+
+# Deploy MariaDB from bitnami repository
+- name: Add bitnami chart repo
+  kubernetes.core.helm_repository:
+    name: bitnami
+    repo_url: "https://charts.bitnami.com/bitnami"
+
+- name: Deploy MariaDB
+  kubernetes.core.helm:
+    name: unguard-mariadb
+    chart_ref: bitnami/mariadb
+    release_namespace: "{{ unguard_namespace }}"
+    create_namespace: true
+    wait: true
+    wait_timeout: 10m
+
+# Deploy Unguard
+- name: Deploy Unguard
+  kubernetes.core.helm:
+    name: unguard
+    chart_ref: "{{ role_path }}/files/repos/unguard/helm/unguard"
+    release_namespace: "{{ unguard_namespace }}"
+    create_namespace: true
+    wait: true
+    wait_timeout: 10m
+    values:
+
+      ingress:
+        domain: "{{ ingress_domain }}"
+        class: "{{ ingress_class }}"
+      unguard:
+        adService:
+          tag: "{{ unguard_image_tag }}"
+        frontend: 
+          tag: "{{ unguard_image_tag }}"
+        microblogService: 
+          tag: "{{ unguard_image_tag }}"
+        proxyService: 
+          tag: "{{ unguard_image_tag }}"
+        userAuthService: 
+          tag: "{{ unguard_user_auth_service_image_tag }}"
+        userSimulator:
+          tag: "{{ unguard_image_tag }}"
+          simulatePrivateRanges: "{{ unguard_simulate_private_ranges }}"
+        userSimulatorCronJob:
+          deploy: "{{ unguard_deploy_user_simulator_cronjob }}"
