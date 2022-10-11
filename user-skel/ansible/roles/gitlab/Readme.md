@@ -88,7 +88,7 @@ This task creates a group if not exists with the name defined under "gitlab_grou
     name: gitlab
     tasks_from: ensure-group
   vars:
-    gitlab_group_name: "{{ <gitlab group name> }}" # specify a gitlab group name to be created
+    gitlab_group_name: "<gitlab group name>" # specify a gitlab group name to be created
 ```
 
 #### "ensure-group-var" 
@@ -99,9 +99,9 @@ This task creates a group variable in key/value format
     name: gitlab
     tasks_from: ensure-group-var
   vars:
-    gitlab_group_id: "{{ <gitlab group id> }}" # set a gitlab group ID that was created in "ensure-group" task 
-    gitlab_var_key: "{{ <a gitlab variable key> }}" # specify a gitlab variable key to be created
-    gitlab_var_value: "{{ <a gitlab variable value> }}" # specify a gitlab variable value to be created
+    gitlab_group_id: "<gitlab group id>" # set a gitlab group ID that was created in "ensure-group" task 
+    gitlab_var_key: "<a gitlab variable key>" # specify a gitlab variable key to be created
+    gitlab_var_value: "<a gitlab variable value>" # specify a gitlab variable value to be created
 ```
 
 #### "ensure-project" 
@@ -112,8 +112,8 @@ This task creates a project under a group if not exists
     name: gitlab
     tasks_from: ensure-project
   vars:
-    gitlab_prj: "{{ <gitlab repo name> }}"
-    gitlab_prj_namespace_id: "{{ <gitlab group id> }}"
+    gitlab_prj: "<gitlab repo name>"
+    gitlab_prj_namespace_id: "<gitlab group id>"
 ```
 
 #### "uninstall" 

@@ -57,12 +57,14 @@ This task fetches the internal endpoint for the gitea service
 ```
 
 #### "create-organization" 
-This task creates an organization on gitea
+This task creates an organization on gitea with the name defined under "gitea_org" variable
 
 ```yaml
 - include_role:
     name: gitea
     tasks_from: create-organization
+  vars:
+    gitea_org: "<gitea org name>" # specify a gitea organization name to be created
 ```
 
 #### "create-repository" 
@@ -72,6 +74,9 @@ This task creates a repository under an organization
 - include_role:
     name: gitea
     tasks_from: create-repository
+  vars:
+    gitea_org: "<gitea org name>"
+    gitea_repo: "<gitea repository name>"
 ```
 
 #### "uninstall" 
