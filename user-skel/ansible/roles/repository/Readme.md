@@ -8,21 +8,22 @@ This currated role uploads contents from a specified path to a git repository
 This role depends on a git tool to publish the contents. The curated git tools are as follows:
 
 #### gitea
-You need to deploy gitea, create an organization and repository before publishing the contents.
-For the details please check gitea Readme.
-
+To deploy gitea:
 ```yaml
 - include_role:
     name: gitea
 ```
+After deploying gitea. you need to create an organization and repository before publishing the contents.
+For the details please check gitea Readme.
 
 #### gitlab
-You need to deploy gitlab, create an organization and repository before publishing the contents.
-
+To deploy gitlab:
 ```yaml
 - include_role:
     name: gitlab
 ```
+After deploying gitlab. you need to create an organization and repository before publishing the contents.
+For the details please check gitea Readme.
 #### Other git tools
 If you already have an existing git repository (i.e. github, bitbucket, external gitea, gitlab, etc) you can pass the necessary parameters to the "repository" role.
 
