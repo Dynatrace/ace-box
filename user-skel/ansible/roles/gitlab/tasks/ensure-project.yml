@@ -38,3 +38,4 @@
     register: gitlab_post_projects_result
   - set_fact:
       gitlab_project_id: "{{ gitlab_post_projects_result.json.id }}"
+      new_gitlab_group_created: "{{ gitlab_post_projects_result.status is defined and gitlab_post_projects_result.status == 201 }}"

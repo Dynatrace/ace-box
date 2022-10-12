@@ -53,7 +53,7 @@
     git_remote: "gitlab"
     git_org_name: "{{ gitlab_demo_default_group }}"
     repo_name: "{{ gitlab_demo_default_repo_name }}"
-  when: new_repo_created is defined and new_repo_created == true
+  when: new_gitlab_group_created is defined and new_gitlab_group_created == true
 
 # Include use case specific Dahboard values
 - set_fact:
