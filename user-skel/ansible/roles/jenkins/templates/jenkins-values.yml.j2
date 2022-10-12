@@ -108,6 +108,10 @@ controller:
               - key: "CA_BRIDGE"
                 value: "{{ ca_bridge }}"
 {% endif %}
+{% if host_group is defined and host_group != "" %}
+              - key: "HOST_GROUP"
+                value: "{{ host_group }}"
+{% endif %}
       library-config: |
         unclassified:
           giteaServers:
