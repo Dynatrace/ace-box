@@ -53,12 +53,15 @@ pipeline {
         stage('Dynatrace configuration event') {
             steps {
                 script {
+                    // Give Dynatrace a couple seconds to tag host according to current config
+                    sleep(time:120,unit:"SECONDS")
+
                     def rootDir = pwd()
                     def sharedLib = load "${rootDir}/jenkins/shared/shared.groovy"
                     def status = event.pushDynatraceConfigurationEvent (
-                        tagRule: sharedLib.getTagRulesForApplicationEvent("simplenode-jenkins-staging"),
-                        description: "Monaco deployment successful",
-                        configuration: "Monaco",
+                        tagRule: sharedLib.getTagRulesForHostEvent("simplenode-jenkins-staging"),
+                        description: "Monaco deployment successful: simplenode-jenkins-staging",
+                        configuration: "simplenode-jenkins-staging",
                         customProperties: [
                             "Approved by": "ACE"
                         ]
@@ -68,9 +71,9 @@ pipeline {
                     def rootDir = pwd()
                     def sharedLib = load "${rootDir}/jenkins/shared/shared.groovy"
                     def status = event.pushDynatraceConfigurationEvent (
-                        tagRule: sharedLib.getTagRulesForApplicationEvent("simplenode-jenkins-prod"),
-                        description: "Monaco deployment successful",
-                        configuration: "Monaco",
+                        tagRule: sharedLib.getTagRulesForHostEvent("simplenode-jenkins-prod"),
+                        description: "Monaco deployment successful: simplenode-jenkins-prod",
+                        configuration: "simplenode-jenkins-prod",
                         customProperties: [
                             "Approved by": "ACE"
                         ]

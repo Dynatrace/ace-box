@@ -1,0 +1,8 @@
+---
+attachRules:
+  tagRule:
+  - meTypes:
+    - HOST
+    tags:
+    - context: CONTEXTLESS
+      key: ${DT_HOST_TAG}
