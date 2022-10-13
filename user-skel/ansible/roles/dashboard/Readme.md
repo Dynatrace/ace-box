@@ -51,16 +51,14 @@ This task templates the helm values file depending on your use case requirements
 #### How to add a dashboard value file:
 Dashboard value file has to be added under the "templates" folder of your use case role.
 
-Dashboard Value File Example: 
+##### Dashboard Value File Example: "demo-quality-gates-jenkins" use case
+  Template value file name: demo-quality-gates-jenkins-dashboard.yml.j2
 
-    Example Use Case: demo-quality-gates-jenkins
-    Template value file name: demo-quality-gates-jenkins-dashboard.yml.j2
+  You can create multiple "preview sections" depending on the URLs of your deployments. They will be shown on the "Deployment Preview" tab.
 
-    You can create multiple "preview sections" depending on the URLs of your deployments. They will be shown on the "Deployment Preview" tab.
+  You can also add "guides" for your use cases that can be seen on "Use Cases" section of "Home" tab of the Dashboard.
 
-    You can also add "guides" for your use cases that can be seen on "Use Cases" section of "Home" tab of the Dashboard.
-
-    ```yaml
+```yaml
     ---
     useCases:
     demo-quality-gates-jenkins:
@@ -75,4 +73,4 @@ Dashboard Value File Example:
         - description: "Quality Gates, Monitoring as a Service and Monitoring as Code - Demo using Jenkins, Gitea and Cloud Automation"
         url: "{{ ingress_protocol }}://gitea.{{ ingress_domain }}/demo/quality-gates-jenkins/src/branch/main/demo"
 
-    ```
+  ```
