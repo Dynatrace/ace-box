@@ -15,19 +15,21 @@ This role depends on the following roles to be deployed beforehand:
 
 The main task deploys jenkins on a kubernetes cluster. It creates a secret that contains username and password as well as an admin and API token.
 
-Depending on a use case it also sources the below entities during the deployment of jenkins;
-    - the secrets of Gitea, Keptn or Cloud Automation
-    - Docker container registry URL
-    - ActiveGate Node ID if exists
-    - OpenTelemetry collector endpoint if exists
-  
-NOTE: If the use case is to leverage gitea as a source code repository, gitea has to be installed before jenkins.
-Similarly, if the use case is to leverage cloud automation or keptn, they have to be installed before jenkins. 
-
 ```yaml
 - include_role:
     name: jenkins
 ```
+
+Depending on a use case it also sources the below entities during the deployment of jenkins:
+- the secrets of Gitea, Keptn or Cloud Automation
+- Docker container registry URL
+- ActiveGate Node ID if exists
+- OpenTelemetry collector endpoint if exists
+  
+NOTE: If the use case is to leverage gitea as a source code repository, gitea has to be installed before jenkins.
+Similarly, if the use case is to leverage cloud automation or keptn, they have to be installed before jenkins. 
+
+
 
 Variables that can be set are as follows:
 
