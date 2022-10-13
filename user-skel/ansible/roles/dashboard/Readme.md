@@ -13,7 +13,7 @@ This role depends on the following roles to be deployed beforehand:
 ```
 ### Deploying Dashboard
 
-The main task deploys dashboard on a kubernetes cluster with the variables set in "defaults".
+The main task deploys dashboard on a kubernetes cluster.
 
 Depending on a use case, it shows the deployed application details on the "Deployment Preview" and "Use Cases" guide sections. Please see the usage information under the "template-values-file" task. 
 
@@ -36,7 +36,7 @@ dashboard_skip_install: False
 ### Other Tasks in the Role
 
 #### "template-values-file" 
-This task templates the helm values file depending on your use case requirements. This task has to be executed before the "dashboard" role stated above.
+This task templates the helm values file depending on your use case requirements. This task has to be executed before the "dashboard" role stated above. 
 
 
 ```yaml
@@ -48,25 +48,31 @@ This task templates the helm values file depending on your use case requirements
     tasks_from: template-values-file
 ```
 
-An example: demo-quality-gates-jenkins use case
+#### How to add a dashboard value file:
+Dashboard value file has to be added under the "templates" folder of your use case role.
 
-You can create multiple "preview sections" depending on the URLs your deployments have. They will be shown on the "Deployment Preview" tab.
+Dashboard Value File Example: 
 
-You can also add "guides" for your use cases that can be seen on "Use Cases" section of "Home" tab of the Dashboard.
+    Example Use Case: demo-quality-gates-jenkins
+    Template value file name: demo-quality-gates-jenkins-dashboard.yml.j2
 
-```yaml
----
-useCases:
-  demo-quality-gates-jenkins:
-    previews:
-    - section: demo-quality-gates-jenkins
-      description: Staging
-      url: "{{ ingress_protocol }}://simplenodeservice-simplenode-jenkins-staging.{{ ingress_domain }}"
-    - section: demo-quality-gates-jenkins
-      description: Production
-      url: "{{ ingress_protocol }}://simplenodeservice-simplenode-jenkins-production.{{ ingress_domain }}"
-    guides:
-    - description: "Quality Gates, Monitoring as a Service and Monitoring as Code - Demo using Jenkins, Gitea and Cloud Automation"
-      url: "{{ ingress_protocol }}://gitea.{{ ingress_domain }}/demo/quality-gates-jenkins/src/branch/main/demo"
+    You can create multiple "preview sections" depending on the URLs of your deployments. They will be shown on the "Deployment Preview" tab.
 
-```
+    You can also add "guides" for your use cases that can be seen on "Use Cases" section of "Home" tab of the Dashboard.
+
+    ```yaml
+    ---
+    useCases:
+    demo-quality-gates-jenkins:
+        previews:
+        - section: demo-quality-gates-jenkins
+        description: Staging
+        url: "{{ ingress_protocol }}://simplenodeservice-simplenode-jenkins-staging.{{ ingress_domain }}"
+        - section: demo-quality-gates-jenkins
+        description: Production
+        url: "{{ ingress_protocol }}://simplenodeservice-simplenode-jenkins-production.{{ ingress_domain }}"
+        guides:
+        - description: "Quality Gates, Monitoring as a Service and Monitoring as Code - Demo using Jenkins, Gitea and Cloud Automation"
+        url: "{{ ingress_protocol }}://gitea.{{ ingress_domain }}/demo/quality-gates-jenkins/src/branch/main/demo"
+
+    ```
