@@ -48,3 +48,4 @@
     - { key: 'DT_TENANT_URL', value: '{{ dynatrace_tenant_url }}' }
     - { key: 'DT_API_TOKEN', value: '{{ dynatrace_api_token }}' }
     - { key: 'SYNTH_NODE_ID', value: '{{ dt_synthetic_node_id | default(None) }}' }
+    - { key: 'HOST_GROUP', value: '{{ host_group | default(None) }}' }

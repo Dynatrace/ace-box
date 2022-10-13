@@ -45,6 +45,19 @@ def getTagRulesForApplicationEvent(applicationTag) {
     return tagMatchRules
 }
 
+def getTagRulesForHostEvent(hostTag) {
+    def tagMatchRules = [
+        [
+            "meTypes": ["HOST"],
+            tags: [
+                ["context": "CONTEXTLESS", "key": hostTag]
+            ]
+        ]
+    ]
+
+    return tagMatchRules
+}
+
 def readMetaData() {
     def conf = readYaml file: "jenkins/shared/dt_meta.yaml"
 

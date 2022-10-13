@@ -31,32 +31,41 @@ monaco:
     - monaco -v -dry-run -e=monaco/environments.yaml -p=simplenode-gitlab monaco/projects
     - monaco -v -e=monaco/environments.yaml -p=simplenode-gitlab monaco/projects
 
+monaco_config_sleep:
+  image: dynatraceace/monaco-runner:release-v1.6.0
+  stage: init
+  needs: ["monaco"]
+  script:
+    # Sleep an additional 120 seconds to give Dynatrace some time 
+    # to tag host according to current config before sending config events
+    - sleep 120
+
 monaco_config_event_staging:
   extends: .dynatrace_event
   stage: init
-  needs: ["monaco"]
+  needs: ["monaco_config_sleep"]
   variables:
     DYNATRACE_ENV_URL: "$DT_TENANT_URL"
     DYNATRACE_API_TOKEN: "$DT_API_TOKEN"
     EVENT_TYPE: "CUSTOM_CONFIGURATION"
-    ATTACH_RULES_FILE: "dynatrace/dynatrace.application-attachrules.yaml"
-    DT_APPLICATION_TAG: "simplenode-gitlab-staging"
-    DESCRIPTION: "Monaco deployment successful"
-    CONFIGURATION: "Monaco"
+    ATTACH_RULES_FILE: "dynatrace/dynatrace.host-attachrules.yaml"
+    DT_HOST_TAG: "simplenode-gitlab-staging"
+    DESCRIPTION: "Monaco deployment successful: simplenode-gitlab-staging"
+    CONFIGURATION: "simplenode-gitlab-staging"
     CUSTOM_PROPERTIES: '{"Approved by": "ACE"}'
 
 monaco_config_event_prod:
   extends: .dynatrace_event
   stage: init
-  needs: ["monaco"]
+  needs: ["monaco_config_sleep"]
   variables:
     DYNATRACE_ENV_URL: "$DT_TENANT_URL"
     DYNATRACE_API_TOKEN: "$DT_API_TOKEN"
     EVENT_TYPE: "CUSTOM_CONFIGURATION"
-    ATTACH_RULES_FILE: "dynatrace/dynatrace.application-attachrules.yaml"
-    DT_APPLICATION_TAG: "simplenode-gitlab-prod"
-    DESCRIPTION: "Monaco deployment successful"
-    CONFIGURATION: "Monaco"
+    ATTACH_RULES_FILE: "dynatrace/dynatrace.host-attachrules.yaml"
+    DT_HOST_TAG: "simplenode-gitlab-prod"
+    DESCRIPTION: "Monaco deployment successful: simplenode-gitlab-prod"
+    CONFIGURATION: "simplenode-gitlab-prod"
     CUSTOM_PROPERTIES: '{"Approved by": "ACE"}'
 
 init_cloudautomation:
@@ -81,6 +90,7 @@ init_cloudautomation:
 deployment-staging:
   image: dtzar/helm-kubectl
   stage: deploy-staging
+  needs: ["monaco", "init_cloudautomation"]
   script:
     - >
       helm upgrade --install simplenode-gitlab-staging helm/simplenodeservice 

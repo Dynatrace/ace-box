@@ -46,6 +46,28 @@
             }
           }
         ]
+      },
+      {
+        "type": "HOST",
+        "enabled": true,
+        "valueFormat": null,
+        "normalization": "LEAVE_TEXT_AS_IS",
+        "propagationTypes": [],
+        "conditions": [
+          {
+            "key": {
+              "attribute": "HOST_GROUP_NAME",
+              "type": "STATIC"
+            },
+            "comparisonInfo": {
+              "type": "STRING",
+              "operator": "EQUALS",
+              "value": "{{ .Env.HOST_GROUP }}",
+              "negate": false,
+              "caseSensitive": true
+            }
+          }
+        ]
       }
     ]
   }

@@ -64,12 +64,15 @@ pipeline {
 		stage('Dynatrace configuration event') {
 			steps {
 				script {
+					// Give Dynatrace a couple seconds to tag host according to current config
+					sleep(time:120,unit:"SECONDS")
+
 					def rootDir = pwd()
 					def sharedLib = load "${rootDir}/jenkins/shared/shared.groovy"
 					def status = event.pushDynatraceConfigurationEvent (
-						tagRule: sharedLib.getTagRulesForApplicationEvent("ace-demo-canary"),
-						description: "Monaco deployment successful",
-						configuration: "Monaco",
+						tagRule: sharedLib.getTagRulesForHostEvent("ace-demo-canary"),
+						description: "Monaco deployment successful: ace-demo-canary",
+						configuration: "ace-demo-canary",
 						customProperties: [
 							"Approved by": "ACE"
 						]
