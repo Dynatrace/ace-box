@@ -8,6 +8,25 @@
   - var_value_to_set: "GITLAB"
   when: git_flavor is not defined or git_flavor != "GITLAB"
 
+- name: Create Gitlab namespace
+  kubernetes.core.k8s:
+    name: "{{ gitlab_namespace }}"
+    api_version: v1
+    kind: Namespace
+    state: present
+
+- name: Create Gitlab root secret
+  kubernetes.core.k8s:
+    name: "{{ gitlab_root_creds_secret_name }}"
+    api_version: v1
+    kind: Secret
+    state: present
+    namespace: "{{ gitlab_namespace }}"
+    resource_definition:
+      type: Opaque
+      data:
+        password: "{{ gitlab_root_initial_password | b64encode }}"
+
 - name: Add chart repo
   kubernetes.core.helm_repository:
     name: gitlab

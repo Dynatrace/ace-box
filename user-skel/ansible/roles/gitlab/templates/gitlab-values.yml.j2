@@ -70,9 +70,9 @@ global:
     ## Initial root password for this GitLab installation
     ## Secret created according to doc/installation/secrets.md#initial-root-password
     ## If allowing shared-secrets generation, this is OPTIONAL.
-    initialRootPassword: {}
-      # secret: RELEASE-gitlab-initial-root-password
-      # key: password
+    initialRootPassword:
+      secret: {{ gitlab_root_creds_secret_name }}
+      key: password
   
     ## doc/charts/globals.md#configure-postgresql-settings
     psql:
