@@ -5,6 +5,13 @@ It also has embedded tasks to create an organization and repository on gitlab.
 
 ## Using the role
 
+### Role Requirements
+This role depends on the following roles to be deployed beforehand:
+```yaml
+- include_role:
+    name: microk8s
+
+```
 ### Deploying Gitlab
 
 The main task deploys gitlab on a kubernetes cluster with the variables set in "defaults" folder. It creates a secret that includes username and password. 

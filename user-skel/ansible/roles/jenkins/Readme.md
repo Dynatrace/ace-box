@@ -5,16 +5,24 @@ This currated role can be used to install jenkins on a kubernetes cluster.
 ## Using the role
 
 ### Role Requirements
-
+This role depends on the following roles to be deployed beforehand:
 ```yaml
 - include_role:
-    name: jenkins
+    name: microk8s
 
 ```
-
 ### Deploying Jenkins
 
-The main task deploys jenkins on a kubernetes cluster with the variables set in "defaults" folder. It creates a secret that includes username and password. 
+The main task deploys jenkins on a kubernetes cluster with the variables set in "defaults" folder. It creates a secret that contains username and password along with generating an admin and API token.
+
+Depending on a use case it also sources the below entities during the deployment of jenkins;
+    - the secrets of Gitea, Keptn or Cloud Automation
+    - Docker container registry URL
+    - ActiveGate Node ID if exists
+    - OpenTelemetry collector endpoint
+  
+NOTE: If the use case is to leverage gitea as a source code repository, gitea has to be installed before jenkins.
+Similarly, if the use case is to leverage cloud automation or keptn, they have to be installed before jenkins. 
 
 ```yaml
 - include_role:
@@ -60,7 +68,7 @@ This task generates the jenkins admin token and api token.
 ```yaml
 - include_role:
     name: jenkins
-    tasks_from: create-secret
+    tasks_from: create-token
 ```
 
 #### "source-endpoints" 
