@@ -51,40 +51,36 @@ This task templates the helm values file depending on your use case requirements
 #### How to add a dashboard value file:
 Dashboard value file has to be added under the "templates" folder of your use case role.
 
-##### Dashboard Value File Example: "demo-quality-gates-jenkins" use case
-  Template value file name: demo-quality-gates-jenkins-dashboard.yml.j2
+##### Dashboard Value File Example: 
+https://github.com/dynatrace-ace/ace-box-ext-template/blob/main/example_roles/my-use-case/templates/my-use-case-dashboard.yml.j2
+ 
+You can create multiple "preview sections" depending on the URLs of your deployments. They will be shown on the "Deployment Preview" tab.
 
-  You can create multiple "preview sections" depending on the URLs of your deployments. They will be shown on the "Deployment Preview" tab.
+You can also add "guides" for your use cases that can be seen on "Use Cases" section of "Home" tab of the Dashboard.
 
-  You can also add "guides" for your use cases that can be seen on "Use Cases" section of "Home" tab of the Dashboard.
-
-  "extRefs" is an additional capability to provide references to external tools. Description will be added to the dashboard's homepage. References can optionally contain credentials. Credentials will be added to the dashboard's "Links" page.
+"extRefs" is an additional capability to provide references to external tools. Description will be added to the dashboard's homepage. References can optionally contain credentials. Credentials will be added to the dashboard's "Links" page.
 
 ```yaml
-    ---
-    useCases:
-    demo-quality-gates-jenkins:
-        previews:
-        - section: demo-quality-gates-jenkins
-        description: Staging
-        url: "{{ ingress_protocol }}://simplenodeservice-simplenode-jenkins-staging.{{ ingress_domain }}"
-        - section: demo-quality-gates-jenkins
-        description: Production
-        url: "{{ ingress_protocol }}://simplenodeservice-simplenode-jenkins-production.{{ ingress_domain }}"
-        
-        guides:
-        - description: "Quality Gates, Monitoring as a Service and Monitoring as Code - Demo using Jenkins, Gitea and Cloud Automation"
-        url: "{{ ingress_protocol }}://gitea.{{ ingress_domain }}/demo/quality-gates-jenkins/src/branch/main/demo"
+---
+useCases:
+  my-use-case:
+    previews:
+    - section: my-use-case
+      description: Dynatrace
+      url: "https://dynatrace.com"
+    guides:
+    - description: "This is a template as well as example repository for ACE-Box external use cases"
+      url: "https://github.com/dynatrace-ace/ace-box-ext-template/blob/HEAD/README.md"
 
-    extRefs:
-      Github repo:
-        description: "This is a template as well as example repository for ACE-Box external use cases"
-        url: "https://github.com/dynatrace-ace/ace-box-ext-template/blob/HEAD/README.md"
-        creds:
-          - description: "Github username"
-            type: "text"
-            value: "my-github-user-name"
-          - description: "Github password"
-            type: "password"
-            value: "my-super-secret-password"
+extRefs:
+  Github repo:
+    description: "This is a template as well as example repository for ACE-Box external use cases"
+    url: "https://github.com/dynatrace-ace/ace-box-ext-template/blob/HEAD/README.md"
+    creds:
+      - description: "Github username"
+        type: "text"
+        value: "my-github-user-name"
+      - description: "Github password"
+        type: "password"
+        value: "my-super-secret-password"
   ```
