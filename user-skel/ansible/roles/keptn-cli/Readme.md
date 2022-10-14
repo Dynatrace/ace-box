@@ -1,6 +1,8 @@
 # keptn-cli
 
-This currated role install Keptn CLI on the acebox.
+This currated role install Keptn CLI on the ACE-Box.
+
+For the details, please check this link: https://keptn.sh/docs/
 
 ## Using the role
 
