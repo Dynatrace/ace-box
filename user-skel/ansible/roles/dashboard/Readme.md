@@ -76,15 +76,15 @@ Dashboard value file has to be added under the "templates" folder of your use ca
         - description: "Quality Gates, Monitoring as a Service and Monitoring as Code - Demo using Jenkins, Gitea and Cloud Automation"
         url: "{{ ingress_protocol }}://gitea.{{ ingress_domain }}/demo/quality-gates-jenkins/src/branch/main/demo"
 
-        extRefs:
-          Github repo:
-            description: "This is a template as well as example repository for ACE-Box external use cases"
-            url: "https://github.com/dynatrace-ace/ace-box-ext-template/blob/HEAD/README.md"
-            creds:
-            - description: "Github username"
-                type: "text"
-                value: "my-github-user-name"
-            - description: "Github password"
-                type: "password"
-                value: "my-super-secret-password"
+    extRefs:
+      Github repo:
+        description: "This is a template as well as example repository for ACE-Box external use cases"
+        url: "https://github.com/dynatrace-ace/ace-box-ext-template/blob/HEAD/README.md"
+        creds:
+          - description: "Github username"
+            type: "text"
+            value: "my-github-user-name"
+          - description: "Github password"
+            type: "password"
+            value: "my-super-secret-password"
   ```
