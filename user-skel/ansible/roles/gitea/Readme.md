@@ -3,6 +3,8 @@
 This currated role can be used to install gitea (a git based code hosting solution) on a kubernetes cluster.
 It also has embedded tasks to create an organization and repository on gitea.
 
+For the details, please check this link: https://gitea.io/en-us/
+
 ## Using the role
 
 ### Role Requirements
@@ -44,10 +46,15 @@ This task creates a secret that includes gitea username and password
 - include_role:
     name: gitea
     tasks_from: create-secret
+  vars:
+    gitea_username: "<gitea user name>"
+    gitea_password: "<gitea password>"
+    gitea_domain: "<gitea domain>"
+    gitea_access_token: "<gitea access token>"
 ```
 
 #### "source-secret" 
-This task fetches the username, password information from a secret created during gitea installation
+This task fetches the username (variable name: "gitea_username"), password (variable name: "gitea_password") and access token (variable name: "gitea_access_token") information from a secret created during gitea installation
 
 ```yaml
 - include_role:
@@ -56,7 +63,7 @@ This task fetches the username, password information from a secret created durin
 ```
 
 #### "source-endpoints" 
-This task fetches the internal endpoint for the gitea service
+This task fetches the internal endpoint (variable name: "gitea_internal_endpoint") for the gitea service.
 
 ```yaml
 - include_role:
@@ -73,6 +80,8 @@ This task creates an organization on gitea with the name defined under "gitea_or
     tasks_from: create-organization
   vars:
     gitea_org: "<gitea org name>" # specify a gitea organization name to be created
+    gitea_internal_endpoint: "<gitea internal endpoint>"
+    gitea_access_token: "<gitea oauth token>"
 ```
 
 #### "create-repository" 
@@ -85,6 +94,8 @@ This task creates a repository under an organization
   vars:
     gitea_org: "<gitea org name>"
     gitea_repo: "<gitea repository name>"
+    gitea_internal_endpoint: "<gitea internal endpoint>"
+    gitea_access_token: "<gitea oauth token>"
 ```
 
 #### "uninstall" 

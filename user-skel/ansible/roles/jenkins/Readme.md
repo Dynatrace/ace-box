@@ -2,6 +2,8 @@
 
 This currated role can be used to install jenkins on a kubernetes cluster.
 
+For the details, please check this link: https://www.jenkins.io/doc/book/installing/kubernetes/
+
 ## Using the role
 
 ### Role Requirements
@@ -49,7 +51,11 @@ jenkins_skip_install: False
 ### Other Tasks in the Role
 
 #### "template-values-file" 
-This task templates the helm values file depending on your use case requirements. This task has to be executed before the "jenkins" role stated above. 
+This task templates the helm values file depending on your use case requirements. This task has to be executed before the "jenkins" role stated above.
+
+"include_jenkins_value_file" variable specifies where the Jinja template can be found. 
+
+A link to an example Jinja template: https://github.com/Dynatrace/ace-box/blob/dev/user-skel/ansible/roles/demo-quality-gates-jenkins/templates/demo-default-jobs.yml.j2
 
 ```yaml
 - set_fact:
@@ -58,14 +64,16 @@ This task templates the helm values file depending on your use case requirements
 - include_role:
     name: jenkins
     tasks_from: template-values-file
+  # (Optional) Depending on your use case, you can set key-value parameters to be used in a Jinja template
+  # Below is an example format, you need to update key and value variable names accordingly.
   vars:
-    git_username: "<a git tool user name>" # set your git tool´s user name
-    git_token: "<a git tool token>" # set your git tool´s token
-    git_domain: "<a git tool endpoint>" # set your git endpoint
+    <git_username>: "<a git tool user name>" # set your git tool´s user name
+    <git_token>: "<a git tool token>" # set your git tool´s token
+    <git_domain>: "<a git tool endpoint>" # set your git endpoint
     
-    usecase_repo: "<a git repository name>" # set your git repository to be used by Jenkins in the use case template (i.e. include_jenkins_value_file)
-    usecase_org: "<a git repository organization/group>" # set your git organization to be used by Jenkins in the use case template (i.e. include_jenkins_value_file)
-    usecase_jenkins_folder: "<a git repository folder>" # set your git repo folder to be used by Jenkins in the use case template (i.e. include_jenkins_value_file)
+    <usecase_repo>: "<a git repository name>" # set your git repository to be used by Jenkins in the use case template (i.e. include_jenkins_value_file)
+    <usecase_org>: "<a git repository organization/group>" # set your git organization to be used by Jenkins in the use case template (i.e. include_jenkins_value_file)
+    <usecase_jenkins_folder>: "<a git repository folder>" # set your git repo folder to be used by Jenkins in the use case template (i.e. include_jenkins_value_file)
 
 ```
 
@@ -75,6 +83,9 @@ This task creates the jenkins admin user and password.
 - include_role:
     name: jenkins
     tasks_from: create-secret
+  vars:
+    jenkins_username: "<jenkins user name>"
+    jenkins_password: "<jenkins password>"
 ```
 
 #### "create-token" 
@@ -83,10 +94,14 @@ This task generates the jenkins admin token and api token.
 - include_role:
     name: jenkins
     tasks_from: create-token
+  vars:
+    jenkins_username: "<jenkins user name>"
+    jenkins_password: "<jenkins password>"
+    jenkins_internal_endpoint: "<jenkins internal endpoint>"
 ```
 
 #### "source-endpoints" 
-This task fetches the internal endpoint for the jenkins service
+This task fetches the internal endpoint (variable name: "jenkins_internal_endpoint") for the jenkins service
 
 ```yaml
 - include_role:
@@ -95,7 +110,8 @@ This task fetches the internal endpoint for the jenkins service
 ```
 
 #### "source-secret" 
-This task sources the jenkins admin user and password as well as jenkins admin token.
+This task sources the jenkins admin user (variable name: "jenkins_username"), password (variable name: "jenkins_password") as well as jenkins api token (variable name: "jenkins_api_token") .
+
 ```yaml
 - include_role:
     name: jenkins

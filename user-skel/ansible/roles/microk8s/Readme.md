@@ -1,7 +1,9 @@
 # microk8s
 
-This currated role installs microk8s on the ace-box along with the required addons and packages.
+This currated role installs microk8s on the ACE-Box along with the required addons and packages.
 It also configures kube config to automatically connect to the cluster via kubectl and helm.
+
+For the details, please check this link: https://microk8s.io/
 
 ## Using the role
 

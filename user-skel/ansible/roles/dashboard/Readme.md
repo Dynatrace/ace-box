@@ -1,6 +1,6 @@
 # dashboard
 
-This currated role can be used to install Acebox Dashboard on a kubernetes cluster.
+This currated role can be used to install ACE-Box Dashboard on a kubernetes cluster.
 
 ## Using the role
 
@@ -58,6 +58,8 @@ Dashboard value file has to be added under the "templates" folder of your use ca
 
   You can also add "guides" for your use cases that can be seen on "Use Cases" section of "Home" tab of the Dashboard.
 
+  "extRefs" is an additional capability to provide references to external tools. Description will be added to the dashboard's homepage. References can optionally contain credentials. Credentials will be added to the dashboard's "Links" page.
+
 ```yaml
     ---
     useCases:
@@ -69,8 +71,20 @@ Dashboard value file has to be added under the "templates" folder of your use ca
         - section: demo-quality-gates-jenkins
         description: Production
         url: "{{ ingress_protocol }}://simplenodeservice-simplenode-jenkins-production.{{ ingress_domain }}"
+        
         guides:
         - description: "Quality Gates, Monitoring as a Service and Monitoring as Code - Demo using Jenkins, Gitea and Cloud Automation"
         url: "{{ ingress_protocol }}://gitea.{{ ingress_domain }}/demo/quality-gates-jenkins/src/branch/main/demo"
 
+        extRefs:
+          Github repo:
+            description: "This is a template as well as example repository for ACE-Box external use cases"
+            url: "https://github.com/dynatrace-ace/ace-box-ext-template/blob/HEAD/README.md"
+            creds:
+            - description: "Github username"
+                type: "text"
+                value: "my-github-user-name"
+            - description: "Github password"
+                type: "password"
+                value: "my-super-secret-password"
   ```

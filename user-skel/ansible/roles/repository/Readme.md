@@ -40,11 +40,9 @@ To publish the contents to a git repository, you first need to provide the git_e
     git_password: "" # a password to connect to a git tool
     git_endpoint: "http://<git_username>:<git_password>@<gitea_internal_endpoint>" # if the git_remote is gitea or gitlab, git_endpoint is generated automatically. For the rest, you can directly set an endpoint
 
-    repo_src: "{{ item.repo_src }}" # the path you want to upload to a git repository
-    git_org: "{{ item.git_org }}" # organization or group name to be created in a git tool
-    git_repo: "{{ item.repo_target }}" # repository name
-  loop:
-  - { repo_target: "<repository-name>", repo_src: "<folder/files path>", git_org: "<organization-name>" }
+    repo_src: "<folder/files path>" # the path you want to upload to a git repository
+    git_org: "<organization-name>" # organization or group name to be created in a git tool
+    git_repo: "<repository-name>" # repository name
 
 ```
 If you want to use a curated role (gitea/gitlab) which can be installed in a K8s cluster, you can change their domain name as in the following: 

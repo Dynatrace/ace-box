@@ -1,6 +1,16 @@
 # dt-oneagent
 
-This currated role can be used to deploy Dynatrace Oneagent on the acebox.
+This currated role can be used to deploy Dynatrace k8s operator (Dynakube) with a Classic full-stack injection deployment strategy. 
+
+Dynatrace Operator manages classic full-stack injection after the following resources are deployed.
+
+- OneAgent, deployed as a DaemonSet, collects host metrics from Kubernetes nodes. It also detects new containers and injects OneAgent code modules into application pods.
+
+- Dynatrace Activegate is used for routing, as well as for monitoring Kubernetes objects by collecting data (metrics, events, status) from the Kubernetes API.
+
+- Dynatrace webhook server validates Dynakube definitions for correctness.
+
+For the details, please check this link: https://www.dynatrace.com/support/help/shortlink/dto-deploy-options-k8s#classic
 
 ## Using the role
 
@@ -11,7 +21,7 @@ This role depends on the following roles to be deployed beforehand:
     name: microk8s
 ```
 
-### Deploying OneAgent
+### Deploying Dynatrace K8s Operator
 
 ```yaml
 - include_role:

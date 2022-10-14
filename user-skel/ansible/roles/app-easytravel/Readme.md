@@ -1,6 +1,6 @@
 # app-easytravel
 
-This currated role can be used to deploy easytravel demo application on the acebox.
+This currated role can be used to deploy easytravel demo application on the ACE-Box.
 
 ## Using the role
 
@@ -79,7 +79,7 @@ Dynatrace Configurations List:
       - "conditional-naming-service/app.environment"
       - "synthetic-location/ACE-BOX"
     
-    Easy Travel Aplication Specific:
+    Easytravel Aplication Specific:
         - "app-detection-rule/app.easytravel.prod"
         - "app-detection-rule/app.easytravel-angular.prod"
         - "application-web/app.easytravel.prod"

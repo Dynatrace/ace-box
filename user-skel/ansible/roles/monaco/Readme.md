@@ -1,6 +1,8 @@
 # monaco
 
-This currated role can be used to install monaco CLI on the ace-box.
+This currated role can be used to install monaco CLI on the ACE-Box.
+
+For the details, please check this link: https://dynatrace-oss.github.io/dynatrace-monitoring-as-code/
 
 ## Using the role
 

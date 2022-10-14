@@ -1,6 +1,9 @@
 # dt-activegate
 
-This currated role can be used to deploy Dynatrace Synthetic-enabled ActiveGate on the acebox.
+This currated role can be used to deploy Dynatrace Synthetic-enabled ActiveGate on the ACE-Box.
+
+For the details, please check this link: https://www.dynatrace.com/support/help/how-to-use-dynatrace/synthetic-monitoring/private-synthetic-locations/create-a-private-synthetic-location
+
 
 ## Using the role
 
@@ -20,7 +23,7 @@ activegate_uninstall_script_location: "/opt/dynatrace/gateway/uninstall.sh"
 synthetic_nodes_query: "nodes[?hostname=='{{ ansible_facts.fqdn }}'].entityId"
 ```
 
-This role downloads the latest AciveGate installer on the ace-box and deploys the synthetic-enabled ActiveGate.
+This role downloads the latest AciveGate installer on the ACE-Box and deploys the synthetic-enabled ActiveGate.
 
 ### Other Tasks in the Role
 
