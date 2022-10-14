@@ -1,6 +1,6 @@
 # app-unguard
 
-This currated role can be used to deploy Unguard demo application on the acebox.
+This currated role can be used to deploy Unguard demo application on the ACE-Box.
 
 ## Using the role
 
