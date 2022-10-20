@@ -1,0 +1,5 @@
+- name: Uninstall OneAgent
+  become: true
+  become_user: root
+  shell:
+    cmd: "/bin/sh /opt/dynatrace/oneagent/agent/uninstall.sh"
