@@ -34,6 +34,3 @@
     wait_timeout: 15m
     values_files:
       - "roles/{{ role_name }}/files/awx-values.yml"
-
-- include_tasks:
-    file: configure.yml

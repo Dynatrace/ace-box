@@ -29,7 +29,7 @@
 
 - name: Source Private Synthetic Node ID
   include_role:
-    name: dt-activegate
+    name: dt-private-synth-activegate-classic
     tasks_from: source-node-id
   when: skip_synthetic_monitor == "false" and dt_synthetic_node_id is not defined 
 

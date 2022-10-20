@@ -11,10 +11,10 @@
     name: microk8s
 
 - include_role:
-    name: dt-activegate
+    name: dt-private-synth-activegate-classic
 
 - include_role:
-    name: dt-oneagent
+    name: dt-operator
 
 - include_role:
     name: monaco
