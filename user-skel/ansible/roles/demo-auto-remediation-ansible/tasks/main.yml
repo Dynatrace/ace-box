@@ -105,6 +105,9 @@
 - include_role:
     name: awx
 
+- include_tasks:
+    file: configure-awx.yml
+
 # Include use case specific Dashboard values
 - set_fact:
     include_dashboard_value_file: "{{ role_path }}/templates/demo-auto-remediation-ansible-dashboard.yml.j2"
