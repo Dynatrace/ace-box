@@ -4,7 +4,7 @@
     kind: Service
     name: "awx"
     namespace: "{{ awx_namespace }}"
-  register: awx_data
+  register: awx_service_data
 
 - name: Source external endpoint
   kubernetes.core.k8s_info:
@@ -15,8 +15,8 @@
 
 - name: Set facts - internal endpoint
   set_fact:
-    awx_internal_endpoint: "http://{{ awx_data.resources[0].spec.clusterIP }}:8080"
-  when: awx_data is defined and awx_data.resources[0] is defined
+    awx_internal_endpoint: "http://{{ awx_service_data.resources[0].spec.clusterIP }}:8080"
+  when: awx_service_data is defined and awx_service_data.resources[0] is defined
 
 - name: Set facts - external endpoint
   set_fact:
