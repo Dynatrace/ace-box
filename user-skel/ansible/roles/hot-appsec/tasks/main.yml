@@ -3,7 +3,7 @@
     name: microk8s
 
 - include_role:
-    name: dt-activegate
+    name: dt-activegate-private-synth-classic
 
 - include_role:
     name: dt-oneagent

@@ -29,19 +29,26 @@
     tags:
     - microk8s
   - include_role:
-      name: dt-activegate
+      name: dt-activegate-private-synth-classic
       apply:
         tags:
-        - dt_activegate
+        - dt_activegate_private_synth_classic
     tags:
-    - dt_activegate
+    - dt_activegate_private_synth_classic
   - include_role:
-      name: dt-oneagent
+      name: dt-operator
       apply:
         tags:
-        - dt_oneagent
+        - dt_operator
     tags:
-    - dt_oneagent
+    - dt_operator
+  - include_role:
+      name: dt-oneagent-classic
+      apply:
+        tags:
+        - dt_oneagent_classic
+    tags:
+    - dt_oneagent_classic
   - include_role:
       name: keptn
       apply:
@@ -116,7 +123,7 @@
   #   - gitlab_uninstall
   # - name: Uninstall Dynatrace ActiveGate
   #   include_tasks:
-  #     file: roles/dt-activegate/tasks/uninstall.yml
+  #     file: roles/dt-activegate-private-synth-classic/tasks/uninstall.yml
   #     apply:
   #       tags:
   #       - dynatrace_uninstall
@@ -125,7 +132,7 @@
   #   - dynatrace_uninstall
   # - name: Uninstall Dynatrace Operator
   #   include_tasks:
-  #     file: roles/dt-oneagent/tasks/uninstall.yml
+  #     file: roles/dt-operator/tasks/uninstall.yml
   #     apply:
   #       tags:
   #       - dynatrace_uninstall

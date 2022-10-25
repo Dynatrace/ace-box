@@ -1,4 +1,4 @@
-# dt-oneagent
+# dt-operator
 
 This currated role can be used to deploy Dynatrace k8s operator (Dynakube) with a Classic full-stack injection deployment strategy. 
 
@@ -25,14 +25,14 @@ This role depends on the following roles to be deployed beforehand:
 
 ```yaml
 - include_role:
-    name: dt-oneagent
+    name: dt-operator
 ```
 
 Variables that can be set are as follows:
 
 ```yaml
 ---
-dt_operator_release: "v0.7.2" # the latest supported dynatrace operator release
+dt_operator_release: "v0.9.1" # the latest supported dynatrace operator release
 dt_operator_namespace: "dynatrace"
 host_group: "ace-box"
 ```
@@ -45,7 +45,7 @@ This role creates a namespace in the kubernetes cluster and deploys the Dynatrac
 
 ```yaml
 - include_role:
-    name: dt-oneagent
+    name: dt-operator
     tasks_from: source-secrets
 ```
 
@@ -53,5 +53,5 @@ This role creates a namespace in the kubernetes cluster and deploys the Dynatrac
 
 ```yaml
 - include_role:
-    name: dt-oneagent
+    name: dt-operator
     tasks_from: uninstall

@@ -1,0 +1,25 @@
+---
+- file:
+    path: "{{ role_path }}/files"
+    state: directory
+  
+- set_fact:
+    dt_oneagent_classic_download_location: "{{ role_path }}/files/Dynatrace-OneAgent-Linux-latest.sh"
+
+- name: Download OneAgent installer
+  get_url:
+    url: "{{ dynatrace_tenant_url }}/api/v1/deployment/installer/agent/unix/default/latest?arch=x86&flavor=default"
+    dest: "{{ dt_oneagent_classic_download_location }}"
+    mode: +x
+    timeout: 300
+    headers:
+      Authorization: "Api-token {{ dynatrace_paas_token }}"
+  when: not dt_oneagent_classic_download_location is exists
+
+- name: Install OneAgent
+  become: true
+  become_user: root
+  shell:
+    cmd: "/bin/sh {{ dt_oneagent_classic_download_location }} --set-host-group={{ host_group }}"
+  args:
+    creates: "/opt/dynatrace/oneagent"

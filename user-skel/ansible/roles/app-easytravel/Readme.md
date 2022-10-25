@@ -34,14 +34,14 @@ easytravel_image_tag: "2.0.0.3356" #image tag to deploy for all EasyTravel image
 
 ```yaml
 - include_role:
-    name: dt-oneagent
+    name: dt-operator
 ```
 
 ### (Optional) To install Dynatrace Activegate to enable synthetic monitoring
 
 ```yaml
 - include_role:
-    name: dt-activegate
+    name: dt-activegate-private-synth-classic
 ```
 
 ### Configure Dynatrace using Monaco

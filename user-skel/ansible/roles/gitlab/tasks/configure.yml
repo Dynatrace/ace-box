@@ -30,7 +30,7 @@
 
 - name: Source DT Synthetic node id
   include_role:
-    name: dt-activegate
+    name: dt-activegate-private-synth-classic
     tasks_from: source-node-id
 
 - name: Gitlab - Create variables

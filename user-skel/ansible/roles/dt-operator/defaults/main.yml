@@ -1,4 +1,4 @@
 ---
-dt_operator_release: "v0.7.2"
+dt_operator_release: "v0.9.1"
 dt_operator_namespace: "dynatrace"
 host_group: "ace-box"
