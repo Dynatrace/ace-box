@@ -1,9 +1,13 @@
 ---
-- include_tasks:
-    file: source-secrets.yml
+- name: AWX - Source secrets
+  include_role:
+    name: awx
+    tasks_from: source-secrets.yml
 
-- include_tasks:
-    file: source-endpoints.yml
+- name: AWX - Source configuration
+  include_role:
+    name: awx
+    tasks_from: source-configuration.yml
 
 - name: AWX - Source Jenkins secrets
   include_role:
@@ -42,7 +46,7 @@
 
 - name: Create default organization
   awx.awx.organization:
-    name: "{{ awx_default_org_name }}"
+    name: "{{ awx_org_name }}"
     description: "Default organization"
     state: present
     controller_host: "{{ awx_internal_endpoint }}"
@@ -158,7 +162,7 @@
   register: remediation_template
 
 - set_fact:
-    remediation_template_url: "{{ ingress_protocol }}://{{ awx_ingress_domain }}/#/templates/job_template/{{ remediation_template.id }}"
+    remediation_template_url: "{{ awx_external_endpoint }}/#/templates/job_template/{{ remediation_template.id }}"
     jenkins_pipeline_url_shift_traffic: "{{ jenkins_url }}/job/{{ 'demo-auto-remediation' | urlencode() }}/job/{{ '5. Shift traffic' | urlencode() }}/build?delay=0sec"
 
 - name: Create Canary Reset template
@@ -195,7 +199,7 @@
     skip_tags: canary_reset
     extra_vars:
       jenkins_url: "{{ jenkins_pipeline_url_shift_traffic }}"
-      remediation_url: "{{ ingress_protocol }}://{{ awx_ingress_domain }}/api/v2/job_templates/{{ canary_reset_template.id }}/launch/"
+      remediation_url: "{{ awx_external_endpoint }}/api/v2/job_templates/{{ canary_reset_template.id }}/launch/"
     credentials:
       - "{{ credential_dt_api_token.id }}"
     controller_host: "{{ awx_internal_endpoint }}"

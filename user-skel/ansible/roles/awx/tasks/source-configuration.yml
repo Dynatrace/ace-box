@@ -1,0 +1,28 @@
+---
+- name: Source internal endpoint
+  kubernetes.core.k8s_info:
+    kind: Service
+    name: "awx"
+    namespace: "{{ awx_namespace }}"
+  register: awx_service_data
+
+- name: Source external endpoint
+  kubernetes.core.k8s_info:
+    kind: Ingress
+    name: "awx"
+    namespace: "{{ awx_namespace }}"
+  register: awx_ingress_data
+
+- name: Set facts - internal endpoint
+  set_fact:
+    awx_internal_endpoint: "http://{{ awx_service_data.resources[0].spec.clusterIP }}:8080"
+  when: awx_service_data is defined and awx_service_data.resources[0] is defined
+
+- name: Set facts - external endpoint
+  set_fact:
+    awx_external_endpoint: "{{ ingress_protocol }}://{{ awx_ingress_data.resources[0].spec.rules[0].host }}"
+  when: awx_ingress_data is defined and awx_ingress_data.resources[0] is defined
+
+- name: Set facts - namespace
+  set_fact:
+    awx_namespace: "{{ awx_namespace }}"
