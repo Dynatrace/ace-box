@@ -1,6 +1,6 @@
 ---
 - name: AWX - Uninstall AWX
-  shell: helm delete awx --namespace awx
+  shell: "helm delete awx --namespace {{ awx_namespace }}"
 
 - name: AWX - Delete namespace
-  shell: kubectl delete namespace awx
+  shell: "kubectl delete namespace {{ awx_namespace }}"
