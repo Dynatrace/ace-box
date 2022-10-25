@@ -34,7 +34,7 @@ The following curated roles can be added to your external use case. See [templat
 |[cloudautomation](../user-skel/ansible/roles/cloudautomation/Readme.md)|Links an existing Cloud Automation instance|
 |[dashboard](../user-skel/ansible/roles/dashboard/Readme.md)|Installs the ACE-Box dashboard|
 |[dt-oneagent-classic](../user-skel/ansible/roles/dt-oneagent-classic/Readme.md)|Installs the OneAgent on the host|
-|[dt-private-synth-activegate-classic](../user-skel/ansible/roles/dt-private-synth-activegate-classic/Readme.md)|Installs a Synthetic enabled ActiveGate|
+|[dt-activegate-private-synth-classic](../user-skel/ansible/roles/dt-activegate-private-synth-classic/Readme.md)|Installs a Synthetic enabled ActiveGate|
 |[dt-operator](../user-skel/ansible/roles/dt-operator/Readme.md)|Installs the [Dynatrace Operator](https://github.com/Dynatrace/dynatrace-operator)|
 |[gitea](../user-skel/ansible/roles/gitea/Readme.md)|Installs Gitea|
 |[gitlab](../user-skel/ansible/roles/gitlab/Readme.md)|Installs Gitlab|

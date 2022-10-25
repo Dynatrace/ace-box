@@ -41,7 +41,7 @@ easytravel_image_tag: "2.0.0.3356" #image tag to deploy for all EasyTravel image
 
 ```yaml
 - include_role:
-    name: dt-private-synth-activegate-classic
+    name: dt-activegate-private-synth-classic
 ```
 
 ### Configure Dynatrace using Monaco

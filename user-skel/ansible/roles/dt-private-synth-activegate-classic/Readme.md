@@ -1,4 +1,4 @@
-# dt-private-synth-activegate-classic
+# dt-activegate-private-synth-classic
 
 This currated role can be used to deploy Dynatrace Synthetic-enabled ActiveGate on the ACE-Box. 
 
@@ -12,7 +12,7 @@ For the details, please check this link: https://www.dynatrace.com/support/help/
 
 ```yaml
 - include_role:
-    name: dt-private-synth-activegate-classic
+    name: dt-activegate-private-synth-classic
 ```
 
 Variables that can be set are as follows:
@@ -32,7 +32,7 @@ This role downloads the latest AciveGate installer on the ACE-Box and deploys th
 
 ```yaml
 - include_role:
-    name: dt-private-synth-activegate-classic
+    name: dt-activegate-private-synth-classic
     tasks_from: source-node-id
 ```
 
@@ -40,6 +40,6 @@ This role downloads the latest AciveGate installer on the ACE-Box and deploys th
 
 ```yaml
 - include_role:
-    name: dt-private-synth-activegate-classic
+    name: dt-activegate-private-synth-classic
     tasks_from: uninstall
 ```
