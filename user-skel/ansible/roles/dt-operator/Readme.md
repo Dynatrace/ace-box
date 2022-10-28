@@ -41,7 +41,8 @@ This role creates a namespace in the kubernetes cluster and deploys the Dynatrac
 
 ### Other Tasks in the Role
 
-"source-secrets" task gets the "dt_operator_kube_bearer_token" to be able to connect the cluster to Dynatrace
+"source-secrets" retrieves the Operator bearer token and stores it in the following variable:
+- `dt_operator_kube_bearer_token`
 
 ```yaml
 - include_role:

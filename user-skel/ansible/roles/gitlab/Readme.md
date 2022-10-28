@@ -16,7 +16,21 @@ This role depends on the following roles to be deployed beforehand:
 ```
 ### Deploying Gitlab
 
-The main task deploys gitlab on a kubernetes cluster with the variables set in "defaults" folder. It creates a secret that includes username and password. 
+The main task deploys gitlab on a kubernetes cluster with the default variables set. 
+
+Once the deployment is completed, it creates the service endpoint, admin secret and a gitlab group to be stored in the following variables:
+- `gitlab_internal_endpoint`
+- `gitlab_username`
+- `gitlab_username`
+- `gitlab_oauth_token`
+- `gitlab_group_id`
+
+Furthermore, it uses the following attributes to be used as gitlab variables in the gitlab CI pipeline.
+> Note: If your use case requires CA/Keptn and Synthetic-enabled private ActiveGate, they must be deployed beforehand to be used as gitlab variables.
+- `ca_endpoint` # depends on the cloud_automation_flavor is "KEPTN" or "CLOUD_AUTOMATION"
+- `ca_bridge` # depends on the cloud_automation_flavor is "KEPTN" or "CLOUD_AUTOMATION"
+- `ca_api_token` # depends on the cloud_automation_flavor is "KEPTN" or "CLOUD_AUTOMATION"
+- `dt_synthetic_node_id` # Synthetic-enabled private ActiveGate ID if exists
 
 ```yaml
 - include_role:
@@ -35,12 +49,15 @@ gitlab_helm_chart_version: "6.1.2"
 gitlab_domain: "gitlab.{{ ingress_domain }}"
 gitlab_gcpe_helm_chart_version: "0.2.15"
 gitlab_gcpe_tag: "v0.5.3"
+gitlab_root_creds_secret_name: "ace-gitlab-initial-root-password"
+gitlab_root_initial_password: "dynatrace"
 ```
 
 ### Other Tasks in the Role
 
 #### "source-endpoints" 
-This task fetches the internal endpoint (variable name: "gitlab_internal_endpoint") for the gitlab service.
+This task fetches the internal service endpoint and stores it into the following variable:
+- `gitlab_internal_endpoint`
 
 ```yaml
 - include_role:
@@ -49,8 +66,9 @@ This task fetches the internal endpoint (variable name: "gitlab_internal_endpoin
 ```
 
 #### "source-endpoints-external" 
-This task fetches the external endpoint (variable name: "gitlab_external_endpoint") for the gitlab service
-
+This task fetches the external endpoint and stores it into the following variable:
+- `gitlab_external_endpoint`
+  
 ```yaml
 - include_role:
     name: gitlab
@@ -81,21 +99,21 @@ For the details: https://github.com/mvisonneau/gitlab-ci-pipelines-exporter
 ```
 
 #### "source-secret" 
-This task creates the username (variable name: "gitlab_username"), password (variable name: "gitlab_password") and access token (variable name: "gitlab_oauth_token") using the already created secret "gitlab-initial-root-password" during gitlab installation. 
+This task fetches the admin secret and stores them into the following variables:
+- `gitlab_username`
+- `gitlab_password`
+- `gitlab_oauth_token`
 
 ```yaml
 - include_role:
     name: gitlab
     tasks_from: source-secret
-  vars:
-    gitlab_username: "<gitlab user name>"
-    gitlab_password: "<gitlab password>"
-    gitlab_internal_endpoint: "<gitlab internal endpoint>"
-
 ```
 
 #### "ensure-group" 
-This task creates a group if not exists with the name defined under "gitlab_group_name" variable
+This task creates a group if not exists and stores it into the following variables:
+- `gitlab_group_name`
+- `gitlab_group_id`
 
 ```yaml
 - include_role:
@@ -103,8 +121,6 @@ This task creates a group if not exists with the name defined under "gitlab_grou
     tasks_from: ensure-group
   vars:
     gitlab_group_name: "<gitlab group name>" # specify a gitlab group name to be created
-    gitlab_internal_endpoint: "<gitlab internal endpoint>"
-    gitlab_oauth_token: "<gitlab oauth token>"
 ```
 
 #### "ensure-group-var" 
@@ -118,12 +134,12 @@ This task creates a group variable in key/value format
     gitlab_group_id: "<gitlab group id>" # set a gitlab group ID that was created in "ensure-group" task 
     gitlab_var_key: "<a gitlab variable key>" # specify a gitlab variable key to be created
     gitlab_var_value: "<a gitlab variable value>" # specify a gitlab variable value to be created
-    gitlab_internal_endpoint: "<gitlab internal endpoint>"
-    gitlab_oauth_token: "<gitlab oauth token>"
 ```
 
 #### "ensure-project" 
-This task creates a project under a group if not exists
+This task creates a project under a group if not exists and stores it into the following variables:
+- `gitlab_prj`
+- `gitlab_project_id`
 
 ```yaml
 - include_role:
@@ -132,8 +148,6 @@ This task creates a project under a group if not exists
   vars:
     gitlab_prj: "<gitlab repo name>"
     gitlab_prj_namespace_id: "<gitlab group id>"
-    gitlab_internal_endpoint: "<gitlab internal endpoint>"
-    gitlab_oauth_token: "<gitlab oauth token>"
 ```
 
 #### "uninstall" 

@@ -28,7 +28,8 @@ This role downloads the latest AciveGate installer on the ACE-Box and deploys th
 
 ### Other Tasks in the Role
 
-"source-node-id" task gets the node ID on which the synthetic enabled active gate is installed. This can then be used to set up a private synthetic location
+"source-node-id" task fetches the node ID on which the synthetic enabled active gate is installed and stores it in the following variable:
+- `dt_synthetic_node_id`
 
 ```yaml
 - include_role:

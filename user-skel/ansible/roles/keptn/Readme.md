@@ -22,7 +22,7 @@ This task:
  - ensures Gitea is installed when we are using Keptn to have auto repository provisioning.
  - installs Keptn-CLI on the ACE-Box. 
  - creates an ingress using nginx ingress controller or a virtual service using istio depending on your choice
- - installs keptn-jmeter, keptn-dynatrace, keptn-helm, keptn-synthetic, keptn-test-collector, keptn-job-executor services when enabled in role defaults.
+ - installs keptn-jmeter, keptn-dynatrace, keptn-helm, keptn-synthetic, keptn-test-collector, keptn-job-executor services when enabled in the role defaults.
 
 ```yaml
 - include_role:
@@ -84,9 +84,7 @@ This task fetches endpoint details and stores them in the following variables:
 #### Keptn Services Tasks
 
 ##### "dynatrace-service" 
-This task deploys Keptn Dynatrace service
-
-For details: https://github.com/keptn-contrib/dynatrace-service
+This task deploys Keptn Dynatrace service. For details: https://github.com/keptn-contrib/dynatrace-service
 
 ```yaml
 - include_role:
@@ -94,9 +92,7 @@ For details: https://github.com/keptn-contrib/dynatrace-service
     tasks_from: dynatrace-service
 ```
 ##### "gitea-provisioner-service" 
-This task deploys Keptn Gitea Provisioner service
-
-For details: https://github.com/keptn-sandbox/keptn-gitea-provisioner-service
+This task deploys Keptn Gitea Provisioner service. For details: https://github.com/keptn-sandbox/keptn-gitea-provisioner-service
 
 ```yaml
 - include_role:
@@ -104,9 +100,7 @@ For details: https://github.com/keptn-sandbox/keptn-gitea-provisioner-service
     tasks_from: gitea-provisioner-service
 ```
 ##### "helm-service" 
-This task deploys Keptn Helm service
-
-For details: https://github.com/keptn-contrib/helm-service/
+This task deploys Keptn Helm service. For details: https://github.com/keptn-contrib/helm-service/
 
 ```yaml
 - include_role:
@@ -114,9 +108,7 @@ For details: https://github.com/keptn-contrib/helm-service/
     tasks_from: helm-service
 ```
 ##### "jmeter-service" 
-This task deploys Keptn JMeter service
-
-For details: https://github.com/keptn-contrib/jmeter-service/
+This task deploys Keptn JMeter service. For details: https://github.com/keptn-contrib/jmeter-service/
 
 ```yaml
 - include_role:
@@ -124,9 +116,7 @@ For details: https://github.com/keptn-contrib/jmeter-service/
     tasks_from: jmeter-service
 ```
 ##### "synthetic-service" 
-This task deploys Dynatrace Synthetic service to trigger Dynatrace Synthetic executions as part of a Keptn sequence
-
-For details: https://github.com/dynatrace-ace/dynatrace-synthetic-service
+This task deploys Dynatrace Synthetic service to trigger Dynatrace Synthetic executions as part of a Keptn sequence. For details: https://github.com/dynatrace-ace/dynatrace-synthetic-service
 
 ```yaml
 - include_role:
@@ -135,9 +125,7 @@ For details: https://github.com/dynatrace-ace/dynatrace-synthetic-service
 ```
 
 ##### "collector-service" 
-This task deploys Keptn Test Collector service to collect timestamps, synthetic test metadata, etc. from different Keptn contexts
-
-For details: https://github.com/dynatrace-ace/keptn-test-collector-service
+This task deploys Keptn Test Collector service to collect timestamps, synthetic test metadata, etc. from different Keptn contexts. For details: https://github.com/dynatrace-ace/keptn-test-collector-service
 
 ```yaml
 - include_role:
@@ -145,9 +133,7 @@ For details: https://github.com/dynatrace-ace/keptn-test-collector-service
     tasks_from: collector-service
 ```
 ##### "job-executor-service" 
-This task deploys Job Executor service
-
-For details: https://github.com/keptn-contrib/job-executor-service
+This task deploys Job Executor service. For details: https://github.com/keptn-contrib/job-executor-service
 
 ```yaml
 - include_role:
