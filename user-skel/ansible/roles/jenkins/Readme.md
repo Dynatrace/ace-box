@@ -17,7 +17,7 @@ This role depends on the following roles to be deployed beforehand:
 
 The main task deploys jenkins on a kubernetes cluster.
 
-Once the deployment is completed, it creates the service endpoint, admin secret and a gitlab group to be stored in the following variables:
+Once the deployment is completed, it creates the service endpoint and admin secret to be stored in the following variables:
 - `jenkins_internal_endpoint`
 - `jenkins_username`
 - `jenkins_password`
