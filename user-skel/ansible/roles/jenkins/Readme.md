@@ -17,7 +17,7 @@ This role depends on the following roles to be deployed beforehand:
 
 The main task deploys jenkins on a kubernetes cluster.
 
-Once the deployment is completed, it creates the service endpoint and admin secret to be stored in the following variables:
+Once the deployment is completed, it creates the service endpoint and admin secret to be sourced into the following variables:
 - `jenkins_internal_endpoint`
 - `jenkins_username`
 - `jenkins_password`
@@ -97,7 +97,7 @@ This task creates the jenkins admin user and password.
 ```
 
 #### "create-token" 
-This task generates the jenkins api token to be added into a secret, then stores it into the following variable:
+This task generates the jenkins api token to be added into a secret, then sources the following variables:
 - `jenkins_api_token`
   
 ```yaml
@@ -107,7 +107,7 @@ This task generates the jenkins api token to be added into a secret, then stores
 ```
 
 #### "source-endpoints" 
-This task fetches the jenkins internal endpoint and stores it into the following variable:
+This task fetches the jenkins internal endpoint and sources the following variables:
 - `jenkins_internal_endpoint`
 
 ```yaml
@@ -117,7 +117,7 @@ This task fetches the jenkins internal endpoint and stores it into the following
 ```
 
 #### "source-secret" 
-This task fetches the admin secret and admin token, then stores them into the following variables:
+This task fetches the admin secret and admin token, then sources the following variables:
 - `jenkins_username`
 - `jenkins_password`
 - `jenkins_api_token`

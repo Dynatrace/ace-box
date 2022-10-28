@@ -55,7 +55,7 @@ keptn_job_executor_service_subscriptions: "sh.keptn.event.remote-task.triggered"
 
 
 #### "source-secret" 
-This task fetches the credentials for Keptn and stores them in the following variables:
+This task fetches the credentials for Keptn and sources the following variables:
 - `keptn_api_token`
 - `keptn_bridge_user`
 - `keptn_bridge_password`
@@ -67,7 +67,7 @@ This task fetches the credentials for Keptn and stores them in the following var
 ```
 
 #### "source-endpoints" 
-This task fetches endpoint details and stores them in the following variables:
+This task fetches endpoint details and sources the following variables:
 > Note: these endpoints differ depending on ingress class is whether "istio" or "non-istio".
 
 - `keptn_ingress_domain`: The keptn domain name (e.g.: keptn.myaceboxdomain.com)

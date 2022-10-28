@@ -18,7 +18,7 @@ This role depends on the following roles to be deployed beforehand:
 
 The main task deploys gitlab on a kubernetes cluster with the default variables set. 
 
-Once the deployment is completed, it creates the service endpoint, admin secret and a gitlab group to be stored in the following variables:
+Once the deployment is completed, it creates the service endpoint, admin secret and a gitlab group to be sourced into the following variables:
 - `gitlab_internal_endpoint`
 - `gitlab_username`
 - `gitlab_username`
@@ -56,7 +56,7 @@ gitlab_root_initial_password: "dynatrace"
 ### Other Tasks in the Role
 
 #### "source-endpoints" 
-This task fetches the internal service endpoint and stores it into the following variable:
+This task fetches the internal service endpoint and sources the following variables:
 - `gitlab_internal_endpoint`
 
 ```yaml
@@ -66,7 +66,7 @@ This task fetches the internal service endpoint and stores it into the following
 ```
 
 #### "source-endpoints-external" 
-This task fetches the external endpoint and stores it into the following variable:
+This task fetches the external endpoint and sources the following variables:
 - `gitlab_external_endpoint`
   
 ```yaml
@@ -99,7 +99,7 @@ For the details: https://github.com/mvisonneau/gitlab-ci-pipelines-exporter
 ```
 
 #### "source-secret" 
-This task fetches the admin secret and stores them into the following variables:
+This task fetches the admin secret and sources the following variables:
 - `gitlab_username`
 - `gitlab_password`
 - `gitlab_oauth_token`
@@ -111,7 +111,7 @@ This task fetches the admin secret and stores them into the following variables:
 ```
 
 #### "ensure-group" 
-This task creates a group if not exists and stores it into the following variables:
+This task creates a group if not exists and sources the following variables:
 - `gitlab_group_name`
 - `gitlab_group_id`
 
@@ -137,7 +137,7 @@ This task creates a group variable in key/value format
 ```
 
 #### "ensure-project" 
-This task creates a project under a group if not exists and stores it into the following variables:
+This task creates a project under a group if not exists and sources the following variables:
 - `gitlab_prj`
 - `gitlab_project_id`
 

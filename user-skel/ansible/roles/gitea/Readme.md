@@ -18,7 +18,7 @@ This role depends on the following roles to be deployed beforehand:
 ### Deploying Gitea
 
 The main task deploys gitea on a kubernetes cluster with the default variables set.
-Once the deployment is completed, it creates the service endpoint and an admin secret, then stores them in the following variables:
+Once the deployment is completed, it creates the service endpoint and an admin secret, then sources the following variables:
 
 - `gitea_internal_endpoint`
 - `gitea_username`
@@ -46,7 +46,7 @@ gitea_helm_chart_version: "4.1.1"
 ### Other Tasks in the Role
 
 #### "create-secret" 
-This task creates an admin secret storing the following the variables that was created during gitea installation:
+This task creates gitea admin secret and sources the following variables:
 - `gitea_domain`
 - `gitea_username`
 - `gitea_password`
@@ -59,7 +59,7 @@ This task creates an admin secret storing the following the variables that was c
 ```
 
 #### "source-secret" 
-This task fetches the admin secret and stores them into the following variables:
+This task fetches the admin secret and sources the following variables:
 - `gitea_username`
 - `gitea_password`
 - `gitea_access_token`
@@ -71,7 +71,7 @@ This task fetches the admin secret and stores them into the following variables:
 ```
 
 #### "source-endpoints" 
-This task fetches the internal service endpoint and stores it into the following variable:
+This task fetches the internal service endpoint and sources the following variables:
 - `gitea_internal_endpoint`
 
 ```yaml
