@@ -54,7 +54,8 @@ To enable monaco:
     name: monaco
 ```
 
-> Note: the below applies Dynatrace configurations with the monaco project embedded in the role
+> Note: the below applies Dynatrace configurations with the monaco project embedded in the role.
+>
 > To enable private synthetic monitor for EasyTeavel via Dynatrace ActiveGate, set the "skip_synthetic_monitor" variable as "false". The default value is "true"
 
 ```yaml
