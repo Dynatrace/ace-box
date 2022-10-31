@@ -55,11 +55,14 @@ To enable monaco:
 ```
 
 > Note: the below applies Dynatrace configurations with the monaco project embedded in the role
+> To enable private synthetic monitor for EasyTeavel via Dynatrace ActiveGate, set the "skip_synthetic_monitor" variable as "false". The default value is "true"
 
 ```yaml
 - include_role:
     name: app-easytravel
     tasks_from: apply-monaco
+  vars:
+    skip_synthetic_monitor: "false"
 ```
 
 To delete the configuration:
@@ -77,7 +80,7 @@ Dynatrace Configurations List:
       - "auto-tag/environment"
       - "conditional-naming-processgroup/ACE Box - containername.namespace"
       - "conditional-naming-service/app.environment"
-      - "synthetic-location/ACE-BOX"
+      - "synthetic-location/ACE-BOX"  # if skip_synthetic_monitor: "false"
     
     Easytravel Aplication Specific:
         - "app-detection-rule/app.easytravel.prod"
@@ -86,7 +89,7 @@ Dynatrace Configurations List:
         - "application-web/app.easytravel-angular.prod"
         - "auto-tag/easytravel-prod"
         - "management-zone/easytravel-prod"
-        - "synthetic-monitor/webcheck.easytravel.prod"
-        - "synthetic-monitor/webcheck.easytravel-angular.prod"
-        - "synthetic-monitor/browser.easytravel-angular.prod.home"
-        - "synthetic-monitor/browser.easytravel.prod.home"
+        - "synthetic-monitor/webcheck.easytravel.prod"  # if skip_synthetic_monitor: "false"
+        - "synthetic-monitor/webcheck.easytravel-angular.prod" # if skip_synthetic_monitor: "false"
+        - "synthetic-monitor/browser.easytravel-angular.prod.home" # if skip_synthetic_monitor: "false"
+        - "synthetic-monitor/browser.easytravel.prod.home" # if skip_synthetic_monitor: "false"

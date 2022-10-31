@@ -1,7 +1,7 @@
 {
     "name": "{{.name}}",
     "frequencyMin": {{.frequencyInMin}},
-    "enabled": {{ .enabled }},
+    "enabled": true,
     "type": "BROWSER",
     "createdFrom": "GUI",
     "script": {

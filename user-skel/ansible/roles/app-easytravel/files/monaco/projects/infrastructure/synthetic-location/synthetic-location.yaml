@@ -4,3 +4,4 @@ config:
 acebox:
     - name: "ACE-BOX"
     - nodeId: "{{ .Env.SYNTH_NODE_ID }}"
+    - skipDeployment: "{{ .Env.SKIP_SYNTH }}"

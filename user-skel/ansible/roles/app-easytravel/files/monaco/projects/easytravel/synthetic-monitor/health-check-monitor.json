@@ -1,7 +1,7 @@
 {
     "name": "{{ .name }}",
     "frequencyMin": {{ .frequencyInMin }},
-    "enabled": {{ .enabled }},
+    "enabled": true,
     "type": "HTTP",
     "script": {
       "version": "1.0",
