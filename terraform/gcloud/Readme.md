@@ -10,6 +10,7 @@ A GCP account is needed.
 1. Prepare a Service Account and download service account keys in JSON format.
 
     https://cloud.google.com/iam/docs/creating-managing-service-accounts
+    
     https://cloud.google.com/iam/docs/creating-managing-service-account-keys
 
 
@@ -30,7 +31,7 @@ A GCP account is needed.
 
     ```hcl
     gcloud_project    = "myGCPProject" # GCP Project you want to use
-    gcloud_cred_file  = "/location/to/service-account-key.json" # location of the Service Account JSON created and downloaded earlier
+    gcloud_cred_file  = "/location/to/service-account-key.json" # location of the Service Account keys JSON file created and downloaded earlier
     gcloud_zone       = "europe-west1-b" # zone where you want to provision the resources. Check out https://cloud.google.com/compute/docs/regions-zones#available for available zones
     ```
 
