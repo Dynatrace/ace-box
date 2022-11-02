@@ -1,32 +1,73 @@
 ---
 
-# Deploy hipstershop
-- name: Deploy hipstershop
-  kubernetes.core.helm:
-    name: hipstershop
-    chart_ref: "{{ role_path }}/files/repos/hipstershop/helm/hipstershop"
-    release_namespace: "{{ hipstershop_namespace }}"
-    create_namespace: true
-    wait: true
-    wait_timeout: 10m
-    values:
+- name: Creating Kustomization.yaml file
+  copy:
+    dest: "{{ role_path }}/files/kustomize/base/kustomization.yaml"
+    content: |
+      apiVersion: kustomize.config.k8s.io/v1beta1
+      kind: Kustomization
+      namespace: "{{ hipstershop_namespace }}"
+      
+      resources:
+      - common/namespace.yaml
+      - common/redis.yaml
+      - common/ingress.yaml
+      - common/redis-pvc.yaml
+      - adservice.yaml
+      - cartservice.yaml
+      - checkoutservice.yaml
+      - currencyservice.yaml
+      - emailservice.yaml
+      - frontend.yaml
+      - loadgenerator.yaml
+      - paymentservice.yaml
+      - productcatalogservice.yaml
+      - randomizer.yaml
+      - recommendationservice.yaml
+      - shippingservice.yaml
+      
+      images:
+      - name: ghcr.io/mreider/adservice
+        newTag: "{{ hipstershop_image_tag }}"
+      
+      - name: ghcr.io/mreider/cartservice
+        newTag: "{{ hipstershop_image_tag }}"
+      
+      - name: ghcr.io/mreider/checkoutservice
+        newTag: "{{ hipstershop_image_tag }}"      
 
-      ingress:
-        domain: "{{ ingress_domain }}"
-        class: "{{ ingress_class }}"
-      hipstershop:
-        adService:
-          tag: "{{ hipstershop_image_tag }}"
-        frontend: 
-          tag: "{{ hipstershop_image_tag }}"
-        microblogService: 
-          tag: "{{ hipstershop_image_tag }}"
-        proxyService: 
-          tag: "{{ hipstershop_image_tag }}"
-        userAuthService: 
-          tag: "{{ hipstershop_user_auth_service_image_tag }}"
-        userSimulator:
-          tag: "{{ hipstershop_image_tag }}"
-          simulatePrivateRanges: "{{ hipstershop_simulate_private_ranges }}"
-        userSimulatorCronJob:
-          deploy: "{{ hipstershop_deploy_user_simulator_cronjob }}"
+      - name: ghcr.io/mreider/currencyservice
+        newTag: "{{ hipstershop_image_tag }}" 
+
+      - name: ghcr.io/mreider/emailservice
+        newTag: "{{ hipstershop_image_tag }}" 
+
+      - name: ghcr.io/mreider/frontend
+        newTag: "{{ hipstershop_image_tag }}" 
+
+      - name: ghcr.io/mreider/loadgenerator
+        newTag: "{{ hipstershop_image_tag }}" 
+
+      - name: ghcr.io/mreider/paymentservice
+        newTag: "{{ hipstershop_image_tag }}" 
+
+      - name: ghcr.io/mreider/productcatalogservice
+        newTag: "{{ hipstershop_image_tag }}" 
+
+      - name: ghcr.io/mreider/recommendationservice
+        newTag: "{{ hipstershop_image_tag }}" 
+
+      - name: ghcr.io/mreider/shippingservice
+        newTag: "{{ hipstershop_image_tag }}" 
+      
+      #patchesStrategicMerge:
+      #- patches/frontend-external.yaml
+
+- name: Kustomize Build
+  set_fact:
+    resources: "{{ lookup('kubernetes.core.kustomize', dir=role_path+'/files/kustomize/base') }}"
+
+- name: Kustomize Apply
+  k8s:
+    definition: "{{ lookup('kubernetes.core.kustomize', dir=role_path+'/files/kustomize/base') }}"
+    state: present

@@ -1,8 +1,5 @@
 ---
 # app deployment parameters
 hipstershop_namespace: "hipstershop"
-hipstershop_image_tag: "0.0.2"
-hipstershop_user_auth_service_image_tag: "0.0.1"
-hipstershop_simulate_private_ranges: "true"
-hipstershop_deploy_user_simulator_cronjob: "false"
+hipstershop_image_tag: "215"
 
