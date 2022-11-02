@@ -1,0 +1,55 @@
+---
+- set_fact:
+    monaco_projects_folder: "{{ role_path }}/files/repos/unguard/monaco/projects"
+    skip_synthetic_monitor: "true"
+
+- name: Source Kubernetes endpoint
+  kubernetes.core.k8s_info:
+    kind: Service
+    name: "kubernetes"
+    namespace: "default"
+  register: kubernetes_svc_data
+- set_fact:
+    kubernetes_api_endpoint: "https://{{ kubernetes_svc_data.resources[0].spec.clusterIP }}"
+
+- name: Source Dynatrace Operator ServiceAccount
+  kubernetes.core.k8s_info:
+    kind: ServiceAccount
+    name: "dynatrace-kubernetes-monitoring"
+    namespace: "dynatrace"
+  register: dt_operator_sa_data
+- name: Source Dynatrace Operator Secret
+  kubernetes.core.k8s_info:
+    kind: Secret
+    name: "{{ dt_operator_sa_data.resources[0].secrets[0].name }}"
+    namespace: "dynatrace"
+  register: dt_operator_secret_data
+- set_fact:
+    dt_operator_kube_bearer_token: "{{ dt_operator_secret_data.resources[0].data.token | b64decode }}"
+
+- name: Source Private Synthetic Node ID
+  include_role:
+    name: dt-activegate-private-synth-classic
+    tasks_from: source-node-id
+  when: skip_synthetic_monitor == "false" and dt_synthetic_node_id is not defined 
+
+# deploy monaco and apply configurations
+- name: Deploy Monaco
+  include_role:
+    name: monaco
+
+- name: Unguard - Configure Monitoring as Code
+  include_role:
+    name: monaco
+    tasks_from: apply-monaco
+    apply:
+      environment:
+        INGRESS_DOMAIN: "{{ ingress_domain }}"
+        APP_NAMESPACE: "{{ unguard_namespace }}"
+        KUBE_API_ENDPOINT: "{{ kubernetes_api_endpoint }}"
+        KUBE_BEARER_TOKEN: "{{ dt_operator_kube_bearer_token }}"
+        SKIP_SYNTH: "{{ skip_synthetic_monitor }}"
+        SYNTH_NODE_ID: "{{ dt_synthetic_node_id | default(None) }}"
+  vars:
+    monaco_project: ""
+    monaco_projects_root: "{{ monaco_projects_folder }}" 

@@ -1,0 +1,32 @@
+---
+
+# Deploy hipstershop
+- name: Deploy hipstershop
+  kubernetes.core.helm:
+    name: hipstershop
+    chart_ref: "{{ role_path }}/files/repos/hipstershop/helm/hipstershop"
+    release_namespace: "{{ hipstershop_namespace }}"
+    create_namespace: true
+    wait: true
+    wait_timeout: 10m
+    values:
+
+      ingress:
+        domain: "{{ ingress_domain }}"
+        class: "{{ ingress_class }}"
+      hipstershop:
+        adService:
+          tag: "{{ hipstershop_image_tag }}"
+        frontend: 
+          tag: "{{ hipstershop_image_tag }}"
+        microblogService: 
+          tag: "{{ hipstershop_image_tag }}"
+        proxyService: 
+          tag: "{{ hipstershop_image_tag }}"
+        userAuthService: 
+          tag: "{{ hipstershop_user_auth_service_image_tag }}"
+        userSimulator:
+          tag: "{{ hipstershop_image_tag }}"
+          simulatePrivateRanges: "{{ hipstershop_simulate_private_ranges }}"
+        userSimulatorCronJob:
+          deploy: "{{ hipstershop_deploy_user_simulator_cronjob }}"
