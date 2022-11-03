@@ -5,7 +5,7 @@ delete:
     - "dashboard/Application Security Issues"
     - "synthetic-monitor/hipstershop.http"
     - "synthetic-monitor/hipstershop.clickpath"
-    - "request-attributes/X-Client-Ip"
+    #- "request-attributes/X-Client-Ip"
     ## infrastructure related configurations will not be deleted, thus commented out below 
     #- "auto-tag/app"
     #- "auto-tag/environment"

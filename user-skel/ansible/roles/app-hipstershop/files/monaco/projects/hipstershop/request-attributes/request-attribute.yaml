@@ -1,5 +1,0 @@
-config:
-    - clientip: "request-attribute-clientip.json"
-
-clientip:
-    - name: "X-Client-Ip"
