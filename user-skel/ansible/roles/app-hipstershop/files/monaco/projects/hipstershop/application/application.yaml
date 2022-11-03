@@ -1,0 +1,5 @@
+config:
+    - app-hipstershop: "application.json"
+  
+app-hipstershop:
+    - name: "hipstershop"

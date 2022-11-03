@@ -1,5 +1,37 @@
 ---
 
+- name: Creating Namespace Kubernetes Manifest
+  copy:
+    dest: "{{ role_path }}/files/kustomize/base/common/namespace.yaml"
+    content: |
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: "{{ hipstershop_namespace }}"
+
+- name: Creating Ingress Patch Manifest
+  copy:
+    dest: "{{ role_path }}/files/kustomize/base/patches/ingress.yaml"
+    content: |
+      apiVersion: networking.k8s.io/v1
+      kind: Ingress
+      metadata:
+        name: frontend-ingress
+      spec:
+        ingressClassName: "{{ ingress_class }}"
+        rules:
+        - host: "{{ ingress_domain }}"
+          http:
+            paths:
+              - path: /
+                pathType: Prefix
+                backend:
+                  service:
+                    name: frontend-external
+                    port:
+                      number: 80
+
+
 - name: Creating Kustomization.yaml file
   copy:
     dest: "{{ role_path }}/files/kustomize/base/kustomization.yaml"
@@ -60,8 +92,9 @@
       - name: ghcr.io/mreider/shippingservice
         newTag: "{{ hipstershop_image_tag }}" 
       
-      #patchesStrategicMerge:
-      #- patches/frontend-external.yaml
+      patchesStrategicMerge:
+      - patches/frontend-external.yaml
+      - patches/ingress.yaml
 
 - name: Kustomize Build
   set_fact:

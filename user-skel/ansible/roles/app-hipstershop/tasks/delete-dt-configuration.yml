@@ -1,8 +1,8 @@
 ---
 - set_fact:
-    monaco_projects_folder: "{{ role_path }}/files/repos/unguard/monaco/projects_cleanup"
+    monaco_projects_folder: "{{ role_path }}/files/monaco/projects_cleanup"
 
-- name: Unguard - Cleanup Monitoring as Code
+- name: hipstershop - Cleanup Monitoring as Code
   include_role:
     name: monaco
     tasks_from: apply-monaco

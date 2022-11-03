@@ -1,0 +1,9 @@
+config:
+- ACEBox-containernamenamespace: ACEBox-containernamenamespace.json
+- ProcessGroupExeNameProcessGroupKubernetesBasePodName: ProcessGroupExeNameProcessGroupKubernetesBasePodName.json
+
+ACEBox-containernamenamespace:
+- name: ACE Box - containername.namespace
+
+ProcessGroupExeNameProcessGroupKubernetesBasePodName:
+- name: ' {ProcessGroup:ExeName} {ProcessGroup:KubernetesBasePodName}'
