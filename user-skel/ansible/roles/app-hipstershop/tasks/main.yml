@@ -41,7 +41,7 @@
       namespace: "{{ hipstershop_namespace }}"
       
       resources:
-      - common/namespace.yaml
+      - common/namespace.yaml # this file is created at run-time
       - common/redis.yaml
       - common/ingress.yaml
       - common/redis-pvc.yaml
@@ -94,7 +94,7 @@
       
       patchesStrategicMerge:
       - patches/frontend-external.yaml
-      - patches/ingress.yaml
+      - patches/ingress.yaml # this file is created at run-time
 
 - name: Kustomize Build
   set_fact:
