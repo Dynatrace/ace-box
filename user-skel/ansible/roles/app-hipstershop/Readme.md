@@ -25,6 +25,7 @@ Variables that can be set are as follows:
 # application deployment parameters
 hipstershop_namespace: "hipstershop" # namespace that hipstershop will be deployed in
 hipstershop_image_tag: "215" # image tag to deploy for all hipstershop images
+hipstershop_domain: "hipstershop.{{ ingress_domain }}"
 
 ```
 ### (Optional) To enable observability with Dynatrace OneAgent Kubernetes Operator

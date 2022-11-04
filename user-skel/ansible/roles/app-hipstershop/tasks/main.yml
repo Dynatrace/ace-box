@@ -20,7 +20,7 @@
       spec:
         ingressClassName: "{{ ingress_class }}"
         rules:
-        - host: "{{ ingress_domain }}"
+        - host: "{{ hipstershop_domain }}"
           http:
             paths:
               - path: /
