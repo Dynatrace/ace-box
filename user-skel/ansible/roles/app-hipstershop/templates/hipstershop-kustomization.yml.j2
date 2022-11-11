@@ -1,0 +1,59 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: "{{ hipstershop_namespace }}"
+
+resources:
+- common/namespace.yaml # this file is created at run-time
+- common/redis.yaml
+- common/ingress.yaml
+- common/redis-pvc.yaml
+- adservice.yaml
+- cartservice.yaml
+- checkoutservice.yaml
+- currencyservice.yaml
+- emailservice.yaml
+- frontend.yaml
+- loadgenerator.yaml
+- paymentservice.yaml
+- productcatalogservice.yaml
+- randomizer.yaml
+- recommendationservice.yaml
+- shippingservice.yaml
+
+images:
+- name: ghcr.io/mreider/adservice
+newTag: "{{ hipstershop_image_tag }}"
+
+- name: ghcr.io/mreider/cartservice
+newTag: "{{ hipstershop_image_tag }}"
+
+- name: ghcr.io/mreider/checkoutservice
+newTag: "{{ hipstershop_image_tag }}"      
+
+- name: ghcr.io/mreider/currencyservice
+newTag: "{{ hipstershop_image_tag }}" 
+
+- name: ghcr.io/mreider/emailservice
+newTag: "{{ hipstershop_image_tag }}" 
+
+- name: ghcr.io/mreider/frontend
+newTag: "{{ hipstershop_image_tag }}" 
+
+- name: ghcr.io/mreider/loadgenerator
+newTag: "{{ hipstershop_image_tag }}" 
+
+- name: ghcr.io/mreider/paymentservice
+newTag: "{{ hipstershop_image_tag }}" 
+
+- name: ghcr.io/mreider/productcatalogservice
+newTag: "{{ hipstershop_image_tag }}" 
+
+- name: ghcr.io/mreider/recommendationservice
+newTag: "{{ hipstershop_image_tag }}" 
+
+- name: ghcr.io/mreider/shippingservice
+newTag: "{{ hipstershop_image_tag }}" 
+
+patchesStrategicMerge:
+- patches/frontend-external.yaml
+- patches/ingress.yaml # this file is created at run-time
