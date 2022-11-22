@@ -14,7 +14,7 @@ objectives:
       - criteria:
           - "<=+10%" # relative values require a prefixed sign (plus or minus)
           - "<800000" # absolute values only require a logical operator
-    warning: # if the response time is below 800000us, the result should be a warning
+    warning: # if the response time is below 800000µs, the result should be a warning
       - criteria:
           - "<=1000000"
     weight: 1
