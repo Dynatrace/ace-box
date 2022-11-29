@@ -1,0 +1,14 @@
+AWX:
+  enabled: true
+  name: awx
+  spec:
+    service_type: ClusterIP
+    ingress_type: ingress
+    ingress_class_name: "{{ ingress_class }}"
+    hostname: "{{ awx_ingress_domain }}"
+    task_privileged: true
+    admin_user: {{ awx_admin_user }}
+    admin_email: {{ awx_admin_email }}
+    admin_password_secret: "{{ awx_admin_creds_secret_name }}"
+    secret_key_secret: "{{ awx_secret_key_secret_name }}"
+    auto_upgrade: false

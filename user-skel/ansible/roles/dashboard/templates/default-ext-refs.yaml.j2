@@ -45,7 +45,7 @@ extRefs:
 {% endif %}
 {% if awx_admin_username is defined and awx_admin_password is defined %}
   AWX:
-    url: "{{ ingress_protocol }}://awx.{{ ingress_domain }}"
+    url: "{{ awx_external_endpoint }}"
     creds:
     - description: Username
       type: text

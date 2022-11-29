@@ -52,6 +52,11 @@
     name: awx
     tasks_from: source-secrets
 
+- name: Source AWX endpoints
+  include_role:
+    name: awx
+    tasks_from: source-configuration
+
 - file:
     path: "{{ role_path }}/files/helm-values"
     state: directory
