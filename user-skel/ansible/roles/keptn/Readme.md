@@ -1,6 +1,6 @@
-# keptn
+# Keptn
 
-This currated role can be used to install keptn on a kubernetes cluster.
+This currated role can be used to install Keptn on a Kubernetes cluster.
 
 For the details, please check this link: https://keptn.sh/
 
@@ -16,12 +16,12 @@ This role depends on the following roles to be deployed beforehand:
 
 ### Deploying Keptn
 
-The main task deploys Keptn on a kubernetes cluster. It is recommended to add a condition whether cloud_automation_flavor is "KEPTN" as shown below.
+The main task deploys Keptn on a Kubernetes cluster. It is recommended to add a condition whether cloud_automation_flavor is "KEPTN" as shown below.
 
 This task:
  - ensures Gitea is installed when we are using Keptn to have auto repository provisioning.
  - installs Keptn-CLI on the ACE-Box. 
- - creates an ingress using nginx ingress controller or a virtual service using istio depending on your choice
+ - creates an ingress using Nginx Ingress Controller or a virtual service using Istio depending on your choice
  - installs keptn-jmeter, keptn-dynatrace, keptn-helm, keptn-synthetic, keptn-test-collector, keptn-job-executor services when enabled in the role defaults.
 
 ```yaml
@@ -70,7 +70,7 @@ This task fetches the credentials for Keptn and sources the following variables:
 This task fetches endpoint details and sources the following variables:
 > Note: these endpoints differ depending on ingress class is whether "istio" or "non-istio".
 
-- `keptn_ingress_domain`: The keptn domain name (e.g.: keptn.myaceboxdomain.com)
+- `keptn_ingress_domain`: The Keptn domain name (e.g.: keptn.myaceboxdomain.com)
 - `keptn_endpoint`: The externally available endpoint for Keptn in the format of [protocol]://keptn-domain/api (e.g.: http://keptn.myaceboxdomain.com/api)
 - `keptn_bridge`: The user interface of Keptn that presents all projects and services managed by Keptn in the format of [protocol]://keptn-domain/bridge (e.g.: http://keptn.myaceboxdomain.com/bridge)
 - `keptn_internal_endpoint`: The internal endpoint for keptn in the format of [http://keptn-service-ip:80/api]. You can leverage this endpoint to reach Keptn without having to go via the outside-in
