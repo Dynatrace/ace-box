@@ -16,11 +16,13 @@ Before getting started, let's let's familiarize ourselves with the demo setup.
 
 First, a dashboard has been deployed and is available at `http(s)://dashboard.<ingress domain>` . Basic auth credentials were provided at the end of the provisioning process. The dashboard is where you can find all relevant links and credentials.
 
-All code and docs have been made available in the *auto-remediation* organization on *Gitea* ( `http(s)://gitea.<ingress domain>/auto-remediation` ):
+All code and docs have been made available in the *demo* organization on *Gitea* ( `http(s)://gitea.<ingress domain>/demo` ):
 
 - ace-demo-canary contains all application source code, Jenkins pipelines and Monaco resources.
 - ace-demo-canary-awx contains playbooks which will be run from AWX.
 - ace-demo-canary-docs contains step-by-step instructions for the use case (the one you're probably reading right now).
+
+>Note: the name of the organization might be different depending on the deployment of the ace-box.
 
 *Jenkins* is our CI/CD tool of choice and is available at `http(s)://jenkins.<ingress domain>`. All pipelines that we use as part of this use case can be found in project "ace-demo-canary".
 
