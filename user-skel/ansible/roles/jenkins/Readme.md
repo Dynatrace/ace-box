@@ -1,6 +1,6 @@
-# jenkins
+# Jenkins
 
-This currated role can be used to install jenkins on a kubernetes cluster.
+This currated role can be used to install Jenkins on a Kubernetes cluster.
 
 For the details, please check this link: https://www.jenkins.io/doc/book/installing/kubernetes/
 
@@ -15,7 +15,7 @@ This role depends on the following roles to be deployed beforehand:
 ```
 ### Deploying Jenkins
 
-The main task deploys jenkins on a kubernetes cluster.
+The main task deploys Jenkins on a Kubernetes cluster.
 
 Once the deployment is completed, it creates the service endpoint and admin secret to be sourced into the following variables:
 - `jenkins_internal_endpoint`
@@ -23,8 +23,8 @@ Once the deployment is completed, it creates the service endpoint and admin secr
 - `jenkins_password`
 - `jenkins_api_token`
 
-Furthermore, it uses the following attributes to be used as jenkins variables in the jenkins pipeline.
-> Note: If your use case requires gitea as a source code repository, CA/Keptn and Synthetic-enabled private ActiveGate, they must be deployed beforehand to be used as jenkins variables.
+Furthermore, it uses the following attributes to be used as Jenkins variables in the Jenkins pipeline.
+> Note: If your use case requires gitea as a source code repository, CA/Keptn and Synthetic-enabled private ActiveGate, they must be deployed beforehand to be used as Jenkins variables.
 - `gitea_username` # if git_flavor == "GITEA"
 - `gitea_password` # if git_flavor == "GITEA"
 - `gitea_access_token` # if git_flavor == "GITEA"
@@ -86,7 +86,7 @@ A link to an example Jinja template: https://github.com/Dynatrace/ace-box/blob/d
 ```
 
 #### "create-secret" 
-This task creates the jenkins admin user and password.
+This task creates the Jenkins admin user and password.
 ```yaml
 - include_role:
     name: jenkins
@@ -97,7 +97,7 @@ This task creates the jenkins admin user and password.
 ```
 
 #### "create-token" 
-This task generates the jenkins api token to be added into a secret, then sources the following variables:
+This task generates the Jenkins api token to be added into a secret, then sources the following variables:
 - `jenkins_api_token`
   
 ```yaml
@@ -107,7 +107,7 @@ This task generates the jenkins api token to be added into a secret, then source
 ```
 
 #### "source-endpoints" 
-This task fetches the jenkins internal endpoint and sources the following variables:
+This task fetches the Jenkins internal endpoint and sources the following variables:
 - `jenkins_internal_endpoint`
 
 ```yaml

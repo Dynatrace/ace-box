@@ -1,7 +1,7 @@
-# gitlab
+# Gitlab
 
-This currated role can be used to install gitlab (an open source code repository and collaborative software development platform) on a kubernetes cluster.
-It also has embedded tasks to create an organization and repository on gitlab.
+This currated role can be used to install Gitlab (an open source code repository and collaborative software development platform) on a Kubernetes cluster.
+It also has embedded tasks to create an organization and repository on Gitlab.
 
 For the details, please check this link: https://docs.gitlab.com/charts/
 
@@ -16,17 +16,17 @@ This role depends on the following roles to be deployed beforehand:
 ```
 ### Deploying Gitlab
 
-The main task deploys gitlab on a kubernetes cluster with the default variables set. 
+The main task deploys Gitlab on a Kubernetes cluster with the default variables set. 
 
-Once the deployment is completed, it creates the service endpoint, admin secret and a gitlab group to be sourced into the following variables:
+Once the deployment is completed, it creates the service endpoint, admin secret and a Gitlab group to be sourced into the following variables:
 - `gitlab_internal_endpoint`
 - `gitlab_username`
 - `gitlab_username`
 - `gitlab_oauth_token`
 - `gitlab_group_id`
 
-Furthermore, it uses the following attributes to be used as gitlab variables in the gitlab CI pipeline.
-> Note: If your use case requires CA/Keptn and Synthetic-enabled private ActiveGate, they must be deployed beforehand to be used as gitlab variables.
+Furthermore, it uses the following attributes to be used as Gitlab variables in the Gitlab CI pipeline.
+> Note: If your use case requires CA/Keptn and Synthetic-enabled private ActiveGate, they must be deployed beforehand to be used as Gitlab variables.
 - `ca_endpoint` # depends on the cloud_automation_flavor is "KEPTN" or "CLOUD_AUTOMATION"
 - `ca_bridge` # depends on the cloud_automation_flavor is "KEPTN" or "CLOUD_AUTOMATION"
 - `ca_api_token` # depends on the cloud_automation_flavor is "KEPTN" or "CLOUD_AUTOMATION"
@@ -120,7 +120,7 @@ This task creates a group if not exists and sources the following variables:
     name: gitlab
     tasks_from: ensure-group
   vars:
-    gitlab_group_name: "<gitlab group name>" # specify a gitlab group name to be created
+    gitlab_group_name: "<gitlab group name>" # specify a Gitlab group name to be created
 ```
 
 #### "ensure-group-var" 
@@ -131,9 +131,9 @@ This task creates a group variable in key/value format
     name: gitlab
     tasks_from: ensure-group-var
   vars:
-    gitlab_group_id: "<gitlab group id>" # set a gitlab group ID that was created in "ensure-group" task 
-    gitlab_var_key: "<a gitlab variable key>" # specify a gitlab variable key to be created
-    gitlab_var_value: "<a gitlab variable value>" # specify a gitlab variable value to be created
+    gitlab_group_id: "<gitlab group id>" # set a Gitlab group ID that was created in "ensure-group" task 
+    gitlab_var_key: "<a gitlab variable key>" # specify a Gitlab variable key to be created
+    gitlab_var_value: "<a gitlab variable value>" # specify a Gitlab variable value to be created
 ```
 
 #### "ensure-project" 
@@ -151,7 +151,7 @@ This task creates a project under a group if not exists and sources the followin
 ```
 
 #### "uninstall" 
-This task uninstalls gitlab and gcpe via helm
+This task uninstalls Gitlab and GCPE via Helm
 
 ```yaml
 - include_role:

@@ -37,7 +37,7 @@ dt_operator_namespace: "dynatrace"
 host_group: "ace-box"
 ```
 
-This role creates a namespace in the kubernetes cluster and deploys the Dynatrace operator along with the Dynakube custom resource.
+This role creates a namespace in the Kubernetes cluster and deploys the Dynatrace operator along with the Dynakube custom resource.
 
 ### Other Tasks in the Role
 
