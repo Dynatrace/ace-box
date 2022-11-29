@@ -5,32 +5,49 @@
     api_version: v1
     kind: Namespace
     state: present
-    
-- name: Add AWX chart repo
+
+- name: Add chart repo
   kubernetes.core.helm_repository:
-    name: adwerx
-    repo_url: "https://adwerx.github.io/charts/"
+    name: awx-operator
+    repo_url: "https://ansible.github.io/awx-operator/"
 
 - include_tasks:
     file: create-secrets.yml
 
-- name: Template Helm values file
+- name: AWX - Template values file
   ansible.builtin.template:
-    src: awx-values.yml.j2
-    dest: "roles/{{ role_name }}/files/awx-values.yml"
+    src: awx-operator-values.yml.j2
+    dest: "./roles/{{ role_name }}/files/awx-operator-values.yml"
     owner: "{{ ace_box_user }}"
     group: "{{ ace_box_user }}"
     mode: '0644'
 
-- name: Install AWX
+- name: Install
   kubernetes.core.helm:
     name: awx
-    chart_ref: adwerx/awx
+    chart_ref: awx-operator/awx-operator
     chart_version: "{{ awx_helm_chart_version }}"
-    update_repo_cache: true
     release_namespace: "{{ awx_namespace }}"
     create_namespace: true
     wait: true
     wait_timeout: 15m
     values_files:
-      - "roles/{{ role_name }}/files/awx-values.yml"
+      - "./roles/{{ role_name }}/files/awx-operator-values.yml"
+  register: awx_helm
+
+- name: Wait for AWX to be ready
+  kubernetes.core.k8s_info:
+    api_version: awx.ansible.com/v1beta1
+    #kind: Deployment
+    kind: AWX
+    wait: yes
+    name: awx
+    namespace: "{{ awx_namespace }}"
+    wait_sleep: 10
+    wait_timeout: 900
+    wait_condition:
+      #type: Available
+      #status: "True"
+      reason: Successful
+      status: "True"
+      type: Successful
