@@ -15,8 +15,8 @@ pipeline {
 					script {
 						env.AWX_ADMIN_USER = sh(returnStdout: true, script: "kubectl -n awx get secret awx-admin-creds -o jsonpath='{ .data.AWX_ADMIN_USER }'|base64 -d")
 						env.AWX_ADMIN_PASSWORD = sh(returnStdout: true, script: "kubectl -n awx get secret awx-admin-creds -o jsonpath='{ .data.AWX_ADMIN_PASSWORD }'|base64 -d")
-						env.AWX_REMEDIATION_URL = sh(returnStdout: true, script: "kubectl -n awx get configmap awx-meta -o jsonpath='{ .data.remediation_template_url }'")
-						env.AWX_REMEDIATION_TEMPLATE_ID = AWX_REMEDIATION_URL[-1..-1]
+						env.AWX_REMEDIATION_URL = sh(returnStdout: true, script: "kubectl -n awx get configmap awx-meta-canary -o jsonpath='{ .data.remediation_template_url }'")
+						env.AWX_REMEDIATION_TEMPLATE_ID = sh(returnStdout: true, script: "echo $AWX_REMEDIATION_URL | awk -vORS='' -F'/' '{print \$7}'")
 					}
 				}
 			}
