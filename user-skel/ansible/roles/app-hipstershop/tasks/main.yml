@@ -1,131 +1,34 @@
 ---
 
-# - name: Creating Namespace Kubernetes Manifest
-#   copy:
-#     dest: "{{ role_path }}/files/kustomize/base/common/namespace.yaml"
-#     content: |
-#       apiVersion: v1
-#       kind: Namespace
-#       metadata:
-#         name: "{{ hipstershop_namespace }}"
-
-- name: Template Hipsterhop Namespace Kubernetes Manifest
-  template:
-    src: "{{ role_path }}/templates/hipstershop-namespace.yml.j2"
-    dest: "{{ role_path }}/files/kustomize/base/common/namespace.yaml"
-    owner: "{{ ace_box_user }}"
-    group: "{{ ace_box_user }}"
-    mode: '0644'
-
-
-# - name: Creating Ingress Patch Manifest
-#   copy:
-#     dest: "{{ role_path }}/files/kustomize/base/patches/ingress.yaml"
-#     content: |
-#       apiVersion: networking.k8s.io/v1
-#       kind: Ingress
-#       metadata:
-#         name: frontend-ingress
-#       spec:
-#         ingressClassName: "{{ ingress_class }}"
-#         rules:
-#         - host: "{{ hipstershop_domain }}"
-#           http:
-#             paths:
-#               - path: /
-#                 pathType: Prefix
-#                 backend:
-#                   service:
-#                     name: frontend-external
-#                     port:
-#                       number: 80
+- name: Create namespace for Hipsterhop
+  kubernetes.core.k8s:
+    name: "{{ hipstershop_namespace }}"
+    api_version: v1
+    kind: Namespace
+    state: present
 
 
 - name: Template Hipsterhop Ingress Kubernetes Manifest
   template:
     src: "{{ role_path }}/templates/hipstershop-ingress.yml.j2"
-    dest: "{{ role_path }}/files/kustomize/base/patches/ingress.yaml"
+    dest: "{{ role_path }}/files/kustomize/patches/hipstershop-ingress.yaml"
     owner: "{{ ace_box_user }}"
     group: "{{ ace_box_user }}"
     mode: '0644'
 
-# - name: Creating Kustomization.yaml file
-#   copy:
-#     dest: "{{ role_path }}/files/kustomize/base/kustomization.yaml"
-#     content: |
-#       apiVersion: kustomize.config.k8s.io/v1beta1
-#       kind: Kustomization
-#       namespace: "{{ hipstershop_namespace }}"
-      
-#       resources:
-#       - common/namespace.yaml # this file is created at run-time
-#       - common/redis.yaml
-#       - common/ingress.yaml
-#       - common/redis-pvc.yaml
-#       - adservice.yaml
-#       - cartservice.yaml
-#       - checkoutservice.yaml
-#       - currencyservice.yaml
-#       - emailservice.yaml
-#       - frontend.yaml
-#       - loadgenerator.yaml
-#       - paymentservice.yaml
-#       - productcatalogservice.yaml
-#       - randomizer.yaml
-#       - recommendationservice.yaml
-#       - shippingservice.yaml
-      
-#       images:
-#       - name: ghcr.io/mreider/adservice
-#         newTag: "{{ hipstershop_image_tag }}"
-      
-#       - name: ghcr.io/mreider/cartservice
-#         newTag: "{{ hipstershop_image_tag }}"
-      
-#       - name: ghcr.io/mreider/checkoutservice
-#         newTag: "{{ hipstershop_image_tag }}"      
-
-#       - name: ghcr.io/mreider/currencyservice
-#         newTag: "{{ hipstershop_image_tag }}" 
-
-#       - name: ghcr.io/mreider/emailservice
-#         newTag: "{{ hipstershop_image_tag }}" 
-
-#       - name: ghcr.io/mreider/frontend
-#         newTag: "{{ hipstershop_image_tag }}" 
-
-#       - name: ghcr.io/mreider/loadgenerator
-#         newTag: "{{ hipstershop_image_tag }}" 
-
-#       - name: ghcr.io/mreider/paymentservice
-#         newTag: "{{ hipstershop_image_tag }}" 
-
-#       - name: ghcr.io/mreider/productcatalogservice
-#         newTag: "{{ hipstershop_image_tag }}" 
-
-#       - name: ghcr.io/mreider/recommendationservice
-#         newTag: "{{ hipstershop_image_tag }}" 
-
-#       - name: ghcr.io/mreider/shippingservice
-#         newTag: "{{ hipstershop_image_tag }}" 
-      
-#       patchesStrategicMerge:
-#       - patches/frontend-external.yaml
-#       - patches/ingress.yaml # this file is created at run-time
-
-- name: Template Hipsterhop Ingress Kubernetes Manifest
+- name: Template Hipsterhop Kustomization
   template:
     src: "{{ role_path }}/templates/hipstershop-kustomization.yml.j2"
-    dest: "{{ role_path }}/files/kustomize/base/kustomization.yaml"
+    dest: "{{ role_path }}/files/kustomize/kustomization.yaml"
     owner: "{{ ace_box_user }}"
     group: "{{ ace_box_user }}"
     mode: '0644'
 
 - name: Kustomize Build
   set_fact:
-    resources: "{{ lookup('kubernetes.core.kustomize', dir=role_path+'/files/kustomize/base') }}"
+    resources: "{{ lookup('kubernetes.core.kustomize', dir=role_path+'/files/kustomize') }}"
 
 - name: Kustomize Apply
   k8s:
-    definition: "{{ lookup('kubernetes.core.kustomize', dir=role_path+'/files/kustomize/base') }}"
+    definition: "{{ lookup('kubernetes.core.kustomize', dir=role_path+'/files/kustomize') }}"
     state: present

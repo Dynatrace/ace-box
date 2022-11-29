@@ -5,7 +5,7 @@ config:
 hipstershop-http:
     - name: "hipstershop.http"
     - url: "http://hipstershop.{{ .Env.INGRESS_DOMAIN }}"
-    - description: "HTTP Monitor for hipstershop"
+    - description: "HTTP Monitor for Hipstershop"
     - location: "/infrastructure/synthetic-location/acebox.id"
     - managementZoneId: "/hipstershop/management-zone/hipstershop.id"
     - tag: "hipstershop"
@@ -15,7 +15,7 @@ hipstershop-http:
 hipstershop-clickpath:
     - name: "hipstershop.clickpath"
     - url: "http://hipstershop.{{ .Env.INGRESS_DOMAIN }}"
-    - description: "ClickPath for hipstershop"
+    - description: "ClickPath for Hipstershop"
     - location: "/infrastructure/synthetic-location/acebox.id"
     - managementZoneId: "/hipstershop/management-zone/hipstershop.id"
     - tag: "hipstershop"

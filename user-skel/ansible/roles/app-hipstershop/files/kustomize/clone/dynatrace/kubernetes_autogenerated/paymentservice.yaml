@@ -15,56 +15,55 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: currencyservice
+  name: paymentservice
 spec:
   selector:
     matchLabels:
-      app: currencyservice
+      app: paymentservice
   template:
     metadata:
       labels:
-        app: currencyservice
+        app: paymentservice
     spec:
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: ghcr.io/mreider/currencyservice:215
+        image: ghcr.io/mreider/paymentservice:215
         ports:
-        - name: grpc
-          containerPort: 7000
+        - containerPort: 50051
         env:
         - name: PORT
-          value: "7000"
+          value: "50051"
         # - name: DISABLE_TRACING
         #   value: "1"
-        - name: DISABLE_PROFILER
-          value: "1"
+        # - name: DISABLE_PROFILER
+        #   value: "1"
         # - name: DISABLE_DEBUGGER
         #   value: "1"
         readinessProbe:
           exec:
-            command: ["/bin/grpc_health_probe", "-addr=:7000"]
+            command: ["/bin/grpc_health_probe", "-addr=:50051"]
         livenessProbe:
           exec:
-            command: ["/bin/grpc_health_probe", "-addr=:7000"]
+            command: ["/bin/grpc_health_probe", "-addr=:50051"]
         resources:
           requests:
-            cpu: 170m
-            memory: 100Mi
+            cpu: 50m
+            memory: 70Mi
           limits:
-            cpu: 210m
-            memory: 150Mi
+            cpu: 80m
+            memory: 80Mi
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: currencyservice
+  name: paymentservice
 spec:
   type: ClusterIP
   selector:
-    app: currencyservice
+    app: paymentservice
   ports:
   - name: grpc
-    port: 7000
-    targetPort: 7000
+    port: 50051
+    targetPort: 50051

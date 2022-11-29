@@ -15,54 +15,56 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: redis-cart
+  name: currencyservice
 spec:
   selector:
     matchLabels:
-      app: redis-cart
+      app: currencyservice
   template:
     metadata:
       labels:
-        app: redis-cart
+        app: currencyservice
     spec:
+      serviceAccountName: default
+      terminationGracePeriodSeconds: 5
       containers:
-      - name: redis
-        image: redis:alpine
+      - name: server
+        image: ghcr.io/mreider/currencyservice:215
         ports:
-        - containerPort: 6379
+        - name: grpc
+          containerPort: 7000
+        env:
+        - name: PORT
+          value: "7000"
+        # - name: DISABLE_TRACING
+        #   value: "1"
+        # - name: DISABLE_PROFILER
+        #   value: "1"
+        # - name: DISABLE_DEBUGGER
+        #   value: "1"
         readinessProbe:
-          periodSeconds: 5
-          tcpSocket:
-            port: 6379
+          exec:
+            command: ["/bin/grpc_health_probe", "-addr=:7000"]
         livenessProbe:
-          periodSeconds: 5
-          tcpSocket:
-            port: 6379
-        volumeMounts:
-        - mountPath: /data
-          name: redis-data
+          exec:
+            command: ["/bin/grpc_health_probe", "-addr=:7000"]
         resources:
-          limits:
-            memory: 20Mi
-            cpu: 30m
           requests:
-            cpu: 15m
-            memory: 10Mi
-      volumes:
-      - name: redis-data
-        emptyDir: null
-        persistentVolumeClaim:
-          claimName: redis-cart-pvc
+            cpu: 170m
+            memory: 100Mi
+          limits:
+            cpu: 210m
+            memory: 150Mi
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: redis-cart
+  name: currencyservice
 spec:
   type: ClusterIP
   selector:
-    app: redis-cart
+    app: currencyservice
   ports:
-  - name: redis
-    port: 6379
-    targetPort: 6379
+  - name: grpc
+    port: 7000
+    targetPort: 7000

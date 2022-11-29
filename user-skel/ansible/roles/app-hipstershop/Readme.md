@@ -1,6 +1,6 @@
 # app-hipstershop
 
-This currated role can be used to deploy hipstershop demo application on the ACE-Box.
+This currated role can be used to deploy Hipstershop demo application on the ACE-Box.
 
 ## Using the role
 
@@ -44,9 +44,9 @@ hipstershop_domain: "hipstershop.{{ ingress_domain }}"
 
 ### (Optional) Configure Dynatrace using Monaco
 
-> The below deploys monaco and configures Dynatrace with the monaco project embedded in the role
+> The below deploys Monaco and configures Dynatrace with the Monaco project embedded in the role
 > 
-> Note: To enable private synthetic monitor for hipstershop via Dynatrace ActiveGate, set the "skip_synthetic_monitor" variable as "false". The default value is "true"
+> Note: To enable private synthetic monitor for Hipstershop via Dynatrace ActiveGate, set the "skip_synthetic_monitor" variable as "false". The default value is "true"
 
 ```yaml
 - include_role:

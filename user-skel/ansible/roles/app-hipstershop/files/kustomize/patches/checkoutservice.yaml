@@ -1,0 +1,13 @@
+# vscode-kubernetes-tools:exclude
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: checkoutservice
+spec:
+  template:
+    spec:
+      containers:
+      - name: server
+        env:
+        - name: DISABLE_PROFILER
+          value: "1"
