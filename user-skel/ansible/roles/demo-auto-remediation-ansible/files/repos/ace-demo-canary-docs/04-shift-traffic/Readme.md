@@ -7,7 +7,8 @@ At the moment, the load generator is calling the service's ingress. Although bot
 ## 1. Use AWX to route traffic to the canary
 
 1. Go to AWX (see the dashboard for credentials)
-2. Under "Templates", launch "canary" with it's default settings
+2. Under "Projects", open the "Canary Auto Remediation" Project 
+3. Under "Job Templates", launch "Canary Shift" with it's default settings
 
     ![awx_template_canary](../assets/images/awx_template_canary.png)
 
@@ -27,3 +28,9 @@ This shift in traffic can also be inspected in Dynatrace:
     ![dynatrace_service_traffic_shift](../assets/images/dynatrace_service_traffic_shift.png)
 
 You can see that the request count for service *build 1* is steadily decreasing while simultaneously increasing for service *build 4*.
+
+Additionally, as part of our change management process, we also send events to Dynatrace highlighting this. This can be observed on the *Service* screen for `simplenodeservice` under *Events*:
+
+![dynatrace_service_events](../assets/images/dynatrace_service_events.png)
+
+In this event we also specify a potential backout plan, a remediation action in case that this change causes problems for our application and its users. This remediation action will later be leveraged for the auto remediation flow.

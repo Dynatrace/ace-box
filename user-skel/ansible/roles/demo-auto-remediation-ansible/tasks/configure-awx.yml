@@ -47,7 +47,7 @@
 - name: Create default organization
   awx.awx.organization:
     name: "{{ awx_org_name }}"
-    description: "Default organization"
+    description: "Dynatrace organization"
     state: present
     controller_host: "{{ awx_internal_endpoint }}"
     controller_password: "{{ awx_admin_password }}"
@@ -108,7 +108,7 @@
 
 - name: Add project
   awx.awx.project:
-    name: "self-healing"
+    name: "Canary Auto Remediation"
     description: ""
     organization: "{{ organization.id }}"
     state: present
@@ -126,7 +126,7 @@
 
 - name: Create remediation inventory
   awx.awx.inventory:
-    name: "Auto Remediation Inventory"
+    name: "Canary Auto Remediation Inventory"
     description: ""
     organization: "{{ organization.id }}"
     variables:
@@ -208,7 +208,7 @@
 
 - name: Create remediation meta configmap
   kubernetes.core.k8s:
-    name: "awx-meta"
+    name: "awx-meta-canary"
     api_version: v1
     kind: ConfigMap
     state: present

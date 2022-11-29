@@ -6,7 +6,7 @@ Before detecting an issue, an issue most occur. We therefore start a load genera
 
 ## 1. Run Jenkins load generation pipeline
 
-1. Go to Jenkins, Project *ace-demo-canary*
+1. Go to Jenkins, Project *demo-auto-remediation*
 2. Trigger "4. Generate Load"
 
     ![jenkins_pipeline_load](../assets/images/jenkins_pipeline_load.png)
