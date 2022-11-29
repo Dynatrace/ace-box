@@ -60,14 +60,14 @@ spec:
           name: tmp-volume
         livenessProbe:
           httpGet:
-            path: /
+            path: /healthz
             port: 8080
           initialDelaySeconds: 15
           periodSeconds: 10
           timeoutSeconds: 15
         readinessProbe:
           httpGet:
-            path: /
+            path: /healthz
             port: 8080
           initialDelaySeconds: 15
           periodSeconds: 10
