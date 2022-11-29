@@ -315,6 +315,10 @@ var server = http.createServer(async function (req, res) {
 
 			status = "Request finished";
 		}
+		if(url.pathname === "/healthz") {
+			// Usage: /api/login?username=your user name 
+			status = "OK";
+		}
 
 		// only close response handler if we are done with work!
 		if(closeResponse) {
