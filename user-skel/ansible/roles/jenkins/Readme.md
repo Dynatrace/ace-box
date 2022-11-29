@@ -1,6 +1,6 @@
-# jenkins
+# Jenkins
 
-This currated role can be used to install jenkins on a kubernetes cluster.
+This currated role can be used to install Jenkins on a Kubernetes cluster.
 
 For the details, please check this link: https://www.jenkins.io/doc/book/installing/kubernetes/
 
@@ -15,23 +15,31 @@ This role depends on the following roles to be deployed beforehand:
 ```
 ### Deploying Jenkins
 
-The main task deploys jenkins on a kubernetes cluster. It creates a secret that contains username and password as well as an admin and API token.
+The main task deploys Jenkins on a Kubernetes cluster.
+
+Once the deployment is completed, it creates the service endpoint and admin secret to be sourced into the following variables:
+- `jenkins_internal_endpoint`
+- `jenkins_username`
+- `jenkins_password`
+- `jenkins_api_token`
+
+Furthermore, it uses the following attributes to be used as Jenkins variables in the Jenkins pipeline.
+> Note: If your use case requires gitea as a source code repository, CA/Keptn and Synthetic-enabled private ActiveGate, they must be deployed beforehand to be used as Jenkins variables.
+- `gitea_username` # if git_flavor == "GITEA"
+- `gitea_password` # if git_flavor == "GITEA"
+- `gitea_access_token` # if git_flavor == "GITEA"
+- `ca_endpoint` # depends on the cloud_automation_flavor is "KEPTN" or "CLOUD_AUTOMATION"
+- `ca_bridge` # depends on the cloud_automation_flavor is "KEPTN" or "CLOUD_AUTOMATION"
+- `ca_api_token` # depends on the cloud_automation_flavor is "KEPTN" or "CLOUD_AUTOMATION"
+- `dt_synthetic_node_id` # Synthetic-enabled private ActiveGate ID if exists
+- `docker_registry_url` # which was deployed during K8s installation
+- `otel_endpoint` # if Open Telemetry was installed
+
 
 ```yaml
 - include_role:
     name: jenkins
 ```
-
-Depending on a use case it also sources the below entities during the deployment of jenkins:
-- the secrets of Gitea, Keptn or Cloud Automation
-- Docker container registry URL
-- ActiveGate Node ID if exists
-- OpenTelemetry collector endpoint if exists
-  
-NOTE: If the use case is to leverage gitea as a source code repository, gitea has to be installed before jenkins.
-Similarly, if the use case is to leverage cloud automation or keptn, they have to be installed before jenkins. 
-
-
 
 Variables that can be set are as follows:
 
@@ -78,7 +86,7 @@ A link to an example Jinja template: https://github.com/Dynatrace/ace-box/blob/d
 ```
 
 #### "create-secret" 
-This task creates the jenkins admin user and password.
+This task creates the Jenkins admin user and password.
 ```yaml
 - include_role:
     name: jenkins
@@ -89,19 +97,18 @@ This task creates the jenkins admin user and password.
 ```
 
 #### "create-token" 
-This task generates the jenkins admin token and api token.
+This task generates the Jenkins api token to be added into a secret, then sources the following variables:
+- `jenkins_api_token`
+  
 ```yaml
 - include_role:
     name: jenkins
     tasks_from: create-token
-  vars:
-    jenkins_username: "<jenkins user name>"
-    jenkins_password: "<jenkins password>"
-    jenkins_internal_endpoint: "<jenkins internal endpoint>"
 ```
 
 #### "source-endpoints" 
-This task fetches the internal endpoint (variable name: "jenkins_internal_endpoint") for the jenkins service
+This task fetches the Jenkins internal endpoint and sources the following variables:
+- `jenkins_internal_endpoint`
 
 ```yaml
 - include_role:
@@ -110,7 +117,10 @@ This task fetches the internal endpoint (variable name: "jenkins_internal_endpoi
 ```
 
 #### "source-secret" 
-This task sources the jenkins admin user (variable name: "jenkins_username"), password (variable name: "jenkins_password") as well as jenkins api token (variable name: "jenkins_api_token") .
+This task fetches the admin secret and admin token, then sources the following variables:
+- `jenkins_username`
+- `jenkins_password`
+- `jenkins_api_token`
 
 ```yaml
 - include_role:

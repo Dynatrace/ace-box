@@ -73,6 +73,7 @@
     retries: 300
     delay: 1
     no_log: true
+  
   - name: Create admin user access token
     uri:
       url: "{{ gitea_internal_endpoint }}/api/v1/users/{{ gitea_username }}/tokens"
@@ -86,7 +87,9 @@
       validate_certs: no
       status_code: 201
     register: post_token_result
+  
   - set_fact:
       gitea_access_token: "{{ post_token_result.json.sha1 }}"
+  
   - include_tasks: roles/gitea/tasks/create-secret.yml
   when: gitea.changed
