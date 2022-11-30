@@ -1,0 +1,6 @@
+---
+# app deployment parameters
+hipstershop_namespace: "hipstershop"
+hipstershop_image_tag: "215"
+hipstershop_domain: "hipstershop.{{ ingress_domain }}"
+

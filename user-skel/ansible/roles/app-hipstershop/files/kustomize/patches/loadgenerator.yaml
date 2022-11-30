@@ -1,0 +1,30 @@
+# vscode-kubernetes-tools:exclude
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loadgenerator
+spec:
+  template:
+    spec:
+      initContainers:
+      - name: frontend-check
+        command:
+        - /bin/sh
+        - -exc
+        - |
+          echo "Init container pinging frontend: ${FRONTEND_ADDR}..."
+          STATUSCODE=$(wget --server-response ${FRONTEND_ADDR} 2>&1 | awk '/^  HTTP/{print $2}')
+          if test $STATUSCODE -ne 200; then
+              echo "Error: Could not reach frontend - Status code: ${STATUSCODE}"
+              exit 1
+          fi
+        env:
+        - name: FRONTEND_ADDR
+          value: https://microservices-demo-dynatrace.aks-ger.k8s-demo.dynatracelabs.com
+      containers:
+      - name: main
+        args:
+        - 'locust --host="${FRONTEND_ADDR}" --headless -u "${USERS}" 2>&1'
+        env:
+        - name: FRONTEND_ADDR
+          value: https://microservices-demo-dynatrace.aks-ger.k8s-demo.dynatracelabs.com

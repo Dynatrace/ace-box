@@ -1,0 +1,7 @@
+# vscode-kubernetes-tools:exclude
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-external
+spec:
+  type: ClusterIP

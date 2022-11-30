@@ -1,0 +1,8 @@
+
+config:
+  - app-detect-hipstershop: "rule.json"
+  
+app-detect-hipstershop:
+  - name: "/hipstershop/application/app-hipstershop.name"
+  - applicationId: "/hipstershop/application/app-hipstershop.id"
+  - pattern: "hipstershop.{{ .Env.INGRESS_DOMAIN }}"

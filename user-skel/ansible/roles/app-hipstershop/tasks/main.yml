@@ -1,0 +1,34 @@
+---
+
+- name: Create namespace for Hipsterhop
+  kubernetes.core.k8s:
+    name: "{{ hipstershop_namespace }}"
+    api_version: v1
+    kind: Namespace
+    state: present
+
+
+- name: Template Hipsterhop Ingress Kubernetes Manifest
+  template:
+    src: "{{ role_path }}/templates/hipstershop-ingress.yml.j2"
+    dest: "{{ role_path }}/files/kustomize/patches/hipstershop-ingress.yaml"
+    owner: "{{ ace_box_user }}"
+    group: "{{ ace_box_user }}"
+    mode: '0644'
+
+- name: Template Hipsterhop Kustomization
+  template:
+    src: "{{ role_path }}/templates/hipstershop-kustomization.yml.j2"
+    dest: "{{ role_path }}/files/kustomize/kustomization.yaml"
+    owner: "{{ ace_box_user }}"
+    group: "{{ ace_box_user }}"
+    mode: '0644'
+
+- name: Kustomize Build
+  set_fact:
+    resources: "{{ lookup('kubernetes.core.kustomize', dir=role_path+'/files/kustomize') }}"
+
+- name: Kustomize Apply
+  k8s:
+    definition: "{{ lookup('kubernetes.core.kustomize', dir=role_path+'/files/kustomize') }}"
+    state: present

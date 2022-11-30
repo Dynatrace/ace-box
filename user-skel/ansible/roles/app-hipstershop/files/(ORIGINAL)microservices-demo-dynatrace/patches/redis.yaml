@@ -1,0 +1,13 @@
+# vscode-kubernetes-tools:exclude
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-cart
+spec:
+  template:
+    spec:
+      volumes:
+      - name: redis-data
+        emptyDir: null
+        persistentVolumeClaim:
+          claimName: redis-cart-pvc

@@ -1,0 +1,23 @@
+config:
+    - hipstershop-http: "hipstershop-http.json"
+    - hipstershop-clickpath: "hipstershop-clickpath.json"
+  
+hipstershop-http:
+    - name: "hipstershop.http"
+    - url: "http://hipstershop.{{ .Env.INGRESS_DOMAIN }}"
+    - description: "HTTP Monitor for Hipstershop"
+    - location: "/infrastructure/synthetic-location/acebox.id"
+    - managementZoneId: "/hipstershop/management-zone/hipstershop.id"
+    - tag: "hipstershop"
+    - applicationId: "/hipstershop/application/app-hipstershop.id"
+    - skipDeployment: "{{ .Env.SKIP_SYNTH }}"
+
+hipstershop-clickpath:
+    - name: "hipstershop.clickpath"
+    - url: "http://hipstershop.{{ .Env.INGRESS_DOMAIN }}"
+    - description: "ClickPath for Hipstershop"
+    - location: "/infrastructure/synthetic-location/acebox.id"
+    - managementZoneId: "/hipstershop/management-zone/hipstershop.id"
+    - tag: "hipstershop"
+    - applicationId: "/hipstershop/application/app-hipstershop.id"
+    - skipDeployment: "{{ .Env.SKIP_SYNTH }}"

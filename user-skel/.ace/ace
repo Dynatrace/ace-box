@@ -31,7 +31,8 @@ install_targets = [
     'awx',
     'cloudautomation',
     'app_easytravel',
-    'app_unguard'
+    'app_unguard',
+    'app_hipstershop'
 ]
 uninstall_targets = [
     'gitlab',
