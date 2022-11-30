@@ -215,6 +215,7 @@
     namespace: "{{ awx_namespace }}"
     resource_definition:
       data:
+        remediation_template_id: "{{ remediation_template.id }}"
         remediation_template_url: "{{ remediation_template_url }}"
 
 - debug:
