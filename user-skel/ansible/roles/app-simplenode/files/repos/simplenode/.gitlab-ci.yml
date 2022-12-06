@@ -2,12 +2,14 @@ include:
   - remote: 'https://gitlab.com/dynatrace-ace/dynatrace-gitlab-library/-/raw/master/dynatrace_event.yaml'
 
 variables:
-  BUILD_ID: '1'  # 1, 2, 3 or 4
-  DT_RELEASE_VERSION: 'v$BUILD_ID.0.2'
-  DT_RELEASE_BUILD_VERSION: '$BUILD_ID.0.2'
-  DT_RELEASE_PRODUCT: 'simplenodeservice'
-  DT_RELEASE_STAGE: 'simplenode-gitlab-staging'
-  DT_RELEASE_STAGE_PRODUCTION: 'simplenode-gitlab-production'
+  BUILD_ID:
+    value: "1"
+    description: "Build ID. Please set to 1, 2, 3 or 4."
+  DT_RELEASE_VERSION: "v$BUILD_ID.0.2"
+  DT_RELEASE_BUILD_VERSION: "$BUILD_ID.0.2"
+  DT_RELEASE_PRODUCT: "simplenodeservice"
+  DT_RELEASE_STAGE: "simplenode-gitlab-staging"
+  DT_RELEASE_STAGE_PRODUCTION: "simplenode-gitlab-production"
 
 stages:
   - init
