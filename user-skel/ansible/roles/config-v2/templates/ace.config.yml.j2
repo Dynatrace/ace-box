@@ -9,11 +9,11 @@ extra_vars: {{ extra_vars | default({}) }}
 # Git
 git_flavor: "{{ git_flavor | default('GITEA') }}"
 # Dynatrace
-dynatrace_tenant_url: "{{ dynatrace_tenant_url | default(None) }}"
+dynatrace_tenant_url: "{{ dynatrace_tenant_url.rstrip('/') if (dynatrace_tenant_url and dynatrace_tenant_url|length > 0) else '' }}"
 dynatrace_paas_token: "{{ dynatrace_paas_token | default(None) }}"
 dynatrace_api_token: "{{ dynatrace_api_token | default(None) }}"
 # Cloud Automation
 cloud_automation_flavor: "{{ cloud_automation_flavor | default('KEPTN') }}"
-cloud_automation_tenant_url: "{{ ca_tenant_url | default(None) }}"
+cloud_automation_tenant_url: "{{ ca_tenant_url.rstrip('/') if (ca_tenant_url and ca_tenant_url|length > 0) else '' }}"
 cloud_automation_api_token: "{{ ca_api_token | default(None) }}"
 # Features

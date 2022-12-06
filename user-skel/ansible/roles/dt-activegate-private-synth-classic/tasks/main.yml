@@ -29,11 +29,11 @@
     service:
       name: dynatracegateway
       state: restarted
-    ignore_errors: yes
+    ignore_errors: true
   - name: Restart Docker service
     become: true
     become_user: root
     shell:
       cmd: snap restart docker
-    ignore_errors: yes
+    ignore_errors: true
   when: ansible_facts.services["dynatracegateway.service"] is not defined

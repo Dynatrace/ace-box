@@ -10,4 +10,4 @@
     dest: "{{ ace_config_file_path }}"
     owner: "{{ ace_box_user }}"
     group: "{{ ace_box_user }}"
-    mode: '0644'
+    mode: "0644"
