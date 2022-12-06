@@ -11,6 +11,8 @@ spec:
       app.kubernetes.io/name: user-simulator
       app.kubernetes.io/part-of: unguard
   replicas: 3
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -24,14 +26,17 @@ spec:
           image: unguard-user-simulator
           env:
             - name: FRONTEND_ADDR
-              value: "unguard-frontend:80/ui"
+              value: "unguard-envoy-proxy:8080/ui"
           resources:
+            requests:
+              cpu: 10m
+              memory: 256Mi
             limits:
               cpu: 500m
               memory: 512Mi
       initContainers:
         - name: wait-for-frontend
           image: curlimages/curl
-          command: ["/bin/sh", "-c"]
+          command: [ "/bin/sh", "-c" ]
           # CASP-8983 replace this endpoint with a proper health check endpoint
-          args: [ 'while [ $(curl -ksw "%{http_code}" "http://unguard-frontend:80/ui/img/logo.svg" -o /dev/null) -ne 200 ]; do sleep 5; echo "health check failed . Waiting for the service..."; done' ]
+          args: [ 'while [ $(curl -ksw "%{http_code}" "http://unguard-envoy-proxy:8081/healthz?path=unguard-frontend" -o /dev/null) -ne 200 ]; do sleep 5; echo "health check failed . Waiting for the service..."; done' ]

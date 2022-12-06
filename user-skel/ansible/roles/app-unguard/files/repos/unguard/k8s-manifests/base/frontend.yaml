@@ -26,6 +26,8 @@ spec:
     matchLabels:
       app.kubernetes.io/name: frontend
       app.kubernetes.io/part-of: unguard
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -45,7 +47,9 @@ spec:
             - name: JAEGER_SAMPLER_TYPE
               value: "const"
             - name: JAEGER_SAMPLER_PARAM
-              value: "1"
+              value: "0"
+            - name: JAEGER_DISABLED
+              value: "true"
             - name: MICROBLOG_SERVICE_ADDRESS
               value: "unguard-microblog-service"
             - name: PROXY_SERVICE_ADDRESS
@@ -54,7 +58,13 @@ spec:
               value: "unguard-user-auth-service"
             - name: AD_SERVICE_ADDRESS
               value: "unguard-ad-service"
+            - name: STATUS_SERVICE_ADDRESS
+              value: "unguard-status-service"
             - name: FRONTEND_BASE_PATH
               value: "/ui"
             - name: AD_SERVICE_BASE_PATH
               value: "/ad-service"
+            - name: STATUS_SERVICE_BASE_PATH
+              value: "/status-service"
+            - name: PROFILE_SERVICE_ADDRESS
+              value: "unguard-profile-service"

@@ -3,19 +3,14 @@ kind: Kustomization
 namespace: unguard
 resources:
   - ../base
-  - ingress-v1.yaml
+  - ingress.yaml
 patchesStrategicMerge:
+  # aws-load-balancer-controller only supports NodePort or LoadBalancer service types
+  # https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.4/guide/ingress/annotations/#traffic-routing
   - |-
     apiVersion: v1
     kind: Service
     metadata:
-      name: unguard-frontend
-    spec:
-      type: NodePort
-  - |-
-    apiVersion: v1
-    kind: Service
-    metadata:
-      name: unguard-ad-service
+      name: unguard-envoy-proxy
     spec:
       type: NodePort
