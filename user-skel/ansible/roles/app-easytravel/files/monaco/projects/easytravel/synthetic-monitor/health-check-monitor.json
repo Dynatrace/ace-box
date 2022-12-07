@@ -38,21 +38,20 @@
     ],
     "anomalyDetection": {
       "outageHandling": {
-        "globalOutage": false,
-        "localOutage": true,
+        "globalOutage": true,
+        "globalOutagePolicy": {
+          "consecutiveRuns": 1
+        },
+        "localOutage": false,
         "localOutagePolicy": {
-          "affectedLocations": 1,
-          "consecutiveRuns": 3
-        }
+          "affectedLocations": null,
+          "consecutiveRuns": null
+        },
+        "retryOnError": true
       },
       "loadingTimeThresholds": {
-        "enabled": false,
-        "thresholds": [
-          {
-            "type": "TOTAL",
-            "valueMs": 0
-          }
-        ]
+        "enabled": true,
+        "thresholds": []
       }
     },
     "tags": [
