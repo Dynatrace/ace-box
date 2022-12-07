@@ -1,0 +1,30 @@
+---
+- name: Download ActiveGate installer
+  get_url:
+    url: "{{ dynatrace_tenant_url }}/api/v1/deployment/installer/gateway/unix/latest?arch=x86&flavor=default"
+    dest: "{{ activegate_download_location }}"
+    mode: +x
+    timeout: 300
+    headers:
+      Authorization: "Api-token {{ dynatrace_paas_token }}"
+  when: not activegate_download_location is exists
+
+- service_facts:
+
+- become: true
+  become_user: root
+  block:
+  - name: Install ActiveGate
+    shell:
+      cmd: /bin/sh "{{ activegate_download_location }}" 
+      creates: "{{ activegate_uninstall_script_location }}"
+  - name: ActiveGate - Update dnsEntryPoint on custom.properties
+    blockinfile:
+      path: /var/lib/dynatrace/gateway/config/custom.properties
+      insertafter: "proxy-off = true"
+      block: |
+        [connectivity]
+        dnsEntryPoint = http://{{ ansible_facts.fqdn }}:9999
+  - include_tasks:
+      file: restart-activegate.yml
+  when: ansible_facts.services["dynatracegateway.service"] is not defined
