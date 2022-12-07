@@ -49,22 +49,22 @@ spec:
             memory: "700Mi"
           limits:
             memory: "700Mi"
-        readinessProbe:
-          failureThreshold: 10
-          httpGet:
-            path: /
-            port: 8080
-            scheme: HTTP
-          periodSeconds: 15
-          successThreshold: 1
-          timeoutSeconds: 10
-        livenessProbe:
-          failureThreshold: 10
-          httpGet:
-            path: /
-            port: 8080
-            scheme: HTTP
-          periodSeconds: 30
-          initialDelaySeconds: 120
-          successThreshold: 1
-          timeoutSeconds: 10
+        # readinessProbe:
+        #   failureThreshold: 6
+        #   httpGet:
+        #     path: /
+        #     port: 8080
+        #     scheme: HTTP
+        #   periodSeconds: 5
+        #   successThreshold: 1
+        #   timeoutSeconds: 10
+        # livenessProbe:
+        #   failureThreshold: 6
+        #   httpGet:
+        #     path: /
+        #     port: 8080
+        #     scheme: HTTP
+        #   periodSeconds: 5
+        #   initialDelaySeconds: 120
+        #   successThreshold: 1
+        #   timeoutSeconds: 10

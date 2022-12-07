@@ -39,13 +39,13 @@ spec:
           requests:
             cpu: 50m
             memory: 300Mi
-        readinessProbe:
-          failureThreshold: 3
-          httpGet:
-            path: /PluginService/ping
-            port: 8080
-            scheme: HTTP
-          periodSeconds: 10
-          successThreshold: 1
-          timeoutSeconds: 1
+        # readinessProbe:
+        #   failureThreshold: 3
+        #   httpGet:
+        #     path: /PluginService/ping
+        #     port: 8080
+        #     scheme: HTTP
+        #   periodSeconds: 10
+        #   successThreshold: 1
+        #   timeoutSeconds: 1
       restartPolicy: Always
