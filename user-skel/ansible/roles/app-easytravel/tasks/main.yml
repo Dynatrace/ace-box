@@ -19,6 +19,7 @@
         loadgen:
           visitNumber: "{{ easytravel_visit_number }}"
           tag: "{{ easytravel_image_tag }}"
+          problems: ""
         loadgen_angular: 
           replicas: "{{ easytravel_headless_replicas }}"
           tag: "{{ easytravel_image_tag }}"
