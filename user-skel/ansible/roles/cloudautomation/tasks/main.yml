@@ -1,4 +1,10 @@
 ---
+- include_role:
+    name: dt-access-token
+  vars:
+    access_token_var_name: "ace_box_ca_api_token"
+    access_token_scope: ["entities.read","metrics.ingest","metrics.read","problems.read","problems.write","securityProblems.read","slo.read","CaptureRequestData","DataExport","DataImport","ExternalSyntheticIntegration","ReadConfig","WriteConfig"]
+
 - set_fact:
     is_ca_flavor_change: false
 
@@ -10,8 +16,8 @@
       name: config-v2
       tasks_from: set-var
     vars:
-    - var_key_to_set: "cloud_automation_flavor"
-    - var_value_to_set: "CLOUD_AUTOMATION"
+      var_key_to_set: "cloud_automation_flavor"
+      var_value_to_set: "CLOUD_AUTOMATION"
   when: cloud_automation_flavor is not defined or cloud_automation_flavor != "CLOUD_AUTOMATION"
 
 - name: Source Cloud Automation version
@@ -21,8 +27,8 @@
   include_role:
     name: keptn-cli
   vars:
-  - keptn_version: "{{ cloud_automation_version }}"
-  - force_install: "{{ is_ca_flavor_change | bool }}"
+    keptn_version: "{{ cloud_automation_version }}"
+    force_install: "{{ is_ca_flavor_change | bool }}"
 
 - name: Create namespace
   kubernetes.core.k8s:
@@ -43,6 +49,6 @@
 - block:
   - name: Delete existing Cloud Automation secret dynatrace
     shell: "/usr/local/bin/keptn delete secret dynatrace --scope=dynatrace-service"
-    ignore_errors: yes
+    ignore_errors: true
   - name: Create Cloud Automation secret dynatrace
-    shell: "/usr/local/bin/keptn create secret dynatrace --from-literal=DT_TENANT={{ dynatrace_tenant_url }} --from-literal=DT_API_TOKEN={{ dynatrace_api_token }} --scope=dynatrace-service"
+    shell: "/usr/local/bin/keptn create secret dynatrace --from-literal=DT_TENANT={{ dynatrace_tenant_url }} --from-literal=DT_API_TOKEN={{ ace_box_ca_api_token }} --scope=dynatrace-service"

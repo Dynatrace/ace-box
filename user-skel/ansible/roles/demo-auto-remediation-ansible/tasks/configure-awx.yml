@@ -1,4 +1,10 @@
 ---
+- include_role:
+    name: dt-access-token
+  vars:
+    access_token_var_name: "ace_box_awx_api_token"
+    access_token_scope: ["problems.write","DataExport"]
+
 - name: AWX - Source secrets
   include_role:
     name: awx
@@ -86,7 +92,7 @@
     state: present
     credential_type: "{{ credential_type_dt_api_token.id }}"
     inputs:
-      dt_api_token: "{{ dynatrace_api_token }}"
+      dt_api_token: "{{ ace_box_awx_api_token }}"
     controller_host: "{{ awx_internal_endpoint }}"
     controller_password: "{{ awx_admin_password }}"
     controller_username: "{{ awx_admin_username }}"

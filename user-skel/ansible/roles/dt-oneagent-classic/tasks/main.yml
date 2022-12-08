@@ -1,4 +1,10 @@
 ---
+- include_role:
+    name: dt-access-token
+  vars:
+    access_token_var_name: "ace_box_dt_oneagent_classic_api_token"
+    access_token_scope: ["InstallerDownload"]
+
 - file:
     path: "{{ role_path }}/files"
     state: directory
@@ -13,7 +19,7 @@
     mode: +x
     timeout: 300
     headers:
-      Authorization: "Api-token {{ dynatrace_paas_token }}"
+      Authorization: "Api-token {{ ace_box_dt_oneagent_classic_api_token }}"
   when: not dt_oneagent_classic_download_location is exists
 
 - name: Install OneAgent
