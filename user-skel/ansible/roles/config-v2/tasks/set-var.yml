@@ -1,10 +1,12 @@
 ---
-- name: Set "{{ var_key_to_set }}" to "{{ var_value_to_set }}"
-  lineinfile:
-    path: "{{ ace_config_file_path }}"
-    regexp: "^{{ var_key_to_set }}:"
-    line: "{{ var_key_to_set }}: {{ var_value_to_set }}"
-    create: yes
-
 - set_fact:
-    "{{ var_key_to_set }}": "{{ var_value_to_set }}"
+    var_data:
+      "{ \"{{ var_key_to_set }}\": {{ var_value_to_set | to_json }} }"
+
+- blockinfile:
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - {{ var_key_to_set }}"
+    path: "{{ ace_config_file_path }}"
+    block: |
+      {{ var_data | to_nice_yaml(indent=2) }}
+
+- include_vars: "{{ ace_config_file_path }}"
