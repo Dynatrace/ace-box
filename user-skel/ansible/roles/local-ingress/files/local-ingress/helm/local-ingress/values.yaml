@@ -1,0 +1,5 @@
+private_ip: "127.0.0.1"
+local_port: 8080
+ingress:
+  class: public
+  domain: "mylocalapp.mydomain.com"

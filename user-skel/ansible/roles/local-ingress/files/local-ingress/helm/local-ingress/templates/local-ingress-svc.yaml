@@ -1,0 +1,13 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ .Release.Name }}-nginx-custom-web
+spec:
+  selector:
+    app: {{ .Release.Name }}-nginx-web
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+    name: nginx
