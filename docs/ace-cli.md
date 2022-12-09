@@ -14,10 +14,8 @@ $ ace --version
   `install <component>` | Installs ACE-Box or components thereof (see table below) |
   `uninstall <component>` | Uninstalls ACE-Box or components thereof (see table below) |
   `set <config>` | Updates ACE-Box config. <config> can be any of key=value, e.g. `$ace set foo=bar` |
+  `destroy` | Destroys configurations deployed by the ACE-Box. As of now, this command runs a handful of curated cleanup tasks which e.g. reset certain Dynatrace environment configurations. |
 
-
-
-  
 ## Available install components:
 
   Component | Result |
@@ -32,7 +30,6 @@ $ ace --version
   `jenkins` | Installs and configures Jenkins |
   `dashboard` | Installs and configures the dashboard |
   `awx` | Installs AWX |
-
 
 ## Available uninstall components:
 
