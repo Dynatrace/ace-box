@@ -1,18 +1,17 @@
-# ACE-Box Utils
+# Local-ingress
 
-This collection of tasks can be used for supporting the development of external use cases.
+This role can be used to create an ingress for non-kubernetes applications.
 
-## Tasks
+## Using the role
 
-### `create-local-ingress`
-This task can be used when you have an application that is not deployed on kubernetes - but straight on the VM - and you still want to expose it using the kubernetes ingress controller
+### Role Requirements
 
-#### Role requirements
 This role depends on the following roles to be deployed beforehand:
 ```yaml
 - include_role:
     name: microk8s
 ```
+> Note: If you want to monitor the deployed application with Dynatrace, you cannot use the `dt-operator` role as it cannot monitor outside of containers. Use the `dt-oneagent-classic` role instead.
 
 ### Role variables
 

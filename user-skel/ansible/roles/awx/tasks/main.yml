@@ -49,6 +49,19 @@
       status: "True"
       type: Successful
 
+- include_tasks:
+    file: source-configuration.yml
+
+- name: AWX - Wait for API to be up
+  uri:
+    url: "{{ awx_internal_endpoint }}/api/v2/ping/"
+    status_code: 200
+    validate_certs: no
+  register: result
+  retries: 60
+  delay: 5
+  until: result.status == 200
+
 - name: Search for all Pods labelled app=web
   kubernetes.core.k8s_info:
     kind: Pod
