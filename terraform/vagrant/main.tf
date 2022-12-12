@@ -1,10 +1,9 @@
 resource "local_file" "ace_box_conf" {
   content = templatefile("ace.config.yml.tpl", {
-    dt_tenant     = var.dt_tenant
-    dt_api_token  = var.dt_api_token
-    dt_paas_token = var.dt_paas_token
-    ca_tenant     = var.ca_tenant
-    ca_api_token  = var.ca_api_token
+    dt_tenant    = var.dt_tenant
+    dt_api_token = var.dt_api_token
+    ca_tenant    = var.ca_tenant
+    ca_api_token = var.ca_api_token
   })
   filename = "${path.module}/ace.config.yml"
 }

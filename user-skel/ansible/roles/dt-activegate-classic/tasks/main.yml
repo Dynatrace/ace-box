@@ -1,4 +1,10 @@
 ---
+- include_role:
+    name: dt-access-token
+  vars:
+    access_token_var_name: "ace_box_activegate_installer_api_token"
+    access_token_scope: ["InstallerDownload","ExternalSyntheticIntegration"] 
+
 - name: Download ActiveGate installer
   get_url:
     url: "{{ dynatrace_tenant_url }}/api/v1/deployment/installer/gateway/unix/latest?arch=x86&flavor=default"
@@ -6,7 +12,7 @@
     mode: +x
     timeout: 300
     headers:
-      Authorization: "Api-token {{ dynatrace_paas_token }}"
+      Authorization: "Api-token {{ ace_box_activegate_installer_api_token }}"
   when: not activegate_download_location is exists
 
 - service_facts:

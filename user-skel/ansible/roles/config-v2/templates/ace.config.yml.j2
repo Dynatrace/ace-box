@@ -1,19 +1,22 @@
 ---
-# Host
+# BEGIN ANSIBLE MANAGED BLOCK - host
 host_group: "{{ host_group | default('ace-box') }}"
 ingress_class: "{{ ingress_class | default('public') }}"
 ingress_domain: "{{ ingress_domain | default(None) }}"
 ingress_protocol: "{{ ingress_protocol | default(None) }}"
-# Extra vars
+# END ANSIBLE MANAGED BLOCK - host
+# BEGIN ANSIBLE MANAGED BLOCK - extra_vars
 extra_vars: {{ extra_vars | default({}) }}
-# Git
+# END ANSIBLE MANAGED BLOCK - extra_vars
+# BEGIN ANSIBLE MANAGED BLOCK - git_flavor
 git_flavor: "{{ git_flavor | default('GITEA') }}"
-# Dynatrace
+# END ANSIBLE MANAGED BLOCK - git_flavor
+# BEGIN ANSIBLE MANAGED BLOCK - dynatrace
 dynatrace_tenant_url: "{{ dynatrace_tenant_url.rstrip('/') if (dynatrace_tenant_url and dynatrace_tenant_url|length > 0) else '' }}"
-dynatrace_paas_token: "{{ dynatrace_paas_token | default(None) }}"
 dynatrace_api_token: "{{ dynatrace_api_token | default(None) }}"
-# Cloud Automation
+# END ANSIBLE MANAGED BLOCK - dynatrace
+# BEGIN ANSIBLE MANAGED BLOCK - cloud_automation
 cloud_automation_flavor: "{{ cloud_automation_flavor | default('KEPTN') }}"
 cloud_automation_tenant_url: "{{ ca_tenant_url.rstrip('/') if (ca_tenant_url and ca_tenant_url|length > 0) else '' }}"
 cloud_automation_api_token: "{{ ca_api_token | default(None) }}"
-# Features
+# END ANSIBLE MANAGED BLOCK - cloud_automation

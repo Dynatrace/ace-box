@@ -1,4 +1,10 @@
 ---
+- include_role:
+    name: dt-access-token
+  vars:
+    access_token_var_name: "ace_box_gitlab_api_token"
+    access_token_scope: ["slo.read","slo.write","CaptureRequestData","credentialVault.read","credentialVault.write","DataExport","DataPrivacy","ExternalSyntheticIntegration","ReadConfig","WriteConfig"]
+
 - include_tasks: roles/gitlab/tasks/source-secret.yml
 
 - include_tasks: roles/gitlab/tasks/ensure-group.yml
@@ -46,6 +52,6 @@
     - { key: 'KEPTN_API_TOKEN', value: '{{ ca_api_token | default(None) }}' }
     - { key: 'KEPTN_ENDPOINT', value: '{{ ca_endpoint | default(None) | replace("/api","") }}' }
     - { key: 'DT_TENANT_URL', value: '{{ dynatrace_tenant_url }}' }
-    - { key: 'DT_API_TOKEN', value: '{{ dynatrace_api_token }}' }
+    - { key: 'DT_API_TOKEN', value: '{{ ace_box_gitlab_api_token }}' }
     - { key: 'SYNTH_NODE_ID', value: '{{ dt_synthetic_node_id | default(None) }}' }
     - { key: 'HOST_GROUP', value: '{{ host_group | default(None) }}' }

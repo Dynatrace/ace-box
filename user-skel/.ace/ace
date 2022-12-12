@@ -162,14 +162,6 @@ def ace(
     envvar='ACE_DT_API_TOKEN',
 )
 @click.option(
-    '--dt-paas-token',
-    help=(
-        'Please enter your Dynatrace PaaS token in format of \'dt0c01. ...\'.'
-        'If not set you\'ll be prompted during "prepare".'
-    ),
-    envvar='ACE_DT_PAAS_TOKEN',
-)
-@click.option(
     '--ca-tenant',
     help=(
         'Please enter your Cloud Automation tenant URL'
@@ -202,7 +194,6 @@ def prepare(
     ingress_protocol,
     dt_tenant,
     dt_api_token,
-    dt_paas_token,
     ca_tenant,
     ca_api_token,
     host_group,
@@ -225,9 +216,6 @@ def prepare(
 
     if not dt_api_token:
         dt_api_token = click.prompt('Please enter your Dynatrace API token')
-
-    if not dt_paas_token:
-        dt_paas_token = click.prompt('Please enter your Dynatrace PaaS token')
 
     if not ansible_workdir:
         ansible_workdir = click.prompt(
@@ -259,7 +247,6 @@ def prepare(
         'ingress_protocol': ingress_protocol,
         'dynatrace_tenant_url': dt_tenant,
         'dynatrace_api_token': dt_api_token,
-        'dynatrace_paas_token': dt_paas_token,
         'ca_tenant_url': ca_tenant,
         'ca_api_token': ca_api_token,
         'ace_box_user': user,
@@ -513,11 +500,53 @@ def enable(
     click.echo(f'Successfully installed {target}')
     click.echo("You're welcome!")
 
+@click.command()
+@click.option(
+    '--ansible-workdir',
+    help=(
+        'Please enter the directory of ACE-Box\'s main.yml.'
+        'If not set you\'ll be prompted during "prepare".'
+    ),
+    envvar='ACE_ANSIBLE_WORKDIR',
+)
+@click.option(
+    '--user',
+    help=(
+        'Please enter the user ACE-Box conponents will be installed for.'
+        'If not set you\'ll be prompted during "prepare".'
+    ),
+    envvar='ACE_BOX_USER',
+    default=default_user,
+)
+def destroy(
+    ansible_workdir,
+    user,
+):
+    """Destroying ACE-Box configurations"""
+    if not ansible_workdir:
+        ansible_workdir = click.prompt(
+            'Please enter Ansible work dir',
+            default=default_ansible_workdir,
+        )
+
+    logging.info('Destroying ACE-Box configurations')
+
+    subprocess.run((
+            f'ansible-playbook destroy.yml --extra-vars "ace_box_user={user}"'
+        ),
+        cwd=ansible_workdir,
+        shell=True,
+        check=True,
+    )
+
+    logging.info('Successfully destroyed ACE-Box configurations!')
+
 ace.add_command(prepare)
 ace.add_command(install)
 ace.add_command(uninstall)
 ace.add_command(set)
 ace.add_command(enable)
+ace.add_command(destroy)
 
 if __name__ == '__main__':
     # pylint: disable=unexpected-keyword-arg,no-value-for-parameter

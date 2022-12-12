@@ -1,4 +1,10 @@
 ---
+- include_role:
+    name: dt-access-token
+  vars:
+    access_token_var_name: "ace_box_dt_operator_api_token"
+    access_token_scope: ["DataExport", "InstallerDownload", "activeGateTokenManagement.create", "entities.read", "settings.read", "settings.write"] 
+
 - name: Create Dynatrace namespace
   kubernetes.core.k8s:
     name: "{{ dt_operator_namespace }}"
