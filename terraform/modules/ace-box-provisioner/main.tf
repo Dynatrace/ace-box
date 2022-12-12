@@ -102,6 +102,17 @@ locals {
 }
 
 resource "null_resource" "provisioner_ace_enable" {
+  #
+  # In order to prevent e.g. dependency cycles, Terraform 
+  # does not allow destroy time remote-exec when connection 
+  # attributes (e.g. host, user, ...) is owned by a different
+  # resource the provisioners is added to.
+  #
+  # Connections are not available from null_resource.
+  # Therefore, we're adding triggers which allow us to
+  # reference connection attributes from self.triggers.
+  #
+
   triggers = {
     host        = local.host
     type        = local.type
