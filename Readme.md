@@ -30,11 +30,10 @@ The recommended way of installing any ACE box version, local or cloud, is via Te
    1. Check out the `Readme.md` for your specific cloud provider to verify the provider-specific configuration that needs to be set
    2. Add ace-box specific information (see below for more details)
    3. Set them by either
-      1. adding `dt_tenant, dt_api_token, dt_paas_token` to a `terraform.tfvars` file:
+      1. adding `dt_tenant, dt_api_token` to a `terraform.tfvars` file:
           ```
           dt_tenant = "https://....dynatrace.com"
           dt_api_token = "dt0c01...."
-          dt_paas_token = "dt0c01...."
           ca_tenant = "https://abc12345.cloudautomation...com"
           ca_api_token = "xyz123"
           ```
@@ -42,7 +41,6 @@ The recommended way of installing any ACE box version, local or cloud, is via Te
           ```
           export TF_VAR_dt_tenant=https://....dynatrace.com
           export TF_VAR_dt_api_token=dt0c01....
-          export TF_VAR_dt_paas_token=dt0c01....
           export TF_VAR_ca_tenant=...
           export TF_VAR_ca_api_token=...
           ```
@@ -51,8 +49,7 @@ The recommended way of installing any ACE box version, local or cloud, is via Te
         | var | type | required | details |
         | --- | --- | -------- | ------- |
         | dt_tenant | string | **yes** | Dynatrace environment URL |
-        | dt_api_token | string | **yes** | Dynatrace API token |
-        | dt_paas_token | string | **yes** | Dynatrace PaaS token |
+        | dt_api_token | string | **yes** | Initial API token with scopes `apiTokens.read` and `apiTokens.write`. This token will be used by various roles to manage their own tokens. |
         | ca_tenant | string | no | Dynatrace Cloud Automation environment URL. **Note**: if not set, Keptn will be installed and used instead |
         | ca_api_token | string | no | Dynatrace Cloud Automation api token. **Note**: if not set, Keptn will be installed and used instead |
         | acebox_user | string | no | User, for which home directory will be provisioned (Default: "ace") |

@@ -10,8 +10,8 @@
       name: config-v2
       tasks_from: set-var
     vars:
-    - var_key_to_set: "cloud_automation_flavor"
-    - var_value_to_set: "KEPTN"
+      var_key_to_set: "cloud_automation_flavor"
+      var_value_to_set: "KEPTN"
   when: cloud_automation_flavor != "KEPTN"
 
 #Ensure Gitea is installed when we are using Keptn to have auto repository provisioning
@@ -36,7 +36,7 @@
   include_role:
     name: keptn-cli
   vars:
-  - force_install: "{{ is_ca_flavor_change | bool }}"
+    force_install: "{{ is_ca_flavor_change | bool }}"
 
 - name: Deploy Keptn on Kubernetes cluster
   kubernetes.core.helm:

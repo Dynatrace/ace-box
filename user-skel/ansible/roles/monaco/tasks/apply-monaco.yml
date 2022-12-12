@@ -1,4 +1,10 @@
 ---
+- include_role:
+    name: dt-access-token
+  vars:
+    access_token_var_name: "ace_box_monaco_api_token"
+    access_token_scope: ["slo.read","slo.write","CaptureRequestData","credentialVault.read","credentialVault.write","DataExport","DataPrivacy","ExternalSyntheticIntegration","ReadConfig","WriteConfig"]
+
 - set_fact:
     monaco_projects_argument: ""
 
@@ -11,4 +17,4 @@
     cmd: /usr/local/bin/monaco -e={{ role_path }}/files/environments.yaml {{ monaco_projects_argument }} {{ monaco_projects_root }}
   environment:
     DT_ENV_URL: "{{ dynatrace_tenant_url }}"
-    DT_API_TOKEN: "{{ dynatrace_api_token }}"
+    DT_API_TOKEN: "{{ ace_box_monaco_api_token }}"

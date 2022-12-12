@@ -194,12 +194,12 @@ controller:
                     description: "Dynatrace environment URL"
                     secret: "{{ dynatrace_tenant_url }}"
 {% endif %}
-{% if dynatrace_api_token is defined and dynatrace_api_token != "" %}
+{% if ace_box_jenkins_api_token is defined and ace_box_jenkins_api_token != "" %}
                 - string:
                     id: "DT_API_TOKEN"
                     scope: GLOBAL
                     description: "Dynatrace api token"
-                    secret: "{{ dynatrace_api_token }}"
+                    secret: "{{ ace_box_jenkins_api_token }}"
 {% endif %}
       clouds-container-config: |
         jenkins:
