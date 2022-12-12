@@ -1,0 +1,46 @@
+---
+- set_fact:
+      dt_synthetic_node_id: ""
+      
+- name: ActiveGate - Get all Synthetic nodes
+  when: activegate_install_synthetic
+  block:
+  - uri:
+      url: "{{ dynatrace_tenant_url }}/api/v1/synthetic/nodes"
+      method: GET
+      headers:
+        Content-Type: "application/json"
+        Authorization: "Api-token {{ dynatrace_api_token }}"
+      return_content: no
+      status_code: 200, 201, 204
+    register: nodes_response_raw
+    until: "{{ nodes_response_raw.json | json_query(synthetic_nodes_query) }}"
+    retries: 15
+    delay: 10
+  - set_fact:
+      dt_synthetic_node_id: "{{ nodes_response_raw.json | json_query(synthetic_nodes_query) | first }}"
+  rescue:
+  - set_fact:
+      dt_synthetic_node_id: ""
+
+- name: Create namespace for ActiveGate Config
+  become: true
+  become_user: "{{ ace_box_user }}"
+  kubernetes.core.k8s:
+    name: "{{ activegate_config_namespace }}"
+    api_version: v1
+    kind: Namespace
+    state: present
+
+- name: Create activegate ConfigMap
+  become: true
+  become_user: "{{ ace_box_user }}"
+  kubernetes.core.k8s:
+    name: "synthetic-activegate"
+    api_version: v1
+    kind: ConfigMap
+    state: present
+    namespace: "{{ activegate_config_namespace }}"
+    resource_definition:
+      data:
+        dt_synthetic_node_id: "{{ dt_synthetic_node_id }}"

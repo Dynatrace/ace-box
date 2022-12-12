@@ -29,12 +29,12 @@
     tags:
     - microk8s
   - include_role:
-      name: dt-activegate-private-synth-classic
+      name: dt-activegate-classic
       apply:
         tags:
-        - dt_activegate_private_synth_classic
+        - dt_activegate_classic
     tags:
-    - dt_activegate_private_synth_classic
+    - dt_activegate_classic
   - include_role:
       name: dt-operator
       apply:

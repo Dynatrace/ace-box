@@ -4,7 +4,7 @@
 
 - name: Source Private Synthetic Node ID
   include_role:
-    name: dt-activegate-private-synth-classic
+    name: dt-activegate-classic
     tasks_from: source-node-id
   when: dt_synthetic_node_id is not defined 
 
