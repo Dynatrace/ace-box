@@ -14,6 +14,7 @@ health-easytravel-prod:
     - applicationId: "/easytravel/application-web/app-easytravel-prod.id"
     - frequencyInMin: "1"
     - enabled: "true"
+    - skipDeployment: "{{ .Env.SKIP_SYNTH }}"
 
 health-easytravel-angular-prod:
     - name: "webcheck.easytravel-angular.prod"
@@ -25,6 +26,7 @@ health-easytravel-angular-prod:
     - applicationId: "/easytravel/application-web/app-easytravel-angular-prod.id"
     - frequencyInMin: "1"
     - enabled: "true"
+    - skipDeployment: "{{ .Env.SKIP_SYNTH }}"
 
 browser-easytravel-prod-home:
     - name: "browser.easytravel.prod.home"
@@ -36,6 +38,7 @@ browser-easytravel-prod-home:
     - applicationId: "/easytravel/application-web/app-easytravel-prod.id"
     - frequencyInMin: "5"
     - enabled: "true"
+    - skipDeployment: "{{ .Env.SKIP_SYNTH }}"
 
 browser-easytravel-angular-prod-home:
     - name: "browser.easytravel-angular.prod.home"
@@ -47,3 +50,4 @@ browser-easytravel-angular-prod-home:
     - applicationId: "/easytravel/application-web/app-easytravel-angular-prod.id"
     - frequencyInMin: "5"
     - enabled: "true"
+    - skipDeployment: "{{ .Env.SKIP_SYNTH }}"
