@@ -11,7 +11,9 @@
     name: microk8s
 
 - include_role:
-    name: dt-activegate-private-synth-classic
+    name: dt-activegate-classic
+  vars:
+    activegate_install_synthetic: true
 
 - include_role:
     name: dt-operator

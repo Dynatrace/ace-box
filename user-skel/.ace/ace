@@ -22,7 +22,7 @@ install_targets = [
     'gitea',
     'gitlab',
     'dt_operator',
-    'dt_activegate_private_synth_classic',
+    'dt_activegate_classic',
     'dt_oneagent_classic',
     'keptn',
     'monaco',

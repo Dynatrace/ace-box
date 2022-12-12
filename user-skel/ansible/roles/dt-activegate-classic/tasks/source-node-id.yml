@@ -1,0 +1,16 @@
+---
+- name: Get Synthetic Node ID
+  block:
+  - name: Source ActiveGate ConfigMap
+    kubernetes.core.k8s_info:
+      kind: ConfigMap
+      name: "synthetic-activegate"
+      namespace: "{{ activegate_config_namespace }}"
+    register: synth_ag_data
+  - name: Set secrets facts
+    set_fact:
+      dt_synthetic_node_id: "{{ synth_ag_data.resources[0].data.dt_synthetic_node_id }}"
+    when: synth_ag_data is defined and synth_ag_data.resources[0] is defined
+  rescue:
+  - set_fact:
+      dt_synthetic_node_id: ""

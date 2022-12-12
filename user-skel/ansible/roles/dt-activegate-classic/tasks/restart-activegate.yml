@@ -1,0 +1,6 @@
+---
+- name: Restart ActiveGate service
+  service:
+    name: dynatracegateway
+    state: restarted
+  ignore_errors: true

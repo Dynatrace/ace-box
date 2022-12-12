@@ -1,4 +1,4 @@
-- name: "ActiveGate - Uninstall synthetic-enabled ActiveGate"
+- name: "ActiveGate - Uninstall"
   become: true
   become_user: root
   shell: "{{ activegate_uninstall_script_location }}"
