@@ -15,11 +15,6 @@
     dashboard_skip_install: True
 
 - include_role:
-    name: dt-activegate-classic
-  vars:
-    activegate_install_synthetic: false
-
-- include_role:
     name: demo-quality-gates-jenkins
 
 - include_role:
