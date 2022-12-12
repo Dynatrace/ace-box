@@ -1,4 +1,0 @@
----
-activegate_download_location: "/tmp/Dynatrace-ActiveGate-Linux-x86-latest.sh"
-activegate_uninstall_script_location: "/opt/dynatrace/gateway/uninstall.sh"
-synthetic_nodes_query: "nodes[?hostname=='{{ ansible_facts.fqdn }}'].entityId"
