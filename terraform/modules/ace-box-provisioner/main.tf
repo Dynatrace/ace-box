@@ -91,21 +91,55 @@ locals {
     "ACE_BOX_USER=${local.user}",
     "ace enable ${var.use_case}",
   ]
+  destroy_cmd = [
+    "sudo",
+    "ACE_ANSIBLE_WORKDIR=/home/${local.user}/ansible/",
+    "ACE_BOX_USER=${local.user}",
+    "ace destroy",
+  ]
 }
 
 resource "null_resource" "provisioner_ace_enable" {
-  connection {
+  #
+  # In order to prevent e.g. dependency cycles, Terraform 
+  # does not allow destroy time remote-exec when connection 
+  # attributes (e.g. host, user, ...) is owned by a different
+  # resource the provisioners is added to.
+  #
+  # Connections are not available from null_resource.
+  # Therefore, we're adding triggers which allow us to
+  # reference connection attributes from self.triggers.
+  #
+
+  triggers = {
     host        = local.host
     type        = local.type
     user        = local.user
     private_key = local.private_key
+    enable_cmd  = trimspace(join(" ", local.enable_cmd))
+    destroy_cmd = trimspace(join(" ", local.destroy_cmd))
+  }
+
+  connection {
+    host        = self.triggers.host
+    type        = self.triggers.type
+    user        = self.triggers.user
+    private_key = self.triggers.private_key
   }
 
   depends_on = [null_resource.provisioner_home_dir, null_resource.provisioner_init, null_resource.provisioner_ace_prepare]
 
   provisioner "remote-exec" {
     inline = [
-      trimspace(join(" ", local.enable_cmd))
+      self.triggers.enable_cmd
     ]
+  }
+
+  provisioner "remote-exec" {
+    when = destroy
+    inline = [
+      self.triggers.destroy_cmd
+    ]
+    on_failure = continue
   }
 }
