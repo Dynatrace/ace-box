@@ -6,5 +6,34 @@
   vars:
     ace_config_file_path: "./ace.config.yml"
   tasks:
-    # - include_tasks:
-    #     file: roles/monaco/tasks/destroy.yml
+    - include_vars: "{{ ace_config_file_path }}"
+    - include_role:
+        name: cloudautomation
+        tasks_from: destroy
+    - include_role:
+        name: demo-auto-remediation-ansible
+        tasks_from: destroy
+    - include_role:
+        name: dt-activegate-private-synth-classic
+        tasks_from: destroy
+    - include_role:
+        name: dt-oneagent-classic
+        tasks_from: destroy
+    - include_role:
+        name: dt-operator
+        tasks_from: destroy
+    - include_role:
+        name: gitlab
+        tasks_from: destroy
+    - include_role:
+        name: jenkins
+        tasks_from: destroy
+    - include_role:
+        name: keptn
+        tasks_from: destroy
+    - include_role:
+        name: monaco
+        tasks_from: destroy
+    - include_role:
+        name: otel-collector
+        tasks_from: destroy
