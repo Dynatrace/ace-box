@@ -4,3 +4,4 @@ activegate_uninstall_script_location: "/opt/dynatrace/gateway/uninstall.sh"
 activegate_install_synthetic: false
 activegate_config_namespace: "dynatrace"
 synthetic_nodes_query: "nodes[?hostname=='{{ ansible_facts.fqdn }}'].entityId"
+activegate_dt_access_token_name: "ace_box_activegate_installer_api_token"

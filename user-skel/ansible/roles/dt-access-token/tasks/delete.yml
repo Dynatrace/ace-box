@@ -1,0 +1,8 @@
+---
+- name: Dynatrace - Delete API token
+  uri:
+    url: "{{ dynatrace_tenant_url }}/api/v2/apiTokens/{{ dynatrace_api_token_id }}"
+    method: DELETE
+    status_code: [204,404]
+    headers:
+      Authorization: "Api-Token {{ dynatrace_api_token }}"

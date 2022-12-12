@@ -1,14 +1,14 @@
 ---
-# ace_box_keptn_api_token will either be sourced or 
+# DT access token will either be sourced or 
 # created either in job-executor-service.yml or dynatrace-service.yml
 - include_role:
     name: dt-access-token
   vars:
-    access_token_var_name: "ace_box_keptn_api_token"
+    access_token_var_name: "{{ keptn_dt_access_token_name }}"
     access_token_scope: ["entities.read","metrics.ingest","metrics.read","problems.read","problems.write","securityProblems.read","slo.read","CaptureRequestData","DataExport","DataImport","ExternalSyntheticIntegration","ReadConfig","WriteConfig"]
 
 - name: Create Dynatrace secret
-  ansible.builtin.command: "keptn create secret dynatrace --scope=dynatrace-service --from-literal=DT_TENANT={{ dynatrace_tenant_url }} --from-literal=DT_API_TOKEN={{ ace_box_keptn_api_token }}"
+  ansible.builtin.command: "keptn create secret dynatrace --scope=dynatrace-service --from-literal=DT_TENANT={{ dynatrace_tenant_url }} --from-literal=DT_API_TOKEN={{ vars[keptn_dt_access_token_name] }}"
   ignore_errors: true
 
 - name: Deploy Keptn Dynatrace service

@@ -2,7 +2,7 @@
 - include_role:
     name: dt-access-token
   vars:
-    access_token_var_name: "ace_box_jenkins_api_token"
+    access_token_var_name: "{{ jenkins_dt_access_token_name }}"
     access_token_scope: ["slo.read","slo.write","CaptureRequestData","credentialVault.read","credentialVault.write","DataExport","DataPrivacy","ExternalSyntheticIntegration","ReadConfig","WriteConfig"]
 
 - name: Create namespace

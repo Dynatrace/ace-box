@@ -2,7 +2,7 @@
 - include_role:
     name: dt-access-token
   vars:
-    access_token_var_name: "ace_box_activegate_installer_api_token"
+    access_token_var_name: "{{ activegate_dt_access_token_name }}"
     access_token_scope: ["InstallerDownload","ExternalSyntheticIntegration"] 
 
 - name: Download ActiveGate installer
@@ -12,7 +12,7 @@
     mode: +x
     timeout: 300
     headers:
-      Authorization: "Api-token {{ ace_box_activegate_installer_api_token }}"
+      Authorization: "Api-token {{ vars[activegate_dt_access_token_name] }}"
   when: not activegate_download_location is exists
 
 - service_facts:
