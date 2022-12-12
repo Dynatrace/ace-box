@@ -1,6 +1,6 @@
 ---
 awx_namespace: "awx"
-awx_helm_chart_version: "1.1.0"
+awx_helm_chart_version: "1.1.1"
 awx_ingress_domain: "ansible.{{ ingress_domain }}"
 awx_secret_key_secret_name: "awx-secret-key"
 awx_admin_creds_secret_name: "awx-admin-creds"

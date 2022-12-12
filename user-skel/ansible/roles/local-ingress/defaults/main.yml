@@ -1,0 +1,5 @@
+---
+local_ingress_port: 8080
+local_ingress_domain: "local-ingress.{{ ingress_domain }}"
+local_ingress_namespace: "local-ingress"
+local_ingress_name: "local-ingress"

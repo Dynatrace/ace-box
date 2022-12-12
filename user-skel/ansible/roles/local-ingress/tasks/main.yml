@@ -1,0 +1,13 @@
+- name: Deploy Local Ingress
+  kubernetes.core.helm:
+    name: "{{ local_ingress_name if local_ingress_name != 'local-ingress' else ('local-ingress-' + lookup('community.general.random_string', upper=false, numbers=false, special=false, length=5)) }}"
+    chart_ref: "{{ role_path }}/files/local-ingress/helm/local-ingress"
+    release_namespace: "{{ local_ingress_namespace | default('ingress')}}"
+    create_namespace: true
+    wait: true
+    wait_timeout: 10m
+    values:
+      private_ip: "{{ local_private_ip | default(ansible_default_ipv4.address) }}"
+      local_port: "{{ local_ingress_port | default('8080')}}"
+      ingress:
+        domain: "{{ local_ingress_domain }}"

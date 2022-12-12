@@ -1,0 +1,4 @@
+apiVersion: v1
+description: Local Ingress for ACE-Box
+name: local-ingress
+version: 1

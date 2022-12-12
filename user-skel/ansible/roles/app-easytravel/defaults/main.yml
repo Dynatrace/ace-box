@@ -4,4 +4,4 @@ easytravel_domain: "easytravel.{{ ingress_domain }}"
 easytravel_angular_domain: "easytravel-angular.{{ ingress_domain }}"
 easytravel_visit_number: 5
 easytravel_headless_replicas: 3
-easytravel_image_tag: "2.0.0.3356"
+easytravel_image_tag: "2.0.0.3408"
