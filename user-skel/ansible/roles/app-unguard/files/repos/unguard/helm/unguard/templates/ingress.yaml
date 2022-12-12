@@ -1,0 +1,33 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    meta.helm.sh/release-name: {{ .Chart.Name }}
+    kubernetes.io/ingress.class: {{ .Values.ingress.class }}
+  labels:
+    app: {{ .Chart.Name }}
+    app.kubernetes.io/managed-by: Helm
+    chart: {{ .Chart.Name }}
+    heritage: Helm
+    release: {{ .Chart.Name }}
+  name: {{ .Chart.Name }}
+spec:
+  rules:
+  - host: {{ .Chart.Name }}.{{ .Values.ingress.domain }}
+    http:
+        paths:
+          - path: /ui
+            pathType: Prefix
+            backend:
+              service:
+                name: unguard-frontend
+                port:
+                  number: 80
+          - path: /ad-service
+            pathType: Prefix
+            backend:
+              service:
+                name: unguard-ad-service
+                port:
+                  number: 80
