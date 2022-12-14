@@ -50,14 +50,13 @@
   include_role:
     name: monaco
     tasks_from: apply-monaco
-    apply:
-      environment:
-        INGRESS_DOMAIN: "{{ ingress_domain }}"
-        APP_NAMESPACE: "{{ hipstershop_namespace }}"
-        KUBE_API_ENDPOINT: "{{ kubernetes_api_endpoint }}"
-        KUBE_BEARER_TOKEN: "{{ dt_operator_kube_bearer_token | default(None) }}"
-        SKIP_SYNTH: "{{ skip_synthetic_monitor }}"
-        SYNTH_NODE_ID: "{{ dt_synthetic_node_id | default(None) }}"
   vars:
     monaco_project: ""
-    monaco_projects_root: "{{ monaco_projects_folder }}" 
+    monaco_projects_root: "{{ monaco_projects_folder }}"
+    monaco_environment:
+      INGRESS_DOMAIN: "{{ ingress_domain }}"
+      APP_NAMESPACE: "{{ hipstershop_namespace }}"
+      KUBE_API_ENDPOINT: "{{ kubernetes_api_endpoint }}"
+      KUBE_BEARER_TOKEN: "{{ dt_operator_kube_bearer_token | default(None) }}"
+      SKIP_SYNTH: "{{ skip_synthetic_monitor }}"
+      SYNTH_NODE_ID: "{{ dt_synthetic_node_id | default(None) }}"
