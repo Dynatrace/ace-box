@@ -10,7 +10,7 @@
       method: GET
       headers:
         Content-Type: "application/json"
-        Authorization: "Api-token {{ dynatrace_api_token }}"
+        Authorization: "Api-token {{ ace_box_monaco_api_token }}"
       return_content: no
       status_code: 200, 201, 204
     register: nodes_response_raw
