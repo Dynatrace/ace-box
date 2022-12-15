@@ -1,0 +1,11 @@
+---
+- set_fact:
+    otelcol_dt_access_token_id: "{{ dt_api_token_ids[otelcol_dt_access_token_name] }}"
+  ignore_errors: true
+
+- include_role:
+    name: dt-access-token
+    tasks_from: delete
+  vars:
+    dynatrace_api_token_id: "{{ otelcol_dt_access_token_id }}"
+  when: otelcol_dt_access_token_id is defined

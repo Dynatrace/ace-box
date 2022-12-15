@@ -2,7 +2,7 @@
 - include_role:
     name: dt-access-token
   vars:
-    access_token_var_name: "ace_box_otel_api_token"
+    access_token_var_name: "{{ otelcol_dt_access_token_name }}"
     access_token_scope: ["openTelemetryTrace.ingest"]
 
 - name: Add open-telemetry chart repo

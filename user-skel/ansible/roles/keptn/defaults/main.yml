@@ -15,3 +15,4 @@ keptn_job_executor_service_enabled: false
 keptn_job_executor_service_version: "0.2.3"
 keptn_job_executor_service_namespace: "keptn-jes"
 keptn_job_executor_service_subscriptions: "sh.keptn.event.remote-task.triggered"
+keptn_dt_access_token_name: "ace_box_keptn_api_token"

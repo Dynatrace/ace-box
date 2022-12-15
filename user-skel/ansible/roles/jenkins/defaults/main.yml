@@ -8,3 +8,4 @@ git_org_demo: "demo"
 git_repo_demo: "ace"
 git_repo_monaco: "monaco"
 jenkins_skip_install: False
+jenkins_dt_access_token_name: "ace_box_jenkins_api_token"

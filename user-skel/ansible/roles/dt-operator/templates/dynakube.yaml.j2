@@ -1,7 +1,7 @@
 ---
 apiVersion: v1
 data:
-  apiToken: "{{ ace_box_dt_operator_api_token | b64encode }}"
+  apiToken: "{{ vars[dt_operator_dt_access_token_name] | b64encode }}"
   
 kind: Secret
 metadata:
