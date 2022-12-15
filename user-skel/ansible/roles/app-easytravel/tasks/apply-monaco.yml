@@ -13,12 +13,11 @@
   include_role:
     name: monaco
     tasks_from: apply-monaco
-    apply:
-      environment:
-        INGRESS_DOMAIN: "{{ ingress_domain }}"
-        SYNTH_NODE_ID: "{{ dt_synthetic_node_id | default(None) }}"
-        APP_NAMESPACE: "{{ easytravel_namespace }}"
-        SKIP_SYNTH: "{{ skip_synthetic_monitor }}"
   vars:
     monaco_project: "easytravel"
-    monaco_projects_root: "{{ monaco_projects_folder }}" 
+    monaco_projects_root: "{{ monaco_projects_folder }}"
+    monaco_environment:
+      INGRESS_DOMAIN: "{{ ingress_domain }}"
+      SYNTH_NODE_ID: "{{ dt_synthetic_node_id | default(None) }}"
+      APP_NAMESPACE: "{{ easytravel_namespace }}"
+      SKIP_SYNTH: "{{ skip_synthetic_monitor }}"
