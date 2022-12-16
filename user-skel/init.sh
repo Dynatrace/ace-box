@@ -6,6 +6,10 @@
 # Run:
 # $ sudo ACE_BOX_USER=dtu_training /home/dtu_training/init.sh
 
+# If applicable: Wait for cloud init to finish
+# See https://github.com/Dynatrace/ace-box/issues/272
+cloud-init status --wait || echo "Skipping cloud-init wait..."
+
 ACE_BOX_USER="${ACE_BOX_USER:-$USER}"
 
 # Prevent input prompts by specifying frontend is not interactive
