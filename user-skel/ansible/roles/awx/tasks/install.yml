@@ -25,8 +25,9 @@
 - name: Install
   kubernetes.core.helm:
     name: awx
-    chart_ref: awx-operator/awx-operator
-    chart_version: "{{ awx_helm_chart_version }}"
+    chart_ref: "{{ role_path }}/files/awx-operator"
+    # chart_ref: awx-operator/awx-operator
+    # chart_version: "{{ awx_helm_chart_version }}"
     release_namespace: "{{ awx_namespace }}"
     create_namespace: true
     wait: true
