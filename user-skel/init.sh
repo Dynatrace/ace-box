@@ -6,9 +6,17 @@
 # Run:
 # $ sudo ACE_BOX_USER=dtu_training /home/dtu_training/init.sh
 
-# If applicable: Wait for cloud init to finish
-# See https://github.com/Dynatrace/ace-box/issues/272
-cloud-init status --wait || echo "Skipping cloud-init wait..."
+
+# Don't check for cloud init when deploying via DTU
+# https://github.com/Dynatrace/ace-box/issues/400
+if [[ -z "${DTU_ENVIRONMENT_NAME}" ]]; then
+  echo "Not deploying via DTU, wait for cloud init to finish if applicable"
+  # If applicable: Wait for cloud init to finish
+  # See https://github.com/Dynatrace/ace-box/issues/272
+  cloud-init status --wait || echo "Skipping cloud-init wait..."
+else
+  echo "Deploying via DTU..."
+fi
 
 ACE_BOX_USER="${ACE_BOX_USER:-$USER}"
 
