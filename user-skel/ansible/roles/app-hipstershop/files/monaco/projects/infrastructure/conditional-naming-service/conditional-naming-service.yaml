@@ -1,4 +1,5 @@
 config:
-- appenvironment: appenvironment.json
-appenvironment:
-- name: app.environment
+- NamespacePod: NamespacePod.json
+
+NamespacePod:
+- name: Namespace.Pod

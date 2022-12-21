@@ -2,10 +2,9 @@ delete:
     - "app-detection-rule/hipstershop"
     - "application/hipstershop"
     - "management-zone/hipstershop"
-    - "dashboard/Application Security Issues"
     - "synthetic-monitor/hipstershop.http"
     - "synthetic-monitor/hipstershop.clickpath"
-    #- "request-attributes/X-Client-Ip"
+    - auto-tag/hipstershop
     ## infrastructure related configurations will not be deleted, thus commented out below 
     #- "auto-tag/app"
     #- "auto-tag/environment"
@@ -16,5 +15,4 @@ delete:
     #- "conditional-naming-processgroup/Postgres Naming"
     #- "conditional-naming-processgroup/ {ProcessGroup:ExeName} {ProcessGroup:KubernetesBasePodName}"
     #- "conditional-naming-service/app.environment"
-    #- "kubernetes-credentials/ACE-BOX"
     #- "synthetic-location/ACE-BOX"

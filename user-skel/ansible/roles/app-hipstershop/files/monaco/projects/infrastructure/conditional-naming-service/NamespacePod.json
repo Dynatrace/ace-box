@@ -1,7 +1,7 @@
 {
  "displayName": "{{.name}}",
  "enabled": true,
- "nameFormat": "{ProcessGroup:KubernetesContainerName}.{ProcessGroup:KubernetesNamespace}",
+ "nameFormat": "{ProcessGroup:KubernetesNamespace}.{ProcessGroup:KubernetesBasePodName}",
  "rules": [
   {
    "comparisonInfo": {

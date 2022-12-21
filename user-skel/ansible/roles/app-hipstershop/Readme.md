@@ -72,13 +72,12 @@ Dynatrace Configurations List:
       - "conditional-naming-processgroup/ACE Box - containername.namespace"
       - "conditional-naming-processgroup/ {ProcessGroup:ExeName} {ProcessGroup:KubernetesBasePodName}"
       - "conditional-naming-service/app.environment"
-      - "kubernetes-credentials/ACE-BOX"
       - "synthetic-location/ACE-BOX"  # if set skip_synthetic_monitor: "false"
     
     hipstershop Aplication Specific:
         - "application/hipstershop"
         - "app-detection-rule/hipstershop"
-        - "dashboard/Application Security Issues"
+        - "auto-tag/hipstershop"
         - "management-zone/hipstershop"
         - "synthetic-monitor/hipstershop.http" # if set skip_synthetic_monitor: "false"
         - "synthetic-monitor/hipstershop.clickpath" # if set skip_synthetic_monitor: "false"

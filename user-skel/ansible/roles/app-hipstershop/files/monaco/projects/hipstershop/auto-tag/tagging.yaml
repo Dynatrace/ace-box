@@ -1,0 +1,6 @@
+config:
+    - tagging-hipstershop: "tagging.json"
+  
+tagging-hipstershop:
+    - name: "hipstershop"
+    - namespace: "{{ .Env.APP_NAMESPACE }}"
