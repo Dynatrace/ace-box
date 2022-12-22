@@ -14,7 +14,7 @@
         name: demo-auto-remediation-ansible
         tasks_from: destroy
     - include_role:
-        name: dt-activegate-private-synth-classic
+        name: dt-activegate-classic
         tasks_from: destroy
     - include_role:
         name: dt-oneagent-classic
