@@ -47,16 +47,27 @@
     wait: true
     wait_timeout: 15m
     values:
-      control-plane:
-        bridge:
-          lookAndFeelUrl: "{{ keptn_look_and_feel_url }}"
-        features:
-          automaticProvisioningURL: "http://keptn-gitea-provisioner-service.{{ keptn_namespace }}"
-      continuous-delivery:
+      features:
+        automaticProvisioning:
+          serviceURL: "http://keptn-gitea-provisioner-service.{{ keptn_namespace }}"
+      remediationService:
         enabled: true
-        ingressConfig:
-          ingress_hostname_suffix: "{{ ingress_domain }}"
-          istio_gateway: "default-gateway.istio-ingress"
+      bridge:
+        versionCheck:
+          enabled: false
+        installationType: "QUALITY_GATES"
+        lookAndFeelUrl: "{{ keptn_look_and_feel_url }}"
+      # ingress:
+      #   enabled: false
+      #   annotations:
+      #     kubernetes.io/ingress.class: "{{ ingress_class }}"
+      #   host: "{{ keptn_ingress_domain }}"
+      # continuous-delivery:
+      #   enabled: true
+      #   ingressConfig:
+      #     ingress_hostname_suffix: "{{ ingress_domain }}"
+      #     istio_gateway: "default-gateway.istio-ingress"
+
   register: keptn_helm_chart
 
 - name: Create Ingress

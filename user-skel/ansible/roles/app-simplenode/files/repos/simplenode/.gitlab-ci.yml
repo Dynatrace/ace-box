@@ -71,7 +71,7 @@ monaco_config_event_prod:
     CUSTOM_PROPERTIES: '{"Approved by": "ACE"}'
 
 init_cloudautomation:
-  image: dynatraceace/keptn-gitlab-runner:2.2
+  image: dynatraceace/keptn-gitlab-runner:3.0
   stage: init
   variables: 
     KEPTN_PROJECT: simplenode-gitlab
@@ -140,7 +140,7 @@ run-tests:
     - keptn.test.endtime
 
 quality_gate:
-  image: dynatraceace/keptn-gitlab-runner:2.2
+  image: dynatraceace/keptn-gitlab-runner:3.0
   stage: evaluate
   script:
     - export KEPTN_LABELS='[{"DT_RELEASE_VERSION":"'${DT_RELEASE_VERSION}'"},{"DT_RELEASE_BUILD_VERSION":"'${DT_RELEASE_BUILD_VERSION}'"},{"DT_RELEASE_STAGE":"'${DT_RELEASE_STAGE}'"},{"DT_RELEASE_PRODUCT":"'${DT_RELEASE_PRODUCT}'"}]'
