@@ -40,7 +40,7 @@ pipeline {
                         case "yaml": 
                             cloudautomation.keptnAddResources('cloudautomation/sli.yaml','dynatrace/sli.yaml')
                             cloudautomation.keptnAddResources('cloudautomation/slo.yaml','slo.yaml')
-                            cloudautomation.keptnAddResources('cloudautomation/dynatrace.conf.yaml','dynatrace/dynatrace.conf.yaml')
+                            cloudautomation.keptnAddResources('cloudautomation/dynatrace.conf.yaml')
                             break;
                         case "dashboard": 
                             cloudautomation.keptnAddResources('cloudautomation/dynatrace-dashboard.conf.yaml','dynatrace/dynatrace.conf.yaml')
