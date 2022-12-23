@@ -38,10 +38,66 @@
   vars:
     force_install: "{{ is_ca_flavor_change | bool }}"
 
+# - name: Deploy Keptn on Kubernetes cluster
+#   kubernetes.core.helm:
+#     name: keptn
+#     chart_ref: "https://charts.keptn.sh"
+#     release_namespace: "{{ keptn_namespace }}"
+#     create_namespace: true
+#     wait: true
+#     wait_timeout: 15m
+#     values:
+#       apiGatewayNginx:
+#         type: ingress
+#       continuousDelivery:
+#         enabled: true
+#       features:
+#         automaticProvisioning:
+#           serviceURL: "http://keptn-gitea-provisioner-service.{{ keptn_namespace }}"
+#       remediationService:
+#         enabled: true
+#       bridge:
+#         versionCheck:
+#           enabled: false
+#         installationType: "QUALITY_GATES"
+#         lookAndFeelUrl: "{{ keptn_look_and_feel_url }}"
+#   register: keptn_helm_chart
+
+
+# FROM DEV BRANCH
+
+# - name: Deploy Keptn on Kubernetes cluster
+#   kubernetes.core.helm:
+#     name: keptn
+#     chart_ref: "https://github.com/keptn/keptn/releases/download/{{ keptn_version }}/keptn-{{ keptn_version }}.tgz"
+#     release_namespace: "{{ keptn_namespace }}"
+#     create_namespace: true
+#     wait: true
+#     wait_timeout: 15m
+#     values:
+#       control-plane:
+#         bridge:
+#           lookAndFeelUrl: "{{ keptn_look_and_feel_url }}"
+#         features:
+#           automaticProvisioningURL: "http://keptn-gitea-provisioner-service.{{ keptn_namespace }}"
+#       continuous-delivery:
+#         enabled: true
+#         ingressConfig:
+#           ingress_hostname_suffix: "{{ ingress_domain }}"
+#           istio_gateway: "default-gateway.istio-ingress"
+#   register: keptn_helm_chart
+
+
+- name: Add a repository
+  kubernetes.core.helm_repository:
+    name: keptn
+    repo_url: https://charts.keptn.sh
+
 - name: Deploy Keptn on Kubernetes cluster
   kubernetes.core.helm:
     name: keptn
-    chart_ref: "https://github.com/keptn/keptn/releases/download/{{ keptn_version }}/keptn-{{ keptn_version }}.tgz"
+    chart_ref: keptn/keptn
+    chart_version: "1.0.0"
     release_namespace: "{{ keptn_namespace }}"
     create_namespace: true
     wait: true
@@ -57,18 +113,16 @@
           enabled: false
         installationType: "QUALITY_GATES"
         lookAndFeelUrl: "{{ keptn_look_and_feel_url }}"
-      # ingress:
-      #   enabled: false
-      #   annotations:
-      #     kubernetes.io/ingress.class: "{{ ingress_class }}"
-      #   host: "{{ keptn_ingress_domain }}"
-      # continuous-delivery:
-      #   enabled: true
-      #   ingressConfig:
-      #     ingress_hostname_suffix: "{{ ingress_domain }}"
-      #     istio_gateway: "default-gateway.istio-ingress"
-
+      continuous-delivery:
+        enabled: true
+        ingressConfig:
+          ingress_hostname_suffix: "{{ ingress_domain }}"
+          istio_gateway: "default-gateway.istio-ingress"
   register: keptn_helm_chart
+
+
+
+
 
 - name: Create Ingress
   block:
