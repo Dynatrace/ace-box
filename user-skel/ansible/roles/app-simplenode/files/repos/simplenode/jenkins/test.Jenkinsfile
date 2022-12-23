@@ -8,6 +8,10 @@ def event = new com.dynatrace.ace.Event()
 def jmeter = new com.dynatrace.ace.Jmeter()
  
 pipeline {
+
+    // agent {
+    //     docker { image 'node:16.13.1-alpine' }
+    // }
     parameters {
         string(name: 'APP_NAME', defaultValue: 'simplenodeservice', description: 'The name of the service to deploy.', trim: true)
         string(name: 'BUILD', defaultValue: '', description: 'The build version to deploy.', trim: true)
@@ -40,7 +44,7 @@ pipeline {
                         case "yaml": 
                             cloudautomation.keptnAddResources('cloudautomation/sli.yaml','dynatrace/sli.yaml')
                             cloudautomation.keptnAddResources('cloudautomation/slo.yaml','slo.yaml')
-                            cloudautomation.keptnAddResources('cloudautomation/dynatrace.conf.yaml')
+                            cloudautomation.keptnAddResources('cloudautomation/dynatrace.conf.yaml','dynatrace/dynatrace.conf.yaml')
                             break;
                         case "dashboard": 
                             cloudautomation.keptnAddResources('cloudautomation/dynatrace-dashboard.conf.yaml','dynatrace/dynatrace.conf.yaml')
