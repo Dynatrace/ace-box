@@ -1,5 +1,5 @@
 include:
-  - remote: 'https://gitlab.com/dynatrace-ace/dynatrace-gitlab-library/-/raw/master/dynatrace_event.yaml'
+  - remote: "https://gitlab.com/dynatrace-ace/dynatrace-gitlab-library/-/raw/master/dynatrace_event.yaml"
 
 variables:
   BUILD_ID:
@@ -38,7 +38,7 @@ monaco_config_sleep:
   stage: init
   needs: ["monaco"]
   script:
-    # Sleep an additional 120 seconds to give Dynatrace some time 
+    # Sleep an additional 120 seconds to give Dynatrace some time
     # to tag host according to current config before sending config events
     - sleep 120
 
@@ -71,39 +71,23 @@ monaco_config_event_prod:
     CUSTOM_PROPERTIES: '{"Approved by": "ACE"}'
 
 init_cloudautomation:
-  image: dynatraceace/cloud-automation-tools:latest #dynatraceace/keptn-gitlab-runner:3.0
+  image: dynatraceace/cloud-automation-tools:latest
   stage: init
-  variables: 
-    # KEPTN_PROJECT: simplenode-gitlab
-    # KEPTN_SERVICE: simplenodeservice
-    # KEPTN_STAGE: staging
-    # KEPTN_SOURCE: gitlab
-    # KEPTN_MONITORING: dynatrace
-    # SHIPYARD_FILE: cloudautomation/shipyard.yaml
-    # SLO_FILE: cloudautomation/slo.yaml
-    # SLI_FILE: cloudautomation/sli.yaml
-    # DT_CONFIG_FILE: cloudautomation/dynatrace.conf.yaml
-    CA_ENDPOINT: $KEPTN_ENDPOINT #http://cloudautomation.35.245.41.20.nip.io
-    CA_API_TOKEN: $KEPTN_API_TOKEN #HatGNOJUk4rzCkOLp9daGqF8YR2ptPtqeTZeGEDESA7re
-    DYNATRACE_TAGS: 'app:simplenodeservice environment:simplenode-jenkins-staging' # is it mandatory?
-    SECRET_NAME_DYNATRACE: 'dynatrace' # is it in the dynatrace namespace?
-    QUALITY_GATE_FILES_PATH: '/files' # ?
-    QG_SOURCE: 'gitlab' #custom
-    CA_PROJECT: 'simplenode-gitlab' #diego2
-    CA_SERVICE: 'simplenodeservice' #service1
-    CA_STAGES: '"staging" "qa" "production"' #'"Dev" "stage" "prod"'
-    CURRENT_STAGE: 'staging' #dev
-    START_TIME_QG: '2022-12-22T06:51:11Z' # is it mandatory?
-    END_TIME_QG: '2022-12-22T13:51:34Z' # is it mandatory?
-    CI_PIPELINE_IID: 'job-01' # ?
-    LABELS_QG: '[{"someLabel":"foo"},{"anotherLabel":"bar"}]' # is it mandatory?
-    STOP_ON_FAILURE: 0 # is it mandatory?
-    TYPE: 'basic' # ?
+  variables:
+    KEPTN_PROJECT: simplenode-gitlab
+    KEPTN_SERVICE: simplenodeservice
+    KEPTN_STAGE: staging
+    KEPTN_SOURCE: gitlab
+    KEPTN_MONITORING: dynatrace
+    SHIPYARD_FILE: cloudautomation/shipyard.yaml
+    SLO_FILE: cloudautomation/slo.yaml
+    SLI_FILE: cloudautomation/sli.yaml
+    DT_CONFIG_FILE: cloudautomation/dynatrace.conf.yaml
   script:
-    - /keptn/keptn_init.sh  # I think we dont need it, right?
+    - /keptn/keptn_init.sh
   artifacts:
-    paths: 
-    - keptn.init.json # I think we dont need it, right?
+    paths:
+      - keptn.init.json
 
 deployment-staging:
   image: dtzar/helm-kubectl
@@ -137,26 +121,26 @@ dynatrace_deploy_event_staging:
     DT_NAMESPACE: "$DT_RELEASE_STAGE"
 
 run-tests:
-  before_script: 
+  before_script:
     - echo $(date --utc +%FT%T.000Z) > keptn.test.starttime
-  after_script: 
+  after_script:
     - echo $(date --utc +%FT%T.000Z) > keptn.test.endtime
   stage: test
-  variables: 
+  variables:
     LOCUST_LOCUSTFILE: locust/locustfile.py
     LOCUST_CONFIG: locust/locust.conf
-    LOCUST_HOST: 'http://simplenodeservice.$DT_RELEASE_STAGE'
-    LOCUST_LOAD_TEST_NAME: 'Loadtest - $DT_RELEASE_BUILD_VERSION'
+    LOCUST_HOST: "http://simplenodeservice.$DT_RELEASE_STAGE"
+    LOCUST_LOAD_TEST_NAME: "Loadtest - $DT_RELEASE_BUILD_VERSION"
   image: locustio/locust
   script:
     - locust --config $LOCUST_CONFIG --locustfile $LOCUST_LOCUSTFILE --host $LOCUST_HOST
   artifacts:
     paths:
-    - keptn.test.starttime
-    - keptn.test.endtime
+      - keptn.test.starttime
+      - keptn.test.endtime
 
 quality_gate:
-  image: dynatraceace/cloud-automation-tools:latest #dynatraceace/keptn-gitlab-runner:3.0
+  image: dynatraceace/cloud-automation-tools:latest
   stage: evaluate
   script:
     - export KEPTN_LABELS='[{"DT_RELEASE_VERSION":"'${DT_RELEASE_VERSION}'"},{"DT_RELEASE_BUILD_VERSION":"'${DT_RELEASE_BUILD_VERSION}'"},{"DT_RELEASE_STAGE":"'${DT_RELEASE_STAGE}'"},{"DT_RELEASE_PRODUCT":"'${DT_RELEASE_PRODUCT}'"}]'
@@ -183,7 +167,7 @@ dynatrace_deploy_event_production:
   needs: ["deployment-production"]
   variables:
     DYNATRACE_ENV_URL: "$DT_TENANT_URL"
-    DYNATRACE_API_TOKEN: "$DT_API_TOKEN" 
+    DYNATRACE_API_TOKEN: "$DT_API_TOKEN"
     DESCRIPTION: "$DT_RELEASE_PRODUCT $DT_RELEASE_VERSION deployed"
     CUSTOM_PROPERTIES: '{"namespace":"$DT_RELEASE_STAGE_PROD"}'
     EVENT_TYPE: "CUSTOM_DEPLOYMENT"
