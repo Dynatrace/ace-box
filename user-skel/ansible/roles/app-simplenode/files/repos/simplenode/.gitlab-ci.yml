@@ -143,6 +143,7 @@ quality_gate:
   image: dynatraceace/cloud-automation-tools:latest
   stage: evaluate
   script:
+    - sleep 300
     - export KEPTN_LABELS='[{"DT_RELEASE_VERSION":"'${DT_RELEASE_VERSION}'"},{"DT_RELEASE_BUILD_VERSION":"'${DT_RELEASE_BUILD_VERSION}'"},{"DT_RELEASE_STAGE":"'${DT_RELEASE_STAGE}'"},{"DT_RELEASE_PRODUCT":"'${DT_RELEASE_PRODUCT}'"}]'
     - /keptn/keptn_eval.sh
 

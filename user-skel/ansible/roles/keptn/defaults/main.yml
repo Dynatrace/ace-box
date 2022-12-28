@@ -1,6 +1,6 @@
 ---
 keptn_version: "1.0.0"
-keptn_dynatrace_service_version: "0.24.0"
+keptn_dynatrace_service_version: "0.26.0"
 keptn_namespace: "keptn"
 keptn_ingress_domain: "cloudautomation.{{ ingress_domain }}"
 keptn_cli_download_location: "/tmp/keptn"
