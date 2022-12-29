@@ -9,9 +9,6 @@ def jmeter = new com.dynatrace.ace.Jmeter()
  
 pipeline {
 
-    // agent {
-    //     docker { image 'node:16.13.1-alpine' }
-    // }
     parameters {
         string(name: 'APP_NAME', defaultValue: 'simplenodeservice', description: 'The name of the service to deploy.', trim: true)
         string(name: 'BUILD', defaultValue: '', description: 'The build version to deploy.', trim: true)
@@ -29,29 +26,47 @@ pipeline {
         KEPTN_API_TOKEN = credentials('CA_API_TOKEN')
         DT_API_TOKEN = credentials('DT_API_TOKEN')
         DT_TENANT_URL = credentials('DT_TENANT_URL')
+
+        // cloudautomation tool params
+        KEPTN_PROJECT = 'simplenode-jenkins'
+        KEPTN_SERVICE = 'simplenodeservice'
+        KEPTN_STAGE = 'staging'
+        KEPTN_SOURCE = 'gitea'
+        KEPTN_MONITORING = 'dynatrace'
+        SHIPYARD_FILE = 'cloudautomation/shipyard.yaml'
+        SLO_FILE = 'cloudautomation/slo.yaml'
+        SLI_FILE = 'cloudautomation/sli.yaml'
+        DT_CONFIG_FILE = 'cloudautomation/dynatrace.conf.yaml'
     }
     agent {
         label 'kubegit'
     }
     stages {
         stage ('Quality Gate Init') {
+            agent {
+                    label 'cloud-automation-runner' 
+                  }
             steps {
                 checkout scm
-                script {
-                    cloudautomation.keptnInit project:"${env.PROJECT}", service:"${env.APP_NAME}", stage:"staging", monitoring:"${env.MONITORING}" , shipyard:'cloudautomation/shipyard.yaml'
-                    
-                    switch(env.QG_MODE) {
-                        case "yaml": 
-                            cloudautomation.keptnAddResources('cloudautomation/sli.yaml','dynatrace/sli.yaml')
-                            cloudautomation.keptnAddResources('cloudautomation/slo.yaml','slo.yaml')
-                            cloudautomation.keptnAddResources('cloudautomation/dynatrace.conf.yaml','dynatrace/dynatrace.conf.yaml')
-                            break;
-                        case "dashboard": 
-                            cloudautomation.keptnAddResources('cloudautomation/dynatrace-dashboard.conf.yaml','dynatrace/dynatrace.conf.yaml')
-                            break;
-                    }
-                    
+                container('cloud-automation-runner') {
+                    sh '/keptn/keptn_init.sh'
                 }
+                
+                //script {
+                    // cloudautomation.keptnInit project:"${env.PROJECT}", service:"${env.APP_NAME}", stage:"staging", monitoring:"${env.MONITORING}" , shipyard:'cloudautomation/shipyard.yaml'
+                    
+                    // switch(env.QG_MODE) {
+                    //     case "yaml": 
+                    //         cloudautomation.keptnAddResources('cloudautomation/sli.yaml','dynatrace/sli.yaml')
+                    //         cloudautomation.keptnAddResources('cloudautomation/slo.yaml','slo.yaml')
+                    //         cloudautomation.keptnAddResources('cloudautomation/dynatrace.conf.yaml','dynatrace/dynatrace.conf.yaml')
+                    //         break;
+                    //     case "dashboard": 
+                    //         cloudautomation.keptnAddResources('cloudautomation/dynatrace-dashboard.conf.yaml','dynatrace/dynatrace.conf.yaml')
+                    //         break;
+                    // }
+                    
+                //}
             }
         }
         stage('DT Test Start') {
@@ -123,23 +138,31 @@ pipeline {
         }
 
         stage('Quality Gate') {
+            agent {
+                    label 'cloud-automation-runner' 
+                  }
             steps {
-                script {
-                    //sleep(time:600,unit:"SECONDS")
-                    def labels=[:]
-                    labels.put("DT_RELEASE_VERSION", "${env.BUILD}.0.0")
-                    labels.put("DT_RELEASE_BUILD_VERSION", "${env.ART_VERSION}")
-                    labels.put("DT_RELEASE_STAGE", "${env.TARGET_NAMESPACE}")
-                    labels.put("DT_RELEASE_PRODUCT", "${env.PARTOF}")
+                
+                    container('cloud-automation-runner') {
+                        sh "export KEPTN_LABELS='[{"DT_RELEASE_VERSION":"${env.BUILD}.0.0"},{"DT_RELEASE_BUILD_VERSION":"${env.ART_VERSION}"},{"DT_RELEASE_STAGE":"${env.TARGET_NAMESPACE}"},{"DT_RELEASE_PRODUCT":"${env.PARTOF}"}]'"
+                        sh "/keptn/keptn_eval.sh"
+                    }
+                // script {
+                //     //sleep(time:600,unit:"SECONDS")
+                //     def labels=[:]
+                //     labels.put("DT_RELEASE_VERSION", "${env.BUILD}.0.0")
+                //     labels.put("DT_RELEASE_BUILD_VERSION", "${env.ART_VERSION}")
+                //     labels.put("DT_RELEASE_STAGE", "${env.TARGET_NAMESPACE}")
+                //     labels.put("DT_RELEASE_PRODUCT", "${env.PARTOF}")
                     
-                    def context = cloudautomation.sendStartEvaluationEvent starttime:"", endtime:"", labels:labels
-                    echo context
-                    result = cloudautomation.waitForEvaluationDoneEvent setBuildResult:true, waitTime:3
+                    //def context = cloudautomation.sendStartEvaluationEvent starttime:"", endtime:"", labels:labels
+                    //echo context
+                    //result = cloudautomation.waitForEvaluationDoneEvent setBuildResult:true, waitTime:3
 
-                    res_file = readJSON file: "keptn.evaluationresult.${context}.json"
+                    //res_file = readJSON file: "keptn.evaluationresult.${context}.json"
 
-                    echo res_file.toString();
-                }
+                    //echo res_file.toString();
+                // }
             }
         }
 
