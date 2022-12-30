@@ -71,7 +71,7 @@ This task fetches endpoint details and sources the following variables:
 > Note: these endpoints differ depending on ingress class is whether "istio" or "non-istio".
 
 - `keptn_ingress_domain`: The Keptn domain name (e.g.: keptn.myaceboxdomain.com)
-- `keptn_endpoint`: The externally available endpoint for Keptn in the format of [protocol]://keptn-domain/api (e.g.: http://keptn.myaceboxdomain.com/api)
+- `keptn_endpoint`: The externally available endpoint for Keptn in the format of [protocol]://keptn-domain (e.g.: http://keptn.myaceboxdomain.com)
 - `keptn_bridge`: The user interface of Keptn that presents all projects and services managed by Keptn in the format of [protocol]://keptn-domain/bridge (e.g.: http://keptn.myaceboxdomain.com/bridge)
 - `keptn_internal_endpoint`: The internal endpoint for keptn in the format of [http://keptn-service-ip:80/api]. You can leverage this endpoint to reach Keptn without having to go via the outside-in
   

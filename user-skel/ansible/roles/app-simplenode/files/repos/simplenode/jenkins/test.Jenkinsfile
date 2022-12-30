@@ -1,9 +1,7 @@
 @Library('ace@v1.1') ace
 @Library('jenkinstest@v1.2.1') jenkinstest
-@Library('keptn-library@5.0') keptnlib
 import sh.keptn.Keptn
 
-def cloudautomation = new sh.keptn.Keptn()
 def event = new com.dynatrace.ace.Event()
 def jmeter = new com.dynatrace.ace.Jmeter()
  
@@ -37,6 +35,7 @@ pipeline {
         SLO_FILE = 'cloudautomation/slo.yaml'
         SLI_FILE = 'cloudautomation/sli.yaml'
         DT_CONFIG_FILE = 'cloudautomation/dynatrace.conf.yaml'
+
     }
     agent {
         label 'kubegit'
@@ -51,23 +50,8 @@ pipeline {
                 container('cloud-automation-runner') {
                     sh '/keptn/keptn_init.sh'
                 }
-                
-                //script {
-                    // cloudautomation.keptnInit project:"${env.PROJECT}", service:"${env.APP_NAME}", stage:"staging", monitoring:"${env.MONITORING}" , shipyard:'cloudautomation/shipyard.yaml'
-                    
-                    // switch(env.QG_MODE) {
-                    //     case "yaml": 
-                    //         cloudautomation.keptnAddResources('cloudautomation/sli.yaml','dynatrace/sli.yaml')
-                    //         cloudautomation.keptnAddResources('cloudautomation/slo.yaml','slo.yaml')
-                    //         cloudautomation.keptnAddResources('cloudautomation/dynatrace.conf.yaml','dynatrace/dynatrace.conf.yaml')
-                    //         break;
-                    //     case "dashboard": 
-                    //         cloudautomation.keptnAddResources('cloudautomation/dynatrace-dashboard.conf.yaml','dynatrace/dynatrace.conf.yaml')
-                    //         break;
-                    // }
-                    
-                //}
-            }
+                stash includes: 'keptn.init.json', name: 'keptn-init' 
+            }           
         }
         stage('DT Test Start') {
             steps {
@@ -88,11 +72,13 @@ pipeline {
                     }
             }
         }
-        stage('Run performance test') {
+        stage('Run performance test') {     
             steps {
-                script {
-                    cloudautomation.markEvaluationStartTime()
+                
+                 container('jmeter') {
+                    sh 'echo $(date --utc +%FT%T.000Z) > keptn.test.starttime'
                 }
+                stash includes: 'keptn.test.starttime', name: 'keptn.test.starttime' 
                 checkout scm
                 container('jmeter') {
                     script {
@@ -114,6 +100,11 @@ pipeline {
                         }
                     }
                 }
+
+               container('jmeter') {
+                    sh 'echo $(date --utc +%FT%T.000Z) > keptn.test.endtime'
+                }
+                stash includes: 'keptn.test.endtime', name: 'keptn.test.endtime' 
             }
         }
         stage('DT Test Stop') {
@@ -142,27 +133,22 @@ pipeline {
                     label 'cloud-automation-runner' 
                   }
             steps {
-                
+                    unstash 'keptn-init'
+                    unstash 'keptn.test.starttime'
+                    unstash 'keptn.test.endtime'
+
                     container('cloud-automation-runner') {
-                        sh "export KEPTN_LABELS='[{"DT_RELEASE_VERSION":"${env.BUILD}.0.0"},{"DT_RELEASE_BUILD_VERSION":"${env.ART_VERSION}"},{"DT_RELEASE_STAGE":"${env.TARGET_NAMESPACE}"},{"DT_RELEASE_PRODUCT":"${env.PARTOF}"}]'"
-                        sh "/keptn/keptn_eval.sh"
+                        sh """   
+                            export KEPTN_LABELS='[{"DT_RELEASE_VERSION":"'${env.BUILD}.0.0'"},{"DT_RELEASE_BUILD_VERSION":"'${env.ART_VERSION}'"},{"DT_RELEASE_STAGE":"'${env.TARGET_NAMESPACE}'"},{"DT_RELEASE_PRODUCT":"'${env.PARTOF}'"}]'
+                            
+                            export CI_PIPELINE_IID="${BUILD_ID}"
+                            export CI_JOB_NAME="${JOB_NAME}"
+                            export CI_JOB_URL="${JOB_URL}"
+                            export CI_PROJECT_NAME="${env.WORKSPACE}"
+                            
+                            /keptn/keptn_eval.sh
+                        """
                     }
-                // script {
-                //     //sleep(time:600,unit:"SECONDS")
-                //     def labels=[:]
-                //     labels.put("DT_RELEASE_VERSION", "${env.BUILD}.0.0")
-                //     labels.put("DT_RELEASE_BUILD_VERSION", "${env.ART_VERSION}")
-                //     labels.put("DT_RELEASE_STAGE", "${env.TARGET_NAMESPACE}")
-                //     labels.put("DT_RELEASE_PRODUCT", "${env.PARTOF}")
-                    
-                    //def context = cloudautomation.sendStartEvaluationEvent starttime:"", endtime:"", labels:labels
-                    //echo context
-                    //result = cloudautomation.waitForEvaluationDoneEvent setBuildResult:true, waitTime:3
-
-                    //res_file = readJSON file: "keptn.evaluationresult.${context}.json"
-
-                    //echo res_file.toString();
-                // }
             }
         }
 
