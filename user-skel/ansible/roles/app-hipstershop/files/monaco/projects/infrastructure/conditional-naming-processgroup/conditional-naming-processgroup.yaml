@@ -1,6 +1,0 @@
-config:
-- NamespacePodContainer-Exe: NamespacePodContainerExe.json
-
-NamespacePodContainer-Exe:
-- name: ACE Box - Namespace.BasePodName.ContainerName (ExeName)
-

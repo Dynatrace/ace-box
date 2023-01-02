@@ -42,27 +42,6 @@
     tasks_from: source-node-id
   when: skip_synthetic_monitor == "false" and dt_synthetic_node_id is not defined 
 
-
-# - name: Source Host Group ID
-#   block:
-#   - uri:
-#       url: "{{ dynatrace_tenant_url }}/api/v2/entities?entitySelector=type('HOST_GROUP')"
-#       method: GET
-#       headers:
-#         Content-Type: "application/json"
-#         Authorization: "Api-token {{ dynatrace_api_token }}"
-#       return_content: no
-#       status_code: 200, 201, 204
-#     register: hostgroup_response_raw
-#     until: "{{ hostgroup_response_raw.json }}"
-#     retries: 10
-#     delay: 5
-#   - set_fact:
-#       dt_hostgroup_id: "{{ hostgroup_response_raw.json | first }}"
-#   rescue:
-#   - set_fact:
-#       dt_hostgroup_id: ""
-
 # deploy monaco and apply configurations
 - name: Deploy Monaco
   include_role:

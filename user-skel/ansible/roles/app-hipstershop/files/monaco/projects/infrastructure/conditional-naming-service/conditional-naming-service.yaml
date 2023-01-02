@@ -1,5 +1,0 @@
-config:
-- NamespacePod: NamespacePod.json
-
-NamespacePod:
-- name: Namespace.Pod
