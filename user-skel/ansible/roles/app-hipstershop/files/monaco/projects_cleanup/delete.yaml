@@ -4,7 +4,7 @@ delete:
     - "management-zone/hipstershop"
     - "synthetic-monitor/hipstershop.http"
     - "synthetic-monitor/hipstershop.clickpath"
-    - auto-tag/hipstershop
+    - "auto-tag/hipstershop"
     ## infrastructure related configurations will not be deleted, thus commented out below 
     #- "auto-tag/app"
     #- "auto-tag/environment"
