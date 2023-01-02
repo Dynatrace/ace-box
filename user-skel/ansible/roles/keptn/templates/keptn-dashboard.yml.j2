@@ -1,0 +1,17 @@
+---
+extRefs:
+  Cloud Automation:
+    url: "{{ keptn_bridge }}"
+    creds:
+    - description: Username
+      type: text
+      value: "{{ keptn_bridge_user }}"
+    - description: Password
+      type: password
+      value: "{{ keptn_bridge_password }}"
+    - description: API url
+      type: text
+      value: "{{ keptn_endpoint | default(None) }}"
+    - description: API token
+      type: password
+      value: "{{ keptn_api_token | default(None) }}"

@@ -13,61 +13,11 @@
       authb64encoded: "{{ [dashboard_user, dashboard_password] | join(':') | b64encode }}"
   when: ingress_class == "istio"
 
-- name: Source Gitea secrets
-  include_role:
-    name: gitea
-    tasks_from: source-secret
-  when: git_flavor is defined and git_flavor == "GITEA"
+# Include Dashboard default values
+- set_fact:
+    include_dashboard_value_file: "{{ role_path }}/templates/default-ext-refs.yml.j2"
 
-- name: Source Gitlab secrets
-  include_role:
-    name: gitlab
-    tasks_from: source-secret
-  when: git_flavor is defined and git_flavor == "GITLAB"
-
-- name: Source Jenkins secrets
-  include_role:
-    name: jenkins
-    tasks_from: source-secret
-
-- block:
-  - name: Source Keptn secrets
-    include_role:
-      name: keptn
-      tasks_from: source-secret
-  - name: Source Keptn host
-    include_role:
-      name: keptn
-      tasks_from: source-endpoints
-  when: cloud_automation_flavor is defined and cloud_automation_flavor == "KEPTN"
-
-- name: Source Cloud Automation secrets
-  include_role:
-    name: cloudautomation
-    tasks_from: source-secret
-  when: cloud_automation_flavor is defined and cloud_automation_flavor == "CLOUD_AUTOMATION"
-
-- name: Source AWX credentials
-  include_role:
-    name: awx
-    tasks_from: source-secrets
-
-- name: Source AWX endpoints
-  include_role:
-    name: awx
-    tasks_from: source-configuration
-
-- file:
-    path: "{{ role_path }}/files/helm-values"
-    state: directory
-
-- name: Template default-ext-refs
-  template:
-    src: default-ext-refs.yaml.j2
-    dest: "{{ role_path }}/files/helm-values/default-ext-refs.yaml"
-    owner: "{{ ace_box_user }}"
-    group: "{{ ace_box_user }}"
-    mode: '0644'
+- include_tasks: template-values-file.yml
 
 - name: Find all Dashboard Helm values files
   find:

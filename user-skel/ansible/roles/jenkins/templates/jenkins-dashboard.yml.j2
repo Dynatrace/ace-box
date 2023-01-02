@@ -1,0 +1,11 @@
+---
+extRefs:
+  Jenkins:
+    url: "{{ ingress_protocol }}://jenkins.{{ ingress_domain }}"
+    creds:
+    - description: Username
+      type: text
+      value: "{{ jenkins_username }}"
+    - description: Password
+      type: password
+      value: "{{ jenkins_password }}"

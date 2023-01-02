@@ -4,8 +4,8 @@
     name: config-v2
     tasks_from: set-var
   vars:
-  - var_key_to_set: "git_flavor"
-  - var_value_to_set: "GITEA"
+    var_key_to_set: "git_flavor"
+    var_value_to_set: "GITEA"
   when: git_flavor is not defined or git_flavor != "GITEA"
 
 - name: Add chart repo
@@ -73,7 +73,6 @@
     retries: 300
     delay: 1
     no_log: true
-  
   - name: Create admin user access token
     uri:
       url: "{{ gitea_internal_endpoint }}/api/v1/users/{{ gitea_username }}/tokens"
@@ -87,9 +86,15 @@
       validate_certs: no
       status_code: 201
     register: post_token_result
-  
   - set_fact:
       gitea_access_token: "{{ post_token_result.json.sha1 }}"
-  
   - include_tasks: roles/gitea/tasks/create-secret.yml
   when: gitea.changed
+
+# Include Dashboard values
+- set_fact:
+    include_dashboard_value_file: "{{ role_path }}/templates/gitea-dashboard.yml.j2"
+
+- include_role:
+    name: dashboard
+    tasks_from: template-values-file
