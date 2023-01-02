@@ -1,0 +1,14 @@
+---
+extRefs:
+  Gitea:
+    url: "{{ ingress_protocol }}://gitea.{{ ingress_domain }}"
+    creds:
+    - description: Username
+      type: text
+      value: "{{ gitea_username }}"
+    - description: Password
+      type: password
+      value: "{{ gitea_password }}"
+    - description: Token
+      type: password
+      value: "{{ gitea_access_token | default(None) }}"

@@ -128,3 +128,11 @@
 - name: Keptn - Install Job Executor service
   include: roles/keptn/tasks/job-executor-service.yml
   when: keptn_job_executor_service_enabled
+
+# Include Dashboard values
+- set_fact:
+    include_dashboard_value_file: "{{ role_path }}/templates/keptn-dashboard.yml.j2"
+
+- include_role:
+    name: dashboard
+    tasks_from: template-values-file

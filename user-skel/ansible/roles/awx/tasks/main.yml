@@ -13,3 +13,13 @@
         file: install.yml
     - include_tasks:
         file: customize-branding.yml
+
+- include_tasks: source-secrets.yml
+
+# Include Dashboard values
+- set_fact:
+    include_dashboard_value_file: "{{ role_path }}/templates/awx-dashboard.yml.j2"
+
+- include_role:
+    name: dashboard
+    tasks_from: template-values-file

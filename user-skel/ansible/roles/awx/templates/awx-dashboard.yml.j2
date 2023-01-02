@@ -1,0 +1,11 @@
+---
+extRefs:
+  AWX:
+    url: "{{ awx_external_endpoint }}"
+    creds:
+    - description: Username
+      type: text
+      value: "{{ awx_admin_username }}"
+    - description: Password
+      type: password
+      value: "{{ awx_admin_password }}"
