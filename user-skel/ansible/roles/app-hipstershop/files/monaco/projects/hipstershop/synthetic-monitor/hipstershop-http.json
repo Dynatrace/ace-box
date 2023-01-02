@@ -1,6 +1,6 @@
 {
   "name": "{{ .name }}",
-  "frequencyMin": {{.frequencyInMin}},
+  "frequencyMin": {{ .frequencyInMin }},
   "enabled": {{ .enabled }},
   "type": "HTTP",
   "createdFrom": "GUI",
@@ -60,13 +60,13 @@
     }
   },
   "tags": [
-    "{{.tag}}"
+    "{{ .tag }}"
   ],
   "managementZones": [
-    "{{.managementZoneId}}"
+    "{{ .managementZoneId }}"
   ],
   "automaticallyAssignedApps": [],
   "manuallyAssignedApps": [
-    "{{.applicationId}}"
+    "{{ .applicationId }}"
   ]
 }

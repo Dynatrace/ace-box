@@ -1,6 +1,6 @@
 {
   "name": "{{ .name }}",
-  "frequencyMin": {{.frequencyInMin}},
+  "frequencyMin": {{ .frequencyInMin }},
   "enabled": {{ .enabled }},
   "type": "BROWSER",
   "createdFrom": "API",
@@ -354,14 +354,14 @@
     }
   },
   "tags": [
-    "{{.tag}}"
+    "{{ .tag }}"
   ],
   "managementZones": [
-    "{{.managementZoneId}}"
+    "{{ .managementZoneId }}"
   ],
   "automaticallyAssignedApps": [],
   "manuallyAssignedApps": [
-    "{{.applicationId}}"
+    "{{ .applicationId }}"
   ],
   "keyPerformanceMetrics": {
     "loadActionKpm": "VISUALLY_COMPLETE",
