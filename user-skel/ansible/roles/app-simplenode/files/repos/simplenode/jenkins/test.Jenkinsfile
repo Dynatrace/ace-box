@@ -143,8 +143,8 @@ pipeline {
                             export CI_PIPELINE_IID="${BUILD_ID}"
                             export CI_JOB_NAME="${JOB_NAME}"
                             export CI_JOB_URL="${JOB_URL}"
-                            export CI_PROJECT_NAME="${env.WORKSPACE}"
-                            
+                            export CI_PROJECT_NAME="${env.PROJECT}"
+
                             /keptn/keptn_eval.sh
                         """
                     }
