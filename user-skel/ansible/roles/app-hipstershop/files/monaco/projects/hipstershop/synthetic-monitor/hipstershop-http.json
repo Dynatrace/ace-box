@@ -1,66 +1,72 @@
 {
-    "name": "{{ .name }}",
-    "frequencyMin": 1,
-    "enabled": "true",
-    "type": "HTTP",
-    "script": {
-      "version": "1.0",
-      "requests": [
-        {
-          "description": "{{ .description }}",
-          "url": "{{ .url }}",
-          "method": "GET",
-          "requestBody": "",
-          "validation": {
-            "rules": [
-              {
-                "value": ">=400",
-                "passIfFound": false,
-                "type": "regexConstraint"
-              }
-            ]
-          },
-          "configuration": {
-            "requestHeaders": [
-              {
-                "name": "accept",
-                "value": "application/json"
-              }
-            ],
-            "acceptAnyCertificate": false,
-            "followRedirects": true
-          }
+  "name": "{{ .name }}",
+  "frequencyMin": {{ .frequencyInMin }},
+  "enabled": {{ .enabled }},
+  "type": "HTTP",
+  "createdFrom": "GUI",
+  "script": {
+    "version": "1.0",
+    "requests": [
+      {
+        "description": "{{ .description }}",
+        "url": "{{ .url }}",
+        "method": "GET",
+        "validation": {
+          "rules": [
+            {
+              "value": ">=400",
+              "passIfFound": false,
+              "type": "regexConstraint"
+            }
+          ]
+        },
+        "configuration": {
+          "requestHeaders": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ],
+          "acceptAnyCertificate": true,
+          "followRedirects": true,
+          "shouldNotPersistSensitiveData": false
         }
-      ]
-    },
-    "locations": [
-      "{{ .location }}"
-    ],
-    "anomalyDetection": {
-      "outageHandling": {
-        "globalOutage": false,
-        "localOutage": true,
-        "localOutagePolicy": {
-          "affectedLocations": 1,
-          "consecutiveRuns": 3
-        }
+      }
+    ]
+  },
+  "locations": [
+    "{{ .location }}"
+  ],
+  "anomalyDetection": {
+    "outageHandling": {
+      "globalOutage": "{{ .globalOutage }}",
+      "globalOutagePolicy": {
+        "consecutiveRuns": 1
       },
-      "loadingTimeThresholds": {
-        "enabled": false,
-        "thresholds": [
-          {
-            "type": "TOTAL",
-            "valueMs": 0
-          }
-        ]
+      "localOutage": "{{ .localOutage }}",
+      "localOutagePolicy": {
+        "affectedLocations": 1,
+        "consecutiveRuns": 3
       }
     },
-    "tags": [
-      "{{.tag}}"
-    ],
-    "managementZones": [
-      "{{.managementZoneId}}"
-    ],
-    "manuallyAssignedApps": [
-    ]
-  }
+    "loadingTimeThresholds": {
+      "enabled": false,
+      "thresholds": [
+        {
+          "type": "TOTAL",
+          "valueMs": 0
+        }
+      ]
+    }
+  },
+  "tags": [
+    "{{ .tag }}"
+  ],
+  "managementZones": [
+    "{{ .managementZoneId }}"
+  ],
+  "automaticallyAssignedApps": [],
+  "manuallyAssignedApps": [
+    "{{ .applicationId }}"
+  ]
+}

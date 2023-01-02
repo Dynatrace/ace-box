@@ -2,6 +2,7 @@
 - set_fact:
     monaco_projects_folder: "{{ role_path }}/files/monaco/projects"
     skip_synthetic_monitor: "true"
+    monaco_projects_list: ""
 
 - name: Source Kubernetes endpoint
   kubernetes.core.k8s_info:
@@ -51,8 +52,9 @@
     name: monaco
     tasks_from: apply-monaco
   vars:
-    monaco_project: ""
+    monaco_project: "{{ monaco_projects_list }}"
     monaco_projects_root: "{{ monaco_projects_folder }}"
+
     monaco_environment:
       INGRESS_DOMAIN: "{{ ingress_domain }}"
       APP_NAMESPACE: "{{ hipstershop_namespace }}"

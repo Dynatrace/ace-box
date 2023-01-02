@@ -1,0 +1,7 @@
+
+ config:
+     - app.namespace: "service-naming.json"
+   
+ app.namespace:
+     - name: "app.environment"
+     - format: "{ProcessGroup:KubernetesContainerName}.{ProcessGroup:KubernetesNamespace}"

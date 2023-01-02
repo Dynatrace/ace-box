@@ -10,6 +10,10 @@ hipstershop-http:
     - managementZoneId: "/hipstershop/management-zone/hipstershop.id"
     - tag: "hipstershop"
     - applicationId: "/hipstershop/application/app-hipstershop.id"
+    - enabled: "true"
+    - frequencyInMin: "5"
+    - globalOutage: "false"
+    - localOutage: "true"
     - skipDeployment: "{{ .Env.SKIP_SYNTH }}"
 
 hipstershop-clickpath:
@@ -20,4 +24,8 @@ hipstershop-clickpath:
     - managementZoneId: "/hipstershop/management-zone/hipstershop.id"
     - tag: "hipstershop"
     - applicationId: "/hipstershop/application/app-hipstershop.id"
+    - enabled: "true"
+    - frequencyInMin: "5"
+    - globalOutage: "true"
+    - localOutage: "true"
     - skipDeployment: "{{ .Env.SKIP_SYNTH }}"
