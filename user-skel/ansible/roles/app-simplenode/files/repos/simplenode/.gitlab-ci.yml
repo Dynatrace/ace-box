@@ -71,23 +71,23 @@ monaco_config_event_prod:
     CUSTOM_PROPERTIES: '{"Approved by": "ACE"}'
 
 init_cloudautomation:
-  image: dynatraceace/cloud-automation-tools:latest
+  image: dynatraceace/cloud-automation-tools:1.0
   stage: init
   variables:
-    KEPTN_PROJECT: simplenode-gitlab
-    KEPTN_SERVICE: simplenodeservice
-    KEPTN_STAGE: staging
-    KEPTN_SOURCE: gitlab
-    KEPTN_MONITORING: dynatrace
+    CLOUD_AUTOMATION_PROJECT: simplenode-gitlab
+    CLOUD_AUTOMATION_SERVICE: simplenodeservice
+    CLOUD_AUTOMATION_STAGE: staging
+    CLOUD_AUTOMATION_SOURCE: gitlab
+    CLOUD_AUTOMATION_MONITORING: dynatrace
     SHIPYARD_FILE: cloudautomation/shipyard.yaml
     SLO_FILE: cloudautomation/slo.yaml
     SLI_FILE: cloudautomation/sli.yaml
     DT_CONFIG_FILE: cloudautomation/dynatrace.conf.yaml
   script:
-    - /keptn/keptn_init.sh
+    - /cloud_automation/cloud_automation_init.sh
   artifacts:
     paths:
-      - keptn.init.json
+      - cloud_automation.init.json
 
 deployment-staging:
   image: dtzar/helm-kubectl
@@ -122,9 +122,9 @@ dynatrace_deploy_event_staging:
 
 run-tests:
   before_script:
-    - echo $(date --utc +%FT%T.000Z) > keptn.test.starttime
+    - echo $(date --utc +%FT%T.000Z) > cloud_automation.test.starttime
   after_script:
-    - echo $(date --utc +%FT%T.000Z) > keptn.test.endtime
+    - echo $(date --utc +%FT%T.000Z) > cloud_automation.test.endtime
   stage: test
   variables:
     LOCUST_LOCUSTFILE: locust/locustfile.py
@@ -136,16 +136,16 @@ run-tests:
     - locust --config $LOCUST_CONFIG --locustfile $LOCUST_LOCUSTFILE --host $LOCUST_HOST
   artifacts:
     paths:
-      - keptn.test.starttime
-      - keptn.test.endtime
+      - cloud_automation.test.starttime
+      - cloud_automation.test.endtime
 
 quality_gate:
-  image: dynatraceace/cloud-automation-tools:latest
+  image: dynatraceace/cloud-automation-tools:1.0
   stage: evaluate
   script:
     - sleep 120
-    - export KEPTN_LABELS='[{"DT_RELEASE_VERSION":"'${DT_RELEASE_VERSION}'"},{"DT_RELEASE_BUILD_VERSION":"'${DT_RELEASE_BUILD_VERSION}'"},{"DT_RELEASE_STAGE":"'${DT_RELEASE_STAGE}'"},{"DT_RELEASE_PRODUCT":"'${DT_RELEASE_PRODUCT}'"}]'
-    - /keptn/keptn_eval.sh
+    - export CLOUD_AUTOMATION_LABELS='[{"DT_RELEASE_VERSION":"'${DT_RELEASE_VERSION}'"},{"DT_RELEASE_BUILD_VERSION":"'${DT_RELEASE_BUILD_VERSION}'"},{"DT_RELEASE_STAGE":"'${DT_RELEASE_STAGE}'"},{"DT_RELEASE_PRODUCT":"'${DT_RELEASE_PRODUCT}'"}]'
+    - /cloud_automation/cloud_automation_eval.sh
 
 deployment-production:
   image: dtzar/helm-kubectl

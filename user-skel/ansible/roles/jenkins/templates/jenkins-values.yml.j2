@@ -93,7 +93,7 @@ controller:
                 value: "{{ git_repo_demo }}"
 {% endif %}
 {% if ca_endpoint is defined and ca_endpoint != "" %}
-              - key: "KEPTN_ENDPOINT"
+              - key: "CLOUD_AUTOMATION_ENDPOINT"
                 value: "{{ ca_endpoint | default(None) | replace("/api","") }}"
 {% endif %}
 {% if ca_bridge is defined and ca_bridge != "" %}

@@ -49,8 +49,8 @@
   loop:
     - { key: 'INGRESS_DOMAIN', value: '{{ ingress_domain }}' }
     - { key: 'INGRESS_PROTOCOL', value: '{{ ingress_protocol }}' }
-    - { key: 'KEPTN_API_TOKEN', value: '{{ ca_api_token | default(None) }}' }
-    - { key: 'KEPTN_ENDPOINT', value: '{{ ca_endpoint | default(None) | replace("/api","") }}' }
+    - { key: 'CLOUD_AUTOMATION_API_TOKEN', value: '{{ ca_api_token | default(None) }}' }
+    - { key: 'CLOUD_AUTOMATION_ENDPOINT', value: '{{ ca_endpoint | default(None) | replace("/api","") }}' }
     - { key: 'DT_TENANT_URL', value: '{{ dynatrace_tenant_url }}' }
     - { key: 'DT_API_TOKEN', value: '{{ vars[gitlab_dt_access_token_name] }}' }
     - { key: 'SYNTH_NODE_ID', value: '{{ dt_synthetic_node_id | default(None) }}' }

@@ -20,16 +20,16 @@ pipeline {
         LOOPCOUNT = 100
         COMPONENT = 'api'
         PARTOF = 'simplenodeservice'
-        KEPTN_API_TOKEN = credentials('CA_API_TOKEN')
+        CLOUD_AUTOMATION_API_TOKEN = credentials('CA_API_TOKEN')
         DT_API_TOKEN = credentials('DT_API_TOKEN')
         DT_TENANT_URL = credentials('DT_TENANT_URL')
 
         // cloudautomation tool params
-        KEPTN_PROJECT = 'simplenode-jenkins'
-        KEPTN_SERVICE = 'simplenodeservice'
-        KEPTN_STAGE = 'staging'
-        KEPTN_SOURCE = 'gitea'
-        KEPTN_MONITORING = 'dynatrace'
+        CLOUD_AUTOMATION_PROJECT = 'simplenode-jenkins'
+        CLOUD_AUTOMATION_SERVICE = 'simplenodeservice'
+        CLOUD_AUTOMATION_STAGE = 'staging'
+        CLOUD_AUTOMATION_SOURCE = 'gitea'
+        CLOUD_AUTOMATION_MONITORING = 'dynatrace'
         SHIPYARD_FILE = 'cloudautomation/shipyard.yaml'
         SLO_FILE = 'cloudautomation/slo.yaml'
         SLI_FILE = 'cloudautomation/sli.yaml'
@@ -47,9 +47,9 @@ pipeline {
             steps {
                 checkout scm
                 container('cloud-automation-runner') {
-                    sh '/keptn/keptn_init.sh'
+                    sh '/cloud_automation/cloud_automation_init.sh'
                 }
-                stash includes: 'keptn.init.json', name: 'keptn-init' 
+                stash includes: 'cloud_automation.init.json', name: 'cloud_automation-init' 
             }           
         }
         stage('DT Test Start') {
@@ -75,9 +75,9 @@ pipeline {
             steps {
                 
                  container('jmeter') {
-                    sh 'echo $(date --utc +%FT%T.000Z) > keptn.test.starttime'
+                    sh 'echo $(date --utc +%FT%T.000Z) > cloud_automation.test.starttime'
                 }
-                stash includes: 'keptn.test.starttime', name: 'keptn.test.starttime' 
+                stash includes: 'cloud_automation.test.starttime', name: 'cloud_automation.test.starttime' 
                 checkout scm
                 container('jmeter') {
                     script {
@@ -101,9 +101,9 @@ pipeline {
                 }
 
                container('jmeter') {
-                    sh 'echo $(date --utc +%FT%T.000Z) > keptn.test.endtime'
+                    sh 'echo $(date --utc +%FT%T.000Z) > cloud_automation.test.endtime'
                 }
-                stash includes: 'keptn.test.endtime', name: 'keptn.test.endtime' 
+                stash includes: 'cloud_automation.test.endtime', name: 'cloud_automation.test.endtime' 
             }
         }
         stage('DT Test Stop') {
@@ -132,20 +132,20 @@ pipeline {
                     label 'cloud-automation-runner' 
                   }
             steps {
-                    unstash 'keptn-init'
-                    unstash 'keptn.test.starttime'
-                    unstash 'keptn.test.endtime'
+                    unstash 'cloud_automation-init'
+                    unstash 'cloud_automation.test.starttime'
+                    unstash 'cloud_automation.test.endtime'
 
                     container('cloud-automation-runner') {
                         sh """   
-                            export KEPTN_LABELS='[{"DT_RELEASE_VERSION":"'${env.BUILD}.0.0'"},{"DT_RELEASE_BUILD_VERSION":"'${env.ART_VERSION}'"},{"DT_RELEASE_STAGE":"'${env.TARGET_NAMESPACE}'"},{"DT_RELEASE_PRODUCT":"'${env.PARTOF}'"}]'
+                            export cloud_automation_LABELS='[{"DT_RELEASE_VERSION":"'${env.BUILD}.0.0'"},{"DT_RELEASE_BUILD_VERSION":"'${env.ART_VERSION}'"},{"DT_RELEASE_STAGE":"'${env.TARGET_NAMESPACE}'"},{"DT_RELEASE_PRODUCT":"'${env.PARTOF}'"}]'
                             
                             export CI_PIPELINE_IID="${BUILD_ID}"
                             export CI_JOB_NAME="${JOB_NAME}"
                             export CI_JOB_URL="${JOB_URL}"
                             export CI_PROJECT_NAME="${env.PROJECT}"
 
-                            /keptn/keptn_eval.sh
+                            /cloud_automation/cloud_automation_eval.sh
                         """
                     }
             }
