@@ -71,7 +71,7 @@ monaco_config_event_prod:
     CUSTOM_PROPERTIES: '{"Approved by": "ACE"}'
 
 init_cloudautomation:
-  image: dynatraceace/cloud-automation-tools:1.0
+  image: dynatraceace/cloud-automation-tools:1.0.0
   stage: init
   variables:
     CLOUD_AUTOMATION_PROJECT: simplenode-gitlab
@@ -140,7 +140,7 @@ run-tests:
       - cloud_automation.test.endtime
 
 quality_gate:
-  image: dynatraceace/cloud-automation-tools:1.0
+  image: dynatraceace/cloud-automation-tools:1.0.0
   stage: evaluate
   script:
     - sleep 120
