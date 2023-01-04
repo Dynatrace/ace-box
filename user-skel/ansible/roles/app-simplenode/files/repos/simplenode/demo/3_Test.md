@@ -12,15 +12,17 @@ This pipeline has the following stages. Check out the `jenkins/test.Jenkinsfile`
 
 ### Quality Gate Init
 ```
-stage ('Quality Gate Init') {
+    stage ('Quality Gate Init') {
+            agent {
+                    label 'cloud-automation-runner' 
+                  }
             steps {
-                script {
-                    cloudautomation.keptnInit project:"${env.PROJECT}", service:"${env.APP_NAME}", stage:"${env.ENVIRONMENT}", monitoring:"${env.MONITORING}" , shipyard:'cloudautomation/shipyard.yaml'
-                    cloudautomation.keptnAddResources('cloudautomation/sli.yaml','dynatrace/sli.yaml')
-                    cloudautomation.keptnAddResources('cloudautomation/slo.yaml','slo.yaml')
-                    cloudautomation.keptnAddResources('cloudautomation/dynatrace.conf.yaml','dynatrace/dynatrace.conf.yaml')
+                checkout scm
+                container('cloud-automation-runner') {
+                    sh '/cloud_automation/cloud_automation_init.sh'
                 }
-            }
+                stash includes: 'cloud_automation.init.json', name: 'cloud_automation-init' 
+            }           
         }
 ```
 This stage will init the Cloud Automation project/stage/service and will add the SLI and SLO definitions.
@@ -49,59 +51,71 @@ The DT Test Start and DT Test Stop stages will send events to Dynatrace.
 
 ### Run Performance Test
 ```
-stage('Run performance test') {
-    steps {
-        script {
-            cloudautomation.markEvaluationStartTime()
-        }
-        checkout scm
-        container('jmeter') {
-            script {
-                def status = jmeter.executeJmeterTest ( 
-                    scriptName: "jmeter/simplenodeservice_load.jmx",
-                    resultsDir: "perfCheck_${env.APP_NAME}_staging_${BUILD_NUMBER}",
-                    serverUrl: "simplenodeservice.${env.TARGET_NAMESPACE}", 
-                    serverPort: 80,
-                    checkPath: '/health',
-                    vuCount: env.VU.toInteger(),
-                    loopCount: env.LOOPCOUNT.toInteger(),
-                    LTN: "perfCheck_${env.APP_NAME}_${BUILD_NUMBER}",
-                    funcValidation: false,
-                    avgRtValidation: 4000
-                )
-                if (status != 0) {
-                    currentBuild.result = 'FAILED'
-                    error "Performance test in staging failed."
+    stage('Run performance test') {     
+        steps {
+            
+                container('jmeter') {
+                sh 'echo $(date --utc +%FT%T.000Z) > cloud_automation.test.starttime'
+            }
+            stash includes: 'cloud_automation.test.starttime', name: 'cloud_automation.test.starttime' 
+            checkout scm
+            container('jmeter') {
+                script {
+                    def status = jmeter.executeJmeterTest ( 
+                        scriptName: "jmeter/simplenodeservice_load.jmx",
+                        resultsDir: "perfCheck_${env.APP_NAME}_staging_${BUILD_NUMBER}",
+                        serverUrl: "simplenodeservice.${env.TARGET_NAMESPACE}", 
+                        serverPort: 80,
+                        checkPath: '/health',
+                        vuCount: env.VU.toInteger(),
+                        loopCount: env.LOOPCOUNT.toInteger(),
+                        LTN: "perfCheck_${env.APP_NAME}_${BUILD_NUMBER}",
+                        funcValidation: false,
+                        avgRtValidation: 4000
+                    )
+                    if (status != 0) {
+                        currentBuild.result = 'FAILED'
+                        error "Performance test in staging failed."
+                    }
                 }
             }
+
+            container('jmeter') {
+                sh 'echo $(date --utc +%FT%T.000Z) > cloud_automation.test.endtime'
+            }
+            stash includes: 'cloud_automation.test.endtime', name: 'cloud_automation.test.endtime' 
         }
     }
-}
+
 ```
 
 This stage will use a jmeter container to run jmeter tests against SimpleNodeService in staging.
 
 ### Quality Gate
 ```
-stage('Quality Gate') {
-    steps {
-        script {
-            def labels=[:]
-            labels.put("DT_APPLICATION_RELEASE_VERSION", "${env.BUILD}.0.0")
-            labels.put("DT_APPLICATION_BUILD_VERSION", "${env.ART_VERSION}")
-            labels.put("DT_APPLICATION_ENVIRONMENT", "${env.ENVIRONMENT}")
-            labels.put("DT_APPLICATION_NAME", "${env.PARTOF}")
-            
-            def context = cloudautomation.sendStartEvaluationEvent starttime:"", endtime:"", labels:labels
-            echo context
-            result = cloudautomation.waitForEvaluationDoneEvent setBuildResult:true, waitTime:3
+    stage('Quality Gate') {
+        agent {
+                label 'cloud-automation-runner' 
+                }
+        steps {
+                unstash 'cloud_automation-init'
+                unstash 'cloud_automation.test.starttime'
+                unstash 'cloud_automation.test.endtime'
 
-            res_file = readJSON file: "keptn.evaluationresult.${context}.json"
+                container('cloud-automation-runner') {
+                    sh """   
+                        export CLOUD_AUTOMATION_LABELS='[{"DT_RELEASE_VERSION":"'${env.BUILD}.0.0'"},{"DT_RELEASE_BUILD_VERSION":"'${env.ART_VERSION}'"},{"DT_RELEASE_STAGE":"'${env.TARGET_NAMESPACE}'"},{"DT_RELEASE_PRODUCT":"'${env.PARTOF}'"}]'
+                        
+                        export CI_PIPELINE_IID="${BUILD_ID}"
+                        export CI_JOB_NAME="${JOB_NAME}"
+                        export CI_JOB_URL="${JOB_URL}"
+                        export CI_PROJECT_NAME="${env.PROJECT}"
 
-            echo res_file.toString();
+                        /cloud_automation/cloud_automation_eval.sh
+                    """
+                }
         }
     }
-}
 ```
 
 This stage will request a performance evaluation from Cloud Automation for our project/stage/service. Afterwards it will request also the results and wait for them to come through.

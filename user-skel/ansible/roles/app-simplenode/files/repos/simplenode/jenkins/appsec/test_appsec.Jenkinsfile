@@ -1,11 +1,6 @@
 @Library('ace@v1.1') ace
 @Library('jenkinstest@v1.2.1') jenkinstest
-/*
-@Library('keptn-library@5.0') keptnlib
-import sh.keptn.Keptn
 
-def cloudautomation = new sh.keptn.Keptn()
-*/
 def event = new com.dynatrace.ace.Event()
 def jmeter = new com.dynatrace.ace.Jmeter()
  
