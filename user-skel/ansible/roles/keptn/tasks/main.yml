@@ -50,7 +50,7 @@
   kubernetes.core.helm:
     name: keptn
     chart_ref: keptn/keptn
-    chart_version: "1.0.0"
+    chart_version: "{{ keptn_version }}"
     release_namespace: "{{ keptn_namespace }}"
     create_namespace: true
     wait: true
