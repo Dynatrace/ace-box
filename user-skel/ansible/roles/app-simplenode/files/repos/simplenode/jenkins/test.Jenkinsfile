@@ -138,7 +138,7 @@ pipeline {
 
                     container('cloud-automation-runner') {
                         sh """   
-                            export cloud_automation_LABELS='[{"DT_RELEASE_VERSION":"'${env.BUILD}.0.0'"},{"DT_RELEASE_BUILD_VERSION":"'${env.ART_VERSION}'"},{"DT_RELEASE_STAGE":"'${env.TARGET_NAMESPACE}'"},{"DT_RELEASE_PRODUCT":"'${env.PARTOF}'"}]'
+                            export CLOUD_AUTOMATION_LABELS='[{"DT_RELEASE_VERSION":"'${env.BUILD}.0.0'"},{"DT_RELEASE_BUILD_VERSION":"'${env.ART_VERSION}'"},{"DT_RELEASE_STAGE":"'${env.TARGET_NAMESPACE}'"},{"DT_RELEASE_PRODUCT":"'${env.PARTOF}'"}]'
                             
                             export CI_PIPELINE_IID="${BUILD_ID}"
                             export CI_JOB_NAME="${JOB_NAME}"
