@@ -72,9 +72,6 @@ def generateDynamicMetaData(){
     returnValue += "Branch=${env.GIT_BRANCH} "
     returnValue += "Build=${env.BUILD} "
     returnValue += "Image=${env.TAG_STAGING} "
-    //returnValue += "keptn_project=simplenodeproject "
-    //returnValue += "keptn_service=${env.APP_NAME} "
-    //returnValue += "keptn_stage=staging "
     returnValue += "url=${env.APP_NAME}.${env.TARGET_NAMESPACE}.${env.INGRESS_DOMAIN}"
     return returnValue;
 }

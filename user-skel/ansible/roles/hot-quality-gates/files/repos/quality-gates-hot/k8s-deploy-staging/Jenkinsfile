@@ -33,21 +33,7 @@ pipeline {
   }
 
 //  Link to keptn QG evaluation
-/*
-  environment {
-    KEPTN_PROJECT = "acl-sockshop"
-    KEPTN_SERVICE = "${APP_NAME}"
-    KEPTN_STAGE = "staging"
-    KEPTN_MONITORING = "dynatrace"
-    KEPTN_SHIPYARD = "keptn/shipyard.yaml"
-    KEPTN_SLI = "keptn/${APP_NAME}-sli.yaml"
-    KEPTN_SLO = "keptn/${APP_NAME}-slo.yaml"
-    KEPTN_DT_CONF = "keptn/dynatrace.conf.yaml"
-    KEPTN_ENDPOINT = credentials('keptn-endpoint')
-    KEPTN_API_TOKEN = credentials('keptn-api-token')
-    KEPTN_BRIDGE = credentials('keptn-bridge')
-  }
-*/
+
   stages {
     stage('Update Deployment and Service specification') {
       steps {

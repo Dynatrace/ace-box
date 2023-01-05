@@ -1,13 +1,13 @@
 ---
-keptn_version: "0.16.1"
-keptn_dynatrace_service_version: "0.23.0"
+keptn_version: "1.0.0"
+keptn_dynatrace_service_version: "0.26.0"
 keptn_namespace: "keptn"
 keptn_ingress_domain: "cloudautomation.{{ ingress_domain }}"
 keptn_cli_download_location: "/tmp/keptn"
 # uncomment to give keptn the cloud automation look and feel
 keptn_look_and_feel_url: "https://d2ixiz0hn5ywb5.cloudfront.net/branding.zip"
 keptn_gitea_provision_service_version: "0.1.1"
-keptn_jmeter_service_enabled: true
+keptn_jmeter_service_enabled: false
 keptn_helm_service_enabled: false
 keptn_synthetic_service_enabled: false
 keptn_test_collector_service_enabled: false

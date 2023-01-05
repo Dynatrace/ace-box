@@ -93,8 +93,8 @@ controller:
                 value: "{{ git_repo_demo }}"
 {% endif %}
 {% if ca_endpoint is defined and ca_endpoint != "" %}
-              - key: "KEPTN_ENDPOINT"
-                value: "{{ ca_endpoint }}"
+              - key: "CLOUD_AUTOMATION_ENDPOINT"
+                value: "{{ ca_endpoint | default(None) | replace("/api","") }}"
 {% endif %}
 {% if ca_bridge is defined and ca_bridge != "" %}
               - key: "KEPTN_BRIDGE"
@@ -219,3 +219,5 @@ controller:
 {% include 'container-kubegit.yml.j2' %}
 
 {% include 'container-monaco.yml.j2' %}
+
+{% include 'container-cloud-automation.yml.j2' %}

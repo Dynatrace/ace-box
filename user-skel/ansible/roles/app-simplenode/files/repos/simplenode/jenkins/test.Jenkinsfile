@@ -1,13 +1,11 @@
 @Library('ace@v1.1') ace
 @Library('jenkinstest@v1.2.1') jenkinstest
-@Library('keptn-library@5.0') keptnlib
-import sh.keptn.Keptn
 
-def cloudautomation = new sh.keptn.Keptn()
 def event = new com.dynatrace.ace.Event()
 def jmeter = new com.dynatrace.ace.Jmeter()
  
 pipeline {
+
     parameters {
         string(name: 'APP_NAME', defaultValue: 'simplenodeservice', description: 'The name of the service to deploy.', trim: true)
         string(name: 'BUILD', defaultValue: '', description: 'The build version to deploy.', trim: true)
@@ -22,33 +20,37 @@ pipeline {
         LOOPCOUNT = 100
         COMPONENT = 'api'
         PARTOF = 'simplenodeservice'
-        KEPTN_API_TOKEN = credentials('CA_API_TOKEN')
+        CLOUD_AUTOMATION_API_TOKEN = credentials('CA_API_TOKEN')
         DT_API_TOKEN = credentials('DT_API_TOKEN')
         DT_TENANT_URL = credentials('DT_TENANT_URL')
+
+        // cloudautomation tool params
+        CLOUD_AUTOMATION_PROJECT = 'simplenode-jenkins'
+        CLOUD_AUTOMATION_SERVICE = 'simplenodeservice'
+        CLOUD_AUTOMATION_STAGE = 'staging'
+        CLOUD_AUTOMATION_SOURCE = 'gitea'
+        CLOUD_AUTOMATION_MONITORING = 'dynatrace'
+        SHIPYARD_FILE = 'cloudautomation/shipyard.yaml'
+        SLO_FILE = 'cloudautomation/slo.yaml'
+        SLI_FILE = 'cloudautomation/sli.yaml'
+        DT_CONFIG_FILE = 'cloudautomation/dynatrace.conf.yaml'
+
     }
     agent {
         label 'kubegit'
     }
     stages {
         stage ('Quality Gate Init') {
+            agent {
+                    label 'cloud-automation-runner' 
+                  }
             steps {
                 checkout scm
-                script {
-                    cloudautomation.keptnInit project:"${env.PROJECT}", service:"${env.APP_NAME}", stage:"staging", monitoring:"${env.MONITORING}" , shipyard:'cloudautomation/shipyard.yaml'
-                    
-                    switch(env.QG_MODE) {
-                        case "yaml": 
-                            cloudautomation.keptnAddResources('cloudautomation/sli.yaml','dynatrace/sli.yaml')
-                            cloudautomation.keptnAddResources('cloudautomation/slo.yaml','slo.yaml')
-                            cloudautomation.keptnAddResources('cloudautomation/dynatrace.conf.yaml','dynatrace/dynatrace.conf.yaml')
-                            break;
-                        case "dashboard": 
-                            cloudautomation.keptnAddResources('cloudautomation/dynatrace-dashboard.conf.yaml','dynatrace/dynatrace.conf.yaml')
-                            break;
-                    }
-                    
+                container('cloud-automation-runner') {
+                    sh '/cloud_automation/cloud_automation_init.sh'
                 }
-            }
+                stash includes: 'cloud_automation.init.json', name: 'cloud_automation-init' 
+            }           
         }
         stage('DT Test Start') {
             steps {
@@ -69,11 +71,13 @@ pipeline {
                     }
             }
         }
-        stage('Run performance test') {
+        stage('Run performance test') {     
             steps {
-                script {
-                    cloudautomation.markEvaluationStartTime()
+                
+                 container('jmeter') {
+                    sh 'echo $(date --utc +%FT%T.000Z) > cloud_automation.test.starttime'
                 }
+                stash includes: 'cloud_automation.test.starttime', name: 'cloud_automation.test.starttime' 
                 checkout scm
                 container('jmeter') {
                     script {
@@ -95,6 +99,11 @@ pipeline {
                         }
                     }
                 }
+
+               container('jmeter') {
+                    sh 'echo $(date --utc +%FT%T.000Z) > cloud_automation.test.endtime'
+                }
+                stash includes: 'cloud_automation.test.endtime', name: 'cloud_automation.test.endtime' 
             }
         }
         stage('DT Test Stop') {
@@ -119,23 +128,26 @@ pipeline {
         }
 
         stage('Quality Gate') {
+            agent {
+                    label 'cloud-automation-runner' 
+                  }
             steps {
-                script {
-                    //sleep(time:600,unit:"SECONDS")
-                    def labels=[:]
-                    labels.put("DT_RELEASE_VERSION", "${env.BUILD}.0.0")
-                    labels.put("DT_RELEASE_BUILD_VERSION", "${env.ART_VERSION}")
-                    labels.put("DT_RELEASE_STAGE", "${env.TARGET_NAMESPACE}")
-                    labels.put("DT_RELEASE_PRODUCT", "${env.PARTOF}")
-                    
-                    def context = cloudautomation.sendStartEvaluationEvent starttime:"", endtime:"", labels:labels
-                    echo context
-                    result = cloudautomation.waitForEvaluationDoneEvent setBuildResult:true, waitTime:3
+                    unstash 'cloud_automation-init'
+                    unstash 'cloud_automation.test.starttime'
+                    unstash 'cloud_automation.test.endtime'
 
-                    res_file = readJSON file: "keptn.evaluationresult.${context}.json"
+                    container('cloud-automation-runner') {
+                        sh """   
+                            export CLOUD_AUTOMATION_LABELS='[{"DT_RELEASE_VERSION":"'${env.BUILD}.0.0'"},{"DT_RELEASE_BUILD_VERSION":"'${env.ART_VERSION}'"},{"DT_RELEASE_STAGE":"'${env.TARGET_NAMESPACE}'"},{"DT_RELEASE_PRODUCT":"'${env.PARTOF}'"}]'
+                            
+                            export CI_PIPELINE_IID="${BUILD_ID}"
+                            export CI_JOB_NAME="${JOB_NAME}"
+                            export CI_JOB_URL="${JOB_URL}"
+                            export CI_PROJECT_NAME="${env.PROJECT}"
 
-                    echo res_file.toString();
-                }
+                            /cloud_automation/cloud_automation_eval.sh
+                        """
+                    }
             }
         }
 

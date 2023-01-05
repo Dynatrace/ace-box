@@ -1,0 +1,18 @@
+              - containers:
+                - args: "cat"
+                  command: "/bin/sh -c"
+                  image: "dynatraceace/cloud-automation-tools:1.0.0"
+                  livenessProbe:
+                    failureThreshold: 0
+                    initialDelaySeconds: 0
+                    periodSeconds: 0
+                    successThreshold: 0
+                    timeoutSeconds: 0
+                  name: "cloud-automation-runner"
+                  ttyEnabled: true
+                  workingDir: "/home/jenkins/agent"
+                label: "cloud-automation-runner"
+                name: "cloud-automation-runner"
+                slaveConnectTimeout: 300
+                slaveConnectTimeoutStr: "300"
+                yamlMergeStrategy: "override"

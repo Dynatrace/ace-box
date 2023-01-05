@@ -11,9 +11,9 @@ var port = process.env.PORT || 8080,
 	pod_name = process.env.POD_NAME || EMPTY,
 	deployment_name = process.env.DEPLOYMENT_NAME || EMPTY,
 	container_image = process.env.CONTAINER_IMAGE || EMPTY,
-	keptn_project = process.env.KEPTN_PROJECT || EMPTY,
-	keptn_stage = process.env.KEPTN_STAGE || EMPTY,
-	keptn_service = process.env.KEPTN_SERVICE || EMPTY,
+	cloud_automation_project = process.env.CLOUD_AUTOMATION_PROJECT || EMPTY,
+	cloud_automation_stage = process.env.CLOUD_AUTOMATION_STAGE || EMPTY,
+	cloud_automation_service = process.env.CLOUD_AUTOMATION_SERVICE || EMPTY,
   html = fs.readFileSync('index.html').toString().replace("HOSTNAME", os.hostname()); //  + " with DT_TAGS=" + dttags + "\nDT_CUSTOM_PROP=" + dtcustprops + "\nDT_CLUSTER_ID=" + dtclusterid);
 	sver = sem.valid('1.2.3') // semver is loaded for a medium level appsec vulneraility
 
@@ -40,11 +40,11 @@ var requestTrimSize = 4000;
 var init = function(newBuildNumber) {
 	// MAKE SURE we have a good NAMESPACE
 	if(!namespace || (namespace.length == 0) || (namespace == EMPTY)) {
-		if(keptn_stage && keptn_stage.length)
-			namespace = keptn_stage;	
+		if(cloud_automation_stage && cloud_automation_stage.length)
+			namespace = cloud_automation_stage;	
 		else if(deployment_name && deployment_name.length)
 			namespace = deployment_name;	
-		else if(keptn_stage && pod_name.length)
+		else if(cloud_automation_stage && pod_name.length)
 			namespace = pod_name;	
 	}
 
@@ -283,9 +283,9 @@ var server = http.createServer(async function (req, res) {
 			// simply returns the build number as defined in BUILD_NUMBER env-variable which is specified
 			status = "Running build number: " + buildNumber + " Production-Mode: " + inProduction;
 			status += "\n\nHere some additional environment variables:";
-			status += "\nKEPT_PROJECT: " + keptn_project;
-			status += "\nKEPTN_STAGE: " + keptn_stage;
-			status += "\nKEPTN_SERVICE: " + keptn_service;
+			status += "\nCLOUD_AUTOMATION_PROJECT: " + cloud_automation_project;
+			status += "\nCLOUD_AUTOMATION_STAGE: " + cloud_automation_stage;
+			status += "\nCLOUD_AUTOMATION_SERVICE: " + cloud_automation_service;
 			status += "\nDT_TAGS: " + dttags;
 			status += "\nDT_CUSTOM_PROP: " + dtcustprops;
 			status += "\nDT_CLUSTER_ID: " + dtclusterid;

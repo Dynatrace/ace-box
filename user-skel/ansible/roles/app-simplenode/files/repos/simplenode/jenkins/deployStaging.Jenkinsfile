@@ -81,9 +81,9 @@ def generateDynamicMetaData(){
     returnValue += "Branch=${env.GIT_BRANCH} "
     returnValue += "Build=${env.BUILD} "
     returnValue += "Image=${env.TAG_STAGING} "
-    returnValue += "keptn_project=${env.PROJ_NAME} "
-    returnValue += "keptn_service=${env.APP_NAME} "
-    returnValue += "keptn_stage=${env.TARGET_NAMESPACE} "
+    returnValue += "cloud_automation_project=${env.PROJ_NAME} "
+    returnValue += "cloud_automation_service=${env.APP_NAME} "
+    returnValue += "cloud_automation_stage=${env.TARGET_NAMESPACE} "
     returnValue += "url=simplenode.staging.${env.INGRESS_DOMAIN}"
     return returnValue;
 }
