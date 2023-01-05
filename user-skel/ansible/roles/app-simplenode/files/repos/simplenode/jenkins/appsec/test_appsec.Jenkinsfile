@@ -31,8 +31,8 @@ pipeline {
         CLOUD_AUTOMATION_SOURCE = 'gitea'
         CLOUD_AUTOMATION_MONITORING = 'dynatrace'
         SHIPYARD_FILE = 'cloudautomation/shipyard.yaml'
-        SLO_FILE = 'cloudautomation/slo.yaml'
-        SLI_FILE = 'cloudautomation/sli.yaml'
+        SLO_FILE = 'cloudautomation/slo_appsec.yaml'
+        SLI_FILE = 'cloudautomation/sli_appsec.yaml'
         DT_CONFIG_FILE = 'cloudautomation/dynatrace.conf.yaml'
 
     }
