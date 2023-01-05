@@ -283,7 +283,7 @@ var server = http.createServer(async function (req, res) {
 			// simply returns the build number as defined in BUILD_NUMBER env-variable which is specified
 			status = "Running build number: " + buildNumber + " Production-Mode: " + inProduction;
 			status += "\n\nHere some additional environment variables:";
-			status += "\nKEPT_PROJECT: " + cloud_automation_project;
+			status += "\nCLOUD_AUTOMATION_PROJECT: " + cloud_automation_project;
 			status += "\nCLOUD_AUTOMATION_STAGE: " + cloud_automation_stage;
 			status += "\nCLOUD_AUTOMATION_SERVICE: " + cloud_automation_service;
 			status += "\nDT_TAGS: " + dttags;
