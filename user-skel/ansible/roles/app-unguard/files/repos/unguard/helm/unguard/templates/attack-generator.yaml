@@ -31,6 +31,16 @@ spec:
               value: "1"
             - name: WAIT_TIME
               value: "1800"
+            - name: USER_AUTH_SERVICE_ADDRESS
+              value: "unguard-user-auth-service"
+            - name: DT_RELEASE_VERSION
+              value: "{{ .Values.unguard.adService.tag }}"
+            - name: DT_RELEASE_BUILD_VERSION
+              value: "{{ .Values.unguard.adService.tag }}"
+            - name: DT_RELEASE_PRODUCT
+              value: "{{ .Chart.Name }}"
+            - name: DT_RELEASE_STAGE
+              value: "{{ .Release.Namespace }}"
       initContainers:
         - name: wait-for-frontend
           image: curlimages/curl
