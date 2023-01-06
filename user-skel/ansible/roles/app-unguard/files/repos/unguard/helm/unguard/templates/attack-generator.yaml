@@ -5,6 +5,10 @@ metadata:
   labels:
     app.kubernetes.io/name: malicious-load-generator
     app.kubernetes.io/part-of: unguard
+    app.kubernetes.io/component: malicious-load-generator
+    app.kubernetes.io/version: "{{ .Values.unguard.maliciousLoadGenerator.tag }}"
+    app.kubernetes.io/managed-by: "Helm"
+    app.kubernetes.io/part-of: "{{ .Chart.Name }}"
 spec:
   selector:
     matchLabels:
@@ -17,12 +21,16 @@ spec:
       labels:
         app.kubernetes.io/name: malicious-load-generator
         app.kubernetes.io/part-of: unguard
+        app.kubernetes.io/component: malicious-load-generator
+        app.kubernetes.io/version: "{{ .Values.unguard.maliciousLoadGenerator.tag }}"
+        app.kubernetes.io/managed-by: "Helm"
+        app.kubernetes.io/part-of: "{{ .Chart.Name }}"
     spec:
       terminationGracePeriodSeconds: 5
       restartPolicy: Always
       containers:
         - name: malicious-load-generator
-          image: {{ .Values.unguard.proxyService.tag }}
+          image: {{ .Values.unguard.maliciousLoadGenerator.tag }}
           env: # could add here run time as well
             - name: FRONTEND_ADDR
               value: "{{ .Chart.Name }}.{{ .Values.ingress.domain }}/ui"
