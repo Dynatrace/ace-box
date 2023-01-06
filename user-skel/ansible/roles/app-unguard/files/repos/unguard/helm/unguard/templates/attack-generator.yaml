@@ -21,7 +21,7 @@ spec:
       terminationGracePeriodSeconds: 5
       restartPolicy: Always
       containers:
-        - name: {{ .Values.unguard.proxyService.image }}
+        - name: malicious-load-generator
           image: {{ .Values.unguard.proxyService.tag }}
           env: # could add here run time as well
             - name: FRONTEND_ADDR
