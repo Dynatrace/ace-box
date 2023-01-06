@@ -27,6 +27,9 @@ unguard:
   userAuthService: 
     image: dynatraceace/unguard-user-auth-service
     tag: 0.6.2
+  maliciousLoadGenerator: 
+    image: dynatraceace/unguard-malicious-load-generator
+    tag: 0.6.2
   userSimulator:
     image: dynatraceace/unguard-user-simulator
     tag: 0.6.2
