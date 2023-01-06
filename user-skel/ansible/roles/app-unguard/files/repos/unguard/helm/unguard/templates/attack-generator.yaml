@@ -25,7 +25,7 @@ spec:
           image: {{ .Values.unguard.proxyService.tag }}
           env: # could add here run time as well
             - name: FRONTEND_ADDR
-              value: "unguard-frontend:80/ui"
+              value: "{{ .Chart.Name }}.{{ .Values.ingress.domain }}/ui"
               # USERS and WAIT_TIME (in seconds) are optional, default value for USERS = 1, WAIT_TIME = 1800
             - name: USERS
               value: "1"
