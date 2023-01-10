@@ -143,7 +143,6 @@ quality_gate:
   image: dynatraceace/cloud-automation-tools:1.0.0
   stage: evaluate
   script:
-    - sleep 180
     - export CLOUD_AUTOMATION_LABELS='[{"DT_RELEASE_VERSION":"'${DT_RELEASE_VERSION}'"},{"DT_RELEASE_BUILD_VERSION":"'${DT_RELEASE_BUILD_VERSION}'"},{"DT_RELEASE_STAGE":"'${DT_RELEASE_STAGE}'"},{"DT_RELEASE_PRODUCT":"'${DT_RELEASE_PRODUCT}'"}]'
     - /cloud_automation/cloud_automation_eval.sh
 

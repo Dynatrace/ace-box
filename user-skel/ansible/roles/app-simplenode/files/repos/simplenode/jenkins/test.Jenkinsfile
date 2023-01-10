@@ -17,7 +17,7 @@ pipeline {
         PROJECT = 'simplenode-jenkins'
         MONITORING = 'dynatrace'
         VU = 1
-        LOOPCOUNT = 100
+        LOOPCOUNT = 500
         COMPONENT = 'api'
         PARTOF = 'simplenodeservice'
         CLOUD_AUTOMATION_API_TOKEN = credentials('CA_API_TOKEN')
@@ -145,7 +145,6 @@ pipeline {
                             export CI_JOB_URL="${JOB_URL}"
                             export CI_PROJECT_NAME="${env.PROJECT}"
 
-                            sleep 120
                             /cloud_automation/cloud_automation_eval.sh
                         """
                     }

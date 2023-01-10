@@ -145,7 +145,6 @@ pipeline {
                             export CI_JOB_URL="${JOB_URL}"
                             export CI_PROJECT_NAME="${env.PROJECT}"
 
-                            sleep 120
                             /cloud_automation/cloud_automation_eval.sh
                         """
                     }
