@@ -30,6 +30,12 @@
         domain: "{{ ingress_domain }}"
         class: "{{ ingress_class }}"
       unguard:
+          profileService:
+          tag: "{{ unguard_image_tag }}"
+        statusService:
+          tag: "{{ unguard_image_tag }}"
+        maliciousLoadGenerator: 
+          tag: "{{ unguard_image_tag }}"
         adService:
           tag: "{{ unguard_image_tag }}"
         frontend: 
