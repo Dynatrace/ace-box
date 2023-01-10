@@ -30,7 +30,7 @@
         domain: "{{ ingress_domain }}"
         class: "{{ ingress_class }}"
       unguard:
-          profileService:
+        profileService:
           tag: "{{ unguard_image_tag }}"
         statusService:
           tag: "{{ unguard_image_tag }}"
