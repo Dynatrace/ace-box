@@ -45,7 +45,7 @@
         proxyService: 
           tag: "{{ unguard_image_tag }}"
         userAuthService: 
-          tag: "{{ unguard_user_auth_service_image_tag }}"
+          tag: "{{ unguard_image_tag }}"
         userSimulator:
           tag: "{{ unguard_image_tag }}"
           simulatePrivateRanges: "{{ unguard_simulate_private_ranges }}"
