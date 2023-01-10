@@ -14,7 +14,7 @@
           </elementProp>
           <elementProp name="DefaultThinkTime" elementType="Argument">
             <stringProp name="Argument.name">DefaultThinkTime</stringProp>
-            <stringProp name="Argument.value">500</stringProp>
+            <stringProp name="Argument.value">250</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="LTN" elementType="Argument">
@@ -44,7 +44,7 @@
           <stringProp name="LoopController.loops">${__P(LoopCount,1)}</stringProp>
         </elementProp>
         <stringProp name="ThreadGroup.num_threads">${__P(VUCount,1)}</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">10</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
         <longProp name="ThreadGroup.start_time">1536064517000</longProp>
         <longProp name="ThreadGroup.end_time">1536064517000</longProp>
         <boolProp name="ThreadGroup.scheduler">false</boolProp>
@@ -132,7 +132,7 @@ hm.add(new org.apache.jmeter.protocol.http.control.Header(&quot;x-dynatrace-test
         </HTTPSamplerProxy>
         <hashTree/>
         <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Default Think Time" enabled="true">
-          <stringProp name="ConstantTimer.delay">500</stringProp>
+          <stringProp name="ConstantTimer.delay">250</stringProp>
         </ConstantTimer>
         <hashTree/>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="version" enabled="true">
