@@ -25,7 +25,7 @@ pipeline {
         DT_TENANT_URL = credentials('DT_TENANT_URL')
 
         // cloudautomation tool params
-        CLOUD_AUTOMATION_PROJECT = 'simplenode-jenkins'
+        CLOUD_AUTOMATION_PROJECT = 'simplenode-appsec'
         CLOUD_AUTOMATION_SERVICE = 'simplenodeservice'
         CLOUD_AUTOMATION_STAGE = 'staging'
         CLOUD_AUTOMATION_SOURCE = 'gitea'
