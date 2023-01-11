@@ -26,6 +26,8 @@ spec:
     matchLabels:
       app.kubernetes.io/name: ad-service
       app.kubernetes.io/part-of: unguard
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -45,7 +47,9 @@ spec:
             - name: JAEGER_SAMPLER_TYPE
               value: "const"
             - name: JAEGER_SAMPLER_PARAM
-              value: "1"
+              value: "0"
+            - name: JAEGER_DISABLED
+              value: "true"
             - name: ASPNETCORE_ENVIRONMENT
               value: "Production"
             - name: SERVER_PORT
@@ -54,4 +58,3 @@ spec:
               value: "/ad-service"
             - name: USER_AUTH_SERVICE_ADDRESS
               value: "unguard-user-auth-service"
-

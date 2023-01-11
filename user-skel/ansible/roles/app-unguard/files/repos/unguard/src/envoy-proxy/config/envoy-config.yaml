@@ -1,0 +1,74 @@
+node:
+  cluster: unguard-cluster
+  id: unguard
+
+dynamic_resources:
+  lds_config:
+    path: /etc/envoy/unguard/listener-ds.yaml
+
+static_resources:
+  listeners:
+    - name: listener_static
+      address:
+        socket_address:
+          address: 0.0.0.0
+          port_value: 8080
+      filter_chains:
+        - filters:
+            - name: envoy.filters.network.http_connection_manager
+              typed_config:
+                "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+                stat_prefix: ingress_http
+                access_log:
+                  - name: envoy.access_loggers.stdout
+                    typed_config:
+                      "@type": type.googleapis.com/envoy.extensions.access_loggers.stream.v3.StdoutAccessLog
+                http_filters:
+                  - name: envoy.filters.http.router
+                    typed_config:
+                      "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
+                route_config:
+                  name: local_route
+                  virtual_hosts:
+                    - domains:
+                        - "*"
+                      name: unguard_service
+                      routes:
+                        - match:
+                            path: /
+                          redirect:
+                            path_redirect: /ui
+                            response_code: FOUND
+                        - match:
+                            prefix: /ui
+                          route:
+                            cluster: frontend_cluster
+                        - match:
+                            prefix: /ad-service
+                          route:
+                            cluster: ad_service_cluster
+  clusters:
+    - name: frontend_cluster
+      dns_lookup_family: V4_ONLY
+      type: STRICT_DNS
+      load_assignment:
+        cluster_name: frontend_cluster
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: unguard-frontend
+                      port_value: 80
+    - name: ad_service_cluster
+      dns_lookup_family: V4_ONLY
+      type: STRICT_DNS
+      load_assignment:
+        cluster_name: ad_service_cluster
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: unguard-ad-service
+                      port_value: 80

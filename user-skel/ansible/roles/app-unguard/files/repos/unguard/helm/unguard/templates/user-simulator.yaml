@@ -14,6 +14,8 @@ spec:
       app.kubernetes.io/name: user-simulator
       app.kubernetes.io/part-of: "{{ .Chart.Name }}"
   replicas: 3
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:

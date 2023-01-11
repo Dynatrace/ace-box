@@ -26,6 +26,8 @@ spec:
     matchLabels:
       app.kubernetes.io/name: microblog-service
       app.kubernetes.io/part-of: unguard
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -47,7 +49,9 @@ spec:
             - name: JAEGER_SAMPLER_TYPE
               value: "const"
             - name: JAEGER_SAMPLER_PARAM
-              value: "1"
+              value: "0"
+            - name: OPENTRACING_JAEGER_ENABLED
+              value: "false"
             - name: REDIS_SERVICE_ADDRESS
               value: "unguard-redis"
             - name: USER_AUTH_SERVICE_ADDRESS

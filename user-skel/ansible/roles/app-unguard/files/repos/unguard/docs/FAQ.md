@@ -2,6 +2,16 @@
 
 This document answers common questions which can occur when running Unguard.
 
+**I get a `kustomize` error during deployment**
+
+```sh
+running [kubectl --context unguard kustomize ./k8s-manifests/localdev/minikube]
+ - stdout: ""
+ - stderr: "Error: rawResources failed to read Resources: Load from path ../../base failed: '../../base' must be a file
+ ```
+
+Upgrade `kubectl` to the latest version (at least >= `v1.21.0`). See this [stackoverflow answer](https://stackoverflow.com/questions/67071962/kubectl-apply-k-throws-error-rawresources-failed-to-read-resources-load-from).
+
 **How can I avoid ImagePullBackOff errors in Kubernetes?**
 
 Due to the great number of image pulls required you might need to set secrets for
@@ -33,31 +43,13 @@ kubectl patch serviceaccount jaeger-operator -p '{\"imagePullSecrets\": [{\"name
 
 > Note: This needs to be done every time you recreate the cluster. You might need to repeat those steps once you deploy additional charts, e.g. for `jaeger`, `jaeger-operator`, `unguard-mariadb` at the moment.
 
-**Why is Unguard not recognized by Dynatrace anymore?**
-
-Redeploying the ingress can result in a new frontend hostname. Therefore, you have to update the [application detection rule](https://rjc90872.sprint.dynatracelabs.com/#settings/rum/webappmonitoring) in Dynatrace manually.
-
-To get the hostname run the following command:
-
-```sh
-kubectl get ingress -n unguard unguard-ingress -o=jsonpath='{.status.loadBalancer.ingress[0].hostname}'
-```
-
-**How can I push the images to the internal Dynatrace registry?**
-
-Run the following command:
-
-```sh
-skaffold run --default-repo registry.lab.dynatrace.org/casp
-```
-
 **How can I expose Unguard deployed on Minikube to the internet?**
 
-Use the [`k8s-manifests/extra/ingress.yaml`](./k8s-manifests/extra/ingress.yaml) as a template
+Use the [`k8s-manifests/localdev/ingress.yaml`](../k8s-manifests/localdev/ingress/ingress.yaml) as a template
 and possibly change the `unguard.kube` hostname to match the hostname of your deployment before applying it.
 
 ```sh
-kubectl apply -f k8s-manifests/extra/ingress.yaml
+kubectl apply -f k8s-manifests/localdev/ingress.yaml
  ```
 
 Finally, you have to forward incoming requests to your machine on port 80 to your Minikube on port 80.

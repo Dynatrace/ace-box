@@ -30,6 +30,12 @@
         domain: "{{ ingress_domain }}"
         class: "{{ ingress_class }}"
       unguard:
+        profileService:
+          tag: "{{ unguard_image_tag }}"
+        statusService:
+          tag: "{{ unguard_image_tag }}"
+        maliciousLoadGenerator: 
+          tag: "{{ unguard_image_tag }}"
         adService:
           tag: "{{ unguard_image_tag }}"
         frontend: 
@@ -39,7 +45,7 @@
         proxyService: 
           tag: "{{ unguard_image_tag }}"
         userAuthService: 
-          tag: "{{ unguard_user_auth_service_image_tag }}"
+          tag: "{{ unguard_image_tag }}"
         userSimulator:
           tag: "{{ unguard_image_tag }}"
           simulatePrivateRanges: "{{ unguard_simulate_private_ranges }}"

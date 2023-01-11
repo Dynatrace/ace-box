@@ -3,11 +3,13 @@ kind: Kustomization
 namespace: unguard
 resources:
   - namespace.yaml
+  - envoy-proxy.yaml
   - ad-service.yaml
   - frontend.yaml
   - user-simulator.yaml
-  - user-simulator-cronjob.yaml
   - microblog-service.yaml
   - proxy-service.yaml
   - redis.yaml
   - user-auth-service.yaml
+  - status-service.yaml
+  - profile-service.yaml

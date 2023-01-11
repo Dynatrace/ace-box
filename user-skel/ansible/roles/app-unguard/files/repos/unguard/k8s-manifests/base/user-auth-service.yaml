@@ -26,6 +26,8 @@ spec:
     matchLabels:
       app.kubernetes.io/name: user-auth-service
       app.kubernetes.io/part-of: unguard
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -47,9 +49,9 @@ spec:
             - name: JAEGER_SAMPLER_TYPE
               value: "const"
             - name: JAEGER_SAMPLER_PARAM
-              value: "1"
-            - name: REDIS_SERVICE_ADDRESS
-              value: "unguard-redis"
+              value: "0"
+            - name: JAEGER_DISABLED
+              value: "true"
             - name: MARIADB_SERVICE
               value: "unguard-mariadb"
             - name: MARIADB_PASSWORD
