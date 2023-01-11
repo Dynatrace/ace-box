@@ -1,0 +1,14 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: unguard-ad-service
+spec:
+  template:
+    spec:
+      containers:
+        - name: ad-service
+          env:
+            - name: JAEGER_SAMPLER_PARAM
+              value: "1"
+            - name: JAEGER_DISABLED
+              value: "false"

@@ -29,6 +29,8 @@ spec:
     matchLabels:
       app.kubernetes.io/name: microblog-service
       app.kubernetes.io/part-of: "{{ .Chart.Name }}"
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:

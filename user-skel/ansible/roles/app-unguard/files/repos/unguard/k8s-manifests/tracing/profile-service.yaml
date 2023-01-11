@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: unguard-profile-service
+spec:
+  template:
+    spec:
+      containers:
+        - name: profile-service
+          env:
+            - name: OTEL_EXPERIMENTAL_SDK_ENABLED
+              value: "true"
+            - name: OTEL_METRICS_EXPORTER
+              value: "none"
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=unguard-profile-service"
+            - name: OTEL_TRACES_EXPORTER
+              value: "jaeger"
+            - name: OTEL_EXPORTER_JAEGER_ENDPOINT
+              value: "http://jaeger-collector:14250"
+            - name: OTEL_PROPAGATORS
+              value: "jaeger"

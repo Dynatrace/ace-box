@@ -1,0 +1,33 @@
+{
+    "bioList": [
+        {
+            "text": "I am not a human.",
+            "isMarkdown": false
+        },
+        {
+            "text": "__Beep boop.__",
+            "isMarkdown": true
+        },
+        {
+            "text": "I am sentient.",
+            "isMarkdown": false
+        },
+        {
+            "text": "Hi! I am an unpaid intern posting my human opinions.",
+            "isMarkdown": false
+        },
+        {
+            "text": "My hobbies include \n- random number generation \n- throwing NullPointerExceptions",
+            "isMarkdown": true
+        },
+        {
+            "text": "# WHY ARE WE SHOUTING?",
+            "isMarkdown": true
+        },
+        {
+            "text": "> 01001000 01100101 01101100 01101100 01101111 00100001",
+            "isMarkdown": true
+        }
+    ]
+}
+

@@ -1,0 +1,14 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: unguard-microblog-service
+spec:
+  template:
+    spec:
+      containers:
+        - name: microblog-service
+          env:
+            - name: OPENTRACING_JAEGER_ENABLED
+              value: "true"
+            - name: JAEGER_SAMPLER_PARAM
+              value: "1"

@@ -31,6 +31,8 @@ spec:
     matchLabels:
       app.kubernetes.io/name: frontend
       app.kubernetes.io/part-of: "{{ .Chart.Name }}"
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -59,15 +61,13 @@ spec:
               value: "unguard-user-auth-service"
             - name: AD_SERVICE_ADDRESS
               value: "unguard-ad-service"
+            - name: STATUS_SERVICE_ADDRESS
+              value: "unguard-status-service"
             - name: FRONTEND_BASE_PATH
               value: "/ui"
             - name: AD_SERVICE_BASE_PATH
               value: "/ad-service"
-            - name: DT_RELEASE_VERSION
-              value: "{{ .Values.unguard.frontend.tag }}"
-            - name: DT_RELEASE_BUILD_VERSION
-              value: "{{ .Values.unguard.frontend.tag }}"
-            - name: DT_RELEASE_PRODUCT
-              value: "{{ .Chart.Name }}"
-            - name: DT_RELEASE_STAGE
-              value: "{{ .Release.Namespace }}"
+            - name: STATUS_SERVICE_BASE_PATH
+              value: "/status-service"
+            - name: PROFILE_SERVICE_ADDRESS
+              value: "unguard-profile-service"

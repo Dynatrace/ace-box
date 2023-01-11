@@ -1,0 +1,25 @@
+<script>
+$(document).ready((function () {
+		$('[data-toggle="popover"]').popover()
+	}))
+</script>
+
+<div class="py-3 border-top text-center">
+    Powered by Unguard.<br/>
+    Robots lovingly delivered by <a href="https://robohash.org/">Robohash.org</a><br/>
+    {% if baseData.total != baseData.available %}
+        <a href="#" id="deployment-status" class="text-danger"
+            rel="popover"
+	        data-toggle="popover"
+	        data-trigger="focus"
+	        data-content="<ul class='pl-2 ml-0'>{% for microservice, health in baseData.microservices %}
+	            {% set availableReplicas = baseData[microservice].status.availableReplicas %}
+                {% set availability = 'Available' if health.healthy else 'Failing' %}
+                {% set numberOfReplicas = availableReplicas if availableReplicas else 0 %}
+	            <li class='{{'text-success' if health.healthy else 'text-danger'}}'>
+		        <span>{{ microservice }}: <span class='float-right'>{{ availability }}</span></span>
+		        <span class='d-block'>Available Replicas: {{numberOfReplicas}} </span>
+		        </li>{% endfor %}</ul>"
+	        data-html="true">{{ baseData.available }}/{{ baseData.total }} deployments available</a>
+    {% endif %}
+ </div>

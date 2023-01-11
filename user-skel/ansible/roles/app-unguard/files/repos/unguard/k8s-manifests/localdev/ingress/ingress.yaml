@@ -3,26 +3,24 @@ kind: Ingress
 metadata:
   name: unguard-ingress
   labels:
-    app.kubernetes.io/name: frontend
+    app.kubernetes.io/name: ingress
     app.kubernetes.io/part-of: unguard
-  annotations:
-    nginx.ingress.kubernetes.io/app-root: /ui
 spec:
   rules:
     - host: unguard.kube
       http:
         paths:
-          - path: /ui
+          - path: /healthz
             pathType: Prefix
             backend:
               service:
-                name: unguard-frontend
+                name: unguard-envoy-proxy
                 port:
-                  number: 80
-          - path: /ad-service
+                  number: 8081
+          - path: /
             pathType: Prefix
             backend:
               service:
-                name: unguard-ad-service
+                name: unguard-envoy-proxy
                 port:
-                  number: 80
+                  number: 8080
