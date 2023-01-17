@@ -17,7 +17,8 @@ pipeline {
         PROJECT = 'simplenode-jenkins'
         MONITORING = 'dynatrace'
         VU = 1
-        LOOPCOUNT = 100
+        //LOOPCOUNT = 100
+        TESTDURATION = 60
         COMPONENT = 'api'
         PARTOF = 'simplenodeservice'
         CLOUD_AUTOMATION_API_TOKEN = credentials('CA_API_TOKEN')
@@ -65,7 +66,7 @@ pipeline {
                             customProperties : [
                                 "Jenkins Build Number": env.BUILD_ID,
                                 "Virtual Users" : env.VU,
-                                "Loop Count" : env.LOOPCOUNT
+                                "Test Duration" : env.TESTDURATION
                             ]
                         )
                     }
@@ -82,13 +83,14 @@ pipeline {
                 container('jmeter') {
                     script {
                         def status = jmeter.executeJmeterTest ( 
-                            scriptName: "jmeter/simplenodeservice_load.jmx",
+                            scriptName: "jmeter/simplenodeservice_scheduler.jmx",
                             resultsDir: "perfCheck_${env.APP_NAME}_staging_${BUILD_NUMBER}",
                             serverUrl: "simplenodeservice.${env.TARGET_NAMESPACE}", 
                             serverPort: 80,
                             checkPath: '/health',
                             vuCount: env.VU.toInteger(),
-                            loopCount: env.LOOPCOUNT.toInteger(),
+                            //loopCount: env.LOOPCOUNT.toInteger(),
+                            testDuration: env.TESTDURATION.toInteger(),
                             LTN: "perfCheck_${env.APP_NAME}_${BUILD_NUMBER}",
                             funcValidation: false,
                             avgRtValidation: 4000
@@ -120,7 +122,7 @@ pipeline {
                             customProperties : [
                                 "Jenkins Build Number": env.BUILD_ID,
                                 "Virtual Users" : env.VU,
-                                "Loop Count" : env.LOOPCOUNT
+                                "Test Duration" : env.TESTDURATION
                             ]
                          )
                     }
