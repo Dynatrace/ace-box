@@ -40,7 +40,7 @@ stage('DT Test Start') {
                     customProperties : [
                         "Jenkins Build Number": env.BUILD_ID,
                         "Virtual Users" : env.VU,
-                        "Loop Count" : env.LOOPCOUNT
+                        "Test Duration" : env.TESTDURATION
                     ]
                 )
             }
@@ -68,7 +68,7 @@ The DT Test Start and DT Test Stop stages will send events to Dynatrace.
                         serverPort: 80,
                         checkPath: '/health',
                         vuCount: env.VU.toInteger(),
-                        loopCount: env.LOOPCOUNT.toInteger(),
+                        testDuration: env.TESTDURATION.toInteger(),
                         LTN: "perfCheck_${env.APP_NAME}_${BUILD_NUMBER}",
                         funcValidation: false,
                         avgRtValidation: 4000

@@ -28,7 +28,7 @@
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="TestDuration" elementType="Argument">
-            <stringProp name="Argument.name">testDuration</stringProp>
+            <stringProp name="Argument.name">TestDuration</stringProp>
             <stringProp name="Argument.value">180</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
@@ -48,7 +48,7 @@
         <longProp name="ThreadGroup.start_time">1536064517000</longProp>
         <longProp name="ThreadGroup.end_time">1536064517000</longProp>
         <boolProp name="ThreadGroup.scheduler">true</boolProp>
-        <stringProp name="ThreadGroup.duration">${__P(testDuration,1)}</stringProp>
+        <stringProp name="ThreadGroup.duration">${__P(TestDuration,120)}</stringProp>
         <stringProp name="ThreadGroup.delay">10</stringProp>
       </ThreadGroup>
       <hashTree>

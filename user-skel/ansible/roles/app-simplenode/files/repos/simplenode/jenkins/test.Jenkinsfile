@@ -1,5 +1,5 @@
 @Library('ace@v1.1') ace
-@Library('jenkinstest@v1.2.1') jenkinstest
+@Library('jenkinstest@v1.3') jenkinstest
 
 def event = new com.dynatrace.ace.Event()
 def jmeter = new com.dynatrace.ace.Jmeter()
@@ -17,8 +17,7 @@ pipeline {
         PROJECT = 'simplenode-jenkins'
         MONITORING = 'dynatrace'
         VU = 1
-        //LOOPCOUNT = 100
-        TESTDURATION = 60
+        TESTDURATION = 120
         COMPONENT = 'api'
         PARTOF = 'simplenodeservice'
         CLOUD_AUTOMATION_API_TOKEN = credentials('CA_API_TOKEN')
@@ -83,13 +82,12 @@ pipeline {
                 container('jmeter') {
                     script {
                         def status = jmeter.executeJmeterTest ( 
-                            scriptName: "jmeter/simplenodeservice_scheduler.jmx",
+                            scriptName: "jmeter/simplenodeservice_test_by_duration.jmx",
                             resultsDir: "perfCheck_${env.APP_NAME}_staging_${BUILD_NUMBER}",
                             serverUrl: "simplenodeservice.${env.TARGET_NAMESPACE}", 
                             serverPort: 80,
                             checkPath: '/health',
                             vuCount: env.VU.toInteger(),
-                            //loopCount: env.LOOPCOUNT.toInteger(),
                             testDuration: env.TESTDURATION.toInteger(),
                             LTN: "perfCheck_${env.APP_NAME}_${BUILD_NUMBER}",
                             funcValidation: false,
