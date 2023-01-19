@@ -17,7 +17,7 @@ pipeline {
         PROJECT = 'simplenode-appsec'
         MONITORING = 'dynatrace'
         VU = 1
-        TESTDURATION = 300
+        TESTDURATION = 840
         COMPONENT = 'api'
         PARTOF = 'simplenodeservice'
         CLOUD_AUTOMATION_API_TOKEN = credentials('CA_API_TOKEN')
