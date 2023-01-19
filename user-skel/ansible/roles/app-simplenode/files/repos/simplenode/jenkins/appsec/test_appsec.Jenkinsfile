@@ -1,5 +1,5 @@
 @Library('ace@v1.1') ace
-@Library('jenkinstest@v1.3') jenkinstest
+@Library('jenkinstest@v1.3.0') jenkinstest
 
 def event = new com.dynatrace.ace.Event()
 def jmeter = new com.dynatrace.ace.Jmeter()
