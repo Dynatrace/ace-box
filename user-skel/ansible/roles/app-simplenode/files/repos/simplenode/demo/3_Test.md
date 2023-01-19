@@ -62,7 +62,7 @@ The DT Test Start and DT Test Stop stages will send events to Dynatrace.
             container('jmeter') {
                 script {
                     def status = jmeter.executeJmeterTest ( 
-                        scriptName: "jmeter/simplenodeservice_load.jmx",
+                        scriptName: "jmeter/simplenodeservice_test_by_duration.jmx",
                         resultsDir: "perfCheck_${env.APP_NAME}_staging_${BUILD_NUMBER}",
                         serverUrl: "simplenodeservice.${env.TARGET_NAMESPACE}", 
                         serverPort: 80,
