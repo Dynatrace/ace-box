@@ -1,9 +1,9 @@
 output "acebox_dashboard" {
-  value = "http://dashboard.${local.ingress_domain}"
+  value = "http://dashboard.${module.ingress.ingress_domain}"
 }
 
 output "acebox_ip" {
-  value = "connect using ssh -i ${module.ssh_key.private_key_filename} ${var.acebox_user}@${aws_instance.acebox.private_ip}"
+  value = "connect using: ssh -i ${module.ssh_key.private_key_filename} ${var.acebox_user}@${aws_instance.acebox.public_ip}"
 }
 
 output "comment" {
