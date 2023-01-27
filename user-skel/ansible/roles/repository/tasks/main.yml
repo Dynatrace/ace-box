@@ -52,3 +52,9 @@
   ansible.builtin.command: "git push {{ git_remote }} main"
   args:
     chdir: "{{ repo_src }}"
+
+- name: "Set upstream tracking"
+  ansible.builtin.command: "git branch --set-upstream-to={{ git_remote }}/main main"
+  args:
+    chdir: "{{ repo_src }}"
+  when: track_upstream
