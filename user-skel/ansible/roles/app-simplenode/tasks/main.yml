@@ -6,5 +6,6 @@
     repo_src: "{{ item.repo_src }}"
     git_org: "{{ item.git_org }}"
     git_repo: "{{ item.repo_target }}"
+    track_upstream: true
   loop:
   - { repo_target: "{{ repo_name }}", repo_src: "{{ role_path }}/files/repos/simplenode", git_org: "{{ git_org_name }}" }

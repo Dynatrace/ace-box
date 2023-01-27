@@ -43,6 +43,7 @@ To publish the contents to a git repository, you first need to provide the git_e
     repo_src: "<folder/files path>" # the path you want to upload to a git repository
     git_org: "<organization-name>" # organization or group name to be created in a git tool
     git_repo: "<repository-name>" # repository name
+    track_upstream: false # Boolean value whether to track git upstream. This might be helpful when you do manual pulls/pushes from the local repository on the ACE-Box.
 
 ```
 If you want to use a curated role (gitea/gitlab) which can be installed in a K8s cluster, you can change their domain name as in the following: 
