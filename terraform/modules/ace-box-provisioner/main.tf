@@ -68,18 +68,27 @@ locals {
 }
 
 resource "null_resource" "provisioner_ace_prepare" {
-  connection {
+  triggers = {
     host        = local.host
     type        = local.type
     user        = local.user
     private_key = local.private_key
+    prepare_cmd = trimspace(join(" ", local.prepare_cmd))
+    extra_vars  = trimspace(join(" ", local.ace_extra_vars))
   }
 
-  depends_on = [null_resource.provisioner_home_dir, null_resource.provisioner_init]
+  connection {
+    host        = self.triggers.host
+    type        = self.triggers.type
+    user        = self.triggers.user
+    private_key = self.triggers.private_key
+  }
+
+  depends_on = [null_resource.provisioner_init]
 
   provisioner "remote-exec" {
     inline = [
-      trimspace(join(" ", [join(" ", local.prepare_cmd), join(" ", local.ace_extra_vars)]))
+      trimspace(join(" ", [self.triggers.prepare_cmd, self.triggers.extra_vars]))
     ]
   }
 }
@@ -100,6 +109,31 @@ locals {
 }
 
 resource "null_resource" "provisioner_ace_enable" {
+  triggers = {
+    host        = local.host
+    type        = local.type
+    user        = local.user
+    private_key = local.private_key
+    enable_cmd  = trimspace(join(" ", local.enable_cmd))
+  }
+
+  connection {
+    host        = self.triggers.host
+    type        = self.triggers.type
+    user        = self.triggers.user
+    private_key = self.triggers.private_key
+  }
+
+  depends_on = [null_resource.provisioner_ace_prepare]
+
+  provisioner "remote-exec" {
+    inline = [
+      self.triggers.enable_cmd
+    ]
+  }
+}
+
+resource "null_resource" "provisioner_ace_destroy" {
   #
   # In order to prevent e.g. dependency cycles, Terraform 
   # does not allow destroy time remote-exec when connection 
@@ -116,7 +150,6 @@ resource "null_resource" "provisioner_ace_enable" {
     type        = local.type
     user        = local.user
     private_key = local.private_key
-    enable_cmd  = trimspace(join(" ", local.enable_cmd))
     destroy_cmd = trimspace(join(" ", local.destroy_cmd))
   }
 
@@ -127,13 +160,7 @@ resource "null_resource" "provisioner_ace_enable" {
     private_key = self.triggers.private_key
   }
 
-  depends_on = [null_resource.provisioner_home_dir, null_resource.provisioner_init, null_resource.provisioner_ace_prepare]
-
-  provisioner "remote-exec" {
-    inline = [
-      self.triggers.enable_cmd
-    ]
-  }
+  depends_on = [null_resource.provisioner_ace_prepare]
 
   provisioner "remote-exec" {
     when = destroy
@@ -141,5 +168,9 @@ resource "null_resource" "provisioner_ace_enable" {
       self.triggers.destroy_cmd
     ]
     on_failure = continue
+  }
+
+  lifecycle {
+    create_before_destroy = true
   }
 }
