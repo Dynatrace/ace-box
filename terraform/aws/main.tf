@@ -22,7 +22,7 @@ module "vpc" {
 }
 
 #
-# Custom domain
+# Ingress
 #
 module "ingress" {
   source = "./modules/ingress"
@@ -30,7 +30,11 @@ module "ingress" {
   custom_domain        = var.custom_domain
   route53_zone_name    = var.route53_zone_name
   route53_private_zone = var.route53_private_zone
-  ip                   = var.is_private ? aws_instance.acebox.private_ip : aws_instance.acebox.public_ip
+  is_private           = var.is_private
+  ec2_private_ip       = aws_instance.acebox.private_ip
+  ec2_public_ip        = aws_instance.acebox.public_ip
+  network_interface_id = aws_network_interface.acebox_nic.id
+  associate_eip        = var.associate_eip
 }
 
 #
@@ -96,7 +100,7 @@ resource "aws_instance" "acebox" {
 module "provisioner" {
   source = "../modules/ace-box-provisioner"
 
-  host             = var.is_private ? aws_instance.acebox.private_ip : aws_instance.acebox.public_ip
+  host             = module.ingress.ingress_ip
   user             = var.acebox_user
   private_key      = module.ssh_key.private_key_pem
   ingress_domain   = module.ingress.ingress_domain
@@ -107,4 +111,8 @@ module "provisioner" {
   ca_api_token     = var.ca_api_token
   use_case         = var.use_case
   extra_vars       = var.extra_vars
+
+  depends_on = [
+    aws_instance.acebox
+  ]
 }
