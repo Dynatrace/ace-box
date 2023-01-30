@@ -5,3 +5,4 @@ helpers/nul
 loadtest.log
 nul
 jmeter.log
+node_modules/

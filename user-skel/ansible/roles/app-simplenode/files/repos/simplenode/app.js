@@ -24,7 +24,7 @@ morgan = require("morgan");
 const { Logger } = require("./logger");
 Logger.info("Starting the application...");
 var logger = morgan(
-  ":method :url :status :res[content-length] - :response-time ms"
+  ":method :url status: :status :res[content-length] - rt: :response-time ms"
 );
 // ======================================================================
 
