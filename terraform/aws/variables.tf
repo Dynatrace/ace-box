@@ -61,8 +61,13 @@ variable "name_prefix" {
 }
 
 # 
-# AWS custom domain variables
-# 
+# AWS ingress variables
+#
+variable "associate_eip" {
+  description = "Whether or not an ElasticIP shall be associated with the ACE-Box."
+  default     = false
+}
+
 variable "custom_domain" {
   description = "Set to overwrite custom domain"
   default     = ""
