@@ -52,10 +52,11 @@ At the moment, GCP and Azure are supported with a ready-made Terraform config.
     |acebox_user|User that will be created. This depends on the AMI that is being used.|- |ubuntu|
     |name_prefix|String the EC2 instance will be prefixed with.|-|ace-box-cloud|
 
-    ### AWS Domain variables
+    ### AWS ingress variables
 
     |Variable|Description|Required|Default|
     |---|---|---|---|
+    |associate_eip|Set to true if you want to create and associate an AWS Elastic IP. An Elastic IP might be useful if you require a static IP.|-|false|
     |custom_domain|Custom domain an A-Record will be created in.|-|-|
     |ingress_protocol|Ingress protocol is usually *http*. Set to *https* if you're doing e.g. TLS termination with a custom load balancer in front of the ACE-Box VM.|-|http|
     |route53_zone_name|Name of your Route53 zone. Required if you want to use a custom domain.|-|-|
