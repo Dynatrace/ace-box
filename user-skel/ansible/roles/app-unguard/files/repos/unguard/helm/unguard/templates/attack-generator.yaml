@@ -30,7 +30,7 @@ spec:
       restartPolicy: Always
       containers:
         - name: malicious-load-generator
-          image: {{ .Values.unguard.maliciousLoadGenerator.tag }}
+          image: {{ .Values.unguard.maliciousLoadGenerator.image }}:{{ .Values.unguard.maliciousLoadGenerator.tag }}
           env: # could add here run time as well
             - name: FRONTEND_ADDR
               value: "{{ .Chart.Name }}.{{ .Values.ingress.domain }}/ui"
