@@ -25,7 +25,7 @@ variable "azure_location" {
 
 variable "azure_instance_size" {
   description = "Azure VM Instance type"
-  default     = "Standard_A4m_v2"
+  default     = "Standard_B8ms"
 }
 
 variable "custom_domain" {
