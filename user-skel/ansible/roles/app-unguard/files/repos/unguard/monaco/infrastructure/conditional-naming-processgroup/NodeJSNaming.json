@@ -1,0 +1,28 @@
+{
+ "displayName": "{{.name}}",
+ "enabled": true,
+ "metadata": {
+  "clusterVersion": "1.234.46.20220125-132539",
+  "configurationVersions": [
+   0
+  ]
+ },
+ "nameFormat": "{ProcessGroup:NodeJsScriptName} ({ProcessGroup:NodeJsAppName}) {ProcessGroup:KubernetesContainerName} ",
+ "rules": [
+  {
+   "comparisonInfo": {
+    "caseSensitive": null,
+    "negate": false,
+    "operator": "EXISTS",
+    "type": "STRING",
+    "value": null
+   },
+   "key": {
+    "attribute": "PROCESS_GROUP_PREDEFINED_METADATA",
+    "dynamicKey": "NODE_JS_APP_NAME",
+    "type": "PROCESS_PREDEFINED_METADATA_KEY"
+   }
+  }
+ ],
+ "type": "PROCESS_GROUP"
+}
