@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dt-release-info
+data:
+  DT_RELEASE_VERSION: "{{ .Values.easytrade.images.tag }}"
+  DT_RELEASE_BUILD_VERSION: "{{ .Values.easytrade.images.tag }}"
+  DT_RELEASE_PRODUCT: "{{ .Chart.Name }}"
+  DT_RELEASE_STAGE: "{{ .Release.Namespace }}"

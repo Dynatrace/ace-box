@@ -1,0 +1,9 @@
+delete:
+- "auto-tag/EasyTrade"
+- "notification/EasyTrade Synthetics Email"
+- "notification/EasyTrade Synthetics Slack"
+- "synthetic-monitor/EasyTrade generate RabbitMQ data"
+- "synthetic-monitor/EasyTrade use all swagger endpoints"
+- "alerting-profile/EasyTrade Synthetic"
+- "app-detection-rule/app.easytrade"
+- "application-web/app.easytrade"

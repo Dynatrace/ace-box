@@ -1,0 +1,8 @@
+
+config:
+  - app-detect-easytrade: "rule.json"
+  
+app-detect-easytrade:
+  - name: "/easytrade/application-web/app-easytrade.name"
+  - applicationId: "/easytrade/application-web/app-easytrade.id"
+  - pattern: "{{ .Env.INGRESS_DOMAIN }}"

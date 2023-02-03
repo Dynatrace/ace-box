@@ -1,0 +1,27 @@
+config:
+    - health-easytrade-prod: "health-check-monitor.json"
+    - browser-easytrade-prod-home: "easytrade-browser-monitor.json"
+  
+health-easytrade-prod:
+    - name: "webcheck.easytrade"
+    - url: "http://easytrade.{{ .Env.INGRESS_DOMAIN }}"
+    - description: "Health Check for EasyTrade in prod"
+    - location: "/infrastructure/synthetic-location/acebox.id"
+    - managementZoneId: "/easytrade/management-zone/management-zone-easytrade.id"
+    - tag: "/easytrade/auto-tag/tagging-easytrade.name"
+    - applicationId: "/easytrade/application-web/app-easytrade.id"
+    - frequencyInMin: "1"
+    - enabled: "true"
+    - skipDeployment: "{{ .Env.SKIP_SYNTH }}"
+
+browser-easytrade-prod-home:
+    - name: "browser.easytrade"
+    - url: "http://easytrade.{{ .Env.INGRESS_DOMAIN }}"
+    - description: "Browser check for EasyTrade Home Page"
+    - location: "/infrastructure/synthetic-location/acebox.id"
+    - managementZoneId: "/easytrade/management-zone/management-zone-easytrade.id"
+    - tag: "/easytrade/auto-tag/tagging-easytrade.name"
+    - applicationId: "/easytrade/application-web/app-easytrade.id"
+    - frequencyInMin: "5"
+    - enabled: "true"
+    - skipDeployment: "{{ .Env.SKIP_SYNTH }}"

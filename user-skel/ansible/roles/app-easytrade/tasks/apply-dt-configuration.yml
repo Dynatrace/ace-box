@@ -1,0 +1,25 @@
+---
+- set_fact:
+    monaco_projects_folder: "{{ role_path }}/files/monaco/projects"
+    skip_synthetic_monitor: "true"
+    monaco_projects_list: ""
+
+- name: Source Private Synthetic Node ID
+  include_role:
+    name: dt-activegate-classic
+    tasks_from: source-node-id
+  when: skip_synthetic_monitor == "false" and dt_synthetic_node_id is not defined 
+
+- name: EasyTrade - Apply Monitoring as Code
+  include_role:
+    name: monaco
+    tasks_from: apply-monaco
+  vars:
+    monaco_project: "easytrade"
+    monaco_projects_root: "{{ monaco_projects_folder }}" 
+    monaco_environment:
+      INGRESS_DOMAIN: "{{ ingress_domain }}"
+      APP_NAMESPACE: "{{ easytrade_namespace }}"
+      SKIP_SYNTH: "{{ skip_synthetic_monitor }}"
+      SYNTH_NODE_ID: "{{ dt_synthetic_node_id | default(None) }}"
+
