@@ -1,0 +1,33 @@
+{
+    "active": true,
+    "label": "{{ .name }}",
+    "endpointUrl": "{{ .endpointUrl }}",
+    "authToken": "{{ .authToken }}",
+    "eventsIntegrationEnabled": true,
+    "workloadIntegrationEnabled": true,
+    "prometheusExportersIntegrationEnabled": true,
+    "davisEventsIntegrationEnabled": true,
+    "eventsFieldSelectors": [
+      {
+        "label": "Node events",
+        "fieldSelector": "involvedObject.kind=Node",
+        "active": true
+      },
+      {
+        "label": "Pod events",
+        "fieldSelector": "involvedObject.kind=Pod",
+        "active": true
+      },
+      {
+        "label": "Deployment events",
+        "fieldSelector": "involvedObject.kind=Deployment",
+        "active": true
+      },
+      {
+        "label": "Replicaset events",
+        "fieldSelector": "involvedObject.kind=replicaset",
+        "active": true
+      }
+    ],
+    "certificateCheckEnabled": false
+  }

@@ -12,7 +12,7 @@
       "negate": false,
       "operator": "EQUALS",
       "type": "STRING",
-      "value": "unguard"
+      "value": "{{.appname}}"
      },
      "key": {
       "attribute": "PROCESS_GROUP_PREDEFINED_METADATA",
@@ -36,7 +36,7 @@
       "negate": false,
       "operator": "EQUALS",
       "type": "STRING",
-      "value": "unguard"
+      "value": "{{.appname}}"
      },
      "key": {
       "attribute": "CLOUD_APPLICATION_NAMESPACE_NAME",
@@ -56,7 +56,7 @@
       "negate": false,
       "operator": "EQUALS",
       "type": "STRING",
-      "value": "unguard"
+      "value": "{{.appname}}"
      },
      "key": {
       "attribute": "PROCESS_GROUP_PREDEFINED_METADATA",
@@ -77,7 +77,7 @@
       "negate": false,
       "operator": "EQUALS",
       "type": "STRING",
-      "value": "unguard"
+      "value": "{{.appname}}"
      },
      "key": {
       "attribute": "CLOUD_APPLICATION_NAMESPACE_NAME",
@@ -97,7 +97,7 @@
       "negate": false,
       "operator": "EQUALS",
       "type": "STRING",
-      "value": "unguard"
+      "value": "{{.appname}}"
      },
      "key": {
       "attribute": "KUBERNETES_CLUSTER_NAME",
@@ -140,7 +140,7 @@
       "negate": false,
       "operator": "EQUALS",
       "type": "STRING",
-      "value": "unguard"
+      "value": "{{.appname}}"
      },
      "key": {
       "attribute": "KUBERNETES_CLUSTER_NAME",
@@ -151,6 +151,70 @@
    "enabled": true,
    "propagationTypes": [],
    "type": "HOST"
+  },
+  {
+    "type": "BROWSER_MONITOR",
+    "enabled": true,
+    "propagationTypes": [],
+    "conditions": [
+      {
+        "key": {
+          "attribute": "BROWSER_MONITOR_TAGS",
+          "type": "STATIC"
+        },
+        "comparisonInfo": {
+          "type": "TAG",
+          "operator": "TAG_KEY_EQUALS",
+          "value": {
+            "context": "CONTEXTLESS",
+            "key": "{{.appname}}"
+          },
+          "negate": false
+        }
+      }
+    ]
+  },
+  {
+    "type": "HTTP_MONITOR",
+    "enabled": true,
+    "propagationTypes": [],
+    "conditions": [
+      {
+        "key": {
+          "attribute": "HTTP_MONITOR_TAGS",
+          "type": "STATIC"
+        },
+        "comparisonInfo": {
+          "type": "TAG",
+          "operator": "TAG_KEY_EQUALS",
+          "value": {
+            "context": "CONTEXTLESS",
+            "key": "{{.appname}}"
+          },
+          "negate": false
+        }
+      }
+    ]
+  },
+  {
+      "type": "WEB_APPLICATION",
+      "enabled": true,
+      "propagationTypes": [],
+      "conditions": [
+        {
+          "key": {
+            "attribute": "WEB_APPLICATION_NAME",
+            "type": "STATIC"
+          },
+          "comparisonInfo": {
+            "type": "STRING",
+            "operator": "EQUALS",
+            "value": "{{.appname}}",
+            "negate": false,
+            "caseSensitive": true
+          }
+        }
+      ]  
   }
  ]
 }
