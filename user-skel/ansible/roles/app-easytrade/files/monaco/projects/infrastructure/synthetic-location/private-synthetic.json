@@ -1,0 +1,22 @@
+{
+    "type": "PRIVATE",
+    "name": "{{ .name }}",
+    "countryCode": "US",
+    "regionCode": "MI",
+    "city": "Detroit",
+    "latitude": 42.3673,
+    "longitude": -83.1329,
+    "status": "ENABLED",
+    "nodes": [
+      "{{ .nodeId }}"
+    ],
+    "availabilityLocationOutage": "{{ .availabilityLocationOutage }}",
+    "availabilityNodeOutage": "{{ .availabilityNodeOutage }}",
+    "locationNodeOutageDelayInMinutes": 3,
+    "availabilityNotificationsEnabled": true,
+    "deploymentType": "STANDARD",
+    "minActiveGateCount": null,
+    "maxActiveGateCount": null,
+    "nodeSize": "UNSUPPORTED",
+    "autoUpdateChromium": true
+  }

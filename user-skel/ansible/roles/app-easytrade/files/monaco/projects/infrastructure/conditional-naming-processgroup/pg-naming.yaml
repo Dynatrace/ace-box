@@ -1,0 +1,6 @@
+config:
+  - pg-naming: "pg-naming.json"
+
+pg-naming:
+  - name: "ACE Box - containername.namespace"
+  - format: "{ProcessGroup:KubernetesContainerName}.{ProcessGroup:KubernetesNamespace}"

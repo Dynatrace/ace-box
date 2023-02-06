@@ -1,0 +1,37 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: headlessloadgen
+  name: headlessloadgen
+spec:
+  selector:
+    matchLabels:
+      app: headlessloadgen
+  template:
+    metadata:
+      labels:
+        app: headlessloadgen
+    spec:
+      containers:
+        - name: headlessloadgen
+          image: "{{ .Values.easytrade.headlessloadgen.image }}:{{ .Values.easytrade.headlessloadgen.tag }}"
+          imagePullPolicy: Always
+          resources:
+            requests:
+              memory: "500Mi"
+              cpu: "500m"
+            limits:
+              memory: "900Mi"
+              cpu: "700m"
+          envFrom:
+          - configMapRef:
+              name: dt-release-info
+          env:
+            - name: EASY_TRADE_DOMAIN
+              value: "{{ .Values.ingress.domain }}"
+            - name: EASY_TRADE_PORT
+              value: "80"
+            - name: NODE_LOG_LEVEL
+              value: "info"
