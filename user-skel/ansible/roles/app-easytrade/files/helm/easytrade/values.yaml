@@ -1,0 +1,14 @@
+
+# microk8s >1.20 expects class "public"
+ingress:
+  class: public
+  domain: myurl.com
+
+
+easytrade:
+  images:
+    registry: gcr.io/dynatrace-demoability/easytrade
+    tag: 0d8bdc7
+  headlessloadgen:
+    image: gcr.io/dynatrace-demoability/headlessloadgen
+    tag: 848c2ab

@@ -1,0 +1,19 @@
+- name: EasyTrade - Add Dashboard Link
+  block:
+  - set_fact:
+      include_dashboard_value_file: "{{ role_path }}/templates/app-easytrade-dashboard-link.yml.j2"
+
+  - include_role:
+      name: dashboard
+      tasks_from: template-values-file
+  when: easytrade_addDashboardLink|bool == true
+
+- name: EasyTrade - Add Dashboard Preview
+  block:
+  - set_fact:
+      include_dashboard_value_file: "{{ role_path }}/templates/app-easytrade-dashboard-preview.yml.j2"
+
+  - include_role:
+      name: dashboard
+      tasks_from: template-values-file
+  when: easytrade_addDashboardPreview|bool == true

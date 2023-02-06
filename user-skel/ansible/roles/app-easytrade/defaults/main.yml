@@ -1,0 +1,8 @@
+---
+# app deployment parameters
+easytrade_namespace: "easytrade"
+easytrade_image_tag: "5aa49fb"
+easytrade_headlessloadgen_tag: "848c2ab"
+easytrade_domain: "easytrade.{{ ingress_domain }}"
+easytrade_addDashboardLink: true
+easytrade_addDashboardPreview: true

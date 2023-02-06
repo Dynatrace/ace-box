@@ -1,0 +1,9 @@
+config:
+    - management-zone-easytrade: "management-zone.json"
+
+management-zone-easytrade:
+    - environment: "{{ .Env.APP_NAMESPACE }}"
+    - name: "easytrade"
+    - applicationEntityName: "app.easytrade"
+    - httpCheckEntityName: "webcheck.easytrade"
+    - browserMonEntityName: "browser.easytrade"

@@ -1,0 +1,23 @@
+# Deploy EasyTrade
+- name: Deploy EasyTrade
+  kubernetes.core.helm:
+    name: easytrade
+    chart_ref: "{{ role_path }}/files/helm/easytrade"
+    release_namespace: "{{ easytrade_namespace }}"
+    create_namespace: true
+    wait: true
+    wait_timeout: 10m
+    values:
+
+      ingress:
+        domain: "{{ easytrade_domain }}"
+        class: "{{ ingress_class }}"
+      easytrade:
+        images:
+          registry: gcr.io/dynatrace-demoability/easytrade
+          tag: "{{ easytrade_image_tag }}"
+        headlessloadgen:
+          tag: "{{ easytrade_headlessloadgen_tag }}"
+
+- include_tasks:
+    file: add-dashboard-links.yaml
