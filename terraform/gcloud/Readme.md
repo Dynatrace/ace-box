@@ -7,12 +7,13 @@ A GCP account is needed.
 
 ## Instructions for GCP
 
-1. Prepare a Service Account and download service account keys in JSON format.
+1. Make sure you're authenticated to use GCP. The easiest way is through the `gcloud` CLI:
 
-    https://cloud.google.com/iam/docs/creating-managing-service-accounts
-    
-    https://cloud.google.com/iam/docs/creating-managing-service-account-keys
+    ```
+    gcloud auth application-default login
+    ```
 
+    More info as well as alternative options can be found in the [Terraform provider docs](https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/provider_reference#authentication)
 
 2. Navigate to the `terraform/gcloud` folder
 
@@ -31,7 +32,6 @@ A GCP account is needed.
 
     ```hcl
     gcloud_project    = "myGCPProject" # GCP Project you want to use
-    gcloud_cred_file  = "/location/to/service-account-key.json" # location of the Service Account keys JSON file created and downloaded earlier
     gcloud_zone       = "europe-west1-b" # zone where you want to provision the resources. Check out https://cloud.google.com/compute/docs/regions-zones#available for available zones
     ```
 
@@ -60,7 +60,6 @@ This terraform script supports the use of custom domains via Cloud DNS.
 
     ```hcl
     gcloud_project    = "myGCPProject" # GCP Project you want to use
-    gcloud_cred_file  = "/location/to/sakey.json" # location of the Service Account JSON created earlier
     gcloud_zone       = "europe-west1-b" # zone where you want to provision the resources. Check out https://cloud.google.com/compute/docs/regions-zones#available for available zones
     custom_domain     = "acebox.example.com" # Set to override default domain (ip_address.xip.io)
     managed_zone_name = "example.com" # Name of Cloud DNS managed zone

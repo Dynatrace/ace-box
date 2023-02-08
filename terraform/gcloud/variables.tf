@@ -6,10 +6,6 @@ variable "gcloud_zone" {
   description = "Google Cloud Zone where resources will be created"
 }
 
-variable "gcloud_cred_file" {
-  description = "Path to GCloud credential file"
-}
-
 variable "name_prefix" {
   description = "Prefix to distinguish the instance"
   default     = "ace-box-cloud"
