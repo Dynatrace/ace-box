@@ -40,6 +40,11 @@ variable "managed_zone_name" {
   default     = ""
 }
 
+variable "skip_domain_workspace_alignment" {
+  description = "Set to true if your custom domain shall not be aligned with the currently active Terraform workspace. ATTENTION: This will result in conflicts when the same custom domain is used in multiple workspaces!"
+  default     = false
+}
+
 variable "disk_size" {
   description = "Size of disk that will be available to ace-box instance"
   default     = "60"

@@ -1,6 +1,6 @@
 locals {
   is_custom_domain  = var.custom_domain != "" && var.managed_zone_name != ""
-  custom_domain_ext = terraform.workspace == "default" ? "" : terraform.workspace
+  custom_domain_ext = (var.skip_domain_workspace_alignment || terraform.workspace == "default") ? "" : terraform.workspace
   custom_domain     = "${local.custom_domain_ext == "" ? "" : "${local.custom_domain_ext}-"}${var.custom_domain}"
 }
 
