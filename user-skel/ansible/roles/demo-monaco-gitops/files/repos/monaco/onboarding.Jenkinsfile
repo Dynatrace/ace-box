@@ -1,12 +1,12 @@
 pipeline {
     parameters {
-        string(name: 'MON_PROJECT_NAME', defaultValue: 'simplenodeservice', description: 'The name of the Monaco project to onboard.', trim: true)
-        string(name: 'MON_APP_NAME', defaultValue: 'simplenodeservice', description: 'The name of the application to onboard.', trim: true)
+        string(name: 'MON_PROJECT_NAME', defaultValue: 'myFirstProject', description: 'The name of the Monaco project to onboard.', trim: true)
+        string(name: 'MON_APP_NAME', defaultValue: 'myApp', description: 'The name of the Application to onboard.', trim: true)
         string(name: 'MON_ENDPOINT', defaultValue: 'https://dynatrace.com', description: 'The application URL for UEM.', trim: true)
         string(name: 'MON_UEM_COVERAGE', defaultValue: '75', description: 'UEM coverage percentage.', trim: true)
         booleanParam(name: 'MON_SKIP_APP', defaultValue: false, description: 'Skip the creation of the application.')
-        string(name: 'MON_NAMESPACE', defaultValue: 'simplenode-staging', description: 'Which kubernetes namespace is this application running in.', trim: true)
-        string(name: 'MON_WEB_CHECK', defaultValue: 'https://dynatrace.com', description: 'Which URL you want to create a HTTP monitor against.', trim: true)
+        string(name: 'MON_NAMESPACE', defaultValue: 'myappnamespace', description: 'Which kubernetes namespace is this application running in.', trim: true)
+        string(name: 'MON_WEB_CHECK', defaultValue: 'https://dynatrace.com', description: 'Which URL you want to create a HTTP monitor for.', trim: true)
         booleanParam(name: 'MON_SKIP_WEB_CHECK', defaultValue: false, description: 'Skip the deployment of the HTTP monitor.')
     }
     agent any
