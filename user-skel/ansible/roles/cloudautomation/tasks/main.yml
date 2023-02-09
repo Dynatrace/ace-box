@@ -20,14 +20,16 @@
       var_value_to_set: "CLOUD_AUTOMATION"
   when: cloud_automation_flavor is not defined or cloud_automation_flavor != "CLOUD_AUTOMATION"
 
-- name: Source Cloud Automation version
-  include_tasks: roles/{{ role_name }}/tasks/source-version.yml
+# Keptn CLI not available for latest CA versions (0.19.4, 0.19.5, 0.19.6, 0.19.7)
+# - name: Source Cloud Automation version
+#   include_tasks: roles/{{ role_name }}/tasks/source-version.yml
 
 - name: Install Keptn CLI
   include_role:
     name: keptn-cli
   vars:
-    keptn_version: "{{ cloud_automation_version }}"
+    # keptn_version: "{{ cloud_automation_version }}"
+    keptn_version: "0.19.3" # Keptn CLI not available for latest CA versions (0.19.4, 0.19.5, 0.19.6, 0.19.7)
     force_install: "{{ is_ca_flavor_change | bool }}"
 
 - name: Create namespace
