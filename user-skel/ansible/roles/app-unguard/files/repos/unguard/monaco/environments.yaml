@@ -1,0 +1,4 @@
+ace:
+  - name: "ace"                 #name to reference it by
+  - env-url: "{{ .Env.DT_TENANT_URL }}" #tenant URL - Including https:// NO trailing slash - e.g.: https://tenant.live.dynatrace.com
+  - env-token-name: "DT_API_TOKEN" #environment variable that contains the API token
