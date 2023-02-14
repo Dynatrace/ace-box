@@ -1,0 +1,31 @@
+{
+ "description": null,
+ "entitySelectorBasedRules": [],
+ "name": "{{.name}}",
+ "rules": [
+  {
+   "conditions": [
+    {
+     "comparisonInfo": {
+      "caseSensitive": null,
+      "negate": false,
+      "operator": "EXISTS",
+      "type": "STRING",
+      "value": null
+     },
+     "key": {
+      "attribute": "PROCESS_GROUP_PREDEFINED_METADATA",
+      "dynamicKey": "KUBERNETES_NAMESPACE",
+      "type": "PROCESS_PREDEFINED_METADATA_KEY"
+     }
+    }
+   ],
+   "enabled": true,
+   "propagationTypes": [
+    "PROCESS_GROUP_TO_SERVICE"
+   ],
+   "type": "PROCESS_GROUP",
+   "valueFormat": "{ProcessGroup:KubernetesNamespace}"
+  }
+ ]
+}

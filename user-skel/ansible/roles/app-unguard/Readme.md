@@ -41,7 +41,9 @@ unguard_deploy_user_simulator_cronjob: "false" # enable/disable user simulator c
 
 ```yaml
 - include_role:
-    name: dt-activegate-private-synth-classic
+    name: dt-activegate-classic
+  vars:
+    activegate_install_synthetic: true
 ```
 
 ### (Optional) Configure Dynatrace using Monaco
