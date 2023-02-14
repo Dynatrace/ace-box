@@ -1,0 +1,8 @@
+
+config:
+  - app-detect-unguard: "rule.json"
+  
+app-detect-unguard:
+  - name: "/unguard/application/app-unguard.name"
+  - applicationId: "/unguard/application/app-unguard.id"
+  - pattern: "unguard.{{ .Env.INGRESS_DOMAIN }}"
