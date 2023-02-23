@@ -242,17 +242,22 @@ def prepare(
             return
 
     prepare_extra_vars = {
-        'ingress_domain': ingress_domain,
         'ace_box_user': user,
+        'ingress_domain': ingress_domain,
         'ingress_protocol': ingress_protocol,
         'dynatrace_tenant_url': dt_tenant,
         'dynatrace_api_token': dt_api_token,
-        'ca_tenant_url': ca_tenant,
-        'ca_api_token': ca_api_token,
-        'ace_box_user': user,
-        'host_group': host_group,
         'extra_vars': {}
     }
+
+    if ca_tenant:
+        prepare_extra_vars['ca_tenant_url'] = ca_tenant
+    
+    if ca_api_token:
+        prepare_extra_vars['ca_api_token'] = ca_api_token
+    
+    if host_group:
+        prepare_extra_vars['host_group'] = host_group
 
     for var in extra_var:
         extra_var_parts = var.split('=')
