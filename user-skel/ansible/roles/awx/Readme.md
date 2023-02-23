@@ -33,9 +33,7 @@ awx_version: "17.1.0" # AWX version to deploy
 awx_ingress_domain: "awx.{{ ingress_domain }}" # domain where AWX will be available
 awx_secret_key_secret_name: "awx-secret-key" # secrets that get created using installation time - no need to change
 awx_admin_creds_secret_name: "awx-admin-creds" # secrets that get created using installation time - no need to change
-awx_postgres_password: "dynatrace" # Postgress DB password - no need to change
 awx_admin_user : "dynatrace" # credentials used for AWX admin account
-awx_admin_password : "dynatrace" # credentials used for AWX admin account
 ```
 
 ### Other Tasks in the Role

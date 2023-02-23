@@ -50,7 +50,6 @@ gitlab_domain: "gitlab.{{ ingress_domain }}"
 gitlab_gcpe_helm_chart_version: "0.2.15"
 gitlab_gcpe_tag: "v0.5.3"
 gitlab_root_creds_secret_name: "ace-gitlab-initial-root-password"
-gitlab_root_initial_password: "dynatrace"
 ```
 
 ### Other Tasks in the Role
