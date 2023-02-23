@@ -162,6 +162,22 @@ def ace(
     envvar='ACE_DT_API_TOKEN',
 )
 @click.option(
+    '--dashboard-user',
+    help=(
+        'Please enter your ACE-Box dashboard user.'
+        'If not set you\'ll be prompted during "prepare".'
+    ),
+    envvar='ACE_DASHBOARD_USER',
+)
+@click.option(
+    '--dashboard-password',
+    help=(
+        'Please enter your ACE-Box dashboard password.'
+        'If not set you\'ll be prompted during "prepare".'
+    ),
+    envvar='ACE_DASHBOARD_PASSWORD',
+)
+@click.option(
     '--ca-tenant',
     help=(
         'Please enter your Cloud Automation tenant URL'
@@ -194,6 +210,8 @@ def prepare(
     ingress_protocol,
     dt_tenant,
     dt_api_token,
+    dashboard_user,
+    dashboard_password,
     ca_tenant,
     ca_api_token,
     host_group,
@@ -216,6 +234,12 @@ def prepare(
 
     if not dt_api_token:
         dt_api_token = click.prompt('Please enter your Dynatrace API token')
+
+    if not dashboard_user:
+        dashboard_user = click.prompt('Please enter your ACE-Box dashboard user', default='dynatrace')
+
+    if not dashboard_password:
+        dashboard_password = click.prompt('Please enter your ACE-Box dashboard password')
 
     if not ansible_workdir:
         ansible_workdir = click.prompt(
@@ -247,6 +271,8 @@ def prepare(
         'ingress_protocol': ingress_protocol,
         'dynatrace_tenant_url': dt_tenant,
         'dynatrace_api_token': dt_api_token,
+        'dashboard_user': dashboard_user,
+        'dashboard_password': dashboard_password,
         'extra_vars': {}
     }
 

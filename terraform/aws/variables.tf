@@ -30,6 +30,18 @@ variable "dt_api_token" {
   description = "Dynatrace API token in format of 'dt0c01. ...'"
 }
 
+variable "dashboard_user" {
+  type        = string
+  description = "ACE-Box dashboard user."
+  default     = "dynatrace"
+}
+
+variable "dashboard_password" {
+  type        = string
+  description = "ACE-Box dashboard password."
+  default     = ""
+}
+
 #
 # AWS default variables
 #
