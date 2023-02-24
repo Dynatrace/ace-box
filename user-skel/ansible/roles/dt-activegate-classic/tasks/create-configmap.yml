@@ -1,6 +1,6 @@
 ---
 - set_fact:
-      dt_synthetic_node_id: ""
+    dt_synthetic_node_id: ""
       
 - name: ActiveGate - Get all Synthetic nodes
   when: activegate_install_synthetic

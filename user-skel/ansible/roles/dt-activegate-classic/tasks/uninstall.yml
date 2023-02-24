@@ -1,6 +1,6 @@
+---
 - name: "ActiveGate - Uninstall"
   become: true
   become_user: root
   shell: "{{ activegate_uninstall_script_location }}"
-  ignore_errors: yes
-  when: feature_activegate
+  ignore_errors: true

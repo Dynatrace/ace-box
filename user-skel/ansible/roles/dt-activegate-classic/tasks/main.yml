@@ -15,30 +15,15 @@
       Authorization: "Api-token {{ vars[activegate_dt_access_token_name] }}"
   when: not activegate_download_location is exists
 
+# Loads a list of services which is used to termine
+# whether the AG is installed already
 - service_facts:
-
-- set_fact:
-    ag_install_command: /bin/sh "{{ activegate_download_location }}"
-  when: not activegate_install_synthetic
-
-- set_fact:
-    ag_install_command: DYNATRACE_SYNTHETIC_AUTO_INSTALL=true /bin/sh "{{ activegate_download_location }}" --enable-synthetic
-  when: activegate_install_synthetic
 
 - become: true
   become_user: root
   block:
-  - name: Install ActiveGate - Synthetic "{{ activegate_install_synthetic }}"
-    shell:
-      cmd: "{{ ag_install_command }}" 
-      creates: "{{ activegate_uninstall_script_location }}"
-  - name: ActiveGate - Update dnsEntryPoint on custom.properties
-    blockinfile:
-      path: /var/lib/dynatrace/gateway/config/custom.properties
-      insertafter: "proxy-off = true"
-      block: |
-        [connectivity]
-        dnsEntryPoint = http://{{ ansible_facts.fqdn }}:9999
-  - include: restart-activegate.yml
-  - include: create-configmap.yml
+  - include_tasks: install.yml
+  rescue:
+  - include_tasks: uninstall.yml
+  - include_tasks: install.yml
   when: ansible_facts.services["dynatracegateway.service"] is not defined
