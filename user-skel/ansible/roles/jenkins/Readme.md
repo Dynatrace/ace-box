@@ -49,7 +49,6 @@ jenkins_helm_chart_version: "4.1.17"
 jenkins_namespace: "jenkins"
 jenkins_version: "2.346.3-2-lts"
 jenkins_username: dynatrace
-jenkins_password: dynatrace
 git_org_demo: "demo"
 git_repo_demo: "ace"
 git_repo_monaco: "monaco"

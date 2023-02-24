@@ -40,6 +40,8 @@ At the moment, GCP and Azure are supported with a ready-made Terraform config.
     | ca_api_token |Dynatrace Cloud Automation api token. **Note**: if not set, Keptn will be installed and used instead |-|-|
     | use_case |Use case, the ACE Box will be prepared for. Options are:<ul> <li>`demo_default`</li><li>`demo_quality_gates_jenkins`</li><li>`demo_security_gates_jenkins`</li><li>`demo_quality_gates_gitlab`</li><li>`demo_auto_remediation_ansible`</li><li>`demo_all`</li><li>`demo_monaco_gitops`</li><li>URL to an external repository ([see docs](docs/external-use-case.md))</li></ul>|-|demo_default|
     | extra_vars |Additional variables that are passed and persisted on the VM. Variables can be sourced as `extra_vars.<variable key>` for e.g. external use cases |-|-|
+    |dashboard_user|ACE-Box dashboard user.|-|dynatrace|
+    |dashboard_password|ACE-Box dashboard password. If not set, a random password will be generated. The password can retrieved by running `terraform output dashboard_password`. Attention: Output shows leading and trailing quotes that are not part of the password!|-|-|
 
     ### Default AWS variables
 
@@ -108,4 +110,5 @@ Command  | Result
 -------- | -------
 `terraform destroy` | deletes any resources created by Terraform |
 `terraform plan -destroy` | view a speculative destroy plan, to see what the effect of destroying would be |
-`terraform output` | Sows Terraform outputs such as the command to connect to the host and the dashboard URL. |
+`terraform output` | Shows Terraform outputs such as the command to connect to the host and the dashboard URL. |
+`terraform output -json` | Shows Terraform outputs in clear text json. This command might be useful to show the dashboard password. |

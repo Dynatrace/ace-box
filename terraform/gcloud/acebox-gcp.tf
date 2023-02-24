@@ -64,23 +64,41 @@ resource "google_compute_instance" "acebox" {
   tags = ["${var.name_prefix}-${random_id.uuid.hex}"]
 }
 
+#
+# Dashboard Password
+#
+
+locals {
+  generate_random_password = var.dashboard_password == ""
+  dashboard_password       = coalescelist(random_password.dashboard_password[*].result, [var.dashboard_password])[0]
+}
+
+resource "random_password" "dashboard_password" {
+  count  = local.generate_random_password ? 1 : 0
+  length = 12
+}
+
+#
+# Provisioner
+#
 locals {
   ingress_domain = local.is_custom_domain ? local.custom_domain : "${google_compute_instance.acebox.network_interface.0.access_config.0.nat_ip}.nip.io"
 }
 
-# Provision ACE-Box
 module "provisioner" {
   source = "../modules/ace-box-provisioner"
 
-  host             = google_compute_instance.acebox.network_interface.0.access_config.0.nat_ip
-  user             = var.acebox_user
-  private_key      = module.ssh_key.private_key_pem
-  ingress_domain   = local.ingress_domain
-  ingress_protocol = var.ingress_protocol
-  dt_tenant        = var.dt_tenant
-  dt_api_token     = var.dt_api_token
-  ca_tenant        = var.ca_tenant
-  ca_api_token     = var.ca_api_token
-  use_case         = var.use_case
-  extra_vars       = var.extra_vars
+  host               = google_compute_instance.acebox.network_interface.0.access_config.0.nat_ip
+  user               = var.acebox_user
+  private_key        = module.ssh_key.private_key_pem
+  ingress_domain     = local.ingress_domain
+  ingress_protocol   = var.ingress_protocol
+  dt_tenant          = var.dt_tenant
+  dt_api_token       = var.dt_api_token
+  ca_tenant          = var.ca_tenant
+  ca_api_token       = var.ca_api_token
+  use_case           = var.use_case
+  extra_vars         = var.extra_vars
+  dashboard_user     = var.dashboard_user
+  dashboard_password = local.dashboard_password
 }

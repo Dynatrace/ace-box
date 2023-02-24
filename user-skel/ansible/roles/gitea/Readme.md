@@ -36,8 +36,7 @@ Variables that can be set are as follows:
 ---
 gitea_version: "1.17.2"
 gitea_domain: "gitea.{{ ingress_domain }}"
-gitea_username: "username"
-gitea_password: "password"
+gitea_username: "dynatrace"
 gitea_email: "ace@dynatrace.com"
 gitea_namespace: "gitea"
 gitea_helm_chart_version: "4.1.1"
