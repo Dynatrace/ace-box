@@ -79,3 +79,15 @@ variable "extra_vars" {
   type    = map(string)
   default = {}
 }
+
+variable "dashboard_user" {
+  type        = string
+  description = "ACE-Box dashboard user."
+  default     = "dynatrace"
+}
+
+variable "dashboard_password" {
+  type        = string
+  description = "ACE-Box dashboard password."
+  default     = ""
+}

@@ -13,6 +13,8 @@
     name: gitea-charts
     repo_url: "https://dl.gitea.io/charts/"
 
+- include_tasks: roles/gitea/tasks/create-secret.yml
+
 - name: Template values file
   ansible.builtin.template:
     src: gitea-values.yml.j2
@@ -88,6 +90,7 @@
     register: post_token_result
   - set_fact:
       gitea_access_token: "{{ post_token_result.json.sha1 }}"
+  # Update gitea_access_token in Gitea secret
   - include_tasks: roles/gitea/tasks/create-secret.yml
   when: gitea.changed
 

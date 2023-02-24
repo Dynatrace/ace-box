@@ -46,3 +46,11 @@ variable "extra_vars" {
   type    = map(string)
   default = {}
 }
+
+variable "dashboard_user" {
+
+}
+
+variable "dashboard_password" {
+
+}

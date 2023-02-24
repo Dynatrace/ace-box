@@ -95,22 +95,37 @@ resource "aws_instance" "acebox" {
 }
 
 #
+# Dashboard Password
+#
+locals {
+  generate_random_password = var.dashboard_password == ""
+  dashboard_password       = coalescelist(random_password.dashboard_password[*].result, [var.dashboard_password])[0]
+}
+
+resource "random_password" "dashboard_password" {
+  count  = local.generate_random_password ? 1 : 0
+  length = 12
+}
+
+#
 # Provisioner
 #
 module "provisioner" {
   source = "../modules/ace-box-provisioner"
 
-  host             = module.ingress.ingress_ip
-  user             = var.acebox_user
-  private_key      = module.ssh_key.private_key_pem
-  ingress_domain   = module.ingress.ingress_domain
-  ingress_protocol = var.ingress_protocol
-  dt_tenant        = var.dt_tenant
-  dt_api_token     = var.dt_api_token
-  ca_tenant        = var.ca_tenant
-  ca_api_token     = var.ca_api_token
-  use_case         = var.use_case
-  extra_vars       = var.extra_vars
+  host               = module.ingress.ingress_ip
+  user               = var.acebox_user
+  private_key        = module.ssh_key.private_key_pem
+  ingress_domain     = module.ingress.ingress_domain
+  ingress_protocol   = var.ingress_protocol
+  dt_tenant          = var.dt_tenant
+  dt_api_token       = var.dt_api_token
+  ca_tenant          = var.ca_tenant
+  ca_api_token       = var.ca_api_token
+  use_case           = var.use_case
+  extra_vars         = var.extra_vars
+  dashboard_user     = var.dashboard_user
+  dashboard_password = local.dashboard_password
 
   depends_on = [
     aws_instance.acebox

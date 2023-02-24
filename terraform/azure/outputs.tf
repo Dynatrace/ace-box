@@ -2,6 +2,11 @@ output "acebox_dashboard" {
   value = "http://dashboard.${local.ingress_domain}"
 }
 
+output "dashboard_password" {
+  value     = local.dashboard_password
+  sensitive = true
+}
+
 output "acebox_ip" {
   value = "connect using: ssh -i ${module.ssh_key.private_key_filename}} ${var.acebox_user}@${azurerm_public_ip.acebox_publicip.ip_address}"
 }

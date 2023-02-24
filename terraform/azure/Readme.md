@@ -74,4 +74,5 @@ Command  | Result
 `terraform destroy` | deletes any resources created by Terraform |
 `terraform plan -destroy` | view a speculative destroy plan, to see what the effect of destroying would be |
 `terraform show` | Outputs the resources created by Terraform. Useful to verify IP addresses and the dashboard URL. 
+`terraform output -json` | Shows Terraform outputs in clear text json. This command might be useful to show the dashboard password. |
 
