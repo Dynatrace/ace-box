@@ -1,0 +1,25 @@
+---
+- set_fact:
+    ag_install_command: /bin/sh "{{ activegate_download_location }}"
+  when: not activegate_install_synthetic
+
+- set_fact:
+    ag_install_command: DYNATRACE_SYNTHETIC_AUTO_INSTALL=true /bin/sh "{{ activegate_download_location }}" --enable-synthetic
+  when: activegate_install_synthetic
+
+- name: Install synthetic-enabled ActiveGate
+  shell:
+    cmd: "{{ ag_install_command }}"
+    creates: "{{ activegate_uninstall_script_location }}"
+
+- name: ActiveGate - Update dnsEntryPoint on custom.properties
+  blockinfile:
+    path: /var/lib/dynatrace/gateway/config/custom.properties
+    insertafter: "proxy-off = true"
+    block: |
+      [connectivity]
+      dnsEntryPoint = http://{{ ansible_facts.fqdn }}:9999
+
+- include_tasks: restart-activegate.yml
+
+- include_tasks: create-configmap.yml
