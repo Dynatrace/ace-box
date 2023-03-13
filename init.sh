@@ -1,3 +1,3 @@
 #!/bin/bash
-root="$(pwd)"
-ln -s "$root/hooks" "$root/.git/hooks"
+
+git config core.hooksPath hooks
