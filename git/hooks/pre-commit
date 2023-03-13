@@ -1,0 +1,5 @@
+#!/bin/sh
+#
+# Checks for git secrets before commiting
+git secrets-update
+git secrets --pre_commit_hook -- "$@"
