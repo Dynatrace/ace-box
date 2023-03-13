@@ -162,10 +162,10 @@ Check out the [ACE CLI](docs/ace-cli.md) page for more details.
 
 Guidelines for contributing to this repository
 
-### Pre-commit hooks
+### Before creating a new commit: Pre-commit hooks
 
-We have a pre-commit hook implement. To install it you need to follow this process https://bitbucket.lab.dynatrace.org/projects/SEC/repos/git-secrets/browse.
+Before creating new commits, you need to install the pre-commit hook `git secrets` by following the process described here: https://bitbucket.lab.dynatrace.org/projects/SEC/repos/git-secrets/browse.
 
-After installing `git secrets`, you will need to run the file `init.sh` to use the hooks located in the hook folder. (init.sh only works in mac or Linux for Windows users you need to copy the hook folder contents to your .git/hooks folder manually)
+After installing `git secrets`, you need to run `git config core.hooksPath hooks` from the root folder of this repo. This will tell Git that your hooks for this project are located in the folder called `hooks`.
 
-The `pre-commit` hook validates that there are no secrets being committed and includes validation for Dynatrace Tokens. Once install, it runs every commit.
+The file `hooks/pre-commit` validates that there are no secrets being committed and includes validation for Dynatrace Tokens. Once installed, it runs every commit.
