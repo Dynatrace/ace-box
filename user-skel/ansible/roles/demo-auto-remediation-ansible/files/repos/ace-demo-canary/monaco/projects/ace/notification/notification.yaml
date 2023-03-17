@@ -1,6 +1,0 @@
-config:
-  - simplenode.canary: "notification.json"
-
-simplenode.canary:
-  - name: "ace-demo-canary"
-  - alertingProfileId: "/ace/alerting-profile/simplenode.canary.id"
