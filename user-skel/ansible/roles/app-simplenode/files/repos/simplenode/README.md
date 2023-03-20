@@ -46,7 +46,7 @@ There are different options on how to run / deploy that app
 | Run where | How |
 | --------- | --- |
 | Local     | npm start |
-| Docker    | docker run dynatraceace/simplenodeservice:1.0.2 |
+| Docker    | docker build -t simplenodeservice:1.0.2 . && docker run simplenodeservice:1.0.2 |
 | k8s       | https://github.com/grabnerandi/keptn-qualitygate-examples |
 
 ## Build it yourself
