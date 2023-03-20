@@ -1,7 +1,0 @@
-{
-    "displayName" : "Sockshop Carts Pipeline",
-    "favicon" : "https://www.cloudfoundry.org/wp-content/uploads/2017/10/icon-concourse@2x.png",
-    "configUrl" : "https://bbl-env-ba-66f9ba8-concourse-lb-07041d6baa0ed7d4.elb.us-west-2.amazonaws.com/teams/main/pipelines/carts",
-    "tags" : ["Sockshop", "Concourse"],
-    "properties" : {"Pipeline" : "Sockshop-carts"}
-}

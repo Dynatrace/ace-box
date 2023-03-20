@@ -1,8 +1,0 @@
----
-applications:
-- name: APPNAME
-  memory: 768M
-  instances: 1
-  buildpack: java_buildpack_offline
-  env:
-    DT_CUSTOM_PROP: DEPLOYMENT_GRP_NME=DTGRP DEPLOYMENT_APP_NME=NODEID DEPLOYMENT_COLOR=APPCOLOR
