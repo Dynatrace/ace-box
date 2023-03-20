@@ -1,9 +1,0 @@
-config:
-    - app-app-one: "application.json"
-    - app-app-two: "application.json"
-  
-app-app-one:
-    - name: "app-one"
-
-app-app-two:
-    - name: "app-two"

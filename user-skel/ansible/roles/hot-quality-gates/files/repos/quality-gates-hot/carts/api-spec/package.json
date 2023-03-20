@@ -1,9 +1,0 @@
-{
-    "scripts": {
-      "init": "node hooks.js"
-    },
-    "devDependencies": {
-      "mongodb": "^2.2.5"
-    }
-  }
-  

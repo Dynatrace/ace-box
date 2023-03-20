@@ -1,4 +1,0 @@
-stages:
-  - name: "dev"
-  - name: "staging"
-  - name: "prod"

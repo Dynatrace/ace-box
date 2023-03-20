@@ -1,4 +1,0 @@
-config:
-- appenvironment: appenvironment.json
-appenvironment:
-- name: app.environment

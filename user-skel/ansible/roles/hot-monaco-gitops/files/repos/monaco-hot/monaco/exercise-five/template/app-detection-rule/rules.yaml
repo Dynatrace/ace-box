@@ -1,8 +1,0 @@
-config:
-  - app-rule: "rule.json"
-  
-app-rule:
-  - name: "application/app.name"
-  - applicationId: "application/app.id"
-  - pattern: "{{ .Env.Application_URL_pattern }}"
-

@@ -1,6 +1,0 @@
-config:
-    - management-zone: "management-zone.json"
-
-management-zone:
-    - environment: "{{.Env.Kubernetes_Namespace}}"
-    - name: "mac-mz-{{.Env.Kubernetes_Namespace}}"

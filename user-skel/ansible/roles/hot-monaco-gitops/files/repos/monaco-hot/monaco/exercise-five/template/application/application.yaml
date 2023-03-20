@@ -1,5 +1,0 @@
-config:
-    - app: "application.json"
-  
-app:
-    - name: "{{.Env.App_Name}} - {{.Env.Environment}}"
