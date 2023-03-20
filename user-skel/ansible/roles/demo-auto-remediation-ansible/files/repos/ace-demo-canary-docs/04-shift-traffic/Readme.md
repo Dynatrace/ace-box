@@ -12,7 +12,7 @@ At the moment, the load generator is calling the service's ingress. Although bot
 
     ![awx_template_canary](../assets/images/awx_template_canary.png)
 
-A playbook is run which slowly increases the percentage of traffic that is routed to the canary. With each incrementation step an event is pushed to Dynatrace to make it aware of the service's configuration change. When you visit the application in your browser ( `http(s)://simplenodeservice.canary.<ingress domain>` ) the likelyhood of reaching the new service is steadily increasing up to the point where you'll only see the new version.
+A playbook is run which slowly increases the percentage of traffic that is routed to the canary. With each incrementation step an event is pushed to Dynatrace to make it aware of the service's configuration change. When you visit the application in your browser ( `http(s)://simplenodeservice-canary.<ingress domain>` ) the likelyhood of reaching the new service is steadily increasing up to the point where you'll only see the new version.
 
 ## 2. Inspect traffic shift in Dynatrace
 

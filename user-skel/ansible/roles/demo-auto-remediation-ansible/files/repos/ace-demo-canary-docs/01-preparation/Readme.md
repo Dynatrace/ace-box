@@ -21,5 +21,5 @@ Eventually, all pipelines should have run successfully which ycan be verified in
 At this point, the live version of your service should be available at:
 
 ```
-http(s)://simplenodeservice.canary.<ingress domain>
+http(s)://simplenodeservice-canary.<ingress domain>
 ```
