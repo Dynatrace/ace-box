@@ -66,6 +66,8 @@
     retries: 3
     delay: 60
     until: microk8s_addons_enable is not failed
+  - include_tasks:
+      file: configure-registry.yml
   - name: Microk8s - Start microk8s
     become: true
     become_user: root
