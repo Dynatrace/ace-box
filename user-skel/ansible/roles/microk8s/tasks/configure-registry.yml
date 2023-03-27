@@ -42,3 +42,45 @@
   retries: 3
   delay: 60
   until: microk8s_restart_status is not failed
+
+- set_fact:
+    docker_config_path: "/var/snap/docker/current/config/daemon.json"
+    insecure_registries_config:
+      "insecure-registries":
+        - "http://{{ registry_url }}"
+
+- name: Check if docker daemon configuration exists
+  stat:
+    path: "{{ docker_config_path }}"
+  register: docker_config_stat
+- name: Parse docker daemon configuration
+  when: docker_config_stat.stat.exists
+  set_fact:
+    docker_config: "{{ lookup('ansible.builtin.file', docker_config_path) | from_json }}"
+- name: Set empty docker daemon configuration
+  when: not docker_config_stat.stat.exists
+  set_fact:
+    docker_config: {}
+- name: Combine docker daemon configurations
+  set_fact:
+    docker_config_updated: "{{ docker_config | combine(insecure_registries_config) }}"
+- name: Write out daemon configuration
+  become: true
+  become_user: root
+  copy:
+    content: "{{ docker_config_updated | to_nice_json }}"
+    dest: "{{ docker_config_path }}"
+
+- name: Microk8s - Stop Docker
+  become: true
+  become_user: root
+  shell: snap stop docker
+
+- name: Microk8s - Start Docker
+  become: true
+  become_user: root
+  shell: snap start docker
+  register: docker_start
+  retries: 3
+  delay: 60
+  until: docker_start is not failed
