@@ -1,0 +1,23 @@
+---
+- include_role:
+    name: microk8s
+    tasks_from: wait-for-registry
+
+- include_role:
+    name: microk8s
+    tasks_from: source-registry-url
+  when: registry_url is not defined
+
+- name: Build an image and push it to a private repo
+  community.docker.docker_image:
+    build:
+      path: "{{ role_path }}/files"
+      args:
+        MONACO_VERSION: "{{ monaco_version }}"
+    name: "{{ registry_url }}/monaco"
+    tag: "{{ monaco_version }}"
+    push: true
+    source: build
+
+- set_fact:
+    monaco_container: "{{ registry_url }}/monaco:{{ monaco_version }}"
