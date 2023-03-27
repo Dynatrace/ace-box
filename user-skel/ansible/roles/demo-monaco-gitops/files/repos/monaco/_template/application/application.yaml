@@ -1,7 +1,0 @@
-config:
-    - app: "application.json"
-  
-app:
-    - name: "APPLICATION_NAME_PLACEHOLDER"
-    - uemPercentage: "UEM_PERCENTAGE_PLACEHOLDER"
-    - skipDeployment: "SKIP_APPLICATION_PLACEHOLDER"

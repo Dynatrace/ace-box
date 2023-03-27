@@ -1,7 +1,7 @@
 {
   "name": "{{ .name }}",
-  "frequencyMin": 5,
-  "enabled": {{ .enabled }},
+  "frequencyMin": 1,
+  "enabled": true,
   "type": "HTTP",
   "script": {
     "version": "1.0",
@@ -33,9 +33,7 @@
       }
     ]
   },
-  "locations": [
-    "{{ .location }}"
-  ],
+  "locations": ["{{ .location }}"],
   "anomalyDetection": {
     "outageHandling": {
       "globalOutage": false,
@@ -55,7 +53,6 @@
       ]
     }
   },
-  "managementZones": [
-    "{{.managementZoneId}}"
-  ]
+  "tags": ["{{ .tag }}"],
+  "managementZones": ["{{ .managementZoneId }}"]
 }

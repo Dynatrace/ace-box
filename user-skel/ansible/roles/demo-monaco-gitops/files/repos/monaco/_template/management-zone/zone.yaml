@@ -1,6 +1,0 @@
-config:
-    - management-zone: "management-zone.json"
-
-management-zone:
-    - environment: "KUBERNETES_NAMESPACE_PLACEHOLDER"
-    - name: "monaco-mz-KUBERNETES_NAMESPACE_PLACEHOLDER"

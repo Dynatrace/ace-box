@@ -1,0 +1,152 @@
+configs:
+  - id: application
+    config:
+      name:
+        type: compound
+        format: "{{ .appName }} - {{ .appEnvironment }}"
+        references:
+          - appName
+          - appEnvironment
+      template: application.json
+      parameters:
+        appName:
+          value: TEMPLATE_APP_NAME
+          type: value
+        appEnvironment:
+          value: TEMPLATE_APP_ENVIRONMENT
+          type: value
+    type:
+      api: application-web
+  - id: application-detection-rule
+    config:
+      name:
+        configType: application-web
+        configId: application
+        property: name
+        type: reference
+      template: application-detection-rule.json
+      parameters:
+        applicationId:
+          configType: application-web
+          configId: application
+          property: id
+          type: reference
+        pattern:
+          value: TEMPLATE_APP_URL_PATTERN
+          type: value
+    type:
+      api: app-detection-rule
+  - id: management-zone
+    config:
+      name:
+        value: TEMPLATE_K8S_NAMESPACE
+        type: value
+      parameters:
+        environment:
+          value: TEMPLATE_K8S_NAMESPACE
+          type: value
+      template: management-zone.json
+      skip: false
+    type:
+      api: management-zone
+  - id: dashboard
+    config:
+      name:
+        value: TEMPLATE_APP_NAME
+        type: value
+      parameters:
+        managementZoneId:
+          configType: management-zone
+          configId: management-zone
+          property: id
+          type: reference
+        managementZoneName:
+          configType: management-zone
+          configId: management-zone
+          property: name
+          type: reference
+        sloId:
+          configType: slo
+          configId: availability-slo
+          property: id
+          type: reference
+        healthCheckId:
+          configType: synthetic-monitor
+          configId: health-check
+          property: id
+          type: reference
+      template: dashboard.json
+      skip: false
+    type:
+      api: dashboard
+  - id: health-check
+    config:
+      name:
+        type: compound
+        format: "{{ .appName }} health-check"
+        references:
+          - appName
+      parameters:
+        appName:
+          value: TEMPLATE_APP_NAME
+          type: value
+        description:
+          type: compound
+          format: "Health check for {{ .appName }}"
+          references:
+            - appName
+        location:
+          project: projects.global
+          configType: synthetic-location
+          configId: synthetic-location
+          property: id
+          type: reference
+        tag:
+          value: TEMPLATE_K8S_NAMESPACE
+          type: value
+        url:
+          value: TEMPLATE_HEALTH_CHECK_URL
+          type: value
+        managementZoneId:
+          configType: management-zone
+          configId: management-zone
+          property: id
+          type: reference
+      template: health-check-monitor.json
+    type:
+      api: synthetic-monitor
+  - id: availability-slo
+    config:
+      name:
+        type: compound
+        format: "{{ .appName }} Availability"
+        references:
+          - appName
+      parameters:
+        appName:
+          value: TEMPLATE_APP_NAME
+          type: value
+        description:
+          type: compound
+          format: "Availability SLO for {{ .appName }}"
+          references:
+            - appName
+        metricName:
+          type: compound
+          format: "{{ .appName }}_availability"
+          references:
+            - appName
+        syntheticCheck:
+          configType: synthetic-monitor
+          configId: health-check
+          property: id
+          type: reference
+        availabilityTarget:
+          value: TEMPLATE_SLO_AVAILABILITY
+          type: value
+        availabilityTargetWarn:
+          value: TEMPLATE_SLO_WARN_AVAILABILITY
+          type: value
+      template: slo-availability.json
+    type:
+      api: slo

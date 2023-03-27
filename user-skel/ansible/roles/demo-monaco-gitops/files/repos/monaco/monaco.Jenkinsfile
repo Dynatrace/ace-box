@@ -1,9 +1,9 @@
-ENVS_FILE="environments.yaml"
 pipeline {
     agent {
         label "monaco-runner"
     }
     environment {
+        MONACO_MANIFEST="manifest.yaml"
         DT_API_TOKEN = credentials('DT_API_TOKEN')
         DT_TENANT_URL = credentials('DT_TENANT_URL')
     }
@@ -21,7 +21,7 @@ pipeline {
                 container('monaco') {
                     script{
                         sh "echo $env.MON_APP"
-                        sh "monaco -v -dry-run -e=$ENVS_FILE -se=validation -p=$env.MON_APP projects/"
+                        sh "monaco deploy $MONACO_MANIFEST -g validation --dry-run"
                     }
                 }
             }
@@ -41,7 +41,7 @@ pipeline {
                 container('monaco') {
                     script{
                         sh "echo $env.MON_APP"
-                        sh "monaco -v -e=$ENVS_FILE -se=validation -p=$env.MON_APP projects/"
+                        sh "monaco deploy $MONACO_MANIFEST -g validation"
                     }
                 }
             }
@@ -102,11 +102,11 @@ pipeline {
             steps {
                 container('monaco') {
                     script{
-                        sh "monaco -v -dry-run -e=$ENVS_FILE -se=production projects/"
+                        sh "monaco deploy manifest.yaml -g production --dry-run"
                     }
                 }
             }
-          
+        
         }
 
         stage('Deploy to Production') {
@@ -118,7 +118,7 @@ pipeline {
             steps {
                 container('monaco') {
                     script{
-                        sh "monaco -v -e=$ENVS_FILE -se=production projects/"
+                        sh "monaco deploy manifest.yaml -g production"
                     }
                 }
             }

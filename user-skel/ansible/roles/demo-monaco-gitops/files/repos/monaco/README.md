@@ -28,29 +28,7 @@ After the pipeline has run, check out the `demo/monaco-gitops` repository and se
 ## GitOps pipeline to apply
 At this stage, no configuration has been applied to Dynatrace yet. We have merely created all the configuration files that Monaco will have to apply. In a true GitOps fashion, we see our configuration repo as the single source of truth.
 
-Next up, we need to integrate Jenkins with Gitea, and allow it to scan all branches automatically.
-
-In order to do so, navigate to Jenkins and make sure that you are inside the `demo-monaco-gitops` folder. At the left side of the screen click on `New Item` and select `Multibranch Pipeline`. Name the item `ace`.
-
-In the section `Branch Sources`:
-1. Click on `Add source` and select `Gitea`
-2. The Gitea server should be automatically selected
-3. Select the `dynatrace/******` credentials
-4. Under Owner, fill in `demo`
-5. The Repository `monaco-gitops` should be automatically selected
-6. The rest in this section can be left as default
-
-In the section `Build Configuration`:
-1. Leave the mode to `by Jenkinsfile`
-2. Set the Script Path to: `monaco.Jenkinsfile`
-
-Click on `Save`
-
-This will now scan the `monaco-gitops` repository in the Gitea `demo` organization, look for a `monaco.Jenkinsfile` and if found it will process it.
-
-After a minute, if you go into Jenkins in the `demo-monaco-gitops` folder, you will find one repository listed: `monaco-gitops`.
-
-Open this repository and you will see two branches listed:
+If you go into Jenkins in the `demo-monaco-gitops` folder, you will find a multibranch-pipeline job listed as `Monaco`. With this job selected, go ahead and click `Scan Multibranch Pipeline Now`. Soon, you will see two branches:
 
 ![Pipelines](assets/jenkins_ace_onboarding_pipeline.png)
 

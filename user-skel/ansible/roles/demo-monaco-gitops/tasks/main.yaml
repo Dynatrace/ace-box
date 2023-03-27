@@ -1,12 +1,5 @@
 ---
 - include_role:
-    name: config-v2
-    tasks_from: set-var
-  vars:
-    var_key_to_set: "demo_monaco_gitops"
-    var_value_to_set: true
-
-- include_role:
     name: microk8s
 
 - include_role:
@@ -17,8 +10,17 @@
 - include_role:
     name: dt-operator
 
+# Temporarily override Monaco version. Can be removed when v2 is released and all dependencies updated.
 - include_role:
     name: monaco
+  vars:
+    monaco_version: "v2.0.0-rc.8"
+
+- include_role:
+    name: monaco
+    tasks_from: create-container
+  vars:
+    monaco_version: "v2.0.0-rc.8"
 
 - include_role:
     name: gitea
@@ -68,10 +70,14 @@
     demo_repo: "{{ demo_monaco_gitops_repo_name }}"
     demo_org: "{{ demo_monaco_gitops_org }}"
     demo_jenkins_folder: "{{ demo_monaco_gitops_folder }}"
+    git_username: "{{ gitea_username }}"
+    git_token: "{{ gitea_access_token }}"
     git_domain: "gitea.{{ ingress_domain }}"
 
 - include_role:
     name: jenkins
+  vars:
+    jenkins_monaco_container_image: "{{ monaco_container }}"
 
 - include_role:
     name: dashboard

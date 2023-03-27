@@ -1,7 +1,0 @@
-config:
-    - dashboard-staging: "dashboard.json"
-  
-dashboard-staging:
-    - name: "MAC Dashboard KUBERNETES_NAMESPACE_PLACEHOLDER"
-    - managementZoneId: "/PROJECT_NAME_PLACEHOLDER/base/management-zone/management-zone.id"
-    - managementZoneName: "/PROJECT_NAME_PLACEHOLDER/base/management-zone/management-zone.name"

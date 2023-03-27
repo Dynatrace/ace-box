@@ -8,14 +8,13 @@ controller:
         - script: >
             pipelineJob('{{ demo_jenkins_folder }}/Onboard Application') {
               parameters {
-                stringParam('MON_PROJECT_NAME', 'myFirstProject', 'The name of the Monaco project to onboard.')
-                stringParam('MON_APP_NAME', 'myApp', 'The name of Application to onboard.')
-                stringParam('MON_ENDPOINT', 'https://dynatrace.com', 'The application URL for UEM.')
-                stringParam('MON_UEM_COVERAGE', '75', 'UEM coverage percentage')
-                booleanParam('MON_SKIP_APP', false, 'Skip the creation of the application')
-                stringParam('MON_NAMESPACE', 'myappnamespace', 'Which kubernetes namespace the application is running in')
-                stringParam('MON_WEB_CHECK', 'https://dynatrace.com', 'Which URL you want to use for the HTTP monitor')
-                booleanParam('MON_SKIP_WEB_CHECK', false, 'Skip the creation of the HTTP monitor')
+                choiceParam('Environment', ['Production','Staging'], 'The environment in which the Application is onboarded.')
+                stringParam('App Name', 'acme_ecommerce_prd', 'The name of the Application to onboard.')
+                stringParam('Application URL pattern', 'http://ecommerce.acme.com', 'URL for application detection rule')
+                stringParam('Kubernetes Namespace', 'acme-ecomm-prd', 'Kubernetes namespace in which the Application is deployed.')
+                stringParam('Health check URL', 'https://dynatrace.com', 'URL for synthetic monitoring')
+                stringParam('Availability SLO', '95.0', 'The target availability SLO percentage.')
+                stringParam('Availability SLO Warning', '97.0', 'The target availability SLO Warning percentage.')
               }
               definition {
                 cpsScm {
@@ -30,6 +29,20 @@ controller:
                     }
                   }
                   lightweight()
+                }
+              }
+            }
+        - script: >
+            multibranchPipelineJob('{{ demo_jenkins_folder }}/Monaco') {
+              branchSources {
+                git {
+                  id('B8BE0E28-4D53-46B2-BB1C-3BD25CA36LK6')
+                  remote('{{ ingress_protocol }}://{{ git_username }}:{{ git_token }}@{{ git_domain }}/{{ demo_org }}/{{ demo_repo }}.git')
+                }
+              }
+              factory {
+                workflowBranchProjectFactory {
+                  scriptPath('monaco.Jenkinsfile')
                 }
               }
             }
