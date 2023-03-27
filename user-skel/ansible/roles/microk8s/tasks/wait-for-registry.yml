@@ -1,0 +1,12 @@
+---
+- include_tasks: source-registry-url.yml
+
+- name: Wait for registry to become healthy
+  uri:
+    url: "http://{{ registry_url }}/v2/"
+    status_code: 200
+    validate_certs: no
+  register: result
+  retries: 30
+  delay: 5
+  until: result.status == 200

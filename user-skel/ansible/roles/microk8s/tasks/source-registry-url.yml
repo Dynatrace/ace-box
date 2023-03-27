@@ -1,0 +1,10 @@
+---
+- name: Source registry url
+  kubernetes.core.k8s_info:
+    kind: Service
+    name: "registry"
+    namespace: "container-registry"
+  register: container_registry_svc_data
+
+- set_fact:
+    registry_url: "{{ container_registry_svc_data.resources[0].spec.clusterIP }}:{{ container_registry_svc_data.resources[0].spec.ports[0].port }}"

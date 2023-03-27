@@ -1,19 +1,11 @@
 ---
-- block:
-  - name: Source registry url
-    kubernetes.core.k8s_info:
-      kind: Service
-      name: "registry"
-      namespace: "container-registry"
-    register: container_registry_svc_data
-  - set_fact:
-      docker_registry_url: "{{ container_registry_svc_data.resources[0].spec.clusterIP }}:{{ container_registry_svc_data.resources[0].spec.ports[0].port }}"
+- include_tasks: source-registry-url.yml
 
-- name: Create certs.d directory for {{ docker_registry_url }}
+- name: Create certs.d directory for {{ registry_url }}
   become: true
   become_user: root
   ansible.builtin.file:
-    path: "/var/snap/microk8s/current/args/certs.d/{{ docker_registry_url }}"
+    path: "/var/snap/microk8s/current/args/certs.d/{{ registry_url }}"
     state: directory
     mode: "0755"
 
@@ -21,11 +13,11 @@
   become: true
   become_user: root
   copy:
-    dest: "/var/snap/microk8s/current/args/certs.d/{{ docker_registry_url }}/hosts.toml"
+    dest: "/var/snap/microk8s/current/args/certs.d/{{ registry_url }}/hosts.toml"
     content: |
-      server = "http://{{ docker_registry_url }}"
+      server = "http://{{ registry_url }}"
 
-      [host."http://{{ docker_registry_url }}"]
+      [host."http://{{ registry_url }}"]
       capabilities = ["pull", "resolve"]
 
 - name: Microk8s - Stop MicroK8s
