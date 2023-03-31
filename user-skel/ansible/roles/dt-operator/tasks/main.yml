@@ -3,7 +3,13 @@
     name: dt-access-token
   vars:
     access_token_var_name: "{{ dt_operator_dt_access_token_name }}"
-    access_token_scope: ["DataExport", "InstallerDownload", "activeGateTokenManagement.create", "entities.read", "settings.read", "settings.write"] 
+    access_token_scope: ["DataExport", "InstallerDownload", "activeGateTokenManagement.create", "entities.read", "settings.read", "settings.write"]
+
+- include_role:
+    name: dt-access-token
+  vars:
+    access_token_var_name: "{{ dt_operator_dt_data_ingest_token_name }}"
+    access_token_scope: ["metrics.ingest"] 
 
 - name: Create Dynatrace namespace
   kubernetes.core.k8s:

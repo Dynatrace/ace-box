@@ -1,6 +1,7 @@
 ---
 - set_fact:
     dt_operator_dt_access_token_id: "{{ dt_api_token_ids[dt_operator_dt_access_token_name] }}"
+    dt_operator_dt_data_ingest_token_id: "{{ dt_api_token_ids[dt_operator_dt_data_ingest_token_name] }}"
   ignore_errors: true
 
 - include_role:
@@ -9,3 +10,10 @@
   vars:
     dynatrace_api_token_id: "{{ dt_operator_dt_access_token_id }}"
   when: dt_operator_dt_access_token_id is defined
+
+- include_role:
+    name: dt-access-token
+    tasks_from: delete
+  vars:
+    dynatrace_api_token_id: "{{ dt_operator_dt_data_ingest_token_id }}"
+  when: dt_operator_dt_data_ingest_token_id is defined
