@@ -72,9 +72,9 @@ controller:
               - key: "INGRESS_DOMAIN"
                 value: "{{ ingress_domain }}"
 {% endif %}
-{% if docker_registry_url is defined and docker_registry_url != "" %}
+{% if registry_url is defined and registry_url != "" %}
               - key: "DOCKER_REGISTRY_URL"
-                value: "{{ docker_registry_url }}"
+                value: "{{ registry_url }}"
 {% endif %}
 {% if git_domain is defined and git_domain != "" %}
               - key: "GIT_DOMAIN"

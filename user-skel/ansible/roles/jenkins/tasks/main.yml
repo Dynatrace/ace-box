@@ -56,15 +56,10 @@
       ca_api_token: "{{ cloud_automation_api_token | default(None) }}"
   when: cloud_automation_flavor is defined and cloud_automation_flavor == "CLOUD_AUTOMATION"
 
-- block:
-  - name: Source registry url
-    kubernetes.core.k8s_info:
-      kind: Service
-      name: "registry"
-      namespace: "container-registry"
-    register: container_registry_svc_data
-  - set_fact:
-      docker_registry_url: "localhost:{{ container_registry_svc_data.resources[0].spec.ports[0].nodePort }}"
+- include_role:
+    name: microk8s
+    tasks_from: source-registry-url
+  when: registry_url is not defined
 
 - name: Source DT Synthetic node id
   include_role:

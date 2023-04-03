@@ -32,7 +32,7 @@ Furthermore, it uses the following attributes to be used as Jenkins variables in
 - `ca_bridge` # depends on the cloud_automation_flavor is "KEPTN" or "CLOUD_AUTOMATION"
 - `ca_api_token` # depends on the cloud_automation_flavor is "KEPTN" or "CLOUD_AUTOMATION"
 - `dt_synthetic_node_id` # Synthetic-enabled private ActiveGate ID if exists
-- `docker_registry_url` # which was deployed during K8s installation
+- `registry_url` # which was deployed during K8s installation
 - `otel_endpoint` # if Open Telemetry was installed
 
 

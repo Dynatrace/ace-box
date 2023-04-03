@@ -39,15 +39,10 @@
     name: dt-activegate-classic
     tasks_from: source-node-id
 
-- block:
-  - name: Source registry url
-    kubernetes.core.k8s_info:
-      kind: Service
-      name: "registry"
-      namespace: "container-registry"
-    register: container_registry_svc_data
-  - set_fact:
-      docker_registry_url: "{{ container_registry_svc_data.resources[0].spec.clusterIP }}:{{ container_registry_svc_data.resources[0].spec.ports[0].port }}"
+- include_role:
+    name: microk8s
+    tasks_from: source-registry-url
+  when: registry_url is not defined
 
 - name: Gitlab - Create variables
   include_role:
@@ -65,4 +60,4 @@
     - { key: 'DT_API_TOKEN', value: '{{ vars[gitlab_dt_access_token_name] }}' }
     - { key: 'SYNTH_NODE_ID', value: '{{ dt_synthetic_node_id | default(None) }}' }
     - { key: 'HOST_GROUP', value: '{{ host_group | default(None) }}' }
-    - { key: 'DOCKER_REGISTRY_URL', value: '{{ docker_registry_url | default(None) }}' }    
+    - { key: 'DOCKER_REGISTRY_URL', value: '{{ registry_url | default(None) }}' }    
