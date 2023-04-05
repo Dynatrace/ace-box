@@ -10,17 +10,8 @@
 - include_role:
     name: dt-operator
 
-# Temporarily override Monaco version. Can be removed when v2 is released and all dependencies updated.
 - include_role:
     name: monaco
-  vars:
-    monaco_version: "v2.0.0-rc.8"
-
-- include_role:
-    name: monaco
-    tasks_from: create-container
-  vars:
-    monaco_version: "v2.0.0-rc.8"
 
 - include_role:
     name: gitea
@@ -76,8 +67,6 @@
 
 - include_role:
     name: jenkins
-  vars:
-    jenkins_monaco_container_image: "{{ monaco_container }}"
 
 - include_role:
     name: dashboard
