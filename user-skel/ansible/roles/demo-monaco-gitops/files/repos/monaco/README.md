@@ -55,7 +55,7 @@ Navigate through the PR and see what it is trying to do. It is using a known mec
 
 Go ahead and merge the pull request. You can also delete the onboarding branch after the merge.
 
-Back in Jenkins, in the `demo-monaco-gitops/monaco-gitops` folder, the Pipeline for the `main` branch now kicks off as Jenkins has detected changes on that branch that were caused by us merging the onboarding branch.
+Back in Jenkins, in the `demo-monaco-gitops/Monaco` folder, click `Scan Multibranch Pipeline Now`. The Pipeline for the `main` branch now kicks off as Jenkins has detected changes on that branch that were caused by us merging the onboarding branch.
 
 The pipeline will now apply the config stored into the `main` branch into production.
 
