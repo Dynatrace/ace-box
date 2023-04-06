@@ -1,7 +1,7 @@
               - containers:
                 - args: "cat"
                   command: "/bin/sh -c"
-                  image: "dynatraceace/monaco-runner:release-v1.6.0"
+                  image: "{{ jenkins_monaco_container_image }}"
                   livenessProbe:
                     failureThreshold: 0
                     initialDelaySeconds: 0
