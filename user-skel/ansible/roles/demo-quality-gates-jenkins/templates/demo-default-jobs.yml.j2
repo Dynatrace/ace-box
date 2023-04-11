@@ -44,10 +44,12 @@ controller:
         - script: >
             pipelineJob('{{ demo_jenkins_folder }}/2. Deploy') {
               parameters {
-                stringParam('APP_NAME', 'simplenodeservice', 'The name of the service to deploy.')
-                stringParam('TAG_STAGING', '', 'The image of the service to deploy.')
-                stringParam('BUILD', '', 'The version of the service to deploy.')
-                stringParam('ART_VERSION', '', 'The artefact version and hash to deploy.')
+                stringParam('RELEASE_PRODUCT')
+                stringParam('IMAGE_NAME')
+                stringParam('IMAGE_TAG')
+                stringParam('RELEASE_VERSION')
+                stringParam('RELEASE_BUILD_VERSION')
+                stringParam('RELEASE_STAGE')
               }
               definition {
                 cpsScm {
@@ -68,9 +70,12 @@ controller:
         - script: >
             pipelineJob('{{ demo_jenkins_folder }}/3. Test') {
               parameters {
-                stringParam('APP_NAME', 'simplenodeservice', 'The name of the service to deploy.')
-                stringParam('BUILD', '', 'The version of the service to deploy.')
-                stringParam('ART_VERSION', '', 'The artefact version and hash to deploy.')
+                stringParam('RELEASE_PRODUCT')
+                stringParam('IMAGE_NAME')
+                stringParam('IMAGE_TAG')
+                stringParam('RELEASE_VERSION')
+                stringParam('RELEASE_BUILD_VERSION')
+                stringParam('RELEASE_STAGE')
                 choiceParam('QG_MODE', ['yaml','dashboard'], 'Use yaml or dashboard for QG')
               }
               definition {
@@ -92,10 +97,12 @@ controller:
         - script: >
             pipelineJob('{{ demo_jenkins_folder }}/4. Deploy production') {
               parameters {
-                stringParam('APP_NAME', 'simplenodeservice', 'The name of the service to deploy.')
-                stringParam('TAG_STAGING', '', 'The image of the service to deploy.')
-                stringParam('BUILD', '', 'The version of the service to deploy.')
-                stringParam('ART_VERSION', '', 'The artefact version and hash to deploy.')
+                stringParam('RELEASE_PRODUCT')
+                stringParam('IMAGE_NAME')
+                stringParam('IMAGE_TAG')
+                stringParam('RELEASE_VERSION')
+                stringParam('RELEASE_BUILD_VERSION')
+                stringParam('RELEASE_STAGE')
               }
               definition {
                 cpsScm {

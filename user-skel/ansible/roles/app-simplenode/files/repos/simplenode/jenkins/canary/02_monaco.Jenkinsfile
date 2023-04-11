@@ -1,7 +1,7 @@
-@Library('ace@v1.1') ace 
+@Library('ace@v1.1')
 def event = new com.dynatrace.ace.Event()
 
-ENVS_FILE = "monaco/environments.yaml"
+ENVS_FILE = 'monaco/environments.yaml'
 
 pipeline {
     agent {
@@ -38,7 +38,7 @@ pipeline {
                 container('ace') {
                     script {
                         sh "monaco -v -e=$ENVS_FILE -p=infrastructure monaco/projects"
-                        sh "sleep 60"
+                        sh 'sleep 60'
                     }
                 }
             }
@@ -65,16 +65,16 @@ pipeline {
             steps {
                 script {
                     // Give Dynatrace a couple seconds to tag host according to current config
-                    sleep(time:120,unit:"SECONDS")
+                    sleep(time:120, unit:'SECONDS')
 
                     def rootDir = pwd()
                     def sharedLib = load "${rootDir}/jenkins/shared/shared.groovy"
-                    def status = event.pushDynatraceConfigurationEvent (
-                        tagRule: sharedLib.getTagRulesForHostEvent("ace-demo-canary"),
-                        description: "Monaco deployment successful: ace-demo-canary",
-                        configuration: "ace-demo-canary",
+                    event.pushDynatraceConfigurationEvent(
+                        tagRule: sharedLib.getTagRulesForHostEvent('ace-demo-canary'),
+                        description: 'Monaco deployment successful: ace-demo-canary',
+                        configuration: 'ace-demo-canary',
                         customProperties: [
-                            "Approved by": "ACE"
+                            'Approved by': 'ACE'
                         ]
                     )
                 }

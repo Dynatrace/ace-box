@@ -44,8 +44,12 @@ controller:
         - script: >
             pipelineJob('{{ demo_jenkins_folder }}/3. Deploy') {
               parameters {
-                stringParam('IMAGE_NAME', 'ace/simplenodeservice', 'The image name of the service to deploy.')
-                stringParam('IMAGE_TAG', '', 'The image tag of the service to deploy.')
+                stringParam('RELEASE_PRODUCT')
+                stringParam('IMAGE_NAME')
+                stringParam('IMAGE_TAG')
+                stringParam('RELEASE_VERSION')
+                stringParam('RELEASE_BUILD_VERSION')
+                stringParam('RELEASE_STAGE')
                 stringParam('CANARY_WEIGHT', '0', 'Weight of traffic that will be routed to service.')
                 booleanParam('IS_CANARY', false, 'Is canary version of service?')
               }
