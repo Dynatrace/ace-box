@@ -2,14 +2,20 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Chart.Name }}
+  name: {{ .Release.Name }}
   labels:
-    app: {{ .Chart.Name }}
+    app.kubernetes.io/name: "{{ .Release.Name }}"             # The name of the application, e.g. "mysql"
+    app.kubernetes.io/instance: "{{ .Release.Name }}"         # A unique name identifying the instance of an application, e.g. "mysql-abcxzy"
+    app.kubernetes.io/version: "{{ .Values.build_version }}"  # The current version of the application (e.g., a SemVer 1.0, revision hash, etc.), e.g. "5.7.21"
+    app.kubernetes.io/component: "webservice"                 # The component within the architecture, e.g. "database"
+    app.kubernetes.io/part-of: "{{ .Chart.Name }}"          # The name of a higher level application this one is part of, e.g. wordpress
+    app.kubernetes.io/managed-by: "helm"                      # The tool being used to manage the operation of an application, e.g. helm
 spec:
   ports:
   - name: http
     port: 80
     targetPort: 8080
   selector:
-    app: {{ .Chart.Name }}
+    app.kubernetes.io/name: "{{ .Release.Name }}" 
+    app.kubernetes.io/version: "{{ .Values.build_version }}"
   type: NodePort
