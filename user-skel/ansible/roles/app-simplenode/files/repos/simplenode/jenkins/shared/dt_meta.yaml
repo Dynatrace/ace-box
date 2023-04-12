@@ -18,5 +18,5 @@ metadata:
     value: "ACE"
 tags:
   - key: "non-prod"
-  - key: "Provisioner"
-    value: "Vagrant"
+  - key: "owner"
+    value: "ace"
