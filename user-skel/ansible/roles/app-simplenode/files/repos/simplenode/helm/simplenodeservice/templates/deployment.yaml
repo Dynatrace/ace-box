@@ -23,7 +23,7 @@ spec:
         app.kubernetes.io/instance: "{{ .Release.Name }}"         # A unique name identifying the instance of an application, e.g. "mysql-abcxzy"
         app.kubernetes.io/version: "{{ .Values.build_version }}"  # The current version of the application (e.g., a SemVer 1.0, revision hash, etc.), e.g. "5.7.21"
         app.kubernetes.io/component: "webservice"                 # The component within the architecture, e.g. "database"
-        app.kubernetes.io/part-of: "{{ .Chart.Name }}"          # The name of a higher level application this one is part of, e.g. wordpress
+        app.kubernetes.io/part-of: "{{ .Chart.Name }}"            # The name of a higher level application this one is part of, e.g. wordpress
         app.kubernetes.io/managed-by: "helm"                      # The tool being used to manage the operation of an application, e.g. helm
     spec:
       containers:
@@ -40,7 +40,7 @@ spec:
         - name: DT_RELEASE_BUILD_VERSION
           value: "{{ .Values.build_version }}"
         - name: DT_RELEASE_PRODUCT
-          value: "{{ .Release.Name }}"
+          value: "{{ default .Release.Name .Values.dt_release_product }}"
         - name: DT_RELEASE_STAGE
           value: "{{ .Release.Namespace }}"
         resources:

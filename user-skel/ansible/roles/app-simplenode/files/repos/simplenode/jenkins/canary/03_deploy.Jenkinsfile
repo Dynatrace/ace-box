@@ -61,6 +61,7 @@ pipeline {
                     --set build_version=${env.RELEASE_BUILD_VERSION} \
                     --set ingress.isCanary=${env.IS_CANARY} \
                     --set ingress.canaryWeight=${env.CANARY_WEIGHT} \
+                    --set dt_release_product=\"simplenodeservice\" \
                     --set dt_tags=\"${env.DT_TAGS}\" \
                     --set dt_custom_prop=\"${env.DT_CUSTOM_PROP}\" \
                     --namespace ${env.RELEASE_STAGE} --create-namespace \

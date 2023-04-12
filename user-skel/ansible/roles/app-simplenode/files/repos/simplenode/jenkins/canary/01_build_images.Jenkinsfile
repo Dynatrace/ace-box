@@ -17,7 +17,9 @@ pipeline {
                     environment {
                         BUILD = '1'
                         GIT_COMMIT_SHORT = sh(returnStdout: true, script: "echo ${env.GIT_COMMIT} | cut -c1-6 | tr -d '\n'")
-                        RELEASE_PRODUCT = 'simplenodeservice-blue'
+                        // Release product may not end in string, as Dynatrace won't merge
+                        // services required to be merged for canary baselining
+                        RELEASE_PRODUCT = 'simplenodeservice-0'
                         RELEASE_VERSION = "${env.BUILD}.0.0"
                         RELEASE_BUILD_VERSION = "${env.RELEASE_VERSION}-${env.GIT_COMMIT_SHORT}"
                         IMAGE_TAG = "${env.RELEASE_BUILD_VERSION}"
@@ -62,7 +64,9 @@ pipeline {
                     environment {
                         BUILD = '4'
                         GIT_COMMIT_SHORT = sh(returnStdout: true, script: "echo ${env.GIT_COMMIT} | cut -c1-6 | tr -d '\n'")
-                        RELEASE_PRODUCT = 'simplenodeservice-green'
+                        // Release product may not end in string, as Dynatrace won't merge
+                        // services required to be merged for canary baselining
+                        RELEASE_PRODUCT = 'simplenodeservice-1'
                         RELEASE_VERSION = "${env.BUILD}.0.0"
                         RELEASE_BUILD_VERSION = "${env.RELEASE_VERSION}-${env.GIT_COMMIT_SHORT}"
                         IMAGE_TAG = "${env.RELEASE_BUILD_VERSION}"
