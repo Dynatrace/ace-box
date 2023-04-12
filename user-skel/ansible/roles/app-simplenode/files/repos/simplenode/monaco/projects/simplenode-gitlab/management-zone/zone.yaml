@@ -3,10 +3,10 @@ config:
     - management-zone-prod: "management-zone.json"
 
 management-zone-staging:
-    - environment: "simplenode-gitlab-staging"
+    - environment: "staging-gitlab"
     - name: "simplenode-gitlab-staging"
 
 management-zone-prod:
-    - environment: "simplenode-gitlab-production"
+    - environment: "prod-gitlab"
     - name: "simplenode-gitlab-production"
 

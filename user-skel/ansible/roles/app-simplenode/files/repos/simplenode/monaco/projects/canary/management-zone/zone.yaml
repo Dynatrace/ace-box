@@ -2,5 +2,5 @@ config:
     - management-zone-canary: "management-zone.json"
 
 management-zone-canary:
-    - environment: "canary"
     - name: "ace-demo-canary"
+    - environment: "canary-jenkins"
