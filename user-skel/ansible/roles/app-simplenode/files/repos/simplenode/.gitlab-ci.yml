@@ -137,10 +137,11 @@ dynatrace_deploy_event_staging:
     DESCRIPTION: "$RELEASE_PRODUCT $RELEASE_BUILD_VERSION deployed"
     CUSTOM_PROPERTIES: '{"namespace":"$RELEASE_STAGE"}'
     EVENT_TYPE: "CUSTOM_DEPLOYMENT"
-    DEPLOYMENT_NAME: "simplenode_gitlab"
-    DEPLOYMENT_VERSION: "$RELEASE_BUILD_VERSION"
-    REMEDIATION_ACTION: "Ansible Tower"
-    DT_NAMESPACE: "$RELEASE_STAGE"
+    DT_RELEASE_PRODUCT: "$RELEASE_PRODUCT"
+    DEPLOYMENT_NAME: "$RELEASE_PRODUCT" # Library doesn't accept DT_RELEASE_PRODUCT
+    DT_RELEASE_BUILD_VERSION: "$RELEASE_BUILD_VERSION"
+    DEPLOYMENT_VERSION: "$RELEASE_BUILD_VERSION" # Library doesn't accept DT_RELEASE_BUILD_VERSION
+    DT_RELEASE_STAGE: "$RELEASE_STAGE"
 
 run-tests:
   before_script:
@@ -173,7 +174,7 @@ deployment-production:
   stage: deploy-production
   script:
     - >
-      helm upgrade --install simplenode-gitlab-production helm/simplenodeservice 
+      helm upgrade --install $RELEASE_PRODUCT helm/simplenodeservice 
       --set image="$IMAGE_NAME:$IMAGE_TAG" 
       --set domain="$INGRESS_DOMAIN" 
       --set version="$RELEASE_VERSION" 
@@ -190,9 +191,10 @@ dynatrace_deploy_event_production:
     DYNATRACE_ENV_URL: "$DT_TENANT_URL"
     DYNATRACE_API_TOKEN: "$DT_API_TOKEN"
     DESCRIPTION: "$RELEASE_PRODUCT $RELEASE_BUILD_VERSION deployed"
-    CUSTOM_PROPERTIES: '{"namespace":"$RELEASE_STAGE"}'
+    CUSTOM_PROPERTIES: '{"namespace":"$RELEASE_STAGE_PRODUCTION"}'
     EVENT_TYPE: "CUSTOM_DEPLOYMENT"
-    DEPLOYMENT_NAME: "simplenode_gitlab"
-    DEPLOYMENT_VERSION: "$RELEASE_BUILD_VERSION"
-    REMEDIATION_ACTION: "Ansible Tower"
-    DT_NAMESPACE: "$RELEASE_STAGE_PRODUCTION"
+    DT_RELEASE_PRODUCT: "$RELEASE_PRODUCT"
+    DEPLOYMENT_NAME: "$RELEASE_PRODUCT" # Library doesn't accept DT_RELEASE_PRODUCT
+    DT_RELEASE_BUILD_VERSION: "$RELEASE_BUILD_VERSION"
+    DEPLOYMENT_VERSION: "$RELEASE_BUILD_VERSION" # Library doesn't accept DT_RELEASE_BUILD_VERSION
+    DT_RELEASE_STAGE: "$RELEASE_STAGE_PRODUCTION"
