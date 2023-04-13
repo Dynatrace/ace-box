@@ -7,8 +7,9 @@ metadata:
     app.kubernetes.io/instance: "{{ .Release.Name }}"         # A unique name identifying the instance of an application, e.g. "mysql-abcxzy"
     app.kubernetes.io/version: "{{ .Values.build_version }}"  # The current version of the application (e.g., a SemVer 1.0, revision hash, etc.), e.g. "5.7.21"
     app.kubernetes.io/component: "webservice"                 # The component within the architecture, e.g. "database"
-    app.kubernetes.io/part-of: "{{ .Chart.Name }}"          # The name of a higher level application this one is part of, e.g. wordpress
+    app.kubernetes.io/part-of: "{{ .Chart.Name }}"            # The name of a higher level application this one is part of, e.g. wordpress
     app.kubernetes.io/managed-by: "helm"                      # The tool being used to manage the operation of an application, e.g. helm
+    dt.owner: "{{ .Values.dt_owner }}"                        # Tag identifying owner in Dynatrace
   name: "{{ .Release.Name }}"
 spec:
   replicas: 1
@@ -25,6 +26,7 @@ spec:
         app.kubernetes.io/component: "webservice"                 # The component within the architecture, e.g. "database"
         app.kubernetes.io/part-of: "{{ .Chart.Name }}"            # The name of a higher level application this one is part of, e.g. wordpress
         app.kubernetes.io/managed-by: "helm"                      # The tool being used to manage the operation of an application, e.g. helm
+        dt.owner: "{{ .Values.dt_owner }}"                        # Tag identifying owner in Dynatrace
     spec:
       containers:
       - name: {{ .Chart.Name }}

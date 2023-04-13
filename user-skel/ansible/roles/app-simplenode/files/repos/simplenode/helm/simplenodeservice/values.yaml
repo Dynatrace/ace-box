@@ -9,6 +9,7 @@ version: v1
 dt_release_product: null
 dt_tags: ""
 dt_custom_prop: ""
+dt_owner: ace-box
 
 ingress:
   class: public # microk8s >1.20 expects class "public"
