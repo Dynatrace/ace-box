@@ -18,5 +18,3 @@ metadata:
     value: "ACE"
 tags:
   - key: "non-prod"
-  - key: "owner"
-    value: "ace"
