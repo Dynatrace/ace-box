@@ -13,8 +13,6 @@ pipeline {
         DT_API_TOKEN = credentials('DT_API_TOKEN')
         DT_TENANT_URL = credentials('DT_TENANT_URL')
         RELEASE_STAGE = 'canary-jenkins'
-        APP_NAME = 'simplenodeservice'
-        RELEASE_PRODUCT = "${env.APP_NAME}-canary-v2"
     }
     stages {
         stage('Retrieve canary metadata') {
@@ -23,6 +21,10 @@ pipeline {
                     script {
                         env.CANARY_NAME = sh(returnStdout: true, script: "kubectl -n ${env.RELEASE_STAGE} get ingress -o=jsonpath='{.items[?(@.metadata.annotations.nginx\\.ingress\\.kubernetes\\.io/canary==\"true\")].metadata.name}'")
                         // env.NON_CANARY_NAME = sh(returnStdout: true, script: "kubectl -n ${env.RELEASE_STAGE} get ingress -o=jsonpath='{.items[?(@.metadata.annotations.nginx\\.ingress\\.kubernetes\\.io/canary==\"false\")].metadata.name}'")
+                        env.RELEASE_PRODUCT = "${env.CANARY_NAME}"
+                        sh "echo ${env.RELEASE_PRODUCT}"
+                        env.RELEASE_BUILD_VERSION = sh(returnStdout: true, script: "kubectl -n ${env.RELEASE_STAGE} get deployment ${env.CANARY_NAME} -o=jsonpath='{.metadata.labels.app\\.kubernetes\\.io/version}'")
+                        sh "echo ${env.RELEASE_BUILD_VERSION}"
                     }
                 }
             }
