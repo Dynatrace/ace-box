@@ -6,13 +6,10 @@ attachRules:
     tags:
     - context: CONTEXTLESS
       key: environment
-      value: ${DT_NAMESPACE}
+      value: ${DT_RELEASE_STAGE}
     - context: ENVIRONMENT
       key: DT_RELEASE_BUILD_VERSION
       value: ${DT_RELEASE_BUILD_VERSION}
     - context: KUBERNETES
       key: app.kubernetes.io/name
-      value: simplenodeservice
-    - context: KUBERNETES
-      key: app.kubernetes.io/part-of
       value: ${DT_RELEASE_PRODUCT}

@@ -3,23 +3,25 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
-    meta.helm.sh/release-name: {{ .Chart.Name }}
-    kubernetes.io/ingress.class: {{ .Values.ingress.class }}
+    kubernetes.io/ingress.class: "{{ .Values.ingress.class }}"
+    nginx.ingress.kubernetes.io/canary: "{{ if .Values.ingress.isCanary }}true{{ else }}false{{ end }}"
+    nginx.ingress.kubernetes.io/canary-weight: "{{ .Values.ingress.canaryWeight }}"
   labels:
     app: {{ .Chart.Name }}
+    version: {{ .Values.version }}
     app.kubernetes.io/managed-by: Helm
     chart: {{ .Chart.Name }}
     heritage: Helm
-    release: {{ .Chart.Name }}
-  name: {{ .Chart.Name }}
+    release: {{ .Release.Name }}
+  name: {{ .Release.Name }}
 spec:
   rules:
-  - host: {{ .Chart.Name }}-{{ .Values.environment }}.{{ .Values.domain }}
+  - host: "{{ .Chart.Name }}-{{ .Release.Namespace }}.{{ .Values.domain }}"
     http:
       paths:
       - backend:
           service:
-            name: {{ .Chart.Name }}
+            name: {{ .Release.Name }}
             port: 
               number: 80
         path: /

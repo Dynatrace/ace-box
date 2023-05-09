@@ -5,5 +5,4 @@ metadata:
 spec:
   stages:
     - name: "staging"
-    - name: "qa"
-    - name: "production"
+    - name: "prod"

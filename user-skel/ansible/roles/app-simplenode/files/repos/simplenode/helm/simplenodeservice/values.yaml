@@ -1,11 +1,17 @@
-domain: DOMAIN_PLACEHOLDER
-build_version: BUILD_PLACEHOLDER
-version: VERSION_PLACEHOLDER
-dt_tags: DT_TAGS_PLACEHOLDER
-dt_custom_prop: DT_CUSTOM_PROP_PLACEHOLDER
+---
 image: IMAGE_PLACEHOLDER
-environment: ENVIRONMENT_PLACEHOLDER
+domain: DOMAIN_PLACEHOLDER
+build_version: BUILD_VERSION_PLACEHOLDER
+version: v1
+# If dt_release_product is empty Helm release name will be used.
+# For certain scenarios dt_release_product need to be aligned
+# across Helm releases e.g. canary deployments
+dt_release_product: null
+dt_tags: ""
+dt_custom_prop: ""
+dt_owner: ace-box
 
-# microk8s >1.20 expects class "public"
 ingress:
-  class: public
+  class: public # microk8s >1.20 expects class "public"
+  canaryWeight: 100
+  isCanary: false

@@ -3,10 +3,10 @@ config:
     - management-zone-prod: "management-zone.json"
 
 management-zone-staging:
-    - environment: "simplenode-jenkins-staging"
+    - environment: "staging-jenkins"
     - name: "simplenode-jenkins-staging"
 
 management-zone-prod:
-    - environment: "simplenode-jenkins-production"
+    - environment: "prod-jenkins"
     - name: "simplenode-jenkins-production"
 

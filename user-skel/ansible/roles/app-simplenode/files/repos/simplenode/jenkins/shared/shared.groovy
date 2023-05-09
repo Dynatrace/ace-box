@@ -1,13 +1,13 @@
 def getTagRulesForPGIEvent() {
     def tagMatchRules = [
         [
-            "meTypes": ["PROCESS_GROUP_INSTANCE"],
+            'meTypes': ['PROCESS_GROUP_INSTANCE'],
             tags: [
-                ["context": "ENVIRONMENT", "key": "DT_RELEASE_BUILD_VERSION", "value": "${env.ART_VERSION}"],
-                ["context": "KUBERNETES", "key": "app.kubernetes.io/name", "value": "${env.APP_NAME}"],
-                ["context": "KUBERNETES", "key": "app.kubernetes.io/part-of", "value": "${env.APP_NAME}"],
-                ["context": "KUBERNETES", "key": "app.kubernetes.io/component", "value": "api"],
-                ["context": "CONTEXTLESS", "key": "environment", "value": "${env.TARGET_NAMESPACE}"]
+                ['context': 'ENVIRONMENT', 'key': 'DT_RELEASE_BUILD_VERSION', 'value': "${env.RELEASE_BUILD_VERSION}"],
+                ['context': 'KUBERNETES', 'key': 'app.kubernetes.io/name', 'value': "${env.RELEASE_PRODUCT}"],
+                ['context': 'KUBERNETES', 'key': 'app.kubernetes.io/part-of', 'value': 'simplenodeservice'],
+                ['context': 'KUBERNETES', 'key': 'app.kubernetes.io/component', 'value': 'webservice'],
+                ['context': 'CONTEXTLESS', 'key': 'environment', 'value': "${env.RELEASE_STAGE}"]
             ]
         ]
     ]
@@ -18,13 +18,13 @@ def getTagRulesForPGIEvent() {
 def getTagRulesForServiceEvent() {
     def tagMatchRules = [
         [
-            "meTypes": ["SERVICE"],
+            'meTypes': ['SERVICE'],
             tags: [
-                ["context": "ENVIRONMENT", "key": "DT_RELEASE_BUILD_VERSION", "value": "${env.ART_VERSION}"],
-                ["context": "KUBERNETES", "key": "app.kubernetes.io/name", "value": "${env.APP_NAME}"],
-                ["context": "KUBERNETES", "key": "app.kubernetes.io/part-of", "value": "${env.APP_NAME}"],
-                ["context": "KUBERNETES", "key": "app.kubernetes.io/component", "value": "api"],
-                ["context": "CONTEXTLESS", "key": "environment", "value": "${env.TARGET_NAMESPACE}"]
+                ['context': 'ENVIRONMENT', 'key': 'DT_RELEASE_BUILD_VERSION', 'value': "${env.RELEASE_BUILD_VERSION}"],
+                ['context': 'KUBERNETES', 'key': 'app.kubernetes.io/name', 'value': "${env.RELEASE_PRODUCT}"],
+                ['context': 'KUBERNETES', 'key': 'app.kubernetes.io/part-of', 'value': 'simplenodeservice'],
+                ['context': 'KUBERNETES', 'key': 'app.kubernetes.io/component', 'value': 'webservice'],
+                ['context': 'CONTEXTLESS', 'key': 'environment', 'value': "${env.RELEASE_STAGE}"]
             ]
         ]
     ]
@@ -35,9 +35,9 @@ def getTagRulesForServiceEvent() {
 def getTagRulesForApplicationEvent(applicationTag) {
     def tagMatchRules = [
         [
-            "meTypes": ["APPLICATION"],
+            'meTypes': ['APPLICATION'],
             tags: [
-                ["context": "CONTEXTLESS", "key": applicationTag]
+                ['context': 'CONTEXTLESS', 'key': applicationTag]
             ]
         ]
     ]
@@ -48,9 +48,9 @@ def getTagRulesForApplicationEvent(applicationTag) {
 def getTagRulesForHostEvent(hostTag) {
     def tagMatchRules = [
         [
-            "meTypes": ["HOST"],
+            'meTypes': ['HOST'],
             tags: [
-                ["context": "CONTEXTLESS", "key": hostTag]
+                ['context': 'CONTEXTLESS', 'key': hostTag]
             ]
         ]
     ]
@@ -59,38 +59,38 @@ def getTagRulesForHostEvent(hostTag) {
 }
 
 def readMetaData() {
-    def conf = readYaml file: "jenkins/shared/dt_meta.yaml"
+    def conf = readYaml file: 'jenkins/shared/dt_meta.yaml'
 
-    def return_meta = ""
+    def return_meta = ''
     for (meta_entry in conf.metadata) {
-        if (meta_entry.key != null &&  meta_entry.key != "") {
-            def curr_meta = ""
-            curr_meta = meta_entry.key.replace(" ", "_")
-            if (meta_entry.value != null &&  meta_entry.value != "") {
-                curr_meta += "="
-                curr_meta += meta_entry.value.replace(" ", "_")
+        if (meta_entry.key != null &&  meta_entry.key != '') {
+            def curr_meta = ''
+            curr_meta = meta_entry.key.replace(' ', '_')
+            if (meta_entry.value != null &&  meta_entry.value != '') {
+                curr_meta += '='
+                curr_meta += meta_entry.value.replace(' ', '_')
             }
             echo curr_meta
-            return_meta += curr_meta + " "
+            return_meta += curr_meta + ' '
         }
     }
     return return_meta
 }
 
 def readTags() {
-    def conf = readYaml file: "jenkins/shared/dt_meta.yaml"
+    def conf = readYaml file: 'jenkins/shared/dt_meta.yaml'
 
-    def return_tag = ""
+    def return_tag = ''
     for (tag_entry in conf.tags) {
-        if (tag_entry.key != null &&  tag_entry.key != "") {
-            def curr_tag = ""
-            curr_tag = tag_entry.key.replace(" ", "_")
-            if (tag_entry.value != null &&  tag_entry.value != "") {
-                curr_tag += "="
-                curr_tag += tag_entry.value.replace(" ", "_")
+        if (tag_entry.key != null &&  tag_entry.key != '') {
+            def curr_tag = ''
+            curr_tag = tag_entry.key.replace(' ', '_')
+            if (tag_entry.value != null &&  tag_entry.value != '') {
+                curr_tag += '='
+                curr_tag += tag_entry.value.replace(' ', '_')
             }
             echo curr_tag
-            return_tag += curr_tag + " "
+            return_tag += curr_tag + ' '
         }
     }
     echo return_tag

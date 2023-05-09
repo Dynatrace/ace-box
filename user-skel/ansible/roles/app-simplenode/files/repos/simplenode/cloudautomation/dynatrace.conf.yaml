@@ -17,7 +17,7 @@ attachRules:
       value: $SERVICE
     - context: KUBERNETES
       key: app.kubernetes.io/part-of
-      value: $LABEL.DT_RELEASE_PRODUCT
+      value: simplenodeservice
     - context: KUBERNETES
       key: app.kubernetes.io/component
-      value: api
+      value: webservice
