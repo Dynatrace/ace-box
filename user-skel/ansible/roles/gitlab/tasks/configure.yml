@@ -3,7 +3,7 @@
     name: dt-access-token
   vars:
     access_token_var_name: "{{ gitlab_dt_access_token_name }}"
-    access_token_scope: ["slo.read","slo.write","CaptureRequestData","credentialVault.read","credentialVault.write","DataExport","DataPrivacy","ExternalSyntheticIntegration","ReadConfig","WriteConfig"]
+    access_token_scope: ["slo.read","slo.write","CaptureRequestData","credentialVault.read","credentialVault.write","DataExport","DataPrivacy","ExternalSyntheticIntegration","ReadConfig","WriteConfig","events.ingest","settings.read","settings.write"]
 
 - include_tasks: roles/gitlab/tasks/source-secret.yml
 
@@ -18,9 +18,9 @@
       name: keptn
       tasks_from: source-endpoints
   - set_fact:
-      ca_endpoint: "{{ keptn_endpoint }}"
-      ca_bridge: "{{ keptn_bridge }}"
-      ca_api_token: "{{ keptn_api_token }}"
+      ca_endpoint: "{{ keptn_endpoint | default(None) }}"
+      ca_bridge: "{{ keptn_bridge | default(None) }}"
+      ca_api_token: "{{ keptn_api_token | default(None) }}"
   when: cloud_automation_flavor is defined and cloud_automation_flavor == "KEPTN"
 
 - block:
