@@ -1,0 +1,23 @@
+---
+- set_fact:
+    dt_oauth_sso_endpoint: "{{ extra_vars.dt_oauth_sso_endpoint }}"
+    dt_oauth_client_id: "{{ extra_vars.dt_oauth_client_id }}"
+    dt_oauth_client_secret: "{{ extra_vars.dt_oauth_client_secret }}"
+    dt_oauth_account_urn: "{{ extra_vars.dt_oauth_account_urn }}"
+
+- name: Retrieve OAuth token
+  ansible.builtin.uri:
+    url: "{{ dt_oauth_sso_endpoint }}/sso/oauth2/token"
+    method: POST
+    body_format: form-urlencoded
+    body:
+      grant_type: client_credentials
+      client_id: "{{ dt_oauth_client_id }}"
+      client_secret: "{{ dt_oauth_client_secret }}"
+      resource: "{{ dt_oauth_account_urn }}"
+      scope: "{{ dt_oauth_scope }}"
+    status_code: 200
+  register: token_response_raw
+
+- set_fact:
+    dt_oauth_access_token: "{{ token_response_raw.json.access_token }}"

@@ -1,0 +1,15 @@
+---
+image: curlimages/curl:8.00.1
+build_version: 8.00.1
+version: 8.00.1
+# If dt_release_product is empty Helm release name will be used.
+# For certain scenarios dt_release_product need to be aligned
+# across Helm releases e.g. canary deployments
+dt_release_product: null
+dt_tags: ""
+dt_custom_prop: ""
+dt_owner: ace-box
+load_gen_endpoint: null
+
+ingress:
+  class: public # microk8s >1.20 expects class "public"

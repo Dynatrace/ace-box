@@ -1,0 +1,27 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ .Release.Name }}"
+data:
+  run-load-gen: |
+    #!/bin/sh
+
+    ENDPOINT=$1
+
+    echo "Delaying start up..."
+
+    # Allow 2 minutes for service being deployed
+    sleep 120
+
+    echo "Starting load gen..."
+
+    invoke () {
+      printf "\n"
+      curl -s -o /dev/null -w "$ENDPOINT returned HTTP status %{http_code}" $ENDPOINT
+      printf "\n"
+    }
+
+    echo "Starting load generator..."
+
+    while true; do invoke; sleep 0.5; done

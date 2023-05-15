@@ -1,0 +1,26 @@
+---
+- include_role:
+    name: gitlab
+
+- name: Gitlab - Ensure Group
+  include_role:
+    name: gitlab
+    tasks_from: ensure-group
+  vars:
+    gitlab_group_name: "{{ dt_ar_gitlab_group }}"
+
+- name: Gitlab - Ensure Project Simplenodeservice
+  include_role:
+    name: gitlab
+    tasks_from: ensure-project
+  vars:
+    gitlab_prj: "{{ dt_ar_gitlab_repo_name }}"
+    gitlab_prj_namespace_id: "{{ gitlab_group_id }}"
+
+- name: Gitlab - Ensure Project docs
+  include_role:
+    name: gitlab
+    tasks_from: ensure-project
+  vars:
+    gitlab_prj: "{{ dt_ar_gitlab_docs_repo_name }}"
+    gitlab_prj_namespace_id: "{{ gitlab_group_id }}"

@@ -1,0 +1,252 @@
+{
+  "title": "ACE-Box - Auto Remediation",
+  "taskDefaults": {},
+  "usages": [],
+  "description": "",
+  "labels": {},
+  "isPrivate": false,
+  "triggerType": "Event",
+  "schemaVersion": 3,
+  "trigger": {
+    "eventTrigger": {
+      "isActive": true,
+      "filterQuery": "event.kind == \"DAVIS_PROBLEM\" AND (event.category == \"ERROR\")",
+      "uniqueExpression": "{% raw %}{{ event()[\"event.id\"] }}-{{ event()[\"event.category\"] }}-{{ event()[\"event.status\"] }}{% endraw %}",
+      "triggerConfiguration": {
+        "type": "davis-problem",
+        "value": {
+          "categories": {
+            "error": true
+          },
+          "customFilter": "isNotNull(root_cause_entity_id)",
+          "onProblemClose": true
+        }
+      }
+    }
+  },
+  "tasks": {
+    "detect_remediation_actions": {
+      "name": "detect_remediation_actions",
+      "input": {
+        "query": "fetch events\n| filter event.type == \"CUSTOM_CONFIGURATION\" OR event.type == \"CUSTOM_DEPLOYMENT\" AND dt.entity.service == \"{% raw %}{{ event()['root_cause_entity_id'] }}{% endraw %}\"\n| filter remediationAction != \"0\" AND remediationAction != \"\" AND isNotNull(remediationAction)\n| filter remediationType != \"0\" AND remediationType != \"\" AND isNotNull(remediationType)\n| fields remediationAction, remediationType, timestamp\n| sort timestamp DESC"
+      },
+      "action": "dynatrace.automations:execute-dql-query",
+      "position": {
+        "x": 0,
+        "y": 1
+      },
+      "conditions": {
+        "custom": ""
+      },
+      "description": "Executes DQL query",
+      "predecessors": []
+    },
+    "get_owners": {
+      "name": "get_owners",
+      "input": {
+        "entityIds": "{% raw %}{{ event()['root_cause_entity_id'] }}{% endraw %}",
+        "responsibilities": []
+      },
+      "action": "dynatrace.ownership:get-ownership-from-entity",
+      "position": {
+        "x": 1,
+        "y": 3
+      },
+      "conditions": {
+        "states": {
+          "gitlab": "SUCCESS"
+        }
+      },
+      "description": "Retrieves entity and extracts ownership data from it.",
+      "predecessors": [
+        "gitlab"
+      ]
+    },
+    "gitlab": {
+      "name": "gitlab",
+      "input": {
+        "url": "{{ ingress_protocol }}://gitlab.{{ ingress_domain }}/oauth/token",
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "payload": "{\n  \"grant_type\": \"password\",\n  \"username\": \"{{ gitlab_username }}\",\n  \"password\": \"{{ gitlab_password }}\"\n}"
+      },
+      "action": "dynatrace.automations:http-function",
+      "position": {
+        "x": 0,
+        "y": 2
+      },
+      "conditions": {
+        "custom": "{% raw %}{{ (result('detect_remediation_actions').records|length > 0) and (result('detect_remediation_actions').records[0].remediationType == \"gitlab\") }}{% endraw %}",
+        "states": {
+          "detect_remediation_actions": "SUCCESS"
+        }
+      },
+      "description": "Issue an HTTP request to any API",
+      "predecessors": [
+        "detect_remediation_actions"
+      ]
+    },
+    "create_gitlab_issue": {
+      "name": "create_gitlab_issue",
+      "input": {
+        "url": "{{ ingress_protocol }}://gitlab.{{ ingress_domain }}/api/v4/projects/{% raw %}{{ result(\"get_owners\").owners[0].contactDetails | selectattr('integrationType', 'equalto', 'JIRA') | map(attribute='jira.project') | first() }}{% endraw %}/issues",
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer {% raw %}{{ result(\"gitlab\").json.access_token }}{% endraw %}"
+        },
+        "payload": "{\n  \"title\": \"{% raw %}{{ event()['event.name'] }} - {{ event()['display_id'] }}{% endraw %}\",\n  \"issue_type\":\"incident\",\n  \"assignee_ids\": [{% raw %}{{ result(\"get_owners\").owners[0].contactDetails | selectattr('integrationType', 'equalto', 'JIRA') | map(attribute='jira.defaultAssignee') | first() }}{% endraw %}],\n  \"description\":\"# New problem\\n\\nA new problem was opened! Don't worry, Dynatrace Davis AI already identified a root cause and corresponding remediation action which will be triggered instantly.\\n\\nFollow the issue to stay updated on the latest remediation status.\\n\\n---\\n\\n**Remediation details**\\n- Problem ID: [{% raw %}{{ event()['display_id'] }}{% endraw %}]({{ extra_vars.dt_environment_url_gen3 }}/ui/apps/dynatrace.classic.problems/problems/problemdetails;gtf=-2h;gf=all;pid={% raw %}{{ event()['event.id'] }}{% endraw %})\\n- Problem status: _{% raw %}{{ event()['event.status'] }}{% endraw %}_\\n- Remediation status: _REMEDIATION ACTION IDENTIFIED_\\n\"\n}"
+      },
+      "action": "dynatrace.automations:http-function",
+      "position": {
+        "x": 1,
+        "y": 4
+      },
+      "conditions": {
+        "custom": "{% raw %}{{ (result('get_owners').owners | length > 0) and (event()['event.status'] == \"ACTIVE\") }}{% endraw %}",
+        "states": {
+          "get_owners": "SUCCESS"
+        }
+      },
+      "description": "Issue an HTTP request to any API",
+      "predecessors": [
+        "get_owners"
+      ]
+    },
+    "trigger_gitlab_remediation": {
+      "name": "trigger_gitlab_remediation",
+      "input": {
+        "url": "{% raw %}{{ result(\"detect_remediation_actions\").records[0].remediationAction }}{% endraw %}",
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer {% raw %}{{ result(\"gitlab\").json.access_token }}{% endraw %}"
+        }
+      },
+      "action": "dynatrace.automations:http-function",
+      "position": {
+        "x": 0,
+        "y": 4
+      },
+      "conditions": {
+        "custom": "{% raw %}{{ event()['event.status'] == \"ACTIVE\" }}{% endraw %}",
+        "states": {
+          "detect_remediation_actions": "SUCCESS",
+          "gitlab": "SUCCESS"
+        }
+      },
+      "description": "Issue an HTTP request to any API",
+      "predecessors": [
+        "detect_remediation_actions",
+        "gitlab"
+      ]
+    },
+    "update_gitlab_issue_on_remediation_start": {
+      "name": "update_gitlab_issue_on_remediation_start",
+      "input": {
+        "url": "{{ ingress_protocol }}://gitlab.{{ ingress_domain }}/api/v4/projects/{% raw %}{{ result(\"get_owners\").owners[0].contactDetails | selectattr('integrationType', 'equalto', 'JIRA') | map(attribute='jira.project') | first() }}{% endraw %}/issues/{% raw %}{{ result(\"create_gitlab_issue\").json.iid }}{% endraw %}/notes",
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer {% raw %}{{ result(\"gitlab\").json.access_token }}{% endraw %}"
+        },
+        "payload": "{\n  \"body\": \"# Remediation action triggered\\n\\nAfter the remediation action was triggered, Dynatrace Davis AI detects any improvements and automatically closes the problem.\\n\\nFollow the issue to stay updated on the latest remediation status.\\n\\n---\\n\\n**Remediation details**\\n- Problem ID: [{% raw %}{{ event()['display_id'] }}{% endraw %}]({{ extra_vars.dt_environment_url_gen3 }}/ui/apps/dynatrace.classic.problems/problems/problemdetails;gtf=-2h;gf=all;pid={% raw %}{{ event()['event.id'] }}{% endraw %})\\n- Problem status: _{% raw %}{{ event()['event.status'] }}{% endraw %}_\\n- Remediation status: _[REMEDIATION ACTION TRIGGERED]({% raw %}{{ result(\"trigger_gitlab_remediation\").json.web_url }}{% endraw %})_\\n\"\n}"
+      },
+      "action": "dynatrace.automations:http-function",
+      "position": {
+        "x": 1,
+        "y": 5
+      },
+      "conditions": {
+        "states": {
+          "create_gitlab_issue": "SUCCESS",
+          "trigger_gitlab_remediation": "SUCCESS"
+        }
+      },
+      "description": "Issue an HTTP request to any API",
+      "predecessors": [
+        "create_gitlab_issue",
+        "trigger_gitlab_remediation"
+      ]
+    },
+    "get_gitlab_issue": {
+      "name": "get_gitlab_issue",
+      "input": {
+        "url": "{{ ingress_protocol }}://gitlab.{{ ingress_domain }}/api/v4/projects/{% raw %}{{ result(\"get_owners\").owners[0].contactDetails | selectattr('integrationType', 'equalto', 'JIRA') | map(attribute='jira.project') | first() }}{% endraw %}/issues?search={% raw %}{{ event()['display_id'] }}{% endraw %}&in=title&order_by=created_at&sort=desc",
+        "method": "GET",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer {% raw %}{{ result(\"gitlab\").json.access_token }}{% endraw %}"
+        }
+      },
+      "action": "dynatrace.automations:http-function",
+      "position": {
+        "x": 2,
+        "y": 4
+      },
+      "conditions": {
+        "custom": "{% raw %}{{ (result('get_owners').owners | length > 0) and (event()['event.status'] == \"CLOSED\") }}{% endraw %}",
+        "states": {
+          "get_owners": "SUCCESS"
+        }
+      },
+      "description": "Issue an HTTP request to any API",
+      "predecessors": [
+        "get_owners"
+      ]
+    },
+    "update_gitlab_issue_on_remediation_end": {
+      "name": "update_gitlab_issue_on_remediation_end",
+      "input": {
+        "url": "{{ ingress_protocol }}://gitlab.{{ ingress_domain }}/api/v4/projects/{% raw %}{{ result(\"get_owners\").owners[0].contactDetails | selectattr('integrationType', 'equalto', 'JIRA') | map(attribute='jira.project') | first() }}{% endraw %}/issues/{% raw %}{{ result(\"get_gitlab_issue\").json[0].iid }}{% endraw %}/notes",
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer {% raw %}{{ result(\"gitlab\").json.access_token }}{% endraw %}"
+        },
+        "payload": "{\n  \"body\": \"# Remediation action successful\\n\\nDynatrace Davis AI detected an improvement after the remediation action was triggered.\\n\\n---\\n\\n**Remediation details**\\n- Problem ID: [{% raw %}{{ event()['display_id'] }}{% endraw %}]({{ extra_vars.dt_environment_url_gen3 }}/ui/apps/dynatrace.classic.problems/problems/problemdetails;gtf=-2h;gf=all;pid={% raw %}{{ event()['event.id'] }}{% endraw %})\\n- Problem status: _{% raw %}{{ event()['event.status'] }}{% endraw %}_\\n- Remediation status: _REMEDIATION ACTION SUCCESSFUL_\\n\"\n}"
+      },
+      "action": "dynatrace.automations:http-function",
+      "position": {
+        "x": 2,
+        "y": 5
+      },
+      "conditions": {
+        "states": {
+          "get_gitlab_issue": "SUCCESS"
+        }
+      },
+      "description": "Issue an HTTP request to any API",
+      "predecessors": [
+        "get_gitlab_issue"
+      ]
+    },
+    "close_gitlab_issue": {
+      "name": "close_gitlab_issue",
+      "input": {
+        "url": "{{ ingress_protocol }}://gitlab.{{ ingress_domain }}/api/v4/projects/{% raw %}{{ result(\"get_owners\").owners[0].contactDetails | selectattr('integrationType', 'equalto', 'JIRA') | map(attribute='jira.project') | first() }}{% endraw %}/issues/{% raw %}{{ result(\"get_gitlab_issue\").json[0].iid }}{% endraw %}?state_event=close",
+        "method": "PUT",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer {% raw %}{{ result(\"gitlab\").json.access_token }}{% endraw %}"
+        }
+      },
+      "action": "dynatrace.automations:http-function",
+      "position": {
+        "x": 2,
+        "y": 6
+      },
+      "conditions": {
+        "states": {
+          "update_gitlab_issue_on_remediation_end": "SUCCESS"
+        }
+      },
+      "description": "Issue an HTTP request to any API",
+      "predecessors": [
+        "update_gitlab_issue_on_remediation_end"
+      ]
+    }
+  }
+}

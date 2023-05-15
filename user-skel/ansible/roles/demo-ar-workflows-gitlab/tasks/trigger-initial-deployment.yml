@@ -1,0 +1,33 @@
+---
+- include_role:
+    name: gitlab
+    tasks_from: source-endpoints.yml
+
+- include_role:
+    name: gitlab
+    tasks_from: source-secret.yml
+
+- name: Gitlab - Ensure Project
+  include_role:
+    name: gitlab
+    tasks_from: ensure-project
+  vars:
+    gitlab_prj: "{{ dt_ar_gitlab_repo_name }}"
+    gitlab_prj_namespace_id: "{{ gitlab_group_id }}"
+
+- name: Trigger initial deployment
+  uri:
+    url: "{{ gitlab_internal_endpoint }}/api/v4/projects/{{ gitlab_project_id }}/pipeline"
+    validate_certs: false
+    method: POST
+    status_code: [200, 201]
+    headers:
+      Content-Type: "application/json"
+      Authorization: "Bearer {{ gitlab_oauth_token }}"
+    body:
+      ref: main
+      variables:
+      - key: IS_INITIAL_DEPLOYMENT
+        value: "true"
+    body_format: json
+  register: gitlab_post_trigger_result
