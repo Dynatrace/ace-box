@@ -4,7 +4,7 @@
   when: not activegate_install_synthetic
 
 - set_fact:
-    ag_install_command: DYNATRACE_SYNTHETIC_AUTO_INSTALL=true /bin/sh "{{ activegate_download_location }}" --enable-synthetic
+    ag_install_command: DYNATRACE_SYNTHETIC_AUTO_INSTALL=true /bin/bash "{{ activegate_download_location }}" --enable-synthetic
   when: activegate_install_synthetic
 
 - name: Install synthetic-enabled ActiveGate
