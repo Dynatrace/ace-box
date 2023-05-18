@@ -8,7 +8,7 @@
 - set_fact:
     monaco_default_environment:
       DT_ENV_URL: "{{ dynatrace_tenant_url }}"
-      DT_API_TOKEN: "{{ ace_box_monaco_api_token }}"
+      DT_API_TOKEN: "{{ ace_box_monaco_api_token }}" # ED: monaco_dt_access_token_name?
 
 - set_fact:
     monaco_deploy_environment: "{{ monaco_environment | default({}) | combine(monaco_default_environment) }}"
@@ -22,5 +22,5 @@
 
 - name: Monaco - Apply Configuration for Project
   shell:
-    cmd: /usr/local/bin/monaco -e={{ role_path }}/files/environments.yaml {{ monaco_projects_argument }} {{ monaco_projects_root }}
+    cmd: /usr/local/bin/monaco deploy {{ monaco_projects_root }}/manifest.yaml {{ monaco_projects_argument }}
   environment: "{{ monaco_deploy_environment }}"
