@@ -8,7 +8,7 @@
 - set_fact:
     monaco_default_environment:
       DT_ENV_URL: "{{ dynatrace_tenant_url }}"
-      DT_API_TOKEN: "{{ ace_box_monaco_api_token }}" # ED: monaco_dt_access_token_name?
+      DT_API_TOKEN: "{{ vars[monaco_dt_access_token_name] }}"
 
 - set_fact:
     monaco_deploy_environment: "{{ monaco_environment | default({}) | combine(monaco_default_environment) }}"
