@@ -2,11 +2,11 @@
 
 This currated role can be used to install monaco CLI on the ACE-Box.
 
-For the details, please check this link: https://dynatrace-oss.github.io/dynatrace-monitoring-as-code/
+For the details, please check this link: https://www.dynatrace.com/support/help/manage/configuration-as-code/installation
 
 ## Using the role
 
-### Deploying Monaco
+### Installing Monaco
 
 ```yaml
 - include_role:
@@ -17,7 +17,7 @@ Variables that can be set are as follows:
 
 ```yaml
 ---
-monaco_version: "v1.6.0"
+monaco_version: "v2.0.1"
 ```
 
 ### Other Tasks in the Role
@@ -26,7 +26,7 @@ monaco_version: "v1.6.0"
 This task applies configuration of the selected projects under the monaco projects root folder.
 You need to specify them as input variables shown under "vars" parameter. 
 
-You can also apply environment variables that is needed for monaco configurations under "apply.environment" parameter.
+You can also apply environment variables that is needed for monaco configurations.
 
 ```yaml
 - include_role:
