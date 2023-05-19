@@ -33,3 +33,15 @@ In addition to the service being detected in Dynatrace, you can also get informa
 Your global anomaly detection settings should look like:
 
 ![dynatrace_frequent_issue_detection](assets/dynatrace_frequent_issue_detection.png)
+
+## 5. Allow AutomationEngine to access Gitlab
+
+As part of the remediation workflow, Dynatrace reaches out to Gitlab. In order to allow such an outbound connection, please go to _Settings > Preferences > Limit outbound connections_ and add your host IP or domain to the allow-list:
+
+![limit_outbound_connections](assets/limit_outbound_connections.png)
+
+## 6. Install Dynatrace Ownership App
+
+The auto remediation demo leverages a built-in Dynatrace App. In order to run the demo, please head to the Hub in your environment, search for the "Ownership" App and install it.
+
+![ownership_app](assets/ownership_app.png)
