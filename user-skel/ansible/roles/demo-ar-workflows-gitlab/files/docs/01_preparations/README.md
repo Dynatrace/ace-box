@@ -45,3 +45,5 @@ As part of the remediation workflow, Dynatrace reaches out to Gitlab. In order t
 The auto remediation demo leverages a built-in Dynatrace App. In order to run the demo, please head to the Hub in your environment, search for the "Ownership" App and install it.
 
 ![ownership_app](assets/ownership_app.png)
+
+Congrats! You're now ready to [trigger the canary deployment](/02_canary)!

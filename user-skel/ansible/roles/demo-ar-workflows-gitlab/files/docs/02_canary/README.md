@@ -27,3 +27,5 @@ The following inputs are available:
 Leave the defaults and run the pipeline:
 
 ![gitlab_run_pipeline_2](assets/gitlab_run_pipeline_2.png)
+
+Congrats! You're now ready to [see the auto remediation in action](/02_canary)!

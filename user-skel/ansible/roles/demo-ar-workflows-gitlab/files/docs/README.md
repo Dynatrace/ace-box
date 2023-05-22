@@ -12,7 +12,7 @@ By having tooling in place that's capable associating problems with changes and 
 
 # Technical implementation
 
-Before getting started, let's let's familiarize ourselves with the demo setup.
+Before getting started, let's familiarize ourselves with the demo setup.
 
 First, a dashboard has been deployed and is available at `http(s)://dashboard.<ingress domain>` . Basic auth credentials were provided at the end of the provisioning process. The dashboard is where you can find all relevant links and credentials.
 
@@ -31,8 +31,8 @@ All demo applications as well as tools are deployed on *Kubernetes* (*Microk8s*)
 
 # Steps
 
-As part of this use case we will:
+As part of this use case we will cover:
 
-1. Preparations
-2. Shift canary traffic
-3. Inspect traffic shift and auto remediation
+1. [Preparations](/01_preparations)
+2. [Shift canary traffic](/02_canary)
+3. [Inspect traffic shift and auto remediation](/_03_auto_remediation)
