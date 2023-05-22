@@ -35,4 +35,4 @@ As part of this use case we will cover:
 
 1. [Preparations](/01_preparations)
 2. [Shift canary traffic](/02_canary)
-3. [Inspect traffic shift and auto remediation](/_03_auto_remediation)
+3. [Inspect traffic shift and auto remediation](/03_auto_remediation)
