@@ -10,7 +10,7 @@
   "trigger": {
     "eventTrigger": {
       "isActive": true,
-      "filterQuery": "event.kind == \"DAVIS_PROBLEM\" AND event.category == \"ERROR\" AND isNotNull(root_cause_entity_id)",
+      "filterQuery": "event.kind == \"DAVIS_PROBLEM\" AND event.category == \"ERROR\" AND isNotNull(root_cause_entity_id) AND (event.status_transition  == \"UPDATED\" OR event.status_transition == \"RESOLVED\" )",
       "uniqueExpression": null,
       "triggerConfiguration": {
         "type": "event",
