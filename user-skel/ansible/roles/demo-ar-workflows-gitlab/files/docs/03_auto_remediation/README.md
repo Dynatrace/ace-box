@@ -18,7 +18,9 @@ Immediately after the root cause is identified, a workflow is triggered. Find ou
 
 ![workflow_executions](assets/workflow_executions.png)
 
-Understand what the workflow is responsible of:
+>Note: You might see multiple executions from multiple workflows. Feel free to filter for the workflow we're particularly interested in: _ACE-Box - Auto Remediation_.
+
+Understand what the workflow is responsible for:
 
 1) Detecting remediation action of root cause (Configuration Change event)
 2) Authenticate against Gitlab as the identified remediation action

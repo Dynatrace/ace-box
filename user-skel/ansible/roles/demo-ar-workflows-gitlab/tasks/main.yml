@@ -95,15 +95,30 @@
     track_upstream: true
 
 #
-# AR workflow
+# AR workflows
 #
 - block:
   - set_fact:
       workflow_name: "{{ auto_remediation_workflow_name }}"
       workflow_json_path: "{{ auto_remediation_workflow_json_path }}"
-  - name: Template Helm values file
+  - name: Template workflow
     ansible.builtin.template:
       src: auto-remediation-workflow.json.j2
+      dest: "{{ workflow_json_path }}"
+      owner: "{{ ace_box_user }}"
+      group: "{{ ace_box_user }}"
+      mode: '0644'
+  - include_tasks:
+      file: ensure-workflow.yml
+
+- block:
+  - set_fact:
+      workflow_name: "{{ auto_remediation_debounce_workflow_name }}"
+      workflow_json_path: "{{ auto_remediation_debounce_workflow_json_path }}"
+      auto_remediation_workflow_id: "{{ workflow_id }}"
+  - name: Template workflow
+    ansible.builtin.template:
+      src: auto-remediation-debounce-workflow.json.j2
       dest: "{{ workflow_json_path }}"
       owner: "{{ ace_box_user }}"
       group: "{{ ace_box_user }}"

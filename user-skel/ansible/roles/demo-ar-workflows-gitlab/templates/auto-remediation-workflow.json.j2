@@ -1,5 +1,5 @@
 {
-  "title": "ACE-Box - Auto Remediation",
+  "title": "{{ workflow_name }}",
   "taskDefaults": {},
   "usages": [],
   "description": "",
@@ -9,7 +9,7 @@
   "schemaVersion": 3,
   "trigger": {
     "eventTrigger": {
-      "isActive": true,
+      "isActive": false,
       "filterQuery": "event.kind == \"DAVIS_PROBLEM\" AND (event.category == \"ERROR\")",
       "uniqueExpression": "{% raw %}{{ event()[\"event.id\"] }}-{{ event()[\"event.category\"] }}-{{ event()[\"event.status\"] }}{% endraw %}",
       "triggerConfiguration": {

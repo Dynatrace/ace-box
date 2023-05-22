@@ -25,6 +25,10 @@
     body_format: json
     headers:
       Authorization: "Bearer {{ dt_oauth_access_token }}"
+  register: workflow_post_response_raw
+  when: workflow_lookup_response_raw.json.count == 0
+- set_fact:
+    workflow_id: "{{ workflow_post_response_raw.json.id }}"
   when: workflow_lookup_response_raw.json.count == 0
 
 - name: Update existing workflow
@@ -36,4 +40,8 @@
     body_format: json
     headers:
       Authorization: "Bearer {{ dt_oauth_access_token }}"
+  register: workflow_put_response_raw
+  when: workflow_lookup_response_raw.json.count > 0
+- set_fact:
+    workflow_id: "{{ workflow_put_response_raw.json.id }}"
   when: workflow_lookup_response_raw.json.count > 0
