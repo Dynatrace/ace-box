@@ -2,9 +2,13 @@
 - set_fact:
     dt_environment_url_gen3: "{{ extra_vars.dt_environment_url_gen3 }}"
 
-- include_tasks:
-    file: create-oauth-token.yml
+- include_role:
+    name: dt-oauth-token
   vars:
+    dt_oauth_sso_endpoint: "{{ extra_vars.dt_oauth_sso_endpoint }}"
+    dt_oauth_client_id: "{{ extra_vars.dt_oauth_client_id }}"
+    dt_oauth_client_secret: "{{ extra_vars.dt_oauth_client_secret }}"
+    dt_oauth_account_urn: "{{ extra_vars.dt_oauth_account_urn }}"
     dt_oauth_scope: "automation:workflows:read automation:workflows:write"
 
 - name: Lookup existing workflow
