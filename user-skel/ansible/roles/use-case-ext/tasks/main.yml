@@ -1,28 +1,41 @@
 ---
-- set_fact:
+- name: Determine use_case_ext_name
+  ansible.builtin.set_fact:
     use_case_ext_name: "{{ use_case_ext_src.split('/')[-1] | replace('.git', '') }}"
 
-- name: Clone external use case
-  ansible.builtin.git:
-    repo: "{{ use_case_ext_src }}"
-    version: "{{ use_case_ext_version }}"
-    dest: "/tmp/{{ use_case_ext_name }}"
+- name: Determine use_case_repo_path
+  ansible.builtin.set_fact:
+    use_case_repo_path: "/home/{{ ace_box_user }}/repos/{{ use_case_ext_name }}"
+
+- block:
+  - name: Create repos directory
+    ansible.builtin.file:
+      path: "/home/{{ ace_box_user }}/repos"
+      state: directory
+      mode: '0755'
+    when: not local|bool
+  - name: Clone external use case
+    ansible.builtin.git:
+      repo: "{{ use_case_ext_src }}"
+      version: "{{ use_case_ext_version }}"
+      dest: "{{ use_case_repo_path }}"
+    when: not local|bool
 
 - name: Synchronize Use Case role
   synchronize:
-    src: "/tmp/{{ use_case_ext_name }}/roles/{{ use_case_ext_default_name }}/"
+    src: "{{ use_case_repo_path }}/roles/{{ use_case_ext_default_name }}/"
     dest: "/home/{{ ace_box_user }}/ansible/roles/{{ use_case_ext_name }}/"
 
 - name: Synchronize roles
   synchronize:
-    src: "/tmp/{{ use_case_ext_name }}/roles/"
+    src: "{{ use_case_repo_path }}/roles/"
     dest: "/home/{{ ace_box_user }}/ansible/roles/"
     rsync_opts:
       - "--exclude={{ use_case_ext_default_name }}"
 
 - name: Synchronize var override
   synchronize:
-    src: "/tmp/{{ use_case_ext_name }}/ace-ext.config.yml"
+    src: "{{ use_case_repo_path }}/ace-ext.config.yml"
     dest: "/home/{{ ace_box_user }}/ansible/{{ use_case_ext_name }}.config.yml"
   ignore_errors: True
 
