@@ -9,3 +9,4 @@ git_repo_monaco: "monaco"
 jenkins_skip_install: False
 jenkins_dt_access_token_name: "ace_box_jenkins_api_token"
 jenkins_monaco_container_image: "dynatraceace/monaco-runner:release-v1.6.0"
+jenkins_dta_container_image: "dynatraceace/dt-automation-cli:latest"
