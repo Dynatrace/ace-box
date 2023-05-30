@@ -20,13 +20,28 @@ Immediately after the root cause is identified, a workflow is triggered. Find ou
 
 >Note: You might see multiple executions from multiple workflows. Feel free to filter for the workflow we're particularly interested in: _ACE-Box - Auto Remediation_.
 
-Understand what the workflow is responsible for:
+Understand the workflow: As part of a problem lifecycle, Dynatrace ingests events for every problem update, for example a change in problem status. For every cycle, the workflow is triggered exactly twice. A first time when a problem is opened (and a root cause is identified) and a second time when a problem is resolved:
 
-1) Detecting remediation action of root cause (Configuration Change event)
-2) Authenticate against Gitlab as the identified remediation action
-3) Trigger remediation action
-4) In parallel, identiffy owners of root cause entity
-5) Create Gitlab issue, assign owners and update with latest remediation status
+### Problem opened
+    
+When a problem is initially opened, usually the root cause is not yet known. At this point Dynatrace Davis AI analyzes the problem and all contextual information that's available, eventually identifying a root cause. The very problem update event which includes a root cause for the first time tells our workflow to try an auto remediation:
+
+1) Configuration change events are queried for the detected root cause entity. Each event is parsed for metadata that specifies a remediation type and action. In our case, an event is identified which was sent earlier when Gitlab changed the canary weighting:
+
+    ![remediation_action](assets/remediation_action.png)
+
+2) The remediation type was identified as Gitlab, so Dynatrace authenticates against the Gitlab instance.
+3) In parallel, Dynatrace triggers the identified remediation and retrieves ownership metadata from the identified root cause entity.
+4) A Gitlab issue is opened and assigned to the responsible owners.
+5) From this point on, remediation updates are added to the issue, as well as Dynatrace Problem, in the form of comments.
+
+### Problem closed
+
+When a problem is closed, i.e. a problem update event sent with status transition "resolved", the remediation was successful:
+
+1) Similar to 1 & 2 earlier, when the problem is opened, a remediation type is identified and DT authenticates against Gitlab.
+2) Existing issues are queried, identifying the one that was opened for the specific problem.
+3) Gitlab issue is updated with comment and status set to "closed". This marks the end of a problem auto remediation.
 
 ## 3. Inspect Gitlab remediation action and issue
 
