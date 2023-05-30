@@ -39,6 +39,11 @@ Furthermore, it uses the following attributes to be used as Jenkins variables in
 - `dt_synthetic_node_id` # Synthetic-enabled private ActiveGate ID if exists
 - `registry_url` # which was deployed during K8s installation
 - `otel_endpoint` # if Open Telemetry was installed
+- `dt_environment_url_gen3` # dynatrace gen 3 environment include the .apps
+- `dt_oauth_client_id` # dynatrace gen 3 client ID starts with dt0...
+- `dt_oauth_client_secret` # dynatrace gen 3 client secret starts with dt0...
+- `dt_oauth_account_urn` # dynatrace gen 3 account URN starts with urn:dtaccount: ....
+- `dt_oauth_sso_endpoint` # sso endpoint for token request in gen 3. For each stage in Dynatrace this can change. i.e. https://sso-sprint.dynatracelabs.com/sso/oauth2/token for sprint environments. Always include `sso/oauth2/token` part.
 
 ```yaml
 - include_role:
@@ -82,11 +87,6 @@ A link to an example Jinja template: https://github.com/Dynatrace/ace-box/blob/d
     <git_username>: "<a git tool user name>" # set your git tool´s user name
     <git_token>: "<a git tool token>" # set your git tool´s token
     <git_domain>: "<a git tool endpoint>" # set your git endpoint
-    <dt_environment_url_gen3>: "<dynatrace gen 3 environment>" # include the .apps
-    <dt_oauth_client_id>: "<dynatrace gen 3 client ID" # starts with  dt0...
-    <dt_oauth_account_urn>: "<dynatrace gen 3 account URN>" # starts with urn:dtaccount: ....
-    <dt_oauth_client_secret>: "<dynatrace gen 3 client secret>" # starts with  dt0...
-    <dt_oauth_sso_endpoint>: "<sso endpoint for token request in gen 3>" #for each stage in Dynatrace this can change. i.e. https://sso-sprint.dynatracelabs.com/sso/oauth2/token for sprint. Always include sso/oauth2/token part
     <usecase_repo>: "<a git repository name>" # set your git repository to be used by Jenkins in the use case template (i.e. include_jenkins_value_file)
     <usecase_org>: "<a git repository organization/group>" # set your git organization to be used by Jenkins in the use case template (i.e. include_jenkins_value_file)
     <usecase_jenkins_folder>: "<a git repository folder>" # set your git repo folder to be used by Jenkins in the use case template (i.e. include_jenkins_value_file)
