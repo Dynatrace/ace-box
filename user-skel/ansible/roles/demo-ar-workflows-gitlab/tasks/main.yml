@@ -44,9 +44,6 @@
   vars:
     monaco_version: "v2.0.3"
 
-- include_tasks:
-    file: deploy-dt-configuration.yml
-
 #
 # Gitlab
 #
@@ -138,3 +135,10 @@
 
 - include_role:
     name: dashboard
+
+#
+# Deploy Monaco at the very end, as the chances are the highest that 
+# the ACE-Box host group is available by then.
+#
+- include_tasks:
+    file: deploy-dt-configuration.yml
