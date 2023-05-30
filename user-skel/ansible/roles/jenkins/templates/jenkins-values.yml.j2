@@ -112,6 +112,10 @@ controller:
               - key: "HOST_GROUP"
                 value: "{{ host_group }}"
 {% endif %}
+{% if dt_environment_url_gen3 is defined and dt_environment_url_gen3 != "" %}
+              - key: "DYNATRACE_URL_GEN3"
+                value: "{{ dt_environment_url_gen3 }}"
+{% endif %}
       library-config: |
         unclassified:
           giteaServers:
@@ -165,6 +169,34 @@ controller:
           system:
             domainCredentials:
               - credentials:
+{% if dt_oauth_sso_endpoint is defined and dt_oauth_sso_endpoint != "" %}
+                - string:
+                    id: "DYNATRACE_SSO_URL"
+                    description: ""
+                    scope: GLOBAL
+                    secret: "{{ dt_oauth_sso_endpoint }}"
+{% endif %}
+{% if dt_oauth_client_id is defined and dt_oauth_client_id != "" %}
+                - string:
+                    id: "DYNATRACE_CLIENT_ID"
+                    description: ""
+                    scope: GLOBAL
+                    secret: "{{ dt_oauth_client_id }}"
+{% endif %}
+{% if dt_oauth_client_secret is defined and dt_oauth_client_secret != "" %}
+                - string:
+                    id: "DYNATRACE_SECRET"
+                    description: ""
+                    scope: GLOBAL
+                    secret: "{{ dt_oauth_client_secret }}"
+{% endif %}
+{% if dt_oauth_account_urn is defined and dt_oauth_account_urn != "" %}
+                - string:
+                    id: "ACCOUNT_URN"
+                    description: ""
+                    scope: GLOBAL
+                    secret: "{{ dt_oauth_account_urn }}"
+{% endif %}                    
 {% if git_username is defined and git_username != "" and git_password is defined and git_password != "" %}
                 - usernamePassword:
                     id: "git-creds-ace"
