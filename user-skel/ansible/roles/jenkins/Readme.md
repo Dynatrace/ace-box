@@ -7,24 +7,29 @@ For the details, please check this link: https://www.jenkins.io/doc/book/install
 ## Using the role
 
 ### Role Requirements
+
 This role depends on the following roles to be deployed beforehand:
+
 ```yaml
 - include_role:
     name: microk8s
-
 ```
+
 ### Deploying Jenkins
 
 The main task deploys Jenkins on a Kubernetes cluster.
 
 Once the deployment is completed, it creates the service endpoint and admin secret to be sourced into the following variables:
+
 - `jenkins_internal_endpoint`
 - `jenkins_username`
 - `jenkins_password`
 - `jenkins_api_token`
 
 Furthermore, it uses the following attributes to be used as Jenkins variables in the Jenkins pipeline.
+
 > Note: If your use case requires gitea as a source code repository, CA/Keptn and Synthetic-enabled private ActiveGate, they must be deployed beforehand to be used as Jenkins variables.
+
 - `gitea_username` # if git_flavor == "GITEA"
 - `gitea_password` # if git_flavor == "GITEA"
 - `gitea_access_token` # if git_flavor == "GITEA"
@@ -34,7 +39,6 @@ Furthermore, it uses the following attributes to be used as Jenkins variables in
 - `dt_synthetic_node_id` # Synthetic-enabled private ActiveGate ID if exists
 - `registry_url` # which was deployed during K8s installation
 - `otel_endpoint` # if Open Telemetry was installed
-
 
 ```yaml
 - include_role:
@@ -57,10 +61,11 @@ jenkins_skip_install: False
 
 ### Other Tasks in the Role
 
-#### "template-values-file" 
+#### "template-values-file"
+
 This task templates the helm values file depending on your use case requirements. This task has to be executed before the "jenkins" role stated above.
 
-"include_jenkins_value_file" variable specifies where the Jinja template can be found. 
+"include_jenkins_value_file" variable specifies where the Jinja template can be found.
 
 A link to an example Jinja template: https://github.com/Dynatrace/ace-box/blob/dev/user-skel/ansible/roles/demo-quality-gates-jenkins/templates/demo-default-jobs.yml.j2
 
@@ -77,15 +82,20 @@ A link to an example Jinja template: https://github.com/Dynatrace/ace-box/blob/d
     <git_username>: "<a git tool user name>" # set your git tool´s user name
     <git_token>: "<a git tool token>" # set your git tool´s token
     <git_domain>: "<a git tool endpoint>" # set your git endpoint
-    
+    <dt_environment_url_gen3>: "<dynatrace gen 3 environment>" # include the .apps
+    <dt_oauth_client_id>: "<dynatrace gen 3 client ID" # starts with  dt0...
+    <dt_oauth_account_urn>: "<dynatrace gen 3 account URN>" # starts with urn:dtaccount: ....
+    <dt_oauth_client_secret>: "<dynatrace gen 3 client secret>" # starts with  dt0...
+    <dt_oauth_sso_endpoint>: "<sso endpoint for token request in gen 3>" #for each stage in Dynatrace this can change. i.e. https://sso-sprint.dynatracelabs.com/sso/oauth2/token for sprint. Always include sso/oauth2/token part
     <usecase_repo>: "<a git repository name>" # set your git repository to be used by Jenkins in the use case template (i.e. include_jenkins_value_file)
     <usecase_org>: "<a git repository organization/group>" # set your git organization to be used by Jenkins in the use case template (i.e. include_jenkins_value_file)
     <usecase_jenkins_folder>: "<a git repository folder>" # set your git repo folder to be used by Jenkins in the use case template (i.e. include_jenkins_value_file)
-
 ```
 
-#### "create-secret" 
+#### "create-secret"
+
 This task creates the Jenkins admin user and password.
+
 ```yaml
 - include_role:
     name: jenkins
@@ -95,18 +105,22 @@ This task creates the Jenkins admin user and password.
     jenkins_password: "<jenkins password>"
 ```
 
-#### "create-token" 
+#### "create-token"
+
 This task generates the Jenkins api token to be added into a secret, then sources the following variables:
+
 - `jenkins_api_token`
-  
+
 ```yaml
 - include_role:
     name: jenkins
     tasks_from: create-token
 ```
 
-#### "source-endpoints" 
+#### "source-endpoints"
+
 This task fetches the Jenkins internal endpoint and sources the following variables:
+
 - `jenkins_internal_endpoint`
 
 ```yaml
@@ -115,8 +129,10 @@ This task fetches the Jenkins internal endpoint and sources the following variab
     tasks_from: source-endpoints
 ```
 
-#### "source-secret" 
+#### "source-secret"
+
 This task fetches the admin secret and admin token, then sources the following variables:
+
 - `jenkins_username`
 - `jenkins_password`
 - `jenkins_api_token`
