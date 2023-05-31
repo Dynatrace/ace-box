@@ -6,7 +6,7 @@ This role allows you to create an oauth token on demand. After including the rol
 
 |Variable name|Description|Example|
 |---|---|---|
-|dt_oauth_sso_endpoint|Dynatrace OAuth endpoint. **Attention**: Value differs depending on sprint/live environment!|`https://sso-sprint.dynatracelabs.com`|
+|dt_oauth_sso_endpoint|Dynatrace OAuth endpoint. **Attention**: Value differs depending on sprint/live environment!|`https://sso-sprint.dynatracelabs.com/sso/oauth2/token`|
 |dt_oauth_client_id|Dynatrace OAuth client id.|`dt0s02...`|
 |dt_oauth_client_secret|Dynatrace OAuth client secret|`dt0s02...`|
 |dt_oauth_account_urn|Dynatrace OAuth account URN|`urn:dtaccount:...`|

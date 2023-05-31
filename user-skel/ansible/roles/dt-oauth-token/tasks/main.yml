@@ -1,7 +1,7 @@
 ---
 - name: Retrieve OAuth token
   ansible.builtin.uri:
-    url: "{{ dt_oauth_sso_endpoint }}/sso/oauth2/token"
+    url: "{{ dt_oauth_sso_endpoint }}"
     method: POST
     body_format: form-urlencoded
     body:
