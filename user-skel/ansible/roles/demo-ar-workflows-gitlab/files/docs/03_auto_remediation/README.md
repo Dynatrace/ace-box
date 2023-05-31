@@ -31,7 +31,7 @@ When a problem is initially opened, usually the root cause is not yet known. At 
     ![remediation_action](assets/remediation_action.png)
 
 2) The remediation type was identified as Gitlab, so Dynatrace authenticates against the Gitlab instance.
-3) In parallel, Dynatrace triggers the identified remediation and retrieves ownership metadata from the identified root cause entity.
+3) In parallel, Dynatrace triggers the identified remediation and retrieves ownership metadata from the identified root cause entity (Please find more information about ownership in the [Dynatrace docs](https://www.dynatrace.com/support/help/manage/ownership)).
 4) A Gitlab issue is opened and assigned to the responsible owners.
 5) From this point on, remediation updates are added to the issue, as well as Dynatrace Problem, in the form of comments.
 
