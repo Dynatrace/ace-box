@@ -143,6 +143,26 @@
         "gitlab"
       ]
     },
+    "update_problem_on_remediation_start": {
+      "name": "update_problem_on_remediation_start",
+      "input": {
+        "script": "import { execution } from '@dynatrace-sdk/automation-utils';\nimport { problemsClient } from '@dynatrace-sdk/client-classic-environment-v2';\n\nconst main = async ({ execution_id }) => {\n  // Get details of current workflow\n  const ex = await execution(execution_id);\n  const event = ex?.params?.event || {};\n  const problemId = event['event.id'];\n\n  const config = {\n    problemId,\n    body: {\n      context: \"ACE-Box - Auto Remediation\",\n      message: \"Remediation action triggered!\"\n    }\n  }\n  console.log(config)\n  await problemsClient.createComment(config);\n}\n\nexport { main as default };\n"
+      },
+      "action": "dynatrace.automations:run-javascript",
+      "position": {
+        "x": 0,
+        "y": 5
+      },
+      "conditions": {
+        "states": {
+          "trigger_gitlab_remediation": "SUCCESS"
+        }
+      },
+      "description": "Build a custom task running js Code",
+      "predecessors": [
+        "trigger_gitlab_remediation"
+      ]
+    },
     "update_gitlab_issue_on_remediation_start": {
       "name": "update_gitlab_issue_on_remediation_start",
       "input": {
