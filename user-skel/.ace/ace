@@ -47,7 +47,7 @@ enable_targets = [
     'demo_quality_gates_gitlab',
     'demo_all',
     'demo_monaco_gitops',
-    'hot_appsec'
+    'demo_ar_workflows_gitlab'
 ]
 
 def is_external_use_case(use_case):

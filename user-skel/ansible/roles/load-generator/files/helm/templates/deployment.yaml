@@ -1,0 +1,66 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: "{{ .Release.Name }}"             # The name of the application, e.g. "mysql"
+    app.kubernetes.io/instance: "{{ .Release.Name }}"         # A unique name identifying the instance of an application, e.g. "mysql-abcxzy"
+    app.kubernetes.io/version: "{{ .Values.build_version }}"  # The current version of the application (e.g., a SemVer 1.0, revision hash, etc.), e.g. "5.7.21"
+    app.kubernetes.io/component: "webservice"                 # The component within the architecture, e.g. "database"
+    app.kubernetes.io/part-of: "{{ .Chart.Name }}"            # The name of a higher level application this one is part of, e.g. wordpress
+    app.kubernetes.io/managed-by: "helm"                      # The tool being used to manage the operation of an application, e.g. helm
+    dt.owner: "{{ .Values.dt_owner }}"                        # Tag identifying owner in Dynatrace
+  name: "{{ .Release.Name }}"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: "{{ .Release.Name }}"
+      app.kubernetes.io/part-of: "{{ .Chart.Name }}"
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: "{{ .Release.Name }}"             # The name of the application, e.g. "mysql"
+        app.kubernetes.io/instance: "{{ .Release.Name }}"         # A unique name identifying the instance of an application, e.g. "mysql-abcxzy"
+        app.kubernetes.io/version: "{{ .Values.build_version }}"  # The current version of the application (e.g., a SemVer 1.0, revision hash, etc.), e.g. "5.7.21"
+        app.kubernetes.io/component: "webservice"                 # The component within the architecture, e.g. "database"
+        app.kubernetes.io/part-of: "{{ .Chart.Name }}"            # The name of a higher level application this one is part of, e.g. wordpress
+        app.kubernetes.io/managed-by: "helm"                      # The tool being used to manage the operation of an application, e.g. helm
+        dt.owner: "{{ .Values.dt_owner }}"                        # Tag identifying owner in Dynatrace
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: {{ .Values.image }}
+        imagePullPolicy: Always
+        env:
+        - name: DT_TAGS
+          value: {{ .Values.dt_tags }}
+        - name: DT_CUSTOM_PROP
+          value: {{ .Values.dt_custom_prop }}
+        - name: DT_RELEASE_VERSION
+          value: "{{ .Values.version }}"
+        - name: DT_RELEASE_BUILD_VERSION
+          value: "{{ .Values.build_version }}"
+        - name: DT_RELEASE_PRODUCT
+          value: "{{ default .Release.Name .Values.dt_release_product }}"
+        - name: DT_RELEASE_STAGE
+          value: "{{ .Release.Namespace }}"
+        resources:
+          limits:
+            cpu: 200m
+            memory: 200Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        command: [ "/usr/local/bin/run-load-gen" ]
+        args: [ "{{ .Values.load_gen_endpoint }}" ]
+        volumeMounts:
+        - name: run-load-gen
+          mountPath: /usr/local/bin
+      volumes:
+      - name: run-load-gen
+        configMap:
+          name: "{{ .Release.Name }}"
+          defaultMode: 0777
+      nodeSelector:
+        beta.kubernetes.io/os: linux

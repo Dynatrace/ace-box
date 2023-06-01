@@ -1,0 +1,56 @@
+---
+include:
+  - remote: "https://gitlab.com/dynatrace-ace/dynatrace-gitlab-library/-/raw/master/dynatrace_event.yaml"
+
+variables:
+  CANARY_WEIGHT: "100"
+  CANARY_STEPS: "3"
+  CANARY_STEPS_DELAY: "10"
+  REMEDIATION_ACTION: "$INGRESS_PROTOCOL://gitlab.$INGRESS_DOMAIN/api/v4/projects/$CI_PROJECT_ID/pipeline?ref=main&variables[][key]=CANARY_WEIGHT&variables[][value]=0&variables[][key]=CANARY_STEPS&variables[][value]=1"
+  REMEDIATION_TYPE: "gitlab"
+
+stages:
+  - canary-shift
+
+Canary Shift:
+  image: dtzar/helm-kubectl
+  stage: canary-shift
+  before_script:
+    - export CANARY_NAME=$(kubectl -n $RELEASE_STAGE get ingress -o=jsonpath='{.items[?(@.metadata.annotations.nginx\.ingress\.kubernetes\.io/canary=="true")].metadata.name}')
+    - export CURRENT_CANARY_WEIGHT=$(kubectl -n $RELEASE_STAGE get ingress -o=jsonpath='{.items[?(@.metadata.annotations.nginx\.ingress\.kubernetes\.io/canary=="true")].metadata.annotations.nginx\.ingress\.kubernetes\.io/canary-weight}')
+  script:
+    - |
+        CANARY_WEIGHT_INCREMENT="$((($CANARY_WEIGHT-$CURRENT_CANARY_WEIGHT)/$CANARY_STEPS))"
+
+        set_canary_weight () {
+          kubectl -n $RELEASE_STAGE annotate ingress $CANARY_NAME nginx.ingress.kubernetes.io/canary-weight="$1" --overwrite
+          echo "Canary weighting of $CANARY_NAME set to $1"
+        }
+
+        send_configuration_change_event () {
+          echo "Sending configuration change event..."
+          
+          echo $(curl -s -X POST $DT_TENANT_URL/api/v2/events/ingest \
+            -H "accept: application/json; charset=utf-8" \
+            -H "Authorization: Api-Token $DT_API_TOKEN" \
+            -H "Content-Type: application/json; charset=utf-8" \
+            -d "{\"eventType\":\"CUSTOM_CONFIGURATION\",\"title\": \"Canary weight set to $1\",\"entitySelector\":\"type(SERVICE),tag([Environment]DT_RELEASE_PRODUCT:$RELEASE_PRODUCT),tag([Environment]DT_RELEASE_STAGE:$RELEASE_STAGE)\",\"properties\":{\"remediationType\":\"$REMEDIATION_TYPE\",\"remediationAction\":\"$REMEDIATION_ACTION\"}}")
+        }
+
+        for i in $(seq 1 $CANARY_STEPS)
+        do
+          if [ "$i" -eq "$CANARY_STEPS" ]
+          then
+            set_canary_weight $CANARY_WEIGHT
+            send_configuration_change_event $CANARY_WEIGHT
+            break
+          fi
+
+          NEW_CANARY_WEIGHT="$(($CURRENT_CANARY_WEIGHT+($i*$CANARY_WEIGHT_INCREMENT)))"
+
+          set_canary_weight "$NEW_CANARY_WEIGHT"
+          send_configuration_change_event "$NEW_CANARY_WEIGHT"
+          
+          echo "Sleeping $CANARY_STEPS_DELAY seconds..."
+          sleep $CANARY_STEPS_DELAY
+        done

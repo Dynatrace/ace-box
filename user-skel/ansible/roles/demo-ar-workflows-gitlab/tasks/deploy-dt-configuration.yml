@@ -1,0 +1,23 @@
+---
+- include_role:
+    name: dt-access-token
+  vars:
+    access_token_var_name: "{{ dt_ar_monaco_dt_access_token_name }}"
+    access_token_scope: ["DataExport", "settings.read", "settings.write", "entities.read"]
+
+- name: Retrieve ACE-Box host group
+  ansible.builtin.uri:
+    url: "{{ dynatrace_tenant_url }}/api/v2/entities?entitySelector=type%28HOST_GROUP%29%2CentityName.equals%28{{ host_group | urlencode }}%29"
+    method: GET
+    status_code: 200
+    headers:
+      Authorization: "Api-Token {{ vars[dt_ar_monaco_dt_access_token_name] }}"
+  register: host_group_response_raw
+
+# Monaco role is still based on v1.x.x. We therefore run a deploy command directly.
+- name: Monaco - Deploy configuration
+  ansible.builtin.command: /usr/local/bin/monaco deploy {{ role_path }}/files/monaco-host/manifest.yaml
+  environment:
+    DT_TENANT_URL: "{{ dynatrace_tenant_url }}"
+    DT_API_TOKEN: "{{ vars[dt_ar_monaco_dt_access_token_name] }}"
+    ACE_BOX_HOST_GROUP: "{{ host_group_response_raw.json.entities[0].entityId }}"

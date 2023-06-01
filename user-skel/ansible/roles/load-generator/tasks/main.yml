@@ -1,0 +1,11 @@
+---
+- name: Deploy load gen
+  kubernetes.core.helm:
+    name: load-generator
+    chart_ref: "{{ role_path }}/files/helm"
+    release_namespace: "{{ load_gen_namespace }}"
+    create_namespace: true
+    wait: true
+    wait_timeout: 5m
+    values:
+      load_gen_endpoint: "{{ load_gen_endpoint }}"

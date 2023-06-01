@@ -1,0 +1,51 @@
+---
+- set_fact:
+    dt_environment_url_gen3: "{{ extra_vars.dt_environment_url_gen3 }}"
+
+- include_role:
+    name: dt-oauth-token
+  vars:
+    dt_oauth_sso_endpoint: "{{ extra_vars.dt_oauth_sso_endpoint }}"
+    dt_oauth_client_id: "{{ extra_vars.dt_oauth_client_id }}"
+    dt_oauth_client_secret: "{{ extra_vars.dt_oauth_client_secret }}"
+    dt_oauth_account_urn: "{{ extra_vars.dt_oauth_account_urn }}"
+    dt_oauth_scope: "automation:workflows:read automation:workflows:write"
+
+- name: Lookup existing workflow
+  ansible.builtin.uri:
+    url: "{{ dt_environment_url_gen3 }}/platform/automation/v1/workflows?search={{ workflow_name | urlencode }}"
+    method: GET
+    status_code: 200
+    headers:
+      Authorization: "Bearer {{ dt_oauth_access_token }}"
+  register: workflow_lookup_response_raw
+
+- name: Create new workflow
+  ansible.builtin.uri:
+    url: "{{ dt_environment_url_gen3 }}/platform/automation/v1/workflows"
+    method: POST
+    body: "{{ lookup('ansible.builtin.file', workflow_json_path) }}"
+    status_code: 201
+    body_format: json
+    headers:
+      Authorization: "Bearer {{ dt_oauth_access_token }}"
+  register: workflow_post_response_raw
+  when: workflow_lookup_response_raw.json.count == 0
+- set_fact:
+    workflow_id: "{{ workflow_post_response_raw.json.id }}"
+  when: workflow_lookup_response_raw.json.count == 0
+
+- name: Update existing workflow
+  ansible.builtin.uri:
+    url: "{{ dt_environment_url_gen3 }}/platform/automation/v1/workflows/{{ workflow_lookup_response_raw.json.results[0].id }}"
+    method: PUT
+    body: "{{ lookup('ansible.builtin.file', workflow_json_path) }}"
+    status_code: 200
+    body_format: json
+    headers:
+      Authorization: "Bearer {{ dt_oauth_access_token }}"
+  register: workflow_put_response_raw
+  when: workflow_lookup_response_raw.json.count > 0
+- set_fact:
+    workflow_id: "{{ workflow_put_response_raw.json.id }}"
+  when: workflow_lookup_response_raw.json.count > 0

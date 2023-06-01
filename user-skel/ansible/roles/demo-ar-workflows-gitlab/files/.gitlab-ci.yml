@@ -1,0 +1,131 @@
+---
+variables:
+  CANARY_WEIGHT:
+    value: "100"
+    description: "Percentage of traffic that will be routed to canary version of application."
+  CANARY_STEPS:
+    value: "3"
+    description: "Number of steps canary weight will be incrementally shifted until CANARY_WEIGHT is reached."
+  CANARY_STEPS_DELAY:
+    value: "120"
+    description: "Delay between canary weight shifts in seconds."
+  # Omitting an explicit value and description key hides input in web UI
+  IS_INITIAL_DEPLOYMENT: "false"
+  RELEASE_PRODUCT: "simplenodeservice"
+  RELEASE_STAGE: "canary-gitlab"
+  DT_OWNER_IDENTIFIER: "$RELEASE_PRODUCT-$RELEASE_STAGE"
+
+stages:
+  - monaco
+  - initial-deployment
+  - canary-shift
+
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "web"
+    - if: $CI_PIPELINE_SOURCE == "api"
+
+Monaco:
+  stage: monaco
+  trigger:
+    include: .gitlab/monaco.yml
+    strategy: depend
+  rules:
+    - if: $IS_INITIAL_DEPLOYMENT == "true"
+
+Initial Deployment Build 1:
+  stage: initial-deployment
+  needs: ["Monaco"]
+  trigger:
+    include: .gitlab/build-and-deploy.yml
+    strategy: depend
+  rules:
+    - if: $IS_INITIAL_DEPLOYMENT == "true"
+  variables:
+    RELEASE_PRODUCT: "simplenodeservice"
+    RELEASE_VERSION: "1.0.0"
+    RELEASE_BUILD_VERSION: "1.0.0-$CI_COMMIT_SHORT_SHA"
+    RELEASE_STAGE: "canary-gitlab"
+    RELEASE_INSTANCE: "0"
+    SIMPLENODE_BUILD_NUMBER: "1"
+    IS_CANARY: "false"
+    CANARY_WEIGHT: "0"
+
+Initial Deployment Build 4:
+  stage: initial-deployment
+  needs: ["Monaco"]
+  trigger:
+    include: .gitlab/build-and-deploy.yml
+    strategy: depend
+  rules:
+    - if: $IS_INITIAL_DEPLOYMENT == "true"
+  variables:
+    RELEASE_PRODUCT: "simplenodeservice"
+    RELEASE_VERSION: "4.0.0"
+    RELEASE_BUILD_VERSION: "4.0.0-$CI_COMMIT_SHORT_SHA"
+    RELEASE_STAGE: "canary-gitlab"
+    RELEASE_INSTANCE: "1"
+    SIMPLENODE_BUILD_NUMBER: "4"
+    IS_CANARY: "true"
+    CANARY_WEIGHT: "0"
+
+canary-shift:
+  stage: canary-shift
+  trigger:
+    include: .gitlab/canary-shift.yml
+    strategy: depend
+  rules:
+    - if: $IS_INITIAL_DEPLOYMENT == "false"
+  variables:
+    RELEASE_PRODUCT: "simplenodeservice"
+    RELEASE_STAGE: "canary-gitlab"
+    CANARY_WEIGHT: "$CANARY_WEIGHT"
+    CANARY_STEPS: "$CANARY_STEPS"
+    CANARY_STEPS_DELAY: "$CANARY_STEPS_DELAY"
+
+# monaco:
+#   image: dynatraceace/monaco-runner:release-v1.6.0
+#   stage: init
+#   script:
+#     - monaco -v -dry-run -e=monaco/environments.yaml -p=infrastructure monaco/projects
+#     - monaco -v -e=monaco/environments.yaml -p=infrastructure monaco/projects
+#     - sleep 30
+#     - monaco -v -dry-run -e=monaco/environments.yaml -p=simplenode-gitlab monaco/projects
+#     - monaco -v -e=monaco/environments.yaml -p=simplenode-gitlab monaco/projects
+
+# monaco_config_sleep:
+#   image: dynatraceace/monaco-runner:release-v1.6.0
+#   stage: init
+#   needs: ["monaco"]
+#   script:
+#     # Sleep an additional 120 seconds to give Dynatrace some time
+#     # to tag host according to current config before sending config events
+#     - sleep 120
+
+# monaco_config_event_staging:
+#   extends: .dynatrace_event
+#   stage: init
+#   needs: ["monaco_config_sleep"]
+#   variables:
+#     DYNATRACE_ENV_URL: "$DT_TENANT_URL"
+#     DYNATRACE_API_TOKEN: "$DT_API_TOKEN"
+#     EVENT_TYPE: "CUSTOM_CONFIGURATION"
+#     ATTACH_RULES_FILE: "dynatrace/dynatrace.host-attachrules.yaml"
+#     DT_HOST_TAG: "simplenode-gitlab-staging"
+#     DESCRIPTION: "Monaco deployment successful: simplenode-gitlab-staging"
+#     CONFIGURATION: "simplenode-gitlab-staging"
+#     CUSTOM_PROPERTIES: '{"Approved by": "ACE"}'
+
+# monaco_config_event_prod:
+#   extends: .dynatrace_event
+#   stage: init
+#   needs: ["monaco_config_sleep"]
+#   variables:
+#     DYNATRACE_ENV_URL: "$DT_TENANT_URL"
+#     DYNATRACE_API_TOKEN: "$DT_API_TOKEN"
+#     EVENT_TYPE: "CUSTOM_CONFIGURATION"
+#     ATTACH_RULES_FILE: "dynatrace/dynatrace.host-attachrules.yaml"
+#     DT_HOST_TAG: "simplenode-gitlab-prod"
+#     DESCRIPTION: "Monaco deployment successful: simplenode-gitlab-prod"
+#     CONFIGURATION: "simplenode-gitlab-prod"
+#     CUSTOM_PROPERTIES: '{"Approved by": "ACE"}'

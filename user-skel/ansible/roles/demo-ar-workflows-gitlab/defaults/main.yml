@@ -1,0 +1,9 @@
+---
+dt_ar_gitlab_group: "demo"
+dt_ar_gitlab_repo_name: "ar-workflows-gitlab"
+dt_ar_gitlab_docs_repo_name: "ar-workflows-gitlab-docs"
+dt_ar_monaco_dt_access_token_name: "dt_ar_monaco_dt_access_token"
+auto_remediation_workflow_name: "ACE-Box - Auto Remediation"
+auto_remediation_workflow_json_path: "{{ role_path }}/files/auto-remediation.json"
+auto_remediation_debounce_workflow_name: "ACE-Box - Auto Remediation Debounce"
+auto_remediation_debounce_workflow_json_path: "{{ role_path }}/files/auto-remediation-debounce.json"

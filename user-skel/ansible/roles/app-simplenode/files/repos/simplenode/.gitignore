@@ -5,3 +5,6 @@ helpers/nul
 loadtest.log
 nul
 jmeter.log
+
+# MacOS
+.DS_Store
