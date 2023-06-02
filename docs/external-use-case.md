@@ -51,3 +51,14 @@ The following curated roles can be added to your external use case. See [templat
 |---|---|
 |[ace-box-sandbox-easytravel](https://github.com/dynatrace-ace/ace-box-sandbox-easytravel)|A simple ace-box with EasyTravel monitored by Dynatrace|
 [ace-box-ext-demo-auto-remediation-easytravel](https://github.com/dynatrace-ace/ace-box-ext-demo-auto-remediation-easytravel)|An auto remediation demo using Dynatrace, ServiceNow and Ansible|
+
+## Development
+
+When developing an external use case, it might be cumbersome to update/re-install an external use case from a remote repository. We therefore introduced a flag for `ace enable` that allows you to work on your use case locally (i.e. ACE-Box) while keeping the remote as well as ACE-Box roles in sync.
+
+Recommended development workflow:
+
+1) Enable use case as you would normally, e.g. `ace enable https://github.com/dynatrace-ace/ace-box-ext-template.git`. This will clone the repository to a _repos_ folder within the user's _home_ directory and initially enable the use case. For example, in the case of `https://github.com/dynatrace-ace/ace-box-ext-template.git`, a new local repo will be created at _/home/ace/ace-box-ext-template_
+2) Make any required changes in the local repository (e.g. in _/home/ace/ace-box-ext-template_).
+3) Re-run the enable command with the local flag, e.g. `ace enable https://github.com/dynatrace-ace/ace-box-ext-template.git --local`. This will neither clone nor push, but enable the use with all the changes you made in step 2.
+4) When you're happy with your changes, commit and push changes from your local (e.g. in _/home/ace/ace-box-ext-template_) to the remote repository. Your changes are now published, hence from now on `ace enable ...` (without the `--local` flag) commands will include your changes.

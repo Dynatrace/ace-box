@@ -13,7 +13,7 @@ import pwd
 
 import click
 
-CLI_VERSION = '0.1.0'
+CLI_VERSION = '0.2.0'
 default_ansible_workdir = os.path.expanduser('~/ansible/')
 default_user = pwd.getpwuid(os.getuid())[0]
 install_targets = [
@@ -124,7 +124,7 @@ def ace(
 @click.option(
     '--user',
     help=(
-        'Please enter the user ACE-Box conponents will be installed for.'
+        'Please enter the user ACE-Box components will be installed for.'
         'If not set you\'ll be prompted during "prepare".'
     ),
     envvar='ACE_BOX_USER',
@@ -311,7 +311,7 @@ def prepare(
 @click.option(
     '--user',
     help=(
-        'Please enter the user ACE-Box conponents will be installed for.'
+        'Please enter the user ACE-Box components will be installed for.'
         'If not set you\'ll be prompted during "prepare".'
     ),
     envvar='ACE_BOX_USER',
@@ -366,7 +366,7 @@ def install(
 @click.option(
     '--user',
     help=(
-        'Please enter the user ACE-Box conponents will be installed for.'
+        'Please enter the user ACE-Box components will be installed for.'
         'If not set you\'ll be prompted during "prepare".'
     ),
     envvar='ACE_BOX_USER',
@@ -421,7 +421,7 @@ def uninstall(
 @click.option(
     '--user',
     help=(
-        'Please enter the user ACE-Box conponents will be installed for.'
+        'Please enter the user ACE-Box components will be installed for.'
         'If not set you\'ll be prompted during "prepare".'
     ),
     envvar='ACE_BOX_USER',
@@ -474,11 +474,20 @@ def set(
 @click.option(
     '--user',
     help=(
-        'Please enter the user ACE-Box conponents will be installed for.'
+        'Please enter the user ACE-Box components will be installed for.'
         'If not set you\'ll be prompted during "prepare".'
     ),
     envvar='ACE_BOX_USER',
     default=default_user,
+)
+@click.option(
+    '--local',
+    help=(
+        'If local is set, external use case will not be sourced from remote, but from role on local file system.'
+    ),
+    envvar='ACE_BOX_EXT_USE_CASE_LOCAL',
+    is_flag=True,
+    default=False,
 )
 @click.argument(
     'target',
@@ -489,6 +498,7 @@ def enable(
     target,
     ansible_workdir,
     user,
+    local,
 ):
     """Enabling ACE-Box use case"""
     logging.info('Preparing ACE-Box for use case \"%s\"...', target)
@@ -508,7 +518,8 @@ def enable(
                 f'ansible-playbook main-v2.yml --extra-vars "'
                 f'ace_box_user={user} '
                 f'use_case_ext_src={external_use_case_src} '
-                f'use_case_ext_version={external_use_case_version}'
+                f'use_case_ext_version={external_use_case_version} '
+                f'local={local}'
                 '" '
                 f'--tags "use_case_ext"'
             ),
@@ -543,7 +554,7 @@ def enable(
 @click.option(
     '--user',
     help=(
-        'Please enter the user ACE-Box conponents will be installed for.'
+        'Please enter the user ACE-Box components will be installed for.'
         'If not set you\'ll be prompted during "prepare".'
     ),
     envvar='ACE_BOX_USER',
