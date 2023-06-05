@@ -1,0 +1,86 @@
+---
+
+
+- include_role:
+    name: microk8s
+
+- include_role:
+    name: dt-activegate-classic
+  vars:
+    activegate_install_synthetic: true
+
+- include_role:
+    name: dt-operator
+
+- include_role:
+    name: monaco
+  vars:
+    monaco_version: "v2.1.0"
+
+- include_role:
+    name: gitlab
+
+- name: Gitlab - Ensure Group
+  include_role:
+    name: gitlab
+    tasks_from: ensure-group
+  vars:
+    gitlab_group_name: "{{ gitlab_demo_default_group }}"
+
+- name: Gitlab - Ensure Project
+  include_role:
+    name: gitlab
+    tasks_from: ensure-project
+  vars:
+    gitlab_prj: "{{ gitlab_demo_default_repo_name }}"
+    gitlab_prj_namespace_id: "{{ gitlab_group_id }}"
+
+- include_role:
+    name: dt-access-token
+  vars:
+    access_token_var_name: "{{ gitlab_srg_dt_access_token_name }}"
+    access_token_scope: ["events.ingest", "events.read"]
+
+- include_role:
+    name: gitlab
+    tasks_from: source-endpoints-external
+
+- name: Gitlab - Additional Environment Variables
+  include_role:
+    name: gitlab
+    tasks_from: ensure-group-var
+  vars:
+    gitlab_var_key: "{{ item.key }}"
+    gitlab_var_value: "{{ item.value }}"
+  loop:
+    - { key: 'DT_PLATFORM_TENANT_URL', value: '{{ extra_vars.dt_environment_url_gen3 }}' }
+    - { key: 'DT_OAUTH_CLIENT_ID', value: '{{ extra_vars.dt_oauth_client_id }}' }
+    - { key: 'DT_OAUTH_CLIENT_SECRET', value: '{{ extra_vars.dt_oauth_client_secret }}' }
+    - { key: 'DT_OAUTH_SSO_ENDPOINT', value: '{{ extra_vars.dt_oauth_sso_endpoint }}' }
+    - { key: 'DT_OAUTH_ACCOUNT_URN', value: '{{ extra_vars.dt_oauth_account_urn }}' }
+    
+    - { key: 'DT_EVENTS_API_TOKEN', value: '{{ vars[gitlab_srg_dt_access_token_name] }}' }
+    - { key: 'GITLAB_PRIVATE_TOKEN', value: '{{ gitlab_oauth_token }}' }
+    - { key: 'GITLAB_EXTERNAL_ENDPOINT', value: '{{ gitlab_external_endpoint }}' }
+
+- include_role:
+    name: app-simplenode
+  vars:
+    git_username: "root"
+    git_password: "{{ gitlab_password }}"
+    git_domain: "{{ gitlab_domain }}"
+    git_remote: "gitlab"
+    git_org_name: "{{ gitlab_demo_default_group }}"
+    repo_name: "{{ gitlab_demo_default_repo_name }}"
+  #when: new_gitlab_group_created is defined and new_gitlab_group_created == true
+
+# Include use case specific Dahboard values
+- set_fact:
+    include_dashboard_value_file: "{{ role_path }}/templates/demo-quality-gates-gitlab-dashboard.yml.j2"
+
+- include_role:
+    name: dashboard
+    tasks_from: template-values-file
+
+- include_role:
+    name: dashboard
