@@ -1,0 +1,57 @@
+configs:
+  # srg
+  - id: simplenodeguardian
+    type:
+      settings:
+        schema: app:dynatrace.site.reliability.guardian:guardians
+        schemaVersion: 1.0.1
+        scope: environment
+    config:
+      name: "Simplenode Guardian by Monaco v2"
+      template: srg.json
+      
+      parameters:
+        description: "Simplenode Guardian by Monaco v2 for demo purposes"
+        tags:
+          type: list
+          values:
+            - "stage:staging"
+            - "owner:is"
+            - "app:simplenode"
+        objective_name: "Response Time of API Method"
+        dqlQuery: "fetch logs\n| filter dt.process.name == \"simplenodeservice.simplenode-gitlab-staging\"\n| filter k8s.namespace.name == \"simplenode-gitlab-staging\"\n| filter matchesPhrase(content, \"/api/invoke\")\n| parse content, \"DATA '/api/' DATA 'rt:' SPACE? FLOAT:responsetime \" \n| filter isNotNull(responsetime) \n| summarize avg(responsetime), alias:response_time "
+        comparisonOperator: "LESS_THAN_OR_EQUAL"
+        failure: 500
+        warning: 400
+      skip: false
+
+  # workflow
+  - id: simplenodeworkflow
+    config:
+      name: Simplenode SRG Evaluation
+      template: simplenode-srg-wf.json
+      skip: false
+      
+      parameters:
+        guardian_id:
+          configType: app:dynatrace.site.reliability.guardian:guardians
+          property: id
+          type: reference
+          configId: simplenodeguardian    
+        wf_description: "Simplenode Workflow with Guardians"
+        appname: simplenode-gitlab
+        dt_events_api_token:
+          type: environment
+          name: DT_EVENTS_API_TOKEN
+        gitlab_url:
+          type: environment
+          name: GITLAB_EXTERNAL_ENDPOINT
+        gitlab_private_token:
+          type: environment
+          name: GITLAB_PRIVATE_TOKEN
+        dt_url:
+          type: environment
+          name: DT_TENANT_URL
+    type:
+      automation:
+        resource: workflow

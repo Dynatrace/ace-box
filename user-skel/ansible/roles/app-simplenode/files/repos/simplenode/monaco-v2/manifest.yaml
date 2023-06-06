@@ -1,0 +1,24 @@
+manifestVersion: 1.0
+
+projects:
+  - name: srg
+    path: srg
+
+environmentGroups:
+  - name: default
+    environments:
+      - name: ace-box
+        url:
+          type: environment
+          value: DT_PLATFORM_TENANT_URL
+        auth:
+          token:
+            name: DT_API_TOKEN
+          oAuth:
+            clientId:
+              name: DT_OAUTH_CLIENT_ID
+            clientSecret:
+              name: DT_OAUTH_CLIENT_SECRET
+            tokenEndpoint:
+              type: environment
+              value: DT_OAUTH_SSO_ENDPOINT

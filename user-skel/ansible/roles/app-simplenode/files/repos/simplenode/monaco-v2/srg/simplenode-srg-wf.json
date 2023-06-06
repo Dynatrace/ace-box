@@ -1,0 +1,99 @@
+{
+  "title": "{{ .name }}",
+  "description": "{{ .wf_description }}",
+  "isPrivate": true,
+  "labels": {},
+  "schemaVersion": 3,
+  "taskDefaults": {},
+  "usages": [],
+  "version": 4,
+  "triggerType": "Event",
+  "trigger": {
+    "eventTrigger": {
+      "filterQuery": "type == \"com.dynatrace.event.srg.evaluation.triggered.v1\" AND appname==\"{{ .appname }}\"",
+      "isActive": true,
+      "triggerConfiguration": {
+        "type": "event",
+        "value": {
+          "eventType": "bizevents",
+          "query": "type == \"com.dynatrace.event.srg.evaluation.triggered.v1\" AND appname==\"{{ .appname }}\""  
+        }
+      },
+      "uniqueExpression": null
+    }
+  },
+
+  "tasks": {
+    "send_srg_result": {
+      "action": "dynatrace.automations:http-function",
+      "conditions": {
+        "states": {
+          "evaluate_srg": "OK"
+        }
+      },
+      "description": "Issue an HTTP request to any API",
+      "input": {
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Api-Token {{ .dt_events_api_token }}"
+        },
+        "method": "POST",
+        "url": "{{ .dt_url }}/api/v2/events/ingest",
+        "payload": "{\"eventType\": \"CUSTOM_INFO\",\n\"title\": \"{{`{{`}} event()['event.id'] {{`}}`}}\",\n\"properties\": {\n  \"srg_evaluation_result\":\"{{`{{`}} result('evaluate_srg').validation_status {{`}}`}}\"\n}\n}"
+      },
+      "name": "send_srg_result",
+      "position": {
+        "x": 0,
+        "y": 2
+      },
+      "predecessors": [
+        "evaluate_srg"
+      ]
+    },
+    "evaluate_srg": {
+      "action": "dynatrace.site.reliability.guardian:validate-guardian-action",
+      "description": "Automation action to start a Site Reliability Guardian validation",
+      "input": {
+        "executionId": "{{`{{`}} execution().id {{`}}`}}",
+        "objectId": "{{ .guardian_id }}",
+        "expressionFrom": "{{`{{`}} event()['starttime'] {{`}}`}}",
+        "expressionTo": "{{`{{`}} event()['endtime'] {{`}}`}}",
+        "timeframeInputType": "expression"
+      },
+      "name": "evaluate_srg",
+      "position": {
+        "x": 0,
+        "y": 1
+      },
+      "predecessors": []
+    },
+    "create_gitlab_issue": {
+      "action": "dynatrace.automations:http-function",
+      "conditions": {
+        "custom": "{{`{{`}} result('evaluate_srg').validation_status == \"fail\" {{`}}`}}",
+        "states": {
+          "evaluate_srg": "OK"
+        }
+      },
+      "description": "Issue an HTTP request to any API",
+      "input": {
+        "headers": {
+          "Content-Type": "application/json",
+          "PRIVATE-TOKEN": "{{ .gitlab_private_token }}"
+        },
+        "method": "POST",
+        "url": "{{ .gitlab_url }}",
+        "payload": "{\n  \"title\": \"Site Reliability Guardian validation failed\",\n  \"description\": \"For the SRG validation details, go to {{ .dt_url }}/ui/apps/dynatrace.site.reliability.guardian/analysis/{{`{{`}} result(\"evaluate_srg\").guardian_id {{`}}`}}?validationId={{`{{`}} result(\"evaluate_srg\").validation_id {{`}}`}}\"\n}"
+      },
+      "name": "create_gitlab_issue",
+      "position": {
+        "x": -1,
+        "y": 2
+      },
+      "predecessors": [
+        "evaluate_srg"
+      ]
+    }
+  }
+
+}

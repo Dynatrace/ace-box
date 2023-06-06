@@ -1,0 +1,200 @@
+include:
+  - remote: "https://gitlab.com/dynatrace-ace/dynatrace-gitlab-library/-/raw/master/dynatrace_event.yaml"
+
+variables:
+  BUILD_ID:
+    value: "1"
+    description: "Build ID. Please set to 1, 2, 3 or 4."
+  RELEASE_PRODUCT: simplenodeservice
+  RELEASE_VERSION: "$BUILD_ID.0.0"
+  RELEASE_BUILD_VERSION: "$RELEASE_VERSION-$CI_COMMIT_SHORT_SHA"
+  IMAGE_TAG: "$RELEASE_BUILD_VERSION"
+  IMAGE_NAME: "$DOCKER_REGISTRY_URL/$RELEASE_PRODUCT"
+  RELEASE_STAGE: staging-gitlab
+  RELEASE_STAGE_PRODUCTION: prod-gitlab
+
+stages:
+  - init
+  - build
+  - deploy-staging
+  - test
+  - evaluate
+  - deploy-production
+
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "web"
+    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "main"
+
+monaco:
+  image: dynatraceace/monaco-runner:release-v1.6.0
+  stage: init
+  script:
+    - monaco -v -dry-run -e=monaco/environments.yaml -p=infrastructure monaco/projects
+    - monaco -v -e=monaco/environments.yaml -p=infrastructure monaco/projects
+    - sleep 30
+    - monaco -v -dry-run -e=monaco/environments.yaml -p=simplenode-gitlab monaco/projects
+    - monaco -v -e=monaco/environments.yaml -p=simplenode-gitlab monaco/projects
+
+monaco_config_sleep:
+  image: dynatraceace/monaco-runner:release-v1.6.0
+  stage: init
+  needs: ["monaco"]
+  script:
+    # Sleep an additional 120 seconds to give Dynatrace some time
+    # to tag host according to current config before sending config events
+    - sleep 120
+
+monaco_config_event_staging:
+  extends: .dynatrace_event
+  stage: init
+  needs: ["monaco_config_sleep"]
+  variables:
+    DYNATRACE_ENV_URL: "$DT_TENANT_URL"
+    DYNATRACE_API_TOKEN: "$DT_API_TOKEN"
+    EVENT_TYPE: "CUSTOM_CONFIGURATION"
+    ATTACH_RULES_FILE: "dynatrace/dynatrace.host-attachrules.yaml"
+    DT_HOST_TAG: "simplenode-gitlab-staging"
+    DESCRIPTION: "Monaco deployment successful: simplenode-gitlab-staging"
+    CONFIGURATION: "simplenode-gitlab-staging"
+    CUSTOM_PROPERTIES: '{"Approved by": "ACE"}'
+
+monaco_config_event_prod:
+  extends: .dynatrace_event
+  stage: init
+  needs: ["monaco_config_sleep"]
+  variables:
+    DYNATRACE_ENV_URL: "$DT_TENANT_URL"
+    DYNATRACE_API_TOKEN: "$DT_API_TOKEN"
+    EVENT_TYPE: "CUSTOM_CONFIGURATION"
+    ATTACH_RULES_FILE: "dynatrace/dynatrace.host-attachrules.yaml"
+    DT_HOST_TAG: "simplenode-gitlab-prod"
+    DESCRIPTION: "Monaco deployment successful: simplenode-gitlab-prod"
+    CONFIGURATION: "simplenode-gitlab-prod"
+    CUSTOM_PROPERTIES: '{"Approved by": "ACE"}'
+
+init_cloudautomation:
+  image: dynatraceace/cloud-automation-tools:1.0.0
+  stage: init
+  variables:
+    CLOUD_AUTOMATION_PROJECT: $RELEASE_PRODUCT-gitlab
+    CLOUD_AUTOMATION_SERVICE: $RELEASE_PRODUCT
+    CLOUD_AUTOMATION_STAGE: staging # For the sake of this demo, "staging" is preferred over "$RELEASE_STAGE".
+    CLOUD_AUTOMATION_SOURCE: gitlab
+    CLOUD_AUTOMATION_MONITORING: dynatrace
+    SHIPYARD_FILE: cloudautomation/shipyard.yaml
+    SLO_FILE: cloudautomation/slo.yaml
+    SLI_FILE: cloudautomation/sli.yaml
+    DT_CONFIG_FILE: cloudautomation/dynatrace.conf.yaml
+  script:
+    - /cloud_automation/cloud_automation_init.sh
+  artifacts:
+    paths:
+      - cloud_automation.init.json
+
+build:
+  image: docker:20.10.16
+  stage: build
+  needs: ["monaco", "init_cloudautomation"]
+  variables:
+    DOCKER_HOST: tcp://docker:2376
+    DOCKER_TLS_CERTDIR: "/certs"
+    DOCKER_TLS_VERIFY: 0
+    DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
+    DOCKER_DAEMON_OPTIONS: "--insecure-registry=$DOCKER_REGISTRY_URL"
+  services:
+    - name: docker:20.10.16-dind
+      entrypoint: [ "sh", "-c", "dockerd-entrypoint.sh $DOCKER_DAEMON_OPTIONS" ]
+  before_script:
+    - until docker info; do sleep 1; done
+  script:
+    - docker info
+    - docker build --build-arg BUILD_NUMBER="$BUILD_ID" -t "$IMAGE_NAME:$IMAGE_TAG" .
+    - docker push "$IMAGE_NAME:$IMAGE_TAG"
+
+deployment-staging:
+  image: dtzar/helm-kubectl
+  stage: deploy-staging
+  needs: ["build"]
+  script:
+    - >
+      helm upgrade --install $RELEASE_PRODUCT helm/simplenodeservice 
+      --set image="$IMAGE_NAME:$IMAGE_TAG" 
+      --set domain="$INGRESS_DOMAIN" 
+      --set version="$RELEASE_VERSION" 
+      --set build_version="$RELEASE_BUILD_VERSION" 
+      --namespace "$RELEASE_STAGE" --create-namespace 
+      --wait
+    - sleep 150
+
+dynatrace_deploy_event_staging:
+  extends: .dynatrace_event
+  stage: deploy-staging
+  needs: ["deployment-staging"]
+  variables:
+    DYNATRACE_ENV_URL: "$DT_TENANT_URL"
+    DYNATRACE_API_TOKEN: "$DT_API_TOKEN"
+    DESCRIPTION: "$RELEASE_PRODUCT $RELEASE_BUILD_VERSION deployed"
+    CUSTOM_PROPERTIES: '{"namespace":"$RELEASE_STAGE"}'
+    EVENT_TYPE: "CUSTOM_DEPLOYMENT"
+    DT_RELEASE_PRODUCT: "$RELEASE_PRODUCT"
+    DEPLOYMENT_NAME: "$RELEASE_PRODUCT" # Library doesn't accept DT_RELEASE_PRODUCT
+    DT_RELEASE_BUILD_VERSION: "$RELEASE_BUILD_VERSION"
+    DEPLOYMENT_VERSION: "$RELEASE_BUILD_VERSION" # Library doesn't accept DT_RELEASE_BUILD_VERSION
+    DT_RELEASE_STAGE: "$RELEASE_STAGE"
+
+run-tests:
+  before_script:
+    - echo $(date --utc +%FT%T.000Z) > cloud_automation.test.starttime
+  after_script:
+    - echo $(date --utc +%FT%T.000Z) > cloud_automation.test.endtime
+  stage: test
+  variables:
+    LOCUST_LOCUSTFILE: locust/locustfile.py
+    LOCUST_CONFIG: locust/locust.conf
+    LOCUST_HOST: "http://simplenodeservice.$RELEASE_STAGE"
+    LOCUST_LOAD_TEST_NAME: "Loadtest - $RELEASE_BUILD_VERSION"
+  image: locustio/locust
+  script:
+    - locust --config $LOCUST_CONFIG --locustfile $LOCUST_LOCUSTFILE --host $LOCUST_HOST
+  artifacts:
+    paths:
+      - cloud_automation.test.starttime
+      - cloud_automation.test.endtime
+
+quality_gate:
+  image: dynatraceace/cloud-automation-tools:1.0.0
+  stage: evaluate
+  script:
+    - export CLOUD_AUTOMATION_LABELS='[{"DT_RELEASE_VERSION":"'${RELEASE_VERSION}'"},{"DT_RELEASE_BUILD_VERSION":"'${RELEASE_BUILD_VERSION}'"},{"DT_RELEASE_STAGE":"'${RELEASE_STAGE}'"},{"DT_RELEASE_PRODUCT":"'${RELEASE_PRODUCT}'"}]'
+    - /cloud_automation/cloud_automation_eval.sh
+
+deployment-production:
+  image: dtzar/helm-kubectl
+  stage: deploy-production
+  script:
+    - >
+      helm upgrade --install $RELEASE_PRODUCT helm/simplenodeservice 
+      --set image="$IMAGE_NAME:$IMAGE_TAG" 
+      --set domain="$INGRESS_DOMAIN" 
+      --set version="$RELEASE_VERSION" 
+      --set build_version="$RELEASE_BUILD_VERSION" 
+      --namespace "$RELEASE_STAGE_PRODUCTION" --create-namespace 
+      --wait
+    - sleep 150
+
+dynatrace_deploy_event_production:
+  extends: .dynatrace_event
+  stage: deploy-production
+  needs: ["deployment-production"]
+  variables:
+    DYNATRACE_ENV_URL: "$DT_TENANT_URL"
+    DYNATRACE_API_TOKEN: "$DT_API_TOKEN"
+    DESCRIPTION: "$RELEASE_PRODUCT $RELEASE_BUILD_VERSION deployed"
+    CUSTOM_PROPERTIES: '{"namespace":"$RELEASE_STAGE_PRODUCTION"}'
+    EVENT_TYPE: "CUSTOM_DEPLOYMENT"
+    DT_RELEASE_PRODUCT: "$RELEASE_PRODUCT"
+    DEPLOYMENT_NAME: "$RELEASE_PRODUCT" # Library doesn't accept DT_RELEASE_PRODUCT
+    DT_RELEASE_BUILD_VERSION: "$RELEASE_BUILD_VERSION"
+    DEPLOYMENT_VERSION: "$RELEASE_BUILD_VERSION" # Library doesn't accept DT_RELEASE_BUILD_VERSION
+    DT_RELEASE_STAGE: "$RELEASE_STAGE_PRODUCTION"
