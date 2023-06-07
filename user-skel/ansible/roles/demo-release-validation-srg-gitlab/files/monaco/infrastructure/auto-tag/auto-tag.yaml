@@ -1,0 +1,13 @@
+config:
+    - environment: "auto-tag.json"
+    - app: "auto-tag.json"
+  
+environment:
+    - name: "environment"
+    - valueFormat: "{ProcessGroup:KubernetesNamespace}"
+    - dynamicKey: "KUBERNETES_NAMESPACE"
+
+app:
+    - name: "app"
+    - valueFormat: "{ProcessGroup:KubernetesContainerName}"
+    - dynamicKey: "KUBERNETES_CONTAINER_NAME"

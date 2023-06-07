@@ -1,0 +1,9 @@
+config: 
+    - acebox: "private-synthetic.json"
+  
+acebox:
+    - name: "ACE-BOX"
+    # nodeId is sourced from environment in json file.
+    # This is a workaround until Monaco offers the option to skip 
+    # environment variable validation when a project is not deployed.
+    # - nodeId: ""

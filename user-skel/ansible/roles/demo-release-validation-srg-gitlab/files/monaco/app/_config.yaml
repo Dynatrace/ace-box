@@ -1,0 +1,137 @@
+configs:
+  # auto-tag
+  - id: autoTag
+    type:
+      settings:
+        schema: builtin:tags.auto-tagging
+        scope: environment
+    config:
+      template: auto-tag.json
+      name: 
+        type: compound
+        format: "{{ .releaseProduct }}-{{ .releaseStage }}"
+        references:
+          - releaseProduct
+          - releaseStage
+      parameters:
+        releaseProduct:
+          type: environment
+          name: RELEASE_PRODUCT
+        releaseStage:
+          type: environment
+          name: RELEASE_STAGE
+        namespace: 
+          type: environment
+          name: RELEASE_STAGE
+
+  # application-web 
+  - id: application-app-one
+    type:
+      api: application-web
+    config:
+      name: app-one
+      template: ../shared/application.json
+      skip: false
+
+  # app-detection-rule 
+  - id: application-detect-app-one
+    type:
+      api: app-detection-rule
+    config:
+      name: app-one-detect
+      template: ../shared/application-detection-rule.json
+      parameters:
+        applicationId:
+          type: reference
+          configType: application-web
+          configId: application-app-one
+          project: apps.app-one
+          property: id # id/name
+        pattern:
+          type: compound
+          format: "{{ .protocol }}://{{ .applicationSubdomain }}.{{ .ingressDomain }}"
+          references:
+            - protocol
+            - applicationSubdomain
+            - ingressDomain
+        protocol: http
+        applicationSubdomain: simplenodeservice-app-one
+        ingressDomain:
+          name: INGRESS_DOMAIN
+          type: environment
+      skip: false
+
+  # management-zone 
+  - id: management-zone-app-one
+    type:
+      api: management-zone
+    config:
+      name: app-one
+      template: ../shared/management-zone.json
+      parameters:
+        environment: app-one
+      skip: false
+
+  # dashboard
+  - id: dashboard-app-one
+    type:
+      api: dashboard
+    config:
+      name: Dashboard app-one
+      template: ../shared/dashboard.json      
+      parameters:
+        managementZoneId:
+          type: reference
+          configType: management-zone
+          configId: management-zone-app-one
+          project: apps.app-one
+          property: id
+        managementZoneName:
+          type: reference        
+          configType: management-zone
+          configId: management-zone-app-one
+          project: apps.app-one
+          property: name
+      skip: false
+  
+  # synthetic-monitor
+  - id: health-app-one
+    type:
+      api: synthetic-monitor
+    config:
+      name: app-one-healthcheck
+      template: ../shared/health-check-monitor.json      
+      parameters:
+        description: Health check for simplenode in app-one       
+        location:
+          type: reference          
+          configType: synthetic-location
+          configId: synthetic-location-ace-box
+          project: infrastructure
+          property: id
+        managementZoneId:
+          type: reference
+          configType: management-zone
+          configId: management-zone-app-one
+          project: apps.app-one
+          property: id
+        tag:
+          type: reference
+          configType: auto-tag
+          configId: tagging-app-one-type-api
+          project: apps.app-one
+          property: name  
+        url:
+          type: compound
+          format: "{{ .protocol }}://{{ .applicationSubdomain }}.{{ .ingressDomain }}"
+          references:
+            - protocol
+            - applicationSubdomain
+            - ingressDomain
+        protocol: http
+        applicationSubdomain: simplenodeservice-app-one
+        ingressDomain:
+          name: INGRESS_DOMAIN
+          type: environment
+      skip: false
+

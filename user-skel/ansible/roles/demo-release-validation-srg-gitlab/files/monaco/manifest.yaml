@@ -1,6 +1,10 @@
 manifestVersion: 1.0
 
 projects:
+  - name: infrastructure
+    path: infrastructure
+  - name: app
+    path: app
   - name: srg
     path: srg
 

@@ -1,0 +1,22 @@
+config:
+    - LSN: "request-attribute.json"
+    - TSN: "request-attribute.json"
+    - LTN: "request-attribute.json"
+
+LSN:
+    - name: "LSN"
+    - headerName: "x-dynatrace-test"
+    - delimiter: "LSN="
+    - endDelimiter: ";"
+
+TSN:
+    - name: "TSN"
+    - headerName: "x-dynatrace-test"
+    - delimiter: "TSN="
+    - endDelimiter: ";"
+
+LTN:
+    - name: "LTN"
+    - headerName: "x-dynatrace-test"
+    - delimiter: "LTN="
+    - endDelimiter: ";"

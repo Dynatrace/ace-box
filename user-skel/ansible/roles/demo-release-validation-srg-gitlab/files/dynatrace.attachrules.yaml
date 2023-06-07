@@ -5,11 +5,11 @@ attachRules:
     - PROCESS_GROUP_INSTANCE
     tags:
     - context: ENVIRONMENT
-      key: DT_RELEASE_PRODUCT
-      value: ${DT_RELEASE_PRODUCT}
+      key: RELEASE_PRODUCT
+      value: ${RELEASE_PRODUCT}
     - context: ENVIRONMENT
-      key: DT_RELEASE_STAGE
-      value: ${DT_RELEASE_STAGE}
+      key: RELEASE_STAGE
+      value: ${RELEASE_STAGE}
     - context: ENVIRONMENT
-      key: DT_RELEASE_BUILD_VERSION
-      value: ${DT_RELEASE_BUILD_VERSION}
+      key: RELEASE_BUILD_VERSION
+      value: ${RELEASE_BUILD_VERSION}
