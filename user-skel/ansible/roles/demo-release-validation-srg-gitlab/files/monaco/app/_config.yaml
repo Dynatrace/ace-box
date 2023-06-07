@@ -5,6 +5,7 @@ configs:
       settings:
         schema: builtin:tags.auto-tagging
         scope: environment
+        schemaVersion: "1.0.11"
     config:
       template: auto-tag.json
       name: 
@@ -25,113 +26,211 @@ configs:
           name: RELEASE_STAGE
 
   # application-web 
-  - id: application-app-one
+  - id: applicationWeb
     type:
       api: application-web
     config:
-      name: app-one
-      template: ../shared/application.json
+      template: application.json
+      name:
+        type: compound
+        format: "{{ .releaseProduct }}-{{ .releaseStage }}"
+        references:
+          - releaseProduct
+          - releaseStage
+      parameters:
+        releaseProduct:
+          type: environment
+          name: RELEASE_PRODUCT
+        releaseStage:
+          type: environment
+          name: RELEASE_STAGE
       skip: false
 
   # app-detection-rule 
-  - id: application-detect-app-one
+  - id: appDetectionRule
     type:
-      api: app-detection-rule
+      settings:
+        schema: builtin:rum.web.app-detection
+        scope: environment
+        schemaVersion: "2.0.1"
     config:
-      name: app-one-detect
-      template: ../shared/application-detection-rule.json
+      name: ["application-web", "applicationWeb", "name"]
+      template: application-detection-rule.json
       parameters:
-        applicationId:
-          type: reference
-          configType: application-web
-          configId: application-app-one
-          project: apps.app-one
-          property: id # id/name
+        applicationId: ["application-web", "applicationWeb", "id"]
         pattern:
           type: compound
-          format: "{{ .protocol }}://{{ .applicationSubdomain }}.{{ .ingressDomain }}"
+          format: "{{ .ingressProtocol }}://{{ .releaseProduct }}-{{ .releaseStage }}.{{ .ingressDomain }}"
           references:
-            - protocol
-            - applicationSubdomain
+            - ingressProtocol
+            - releaseProduct
+            - releaseStage
             - ingressDomain
-        protocol: http
-        applicationSubdomain: simplenodeservice-app-one
-        ingressDomain:
-          name: INGRESS_DOMAIN
+        ingressProtocol:
           type: environment
+          name: INGRESS_PROTOCOL
+        releaseProduct:
+          type: environment
+          name: RELEASE_PRODUCT
+        releaseStage:
+          type: environment
+          name: RELEASE_STAGE
+        ingressDomain:
+          type: environment
+          name: INGRESS_DOMAIN
       skip: false
 
   # management-zone 
-  - id: management-zone-app-one
+  - id: managementZone
     type:
-      api: management-zone
+      settings:
+        schema: builtin:management-zones
+        scope: environment
+        schemaVersion: "1.0.5"
     config:
-      name: app-one
-      template: ../shared/management-zone.json
+      name:
+        type: environment
+        name: RELEASE_STAGE
+      template: management-zone.json
       parameters:
-        environment: app-one
+        tag:
+          type: environment
+          name: RELEASE_STAGE
+      skip: false
+
+  #csm
+  - id: csmFailureRate
+    type:
+      api: calculated-metrics-service
+    config:
+      name:
+        type: compound
+        format: "{{ .releaseProduct }}.{{ .releaseStage }}.failure_rate_by_version"
+        references:
+          - releaseProduct
+          - releaseStage
+      template: csm-failure-rate.json
+      skip: false
+      parameters:
+        metricKey:
+          type: compound
+          format: "calc:service.{{ .name }}"
+          references:
+            - name
+        releaseProduct:
+          type: environment
+          name: RELEASE_PRODUCT
+        releaseStage:
+          type: environment
+          name: RELEASE_STAGE
+
+  
+  - id: csmResponseTime
+    type:
+      api: calculated-metrics-service
+    config:
+      name:
+        type: compound
+        format: "{{ .releaseProduct }}.{{ .releaseStage }}.response_time_by_version"
+        references:
+          - releaseProduct
+          - releaseStage
+      template: csm-response-time.json
+      skip: false
+      parameters:
+        metricKey:
+          type: compound
+          format: "calc:service.{{ .name }}"
+          references:
+            - name
+        releaseProduct:
+          type: environment
+          name: RELEASE_PRODUCT
+        releaseStage:
+          type: environment
+          name: RELEASE_STAGE
+
+  #slo
+  - id: slo
+    type:
+      api: slo
+    config:
+      template: slo.json
+      name:
+        type: compound
+        format: "{{ .releaseProduct }}.{{ .releaseStage }}"
+        references:
+          - releaseProduct
+          - releaseStage
+      parameters:
+        releaseProduct:
+          type: environment
+          name: RELEASE_PRODUCT
+        releaseStage:
+          type: environment
+          name: RELEASE_STAGE
       skip: false
 
   # dashboard
-  - id: dashboard-app-one
+  - id: dashboard
     type:
       api: dashboard
     config:
-      name: Dashboard app-one
-      template: ../shared/dashboard.json      
-      parameters:
-        managementZoneId:
-          type: reference
-          configType: management-zone
-          configId: management-zone-app-one
-          project: apps.app-one
-          property: id
-        managementZoneName:
-          type: reference        
-          configType: management-zone
-          configId: management-zone-app-one
-          project: apps.app-one
-          property: name
+      template: dashboard.json
+      name:
+        type: compound
+        format: "🐥 {{ .releaseProduct }}.{{ .releaseStage }} - Tracker"
+        references:
+          - releaseProduct
+          - releaseStage
       skip: false
+      parameters:
+        releaseProduct:
+          type: environment
+          name: RELEASE_PRODUCT
+        releaseStage:
+          type: environment
+          name: RELEASE_STAGE
+        sloId: ["slo", "slo", "id"]
+        csmFailureRateMetricKey: ["calculated-metrics-service", "csmFailureRate", "metricKey"]
+        csmResponseTimeMetricKey: ["calculated-metrics-service", "csmResponseTime", "metricKey"]
+
   
   # synthetic-monitor
   - id: health-app-one
     type:
       api: synthetic-monitor
     config:
-      name: app-one-healthcheck
-      template: ../shared/health-check-monitor.json      
+      name:
+        type: compound
+        format: "{{ .releaseStage }} - Health Check"
+        references:
+          - releaseStage
+      template: health-check-monitor.json      
       parameters:
         description: Health check for simplenode in app-one       
-        location:
-          type: reference          
-          configType: synthetic-location
-          configId: synthetic-location-ace-box
-          project: infrastructure
-          property: id
-        managementZoneId:
-          type: reference
-          configType: management-zone
-          configId: management-zone-app-one
-          project: apps.app-one
-          property: id
-        tag:
-          type: reference
-          configType: auto-tag
-          configId: tagging-app-one-type-api
-          project: apps.app-one
-          property: name  
+        location: ["infrastructure","synthetic-location", "synthetic-location-ace-box", "id"]
+        managementZoneId: ["management-zone", "managementZone", "id"]
+        tag: ["auto-tag", "autoTag", "name"]
         url:
           type: compound
-          format: "{{ .protocol }}://{{ .applicationSubdomain }}.{{ .ingressDomain }}"
+          format: "{{ .ingressProtocol }}://{{ .releaseProduct }}-{{ .releaseStage }}.{{ .ingressDomain }}"
           references:
-            - protocol
-            - applicationSubdomain
+            - ingressProtocol
+            - releaseProduct
+            - releaseStage
             - ingressDomain
-        protocol: http
-        applicationSubdomain: simplenodeservice-app-one
-        ingressDomain:
-          name: INGRESS_DOMAIN
+        ingressProtocol:
           type: environment
+          name: INGRESS_PROTOCOL
+        releaseProduct:
+          type: environment
+          name: RELEASE_PRODUCT
+        releaseStage:
+          type: environment
+          name: RELEASE_STAGE
+        ingressDomain:
+          type: environment
+          name: INGRESS_DOMAIN
       skip: false
 

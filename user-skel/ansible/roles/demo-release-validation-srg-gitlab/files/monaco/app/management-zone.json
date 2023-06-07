@@ -1,27 +1,22 @@
 {
   "name": "{{ .name }}",
+  "description": null,
   "rules": [
     {
-      "type": "PROCESS_GROUP",
       "enabled": true,
-      "propagationTypes": ["PROCESS_GROUP_TO_SERVICE"],
-      "conditions": [
-        {
-          "key": {
-            "attribute": "PROCESS_GROUP_TAGS"
-          },
-          "comparisonInfo": {
-            "type": "TAG",
+      "type": "ME",
+      "attributeRule": {
+        "entityType": "PROCESS_GROUP",
+        "conditions": [
+          {
+            "key": "PROCESS_GROUP_TAGS",
             "operator": "EQUALS",
-            "value": {
-              "context": "CONTEXTLESS",
-              "key": "environment",
-              "value": "{{ .environment }}"
-            },
-            "negate": false
+            "tag": "{{ .tag }}"
           }
-        }
-      ]
+        ],
+        "pgToHostPropagation": false,
+        "pgToServicePropagation": true
+      }
     }
   ]
 }
