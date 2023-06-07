@@ -5,6 +5,7 @@ projects:
     path: infrastructure
   - name: app
     path: app
+    type: grouping
   - name: srg
     path: srg
 

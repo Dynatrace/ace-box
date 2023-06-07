@@ -9,6 +9,7 @@ variables:
   RELEASE_BUILD_VERSION: "$BUILD_ID.0.3"
   RELEASE_PRODUCT: "simplenodeservice"
   RELEASE_STAGE: "simplenode-gitlab-staging"
+  MANIFEST_FILE: ./monaco/manifest.yaml
 
 stages:
   - init
@@ -23,27 +24,57 @@ workflow:
     - if: $CI_PIPELINE_SOURCE == "web"
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "main"
 
-monaco:
-  image: dynatraceace/monaco-runner:release-v1.6.0
+monaco_infra:
+  image: dynatrace/dynatrace-configuration-as-code:2.1.0
   stage: init
   script:
-    - monaco -v -dry-run -e=monaco/environments.yaml -p=infrastructure monaco/projects
-    - monaco -v -e=monaco/environments.yaml -p=infrastructure monaco/projects
+    - monaco deploy $MANIFEST_FILE --project infrastructure --dry-run
+    - monaco deploy $MANIFEST_FILE --project infrastructure
     - sleep 30
-    - monaco -v -dry-run -e=monaco/environments.yaml -p=simplenode-gitlab monaco/projects
-    - monaco -v -e=monaco/environments.yaml -p=simplenode-gitlab monaco/projects
   artifacts:
     paths:
-      - monaco-applied
+      - monaco-infra-applied
   rules:
     - changes:
-        - monaco-applied
+        - monaco-infra-applied
+
+monaco_staging:
+  image: dynatrace/dynatrace-configuration-as-code:2.1.0
+  stage: init
+  needs: ["monaco_infra"]
+  variables:
+    RELEASE_STAGE: "simplenode-gitlab-staging"
+  script:
+    - monaco deploy $MANIFEST_FILE --project app.staging,app.shared --dry-run
+    - monaco deploy $MANIFEST_FILE --project app.staging,app.shared
+  artifacts:
+    paths:
+      - monaco-staging-applied
+  rules:
+    - changes:
+        - monaco-staging-applied
+
+monaco_prod:
+  image: dynatrace/dynatrace-configuration-as-code:2.1.0
+  stage: init
+  needs: ["monaco_infra"]
+  variables:
+    RELEASE_STAGE: "simplenode-gitlab-prod"
+  script:
+    - monaco deploy $MANIFEST_FILE --project app.prod,app.shared --dry-run
+    - monaco deploy $MANIFEST_FILE --project app.prod,app.shared
+  artifacts:
+    paths:
+      - monaco-prod-applied
+  rules:
+    - changes:
+        - monaco-prod-applied
 
 
 monaco_config_sleep:
-  image: dynatraceace/monaco-runner:release-v1.6.0
+  image: dynatrace/dynatrace-configuration-as-code:2.1.0
   stage: init
-  needs: ["monaco"]
+  needs: ["monaco_prod"]
   script:
     # Sleep an additional 120 seconds to give Dynatrace some time
     # to tag host according to current config before sending config events
@@ -77,9 +108,10 @@ monaco_config_event_prod:
     CONFIGURATION: "simplenode-gitlab-prod"
     CUSTOM_PROPERTIES: '{"Approved by": "ACE"}'
 
-monaco_v2_srg:
+monaco_srg:
   image: dynatrace/dynatrace-configuration-as-code:2.1.0
   stage: init
+  needs: ["monaco_infra"]
   variables:
     MANIFEST_FILE: ./monaco-v2/manifest.yaml
     DT_OAUTH_CLIENT_ID: client.id
@@ -100,7 +132,7 @@ monaco_v2_srg:
 deployment-staging:
   image: dtzar/helm-kubectl
   stage: deploy-staging
-  #needs: ["monaco"]
+  needs: ["monaco_staging"]
   script:
     - echo "Release Version $RELEASE_VERSION is being deployed"
     - >

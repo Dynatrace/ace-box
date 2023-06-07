@@ -50,7 +50,7 @@
       "queries": [
         {
           "id": "A",
-          "metric": "{{ .csmResponseTimeMetricKey }}",
+          "metric": "{{ .cmsResponseTimeMetricKey }}",
           "spaceAggregation": "AVG",
           "timeAggregation": "DEFAULT",
           "splitBy": ["version"],
@@ -114,7 +114,7 @@
       "queries": [
         {
           "id": "A",
-          "metric": "{{ .csmResponseTimeMetricKey }}",
+          "metric": "{{ .cmsResponseTimeMetricKey }}",
           "spaceAggregation": "COUNT",
           "timeAggregation": "DEFAULT",
           "splitBy": ["version"],
@@ -179,7 +179,7 @@
       "queries": [
         {
           "id": "A",
-          "metric": "{{ .csmFailureRateMetricKey }}",
+          "metric": "{{ .cmsFailureRateMetricKey }}",
           "spaceAggregation": "AVG",
           "timeAggregation": "DEFAULT",
           "splitBy": ["version"],
@@ -243,7 +243,7 @@
       "queries": [
         {
           "id": "A",
-          "metric": "{{ .csmFailureRateMetricKey }}",
+          "metric": "{{ .cmsFailureRateMetricKey }}",
           "spaceAggregation": "AVG",
           "timeAggregation": "DEFAULT",
           "splitBy": ["version"],

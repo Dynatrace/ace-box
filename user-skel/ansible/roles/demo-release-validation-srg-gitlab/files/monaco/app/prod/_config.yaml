@@ -1,0 +1,202 @@
+configs:
+
+  # auto-tag
+  - id: autoTagProd
+    type:
+      settings:
+        schema: builtin:tags.auto-tagging
+        scope: environment
+        schemaVersion: "1.0.11"
+    config:
+      template: auto-tag.json
+      name: simplenode-prod-tag
+      parameters:
+        namespace: 
+          type: environment
+          name: RELEASE_STAGE
+
+  # application-web 
+  - id: appProd
+    type:
+      api: application-web
+    config:
+      template: application.json
+      name: simplenode-prod
+      skip: false
+
+  # app-detection-rule 
+  - id: appDetectionProd
+    type:
+      settings:
+        schema: builtin:rum.web.app-detection
+        scope: environment
+        schemaVersion: "2.0.1"
+    config:
+      name: ["application-web", "appProd", "name"]
+      template: application-detection-rule.json
+      parameters:
+        applicationId: ["application-web", "appProd", "id"]
+        pattern:
+          type: compound
+          format: "{{ .ingressProtocol }}://{{ .releaseProduct }}-{{ .releaseStage }}.{{ .ingressDomain }}"
+          references:
+            - ingressProtocol
+            - releaseProduct
+            - releaseStage
+            - ingressDomain
+        ingressProtocol:
+          type: environment
+          name: INGRESS_PROTOCOL
+        releaseProduct:
+          type: environment
+          name: RELEASE_PRODUCT
+        releaseStage:
+          type: environment
+          name: RELEASE_STAGE
+        ingressDomain:
+          type: environment
+          name: INGRESS_DOMAIN
+      skip: false
+
+  # management-zone 
+  - id: managementZoneProd
+    type:
+      settings:
+        schema: builtin:management-zones
+        scope: environment
+        schemaVersion: "1.0.5"
+    config:
+      name: simplenode-prod
+      template: management-zone.json
+      parameters:
+        tag:
+          type: environment
+          name: RELEASE_STAGE
+      skip: false
+
+  #calculated metrics service
+  - id: cmsFailureRate
+    type:
+      api: calculated-metrics-service
+    config:
+      name: simplenode-prod.failure_rate_by_version
+      template: cms-failure-rate.json
+      skip: false
+      parameters:
+        metricKey:
+          type: compound
+          format: "calc:service.{{ .name }}"
+          references:
+            - name
+        releaseProduct:
+          type: environment
+          name: RELEASE_PRODUCT
+        releaseStage:
+          type: environment
+          name: RELEASE_STAGE
+
+
+  - id: cmsResponseTime
+    type:
+      api: calculated-metrics-service
+    config:
+      name: simplenode-prod.response_time_by_version
+      template: cms-response-time.json
+      skip: false
+      parameters:
+        metricKey:
+          type: compound
+          format: "calc:service.{{ .name }}"
+          references:
+            - name
+        releaseProduct:
+          type: environment
+          name: RELEASE_PRODUCT
+        releaseStage:
+          type: environment
+          name: RELEASE_STAGE
+        
+  #slo
+  - id: slo
+    type:
+      api: slo
+    config:
+      template: slo.json
+      name:
+        type: compound
+        format: "{{ .releaseProduct }}.{{ .releaseStage }}"
+        references:
+          - releaseProduct
+          - releaseStage
+      parameters:
+        releaseProduct:
+          type: environment
+          name: RELEASE_PRODUCT
+        releaseStage:
+          type: environment
+          name: RELEASE_STAGE
+      skip: false
+
+  # dashboard
+  - id: dashboard
+    type:
+      api: dashboard
+    config:
+      template: dashboard.json
+      name:
+        type: compound
+        format: "🐥 {{ .releaseProduct }}.{{ .releaseStage }} - Tracker"
+        references:
+          - releaseProduct
+          - releaseStage
+      skip: false
+      parameters:
+        releaseProduct:
+          type: environment
+          name: RELEASE_PRODUCT
+        releaseStage:
+          type: environment
+          name: RELEASE_STAGE
+        sloId: ["slo", "slo", "id"]
+        cmsFailureRateMetricKey: ["calculated-metrics-service", "cmsFailureRate", "metricKey"]
+        cmsResponseTimeMetricKey: ["calculated-metrics-service", "cmsResponseTime", "metricKey"]
+
+  
+  # synthetic-monitor
+  - id: health-app-one
+    type:
+      api: synthetic-monitor
+    config:
+      name:
+        type: compound
+        format: "{{ .releaseStage }} - Health Check"
+        references:
+          - releaseStage
+      template: health-check-monitor.json      
+      parameters:
+        description: Health check for simplenode in app-one       
+        location: ["infrastructure","synthetic-location", "synthetic-location-ace-box", "id"]
+        managementZoneId: ["management-zone", "managementZone", "id"]
+        tag: ["auto-tag", "autoTag", "name"]
+        url:
+          type: compound
+          format: "{{ .ingressProtocol }}://{{ .releaseProduct }}-{{ .releaseStage }}.{{ .ingressDomain }}"
+          references:
+            - ingressProtocol
+            - releaseProduct
+            - releaseStage
+            - ingressDomain
+        ingressProtocol:
+          type: environment
+          name: INGRESS_PROTOCOL
+        releaseProduct:
+          type: environment
+          name: RELEASE_PRODUCT
+        releaseStage:
+          type: environment
+          name: RELEASE_STAGE
+        ingressDomain:
+          type: environment
+          name: INGRESS_DOMAIN
+      skip: false
+

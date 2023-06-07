@@ -1,0 +1,57 @@
+delete:
+  
+  # project - infrastructure
+  - project: infrastructure
+    type: synthetic-location
+    name: ACE-BOX
+  - project: infrastructure
+    type: request-attributes
+    name: LTN
+  - project: infrastructure
+    type: request-attributes
+    name: TSN
+  - project: infrastructure
+    type: request-attributes
+    name: LSN
+
+ 
+  # project - app - staging
+  - project: app
+    type: builtin:tags.auto-tagging
+    id: autoTagStaging  
+  - project: app
+    type: application-web
+    name: simplenode-staging  
+  - project: app
+    type: builtin:rum.web.app-detection
+    id: appDetectionStaging
+  - project: app
+    type: builtin:management-zones
+    id: managementZoneStaging
+  - project: app
+    type: calculated-metrics-service
+    name: simplenode-staging.failure_rate_by_version
+  - project: app
+    type: calculated-metrics-service
+    name: simplenode-staging.response_time_by_version
+
+
+  # project - app - prod
+  - project: app
+    type: builtin:tags.auto-tagging
+    id: autoTagProd
+  - project: app
+    type: application-web
+    name: simplenode-prod  
+  - project: app
+    type: builtin:rum.web.app-detection
+    id: appDetectionProd
+  - project: app
+    type: builtin:management-zones
+    id: managementZoneProd
+  - project: app
+    type: calculated-metrics-service
+    name: simplenode-prod.failure_rate_by_version
+  - project: app
+    type: calculated-metrics-service
+    name: simplenode-prod.response_time_by_version

@@ -26,38 +26,34 @@ configs:
           name: RELEASE_STAGE
 
   # application-web 
-  - id: applicationWeb
+  - id: appStaging
     type:
       api: application-web
     config:
       template: application.json
-      name:
-        type: compound
-        format: "{{ .releaseProduct }}-{{ .releaseStage }}"
-        references:
-          - releaseProduct
-          - releaseStage
-      parameters:
-        releaseProduct:
-          type: environment
-          name: RELEASE_PRODUCT
-        releaseStage:
-          type: environment
-          name: RELEASE_STAGE
+      name: simplenode-staging
+      skip: false
+
+  - id: appProd
+    type:
+      api: application-web
+    config:
+      template: application.json
+      name: simplenode-prod
       skip: false
 
   # app-detection-rule 
-  - id: appDetectionRule
+  - id: appDetectionStaging
     type:
       settings:
         schema: builtin:rum.web.app-detection
         scope: environment
         schemaVersion: "2.0.1"
     config:
-      name: ["application-web", "applicationWeb", "name"]
+      name: ["application-web", "appStaging", "name"]
       template: application-detection-rule.json
       parameters:
-        applicationId: ["application-web", "applicationWeb", "id"]
+        applicationId: ["application-web", "appStaging", "id"]
         pattern:
           type: compound
           format: "{{ .ingressProtocol }}://{{ .releaseProduct }}-{{ .releaseStage }}.{{ .ingressDomain }}"
@@ -98,8 +94,8 @@ configs:
           name: RELEASE_STAGE
       skip: false
 
-  #csm
-  - id: csmFailureRate
+  #calculated metrics service
+  - id: cmsFailureRate
     type:
       api: calculated-metrics-service
     config:
@@ -109,7 +105,7 @@ configs:
         references:
           - releaseProduct
           - releaseStage
-      template: csm-failure-rate.json
+      template: cms-failure-rate.json
       skip: false
       parameters:
         metricKey:
@@ -125,7 +121,7 @@ configs:
           name: RELEASE_STAGE
 
   
-  - id: csmResponseTime
+  - id: cmsResponseTime
     type:
       api: calculated-metrics-service
     config:
@@ -135,7 +131,7 @@ configs:
         references:
           - releaseProduct
           - releaseStage
-      template: csm-response-time.json
+      template: cms-response-time.json
       skip: false
       parameters:
         metricKey:
@@ -192,8 +188,8 @@ configs:
           type: environment
           name: RELEASE_STAGE
         sloId: ["slo", "slo", "id"]
-        csmFailureRateMetricKey: ["calculated-metrics-service", "csmFailureRate", "metricKey"]
-        csmResponseTimeMetricKey: ["calculated-metrics-service", "csmResponseTime", "metricKey"]
+        cmsFailureRateMetricKey: ["calculated-metrics-service", "cmsFailureRate", "metricKey"]
+        cmsResponseTimeMetricKey: ["calculated-metrics-service", "cmsResponseTime", "metricKey"]
 
   
   # synthetic-monitor

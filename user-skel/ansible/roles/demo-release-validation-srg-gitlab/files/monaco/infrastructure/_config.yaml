@@ -1,0 +1,52 @@
+configs:
+
+  # private-sythetic-location
+  - id: synthetic-location-ace-box
+    type:
+      api: synthetic-location
+    config:
+      name: ACE-BOX
+      template: private-synthetic-location.json
+      parameters:
+        nodeId:
+          name: SYNTH_NODE_ID
+          type: environment
+      skip: false
+
+  # request-attribute
+  - id: ltn-request-attribute
+    type:
+      api: request-attributes
+    config:
+      name: LTN
+      template: request-attribute.json
+      parameters:
+        delimiter: LTN=
+        endDelimiter: ;
+        headerName: x-dynatrace-test
+      skip: false
+  
+  - id: tsn-request-attribute
+    type:
+      api: request-attributes
+    config:
+      name: TSN
+      template: request-attribute.json
+      parameters:
+        delimiter: TSN=
+        endDelimiter: ;
+        headerName: x-dynatrace-test
+      skip: false
+  
+  - id: lsn-request-attribute
+    type:
+      api: request-attributes
+    config:
+      name: LSN
+      template: request-attribute.json
+      parameters:
+        delimiter: LSN=
+        endDelimiter: ;
+        headerName: x-dynatrace-test
+      skip: false
+
