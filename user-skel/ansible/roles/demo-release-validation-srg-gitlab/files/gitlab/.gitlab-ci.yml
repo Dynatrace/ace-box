@@ -1,0 +1,203 @@
+include:
+  - remote: "https://gitlab.com/dynatrace-ace/dynatrace-gitlab-library/-/raw/master/dynatrace_event.yaml"
+
+variables:
+  BUILD_ID:
+    value: "1"
+    description: "Build ID. Please set to 1, 2, 3 or 4."
+  DT_RELEASE_VERSION: "v$BUILD_ID.0.3"
+  DT_RELEASE_BUILD_VERSION: "$BUILD_ID.0.3"
+  DT_RELEASE_PRODUCT: "simplenodeservice"
+  DT_RELEASE_STAGE: "simplenode-gitlab-staging"
+  DT_RELEASE_STAGE_PRODUCTION: "simplenode-gitlab-production"
+
+stages:
+  - init
+  - deploy-staging
+  - test
+  - evaluate
+  - deploy-production
+
+
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "web"
+    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "main"
+
+monaco:
+  image: dynatraceace/monaco-runner:release-v1.6.0
+  stage: init
+  script:
+    - monaco -v -dry-run -e=monaco/environments.yaml -p=infrastructure monaco/projects
+    - monaco -v -e=monaco/environments.yaml -p=infrastructure monaco/projects
+    - sleep 30
+    - monaco -v -dry-run -e=monaco/environments.yaml -p=simplenode-gitlab monaco/projects
+    - monaco -v -e=monaco/environments.yaml -p=simplenode-gitlab monaco/projects
+  artifacts:
+    paths:
+      - monaco-applied
+  rules:
+    - changes:
+        - monaco-applied
+
+
+monaco_config_sleep:
+  image: dynatraceace/monaco-runner:release-v1.6.0
+  stage: init
+  needs: ["monaco"]
+  script:
+    # Sleep an additional 120 seconds to give Dynatrace some time
+    # to tag host according to current config before sending config events
+    - sleep 120
+
+monaco_config_event_staging:
+  extends: .dynatrace_event
+  stage: init
+  needs: ["monaco_config_sleep"]
+  variables:
+    DYNATRACE_ENV_URL: "$DT_TENANT_URL"
+    DYNATRACE_API_TOKEN: "$DT_API_TOKEN"
+    EVENT_TYPE: "CUSTOM_CONFIGURATION"
+    ATTACH_RULES_FILE: "dynatrace/dynatrace.host-attachrules.yaml"
+    DT_HOST_TAG: "simplenode-gitlab-staging"
+    DESCRIPTION: "Monaco deployment successful: simplenode-gitlab-staging"
+    CONFIGURATION: "simplenode-gitlab-staging"
+    CUSTOM_PROPERTIES: '{"Approved by": "ACE"}'
+
+monaco_config_event_prod:
+  extends: .dynatrace_event
+  stage: init
+  needs: ["monaco_config_sleep"]
+  variables:
+    DYNATRACE_ENV_URL: "$DT_TENANT_URL"
+    DYNATRACE_API_TOKEN: "$DT_API_TOKEN"
+    EVENT_TYPE: "CUSTOM_CONFIGURATION"
+    ATTACH_RULES_FILE: "dynatrace/dynatrace.host-attachrules.yaml"
+    DT_HOST_TAG: "simplenode-gitlab-prod"
+    DESCRIPTION: "Monaco deployment successful: simplenode-gitlab-prod"
+    CONFIGURATION: "simplenode-gitlab-prod"
+    CUSTOM_PROPERTIES: '{"Approved by": "ACE"}'
+
+monaco_v2_srg:
+  image: dynatrace/dynatrace-configuration-as-code:2.1.0
+  stage: init
+  variables:
+    MANIFEST_FILE: ./monaco-v2/manifest.yaml
+    DT_OAUTH_CLIENT_ID: client.id
+    DT_OAUTH_CLIENT_SECRET: client.secret
+  script:
+    - pwd
+    - ls ./monaco-v2
+    - echo $MANIFEST_FILE
+    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project srg --dry-run
+    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project srg
+  artifacts:
+    paths:
+      - monaco-srg-applied
+  rules:
+    - changes:
+        - monaco-srg-applied
+  when: manual
+
+deployment-staging:
+  image: dtzar/helm-kubectl
+  stage: deploy-staging
+  #needs: ["monaco"]
+  script:
+    - echo "Release Version $DT_RELEASE_VERSION is being deployed"
+    - >
+      helm upgrade --install simplenode-gitlab-staging helm/simplenodeservice 
+      --set image="dynatraceace/simplenodeservice:$DT_RELEASE_BUILD_VERSION"
+      --set domain="$INGRESS_DOMAIN" 
+      --set version="$DT_RELEASE_VERSION"
+      --set build_version="$DT_RELEASE_BUILD_VERSION" 
+      --set environment="$DT_RELEASE_STAGE" 
+      --namespace "$DT_RELEASE_STAGE" --create-namespace 
+      --wait
+    - sleep 150
+
+dynatrace_deploy_event_staging:
+  extends: .dynatrace_event
+  stage: deploy-staging
+  needs: ["deployment-staging"]
+  variables:
+    DYNATRACE_ENV_URL: "$DT_TENANT_URL"
+    DYNATRACE_API_TOKEN: "$DT_API_TOKEN"
+    DESCRIPTION: "$DT_RELEASE_PRODUCT $DT_RELEASE_VERSION deployed"
+    CUSTOM_PROPERTIES: '{"namespace":"$DT_RELEASE_STAGE"}'
+    EVENT_TYPE: "CUSTOM_DEPLOYMENT"
+    DEPLOYMENT_NAME: "simplenode_gitlab"
+    DEPLOYMENT_VERSION: "$DT_RELEASE_VERSION"
+    REMEDIATION_ACTION: "Ansible Tower"
+    DT_NAMESPACE: "$DT_RELEASE_STAGE"
+
+run-tests:
+  before_script:
+    - echo $(date -u +"%Y-%m-%dT%H:%M:%SZ") > srg.test.starttime
+  after_script:
+    - echo $(date -u +"%Y-%m-%dT%H:%M:%SZ") > srg.test.endtime
+  stage: test
+  needs: ["deployment-staging"]
+  variables:
+    LOCUST_LOCUSTFILE: locust/locustfile.py
+    LOCUST_CONFIG: locust/locust.conf
+    LOCUST_HOST: "http://simplenodeservice.$DT_RELEASE_STAGE"
+    LOCUST_LOAD_TEST_NAME: "Loadtest - $DT_RELEASE_BUILD_VERSION"
+  image: locustio/locust
+  script:
+    - locust --config $LOCUST_CONFIG --locustfile $LOCUST_LOCUSTFILE --host $LOCUST_HOST
+  artifacts:
+    paths:
+      - srg.test.starttime
+      - srg.test.endtime
+
+trigger_srg_and_receive_result:
+  image: dynatraceace/dt-automation-cli:latest
+  stage: evaluate
+  needs: ["run-tests"]
+  variables:
+    LOG_LEVEL: "verbose"
+    APP_NAME: "simplenode-gitlab"
+    DYNATRACE_URL_GEN3: $DT_PLATFORM_TENANT_URL
+    ACCOUNT_URN: $DT_OAUTH_ACCOUNT_URN
+    DYNATRACE_CLIENT_ID: $DT_OAUTH_CLIENT_ID
+    DYNATRACE_SECRET: $DT_OAUTH_CLIENT_SECRET
+    DYNATRACE_SSO_URL: $DT_OAUTH_SSO_ENDPOINT
+    SRG_EVALUATION_STOP_ON_FAILURE: "false"
+  script:
+    - eval_start=$(cat srg.test.starttime)
+    - eval_end=$(cat srg.test.endtime)
+    - /dta srg evaluate $APP_NAME
+
+
+deployment-production:
+  image: dtzar/helm-kubectl
+  stage: deploy-production
+  needs: ["trigger_srg_and_receive_result"]
+  script:
+    - echo "Release Version $DT_RELEASE_VERSION is being deployed"
+    - >
+      helm upgrade --install simplenode-gitlab-production helm/simplenodeservice 
+      --set image="dynatraceace/simplenodeservice:$DT_RELEASE_BUILD_VERSION"
+      --set domain="$INGRESS_DOMAIN" 
+      --set version="$DT_RELEASE_VERSION"
+      --set build_version="$DT_RELEASE_BUILD_VERSION" 
+      --set environment="$DT_RELEASE_STAGE_PRODUCTION" 
+      --namespace "$DT_RELEASE_STAGE_PRODUCTION" --create-namespace 
+      --wait
+    - sleep 150
+
+dynatrace_deploy_event_production:
+  extends: .dynatrace_event
+  stage: deploy-production
+  needs: ["deployment-production"]
+  variables:
+    DYNATRACE_ENV_URL: "$DT_TENANT_URL"
+    DYNATRACE_API_TOKEN: "$DT_API_TOKEN"
+    DESCRIPTION: "$DT_RELEASE_PRODUCT $DT_RELEASE_VERSION deployed"
+    CUSTOM_PROPERTIES: '{"namespace":"$DT_RELEASE_STAGE_PROD"}'
+    EVENT_TYPE: "CUSTOM_DEPLOYMENT"
+    DEPLOYMENT_NAME: "simplenode_gitlab"
+    DEPLOYMENT_VERSION: "$DT_RELEASE_VERSION"
+    REMEDIATION_ACTION: "Ansible Tower"
+    DT_NAMESPACE: "$DT_RELEASE_STAGE_PRODUCTION"
