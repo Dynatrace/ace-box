@@ -17,7 +17,7 @@
 
 - name: Overwrite .gitlab-ci.yml
   ansible.builtin.copy:
-    src: "{{ role_path }}/files/gitlab/.gitlab-ci.yml"
+    src: "{{ role_path }}/files/.gitlab-ci.yml"
     dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/.gitlab-ci.yml"
 
 - name: Overwrite dynatrace.attachrules.yaml
@@ -34,6 +34,11 @@
   ansible.builtin.copy:
     src: "{{ role_path }}/files/simplenode/logger.js"
     dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/logger.js"
+
+- name: Add Monaco configurations
+  ansible.builtin.copy:
+    src: "{{ role_path }}/files/monaco"
+    dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/"
 
 
 - include_role:
