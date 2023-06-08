@@ -111,7 +111,7 @@ monaco_config_event_prod:
 deployment-staging:
   image: dtzar/helm-kubectl
   stage: deploy-staging
-  needs: ["monaco_staging"]
+  #needs: ["monaco_staging"]
   script:
     - echo "Release Version $RELEASE_VERSION is being deployed"
     - >
@@ -150,7 +150,7 @@ run-tests:
   variables:
     LOCUST_LOCUSTFILE: locust/locustfile.py
     LOCUST_CONFIG: locust/locust.conf
-    LOCUST_HOST: "http://simplenodeservice.$RELEASE_STAGE"
+    LOCUST_HOST: "http://$RELEASE_STAGE"
     LOCUST_LOAD_TEST_NAME: "Loadtest - $RELEASE_BUILD_VERSION"
   image: locustio/locust
   script:

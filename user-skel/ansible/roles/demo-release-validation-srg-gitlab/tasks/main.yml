@@ -40,6 +40,10 @@
     src: "{{ role_path }}/files/monaco"
     dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/"
 
+- name: Overwrite Locust configurations
+  ansible.builtin.copy:
+    src: "{{ role_path }}/files/locust"
+    dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/"
 
 - include_role:
     name: microk8s

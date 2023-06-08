@@ -10,13 +10,13 @@
   "triggerType": "Event",
   "trigger": {
     "eventTrigger": {
-      "filterQuery": "type == \"com.dynatrace.event.srg.evaluation.triggered.v1\" AND appname==\"{{ .appname }}\"",
+      "filterQuery": "event.type == \"guardian.validation.triggered\" AND tag.application==\"{{ .appname }}\"",
       "isActive": true,
       "triggerConfiguration": {
         "type": "event",
         "value": {
           "eventType": "bizevents",
-          "query": "type == \"com.dynatrace.event.srg.evaluation.triggered.v1\" AND appname==\"{{ .appname }}\""  
+          "query": "event.type == \"guardian.validation.triggered\" AND tag.application==\"{{ .appname }}\""  
         }
       },
       "uniqueExpression": null
@@ -56,8 +56,8 @@
       "input": {
         "executionId": "{{`{{`}} execution().id {{`}}`}}",
         "objectId": "{{ .guardian_id }}",
-        "expressionFrom": "{{`{{`}} event()['starttime'] {{`}}`}}",
-        "expressionTo": "{{`{{`}} event()['endtime'] {{`}}`}}",
+        "expressionFrom": "{{`{{`}} event()['timeframe.from'] {{`}}`}}",
+        "expressionTo": "{{`{{`}} event()['timeframe.to'] {{`}}`}}",
         "timeframeInputType": "expression"
       },
       "name": "evaluate_srg",
