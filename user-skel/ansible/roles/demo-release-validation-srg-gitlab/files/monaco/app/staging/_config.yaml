@@ -1,6 +1,6 @@
 configs:
   # auto-tag
-  - id: autoTag
+  - id: autoTagStaging
     type:
       settings:
         schema: builtin:tags.auto-tagging
@@ -10,9 +10,8 @@ configs:
       template: auto-tag.json
       name: 
         type: compound
-        format: "{{ .releaseProduct }}-{{ .releaseStage }}"
+        format: "{{ .releaseStage }}-tag"
         references:
-          - releaseProduct
           - releaseStage
       parameters:
         releaseProduct:
@@ -34,14 +33,6 @@ configs:
       name: simplenode-staging
       skip: false
 
-  - id: appProd
-    type:
-      api: application-web
-    config:
-      template: application.json
-      name: simplenode-prod
-      skip: false
-
   # app-detection-rule 
   - id: appDetectionStaging
     type:
@@ -50,7 +41,11 @@ configs:
         scope: environment
         schemaVersion: "2.0.1"
     config:
-      name: ["application-web", "appStaging", "name"]
+      name: 
+        type: compound
+        format: "{{ .releaseStage }}-app-detection-rule"
+        references:
+          - releaseStage
       template: application-detection-rule.json
       parameters:
         applicationId: ["application-web", "appStaging", "id"]
@@ -77,7 +72,7 @@ configs:
       skip: false
 
   # management-zone 
-  - id: managementZone
+  - id: managementZoneStaging
     type:
       settings:
         schema: builtin:management-zones
@@ -99,12 +94,7 @@ configs:
     type:
       api: calculated-metrics-service
     config:
-      name:
-        type: compound
-        format: "{{ .releaseProduct }}.{{ .releaseStage }}.failure_rate_by_version"
-        references:
-          - releaseProduct
-          - releaseStage
+      name: simplenode-staging.failure_rate_by_version
       template: cms-failure-rate.json
       skip: false
       parameters:
@@ -125,12 +115,7 @@ configs:
     type:
       api: calculated-metrics-service
     config:
-      name:
-        type: compound
-        format: "{{ .releaseProduct }}.{{ .releaseStage }}.response_time_by_version"
-        references:
-          - releaseProduct
-          - releaseStage
+      name: simplenode-staging.response_time_by_version
       template: cms-response-time.json
       skip: false
       parameters:
@@ -152,12 +137,7 @@ configs:
       api: slo
     config:
       template: slo.json
-      name:
-        type: compound
-        format: "{{ .releaseProduct }}.{{ .releaseStage }}"
-        references:
-          - releaseProduct
-          - releaseStage
+      name: simplenode-staging.slo
       parameters:
         releaseProduct:
           type: environment
@@ -173,12 +153,7 @@ configs:
       api: dashboard
     config:
       template: dashboard.json
-      name:
-        type: compound
-        format: "🐥 {{ .releaseProduct }}.{{ .releaseStage }} - Tracker"
-        references:
-          - releaseProduct
-          - releaseStage
+      name: simplenode-staging-Tracker
       skip: false
       parameters:
         releaseProduct:
@@ -193,15 +168,11 @@ configs:
 
   
   # synthetic-monitor
-  - id: health-app-one
+  - id: health-simplenode-staging
     type:
       api: synthetic-monitor
     config:
-      name:
-        type: compound
-        format: "{{ .releaseStage }} - Health Check"
-        references:
-          - releaseStage
+      name: simplenode-staging-health-check
       template: health-check-monitor.json      
       parameters:
         description: Health check for simplenode in app-one       

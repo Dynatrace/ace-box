@@ -13,45 +13,61 @@ delete:
   - project: infrastructure
     type: request-attributes
     name: LSN
-
  
   # project - app - staging
-  - project: app
+  - project: app.staging
     type: builtin:tags.auto-tagging
     id: autoTagStaging  
-  - project: app
+  - project: app.staging
     type: application-web
     name: simplenode-staging  
-  - project: app
+  - project: app.staging
     type: builtin:rum.web.app-detection
     id: appDetectionStaging
-  - project: app
+  - project: app.staging
     type: builtin:management-zones
     id: managementZoneStaging
-  - project: app
+  - project: app.staging
     type: calculated-metrics-service
     name: simplenode-staging.failure_rate_by_version
-  - project: app
+  - project: app.staging
     type: calculated-metrics-service
     name: simplenode-staging.response_time_by_version
-
+  - project: app.staging
+    type: slo
+    name: simplenode-staging.slo
+  - project: app.staging
+    type: dashboard
+    name: simplenode-staging-Tracker
+  - project: app.staging
+    type: synthetic-monitor
+    name: simplenode-staging-health-check
 
   # project - app - prod
-  - project: app
+  - project: app.prod
     type: builtin:tags.auto-tagging
     id: autoTagProd
-  - project: app
+  - project: app.prod
     type: application-web
     name: simplenode-prod  
-  - project: app
+  - project: app.prod
     type: builtin:rum.web.app-detection
     id: appDetectionProd
-  - project: app
+  - project: app.prod
     type: builtin:management-zones
     id: managementZoneProd
-  - project: app
+  - project: app.prod
     type: calculated-metrics-service
     name: simplenode-prod.failure_rate_by_version
-  - project: app
+  - project: app.prod
     type: calculated-metrics-service
     name: simplenode-prod.response_time_by_version
+  - project: app.prod
+    type: slo
+    name: simplenode-prod.slo
+  - project: app.prod
+    type: dashboard
+    name: simplenode-prod-Tracker
+  - project: app.prod
+    type: synthetic-monitor
+    name: simplenode-prod-health-check

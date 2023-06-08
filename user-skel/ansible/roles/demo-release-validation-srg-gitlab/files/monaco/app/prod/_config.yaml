@@ -9,8 +9,18 @@ configs:
         schemaVersion: "1.0.11"
     config:
       template: auto-tag.json
-      name: simplenode-prod-tag
+      name: 
+        type: compound
+        format: "{{ .releaseStage }}-tag"
+        references:
+          - releaseStage
       parameters:
+        releaseProduct:
+          type: environment
+          name: RELEASE_PRODUCT
+        releaseStage:
+          type: environment
+          name: RELEASE_STAGE
         namespace: 
           type: environment
           name: RELEASE_STAGE
@@ -32,7 +42,11 @@ configs:
         scope: environment
         schemaVersion: "2.0.1"
     config:
-      name: ["application-web", "appProd", "name"]
+      name: 
+        type: compound
+        format: "{{ .releaseStage }}-app-detection-rule"
+        references:
+          - releaseStage
       template: application-detection-rule.json
       parameters:
         applicationId: ["application-web", "appProd", "id"]
@@ -66,7 +80,9 @@ configs:
         scope: environment
         schemaVersion: "1.0.5"
     config:
-      name: simplenode-prod
+      name:
+        type: environment
+        name: RELEASE_STAGE
       template: management-zone.json
       parameters:
         tag:
@@ -122,12 +138,7 @@ configs:
       api: slo
     config:
       template: slo.json
-      name:
-        type: compound
-        format: "{{ .releaseProduct }}.{{ .releaseStage }}"
-        references:
-          - releaseProduct
-          - releaseStage
+      name: simplenode-prod.slo
       parameters:
         releaseProduct:
           type: environment
@@ -143,12 +154,7 @@ configs:
       api: dashboard
     config:
       template: dashboard.json
-      name:
-        type: compound
-        format: "🐥 {{ .releaseProduct }}.{{ .releaseStage }} - Tracker"
-        references:
-          - releaseProduct
-          - releaseStage
+      name: simplenode-prod-Tracker
       skip: false
       parameters:
         releaseProduct:
@@ -163,15 +169,11 @@ configs:
 
   
   # synthetic-monitor
-  - id: health-app-one
+  - id: health-simplenode-prod
     type:
       api: synthetic-monitor
     config:
-      name:
-        type: compound
-        format: "{{ .releaseStage }} - Health Check"
-        references:
-          - releaseStage
+      name: simplenode-prod-health-check
       template: health-check-monitor.json      
       parameters:
         description: Health check for simplenode in app-one       
