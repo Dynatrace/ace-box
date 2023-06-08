@@ -28,15 +28,11 @@ monaco_infra:
   image: dynatrace/dynatrace-configuration-as-code:2.1.0
   stage: init
   script:
-    - monaco deploy $MANIFEST_FILE --project infrastructure --dry-run
-    - monaco deploy $MANIFEST_FILE --project infrastructure
+    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project infrastructure --dry-run
+    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project infrastructure
     - sleep 30
-  artifacts:
-    paths:
-      - monaco-infra-applied
   rules:
-    - changes:
-        - monaco-infra-applied
+    - if: $BUILD_ID == "1"
 
 monaco_staging:
   image: dynatrace/dynatrace-configuration-as-code:2.1.0
@@ -45,14 +41,10 @@ monaco_staging:
   variables:
     RELEASE_STAGE: "simplenode-gitlab-staging"
   script:
-    - monaco deploy $MANIFEST_FILE --project app.staging,app.shared --dry-run
-    - monaco deploy $MANIFEST_FILE --project app.staging,app.shared
-  artifacts:
-    paths:
-      - monaco-staging-applied
+    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app.staging,app.shared --dry-run
+    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app.staging,app.shared
   rules:
-    - changes:
-        - monaco-staging-applied
+    - if: $BUILD_ID == "1"
 
 monaco_prod:
   image: dynatrace/dynatrace-configuration-as-code:2.1.0
@@ -61,15 +53,23 @@ monaco_prod:
   variables:
     RELEASE_STAGE: "simplenode-gitlab-prod"
   script:
-    - monaco deploy $MANIFEST_FILE --project app.prod,app.shared --dry-run
-    - monaco deploy $MANIFEST_FILE --project app.prod,app.shared
-  artifacts:
-    paths:
-      - monaco-prod-applied
+    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app.prod,app.shared --dry-run
+    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app.prod,app.shared
   rules:
-    - changes:
-        - monaco-prod-applied
+    - if: $BUILD_ID == "1"
 
+monaco_srg:
+  image: dynatrace/dynatrace-configuration-as-code:2.1.0
+  stage: init
+  needs: ["monaco_infra"]
+  variables:
+    DT_OAUTH_CLIENT_ID: client.id
+    DT_OAUTH_CLIENT_SECRET: client.secret
+  script:
+    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project srg --dry-run
+    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project srg
+  rules:
+    - if: $BUILD_ID == "1"
 
 monaco_config_sleep:
   image: dynatrace/dynatrace-configuration-as-code:2.1.0
@@ -107,27 +107,6 @@ monaco_config_event_prod:
     DESCRIPTION: "Monaco deployment successful: simplenode-gitlab-prod"
     CONFIGURATION: "simplenode-gitlab-prod"
     CUSTOM_PROPERTIES: '{"Approved by": "ACE"}'
-
-monaco_srg:
-  image: dynatrace/dynatrace-configuration-as-code:2.1.0
-  stage: init
-  needs: ["monaco_infra"]
-  variables:
-    MANIFEST_FILE: ./monaco-v2/manifest.yaml
-    DT_OAUTH_CLIENT_ID: client.id
-    DT_OAUTH_CLIENT_SECRET: client.secret
-  script:
-    - pwd
-    - ls ./monaco-v2
-    - echo $MANIFEST_FILE
-    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project srg --dry-run
-    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project srg
-  artifacts:
-    paths:
-      - monaco-srg-applied
-  rules:
-    - changes:
-        - monaco-srg-applied
 
 deployment-staging:
   image: dtzar/helm-kubectl

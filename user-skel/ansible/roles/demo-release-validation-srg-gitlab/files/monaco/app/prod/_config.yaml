@@ -8,7 +8,7 @@ configs:
         scope: environment
         schemaVersion: "1.0.11"
     config:
-      template: auto-tag.json
+      template: ../shared/auto-tag.json
       name: 
         type: compound
         format: "{{ .releaseStage }}-tag"
@@ -30,7 +30,7 @@ configs:
     type:
       api: application-web
     config:
-      template: application.json
+      template: ../shared/application.json
       name: simplenode-prod
       skip: false
 
@@ -47,7 +47,7 @@ configs:
         format: "{{ .releaseStage }}-app-detection-rule"
         references:
           - releaseStage
-      template: application-detection-rule.json
+      template: ../shared/application-detection-rule.json
       parameters:
         applicationId: ["application-web", "appProd", "id"]
         pattern:
@@ -83,9 +83,14 @@ configs:
       name:
         type: environment
         name: RELEASE_STAGE
-      template: management-zone.json
+      template: ../shared/management-zone.json
       parameters:
         tag:
+          type: compound
+          format: "environment:{{ .releaseStage }}"
+          references:
+            - releaseStage
+        releaseStage:
           type: environment
           name: RELEASE_STAGE
       skip: false
@@ -96,7 +101,7 @@ configs:
       api: calculated-metrics-service
     config:
       name: simplenode-prod.failure_rate_by_version
-      template: cms-failure-rate.json
+      template: ../shared/cms-failure-rate.json
       skip: false
       parameters:
         metricKey:
@@ -117,7 +122,7 @@ configs:
       api: calculated-metrics-service
     config:
       name: simplenode-prod.response_time_by_version
-      template: cms-response-time.json
+      template: ../shared/cms-response-time.json
       skip: false
       parameters:
         metricKey:
@@ -137,7 +142,7 @@ configs:
     type:
       api: slo
     config:
-      template: slo.json
+      template: ../shared/slo.json
       name: simplenode-prod.slo
       parameters:
         releaseProduct:
@@ -153,7 +158,7 @@ configs:
     type:
       api: dashboard
     config:
-      template: dashboard.json
+      template: ../shared/dashboard.json
       name: simplenode-prod-Tracker
       skip: false
       parameters:
@@ -174,12 +179,12 @@ configs:
       api: synthetic-monitor
     config:
       name: simplenode-prod-health-check
-      template: health-check-monitor.json      
+      template: ../shared/health-check-monitor.json      
       parameters:
         description: Health check for simplenode in app-one       
         location: ["infrastructure","synthetic-location", "synthetic-location-ace-box", "id"]
-        managementZoneId: ["management-zone", "managementZone", "id"]
-        tag: ["auto-tag", "autoTag", "name"]
+        managementZoneId: ["builtin:management-zones", "managementZoneProd", "id"]
+        tag: ["builtin:tags.auto-tagging", "autoTagProd", "name"]
         url:
           type: compound
           format: "{{ .ingressProtocol }}://{{ .releaseProduct }}-{{ .releaseStage }}.{{ .ingressDomain }}"
