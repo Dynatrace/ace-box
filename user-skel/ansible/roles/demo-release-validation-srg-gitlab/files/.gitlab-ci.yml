@@ -10,14 +10,16 @@ variables:
   RELEASE_PRODUCT: "simplenodeservice"
   RELEASE_STAGE: "simplenode-gitlab-staging"
   MANIFEST_FILE: ./monaco/manifest.yaml
+  MONACO_VERSION: 2.2.0
+  TEST_TIMEFRAME: "8m"
 
 stages:
   - init
   - deploy-staging
   - test
-  - evaluate
+  - validate_release
   - deploy-production
-
+  - cleanup
 
 workflow:
   rules:
@@ -25,7 +27,7 @@ workflow:
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "main"
 
 monaco_infra:
-  image: dynatrace/dynatrace-configuration-as-code:2.1.0
+  image: dynatrace/dynatrace-configuration-as-code:$MONACO_VERSION
   stage: init
   script:
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project infrastructure --dry-run
@@ -35,31 +37,31 @@ monaco_infra:
     - if: $BUILD_ID == "1"
 
 monaco_staging:
-  image: dynatrace/dynatrace-configuration-as-code:2.1.0
+  image: dynatrace/dynatrace-configuration-as-code:$MONACO_VERSION
   stage: init
   needs: ["monaco_infra"]
   variables:
     RELEASE_STAGE: "simplenode-gitlab-staging"
   script:
-    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app.staging,app.shared --dry-run
-    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app.staging,app.shared
+    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app.staging --dry-run
+    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app.staging
   rules:
     - if: $BUILD_ID == "1"
 
 monaco_prod:
-  image: dynatrace/dynatrace-configuration-as-code:2.1.0
+  image: dynatrace/dynatrace-configuration-as-code:$MONACO_VERSION
   stage: init
   needs: ["monaco_infra"]
   variables:
     RELEASE_STAGE: "simplenode-gitlab-prod"
   script:
-    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app.prod,app.shared --dry-run
-    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app.prod,app.shared
+    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app.prod --dry-run
+    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app.prod
   rules:
     - if: $BUILD_ID == "1"
 
 monaco_srg:
-  image: dynatrace/dynatrace-configuration-as-code:2.1.0
+  image: dynatrace/dynatrace-configuration-as-code:$MONACO_VERSION
   stage: init
   needs: ["monaco_infra"]
   variables:
@@ -72,13 +74,15 @@ monaco_srg:
     - if: $BUILD_ID == "1"
 
 monaco_config_sleep:
-  image: dynatrace/dynatrace-configuration-as-code:2.1.0
+  image: dynatrace/dynatrace-configuration-as-code:$MONACO_VERSION
   stage: init
   needs: ["monaco_prod"]
   script:
     # Sleep an additional 120 seconds to give Dynatrace some time
     # to tag host according to current config before sending config events
     - sleep 120
+  rules:
+    - if: $BUILD_ID == "1"
 
 monaco_config_event_staging:
   extends: .dynatrace_event
@@ -93,6 +97,8 @@ monaco_config_event_staging:
     DESCRIPTION: "Monaco deployment successful: simplenode-gitlab-staging"
     CONFIGURATION: "simplenode-gitlab-staging"
     CUSTOM_PROPERTIES: '{"Approved by": "ACE"}'
+  rules:
+    - if: $BUILD_ID == "1"
 
 monaco_config_event_prod:
   extends: .dynatrace_event
@@ -107,13 +113,16 @@ monaco_config_event_prod:
     DESCRIPTION: "Monaco deployment successful: simplenode-gitlab-prod"
     CONFIGURATION: "simplenode-gitlab-prod"
     CUSTOM_PROPERTIES: '{"Approved by": "ACE"}'
+  rules:
+    - if: $BUILD_ID == "1"
+
 
 deployment-staging:
   image: dtzar/helm-kubectl
   stage: deploy-staging
   #needs: ["monaco_staging"]
   script:
-    - echo "Release Version $RELEASE_VERSION is being deployed"
+    - echo "BUILD_ID $BUILD_ID is being deployed"
     - >
       helm upgrade --install simplenode-gitlab-staging helm/simplenodeservice 
       --set image="dynatraceace/simplenodeservice:$RELEASE_BUILD_VERSION"
@@ -150,22 +159,23 @@ run-tests:
   variables:
     LOCUST_LOCUSTFILE: locust/locustfile.py
     LOCUST_CONFIG: locust/locust.conf
-    LOCUST_HOST: "http://$RELEASE_STAGE"
+    LOCUST_HOST: "http://simplenodeservice-$RELEASE_STAGE.$INGRESS_DOMAIN"
     LOCUST_LOAD_TEST_NAME: "Loadtest - $RELEASE_BUILD_VERSION"
   image: locustio/locust
   script:
-    - locust --config $LOCUST_CONFIG --locustfile $LOCUST_LOCUSTFILE --host $LOCUST_HOST
+    - echo "BUILD_ID $BUILD_ID is being tested"
+    - locust --config $LOCUST_CONFIG --locustfile $LOCUST_LOCUSTFILE --host $LOCUST_HOST --run-time $TEST_TIMEFRAME
   artifacts:
     paths:
       - srg.test.starttime
       - srg.test.endtime
 
-trigger_srg_and_receive_result:
+srg_release_validation:
   image: dynatraceace/dt-automation-cli:latest
-  stage: evaluate
+  stage: validate_release
   needs: ["run-tests"]
   variables:
-    LOG_LEVEL: "verbose"
+    #LOG_LEVEL: "verbose"
     APP_NAME: "simplenode-gitlab"
     DYNATRACE_URL_GEN3: $DT_PLATFORM_TENANT_URL
     ACCOUNT_URN: $DT_OAUTH_ACCOUNT_URN
@@ -174,9 +184,11 @@ trigger_srg_and_receive_result:
     DYNATRACE_SSO_URL: $DT_OAUTH_SSO_ENDPOINT
     SRG_EVALUATION_STOP_ON_FAILURE: "false"
   script:
+    - echo "BUILD_ID $BUILD_ID is being evaluated via Site Reliability Guardian"
     - eval_start=$(cat srg.test.starttime)
     - eval_end=$(cat srg.test.endtime)
-    - /dta srg evaluate $APP_NAME
+    - export LOG_LEVEL=verbose
+    - /dta srg evaluate $APP_NAME --stop-on-failure
 
 
 deployment-production:
@@ -184,9 +196,9 @@ deployment-production:
   stage: deploy-production
   variables:
     RELEASE_STAGE: "simplenode-gitlab-prod"
-  needs: ["trigger_srg_and_receive_result"]
+  needs: ["srg_release_validation"]
   script:
-    - echo "Release Version $RELEASE_VERSION is being deployed"
+    - echo "BUILD_ID $BUILD_ID is being deployed to production"
     - >
       helm upgrade --install simplenode-gitlab-production helm/simplenodeservice 
       --set image="dynatraceace/simplenodeservice:$RELEASE_BUILD_VERSION"
@@ -213,3 +225,11 @@ dynatrace_deploy_event_production:
     DEPLOYMENT_VERSION: "$RELEASE_VERSION"
     REMEDIATION_ACTION: "Ansible Tower"
     DT_NAMESPACE: "$RELEASE_STAGE"
+
+
+cleanup_monaco:
+  image: dynatrace/dynatrace-configuration-as-code:$MONACO_VERSION
+  stage: cleanup
+  script:
+    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco delete --manifest $MANIFEST_FILE --file ./monaco/delete.yaml
+  when: manual

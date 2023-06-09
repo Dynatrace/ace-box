@@ -142,7 +142,7 @@ configs:
       api: slo
     config:
       template: ../shared/slo.json
-      name: simplenode-staging.slo
+      name: simplenode_staging_srg_slo
       parameters:
         releaseProduct:
           type: environment
@@ -150,6 +150,14 @@ configs:
         releaseStage:
           type: environment
           name: RELEASE_STAGE
+        sloTimeFrame:
+          type: compound
+          format: "-{{ .timeFrame }}"
+          references:
+            - timeFrame
+        timeFrame:
+          type: environment
+          name: TEST_TIMEFRAME
       skip: false
 
   # dashboard

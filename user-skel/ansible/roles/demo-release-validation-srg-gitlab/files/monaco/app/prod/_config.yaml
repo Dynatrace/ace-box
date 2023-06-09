@@ -151,6 +151,7 @@ configs:
         releaseStage:
           type: environment
           name: RELEASE_STAGE
+        sloTimeFrame: "-1w"
       skip: false
 
   # dashboard

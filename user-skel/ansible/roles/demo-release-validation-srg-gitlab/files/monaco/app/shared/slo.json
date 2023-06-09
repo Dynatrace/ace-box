@@ -10,5 +10,5 @@
   "filter": "type(\"SERVICE\"),tag(\"[Environment]DT_RELEASE_PRODUCT:{{ .releaseProduct }}\",\"[Environment]DT_RELEASE_STAGE:{{ .releaseStage }}\")",
   "target": 95,
   "warning": 99,
-  "timeframe": "-1w"
+  "timeframe": "{{ .sloTimeFrame }}"
 }

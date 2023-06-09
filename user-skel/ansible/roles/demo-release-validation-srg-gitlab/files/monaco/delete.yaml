@@ -35,7 +35,7 @@ delete:
     name: simplenode-staging.response_time_by_version
   - project: app.staging
     type: slo
-    name: simplenode-staging.slo
+    name: simplenode-staging.srg.slo
   - project: app.staging
     type: dashboard
     name: simplenode-staging-Tracker

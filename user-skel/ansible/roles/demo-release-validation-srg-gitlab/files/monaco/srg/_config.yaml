@@ -18,11 +18,21 @@ configs:
             - "stage:staging"
             - "owner:is"
             - "app:simplenode"
-        objective_name: "Response Time of API Method"
+        objective_name_dql: "Response Time of API Method"
         dqlQuery: "fetch logs\n| filter dt.process.name == \"simplenodeservice.simplenode-gitlab-staging\"\n| filter k8s.namespace.name == \"simplenode-gitlab-staging\"\n| filter matchesPhrase(content, \"/api/invoke\")\n| parse content, \"DATA '/api/' DATA 'rt:' SPACE? FLOAT:responsetime \" \n| filter isNotNull(responsetime) \n| summarize avg(responsetime), alias:response_time "
         comparisonOperator: "LESS_THAN_OR_EQUAL"
-        failure: 500
-        warning: 400
+        failure_dql: 500
+        warning_dql: 400
+        
+        objective_name_slo: "Success Rate of API Method"
+        reference_slo: ["app.staging","slo", "slo", "name"]
+        reference_slo_metric:
+          type: compound
+          format: "func:slo.{{ .reference_slo }}"
+          references:
+            - reference_slo
+        failure_slo: "null"
+        warning_slo: "null"
       skip: false
 
   # workflow

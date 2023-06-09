@@ -4,12 +4,21 @@
   "tags": {{ .tags }},
   "objectives": [
     {
-      "name": "{{ .objective_name }}",
+      "name": "{{ .objective_name_dql }}",
       "objectiveType": "DQL",
       "dqlQuery": "{{ .dqlQuery }}",
       "comparisonOperator": "{{ .comparisonOperator }}",
-      "target": {{ .failure }},
-      "warning": {{ .warning }}
+      "target": {{ .failure_dql }},
+      "warning": {{ .warning_dql }}
+    },
+    {
+      "name": "{{ .objective_name_slo }}",
+      "description": null,
+      "objectiveType": "REFERENCE_SLO",
+      "referenceSlo": "{{ .reference_slo_metric }}",
+      "comparisonOperator": "GREATER_THAN_OR_EQUAL",
+      "target": {{ .failure_slo }},
+      "warning": {{ .warning_slo }}
     }
   ]
 }
