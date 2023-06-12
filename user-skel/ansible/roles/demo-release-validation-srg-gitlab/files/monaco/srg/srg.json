@@ -34,7 +34,7 @@
       "description": null,
       "objectiveType": "REFERENCE_SLO",
       "referenceSlo": "{{ .reference_slo_metric_cpu_usage }}",
-      "comparisonOperator": "GREATER_THAN_OR_EQUAL",
+      "comparisonOperator": "LESS_THAN_OR_EQUAL",
       "target": {{ .failure_slo_cpu_usage }},
       "warning": {{ .warning_slo_cpu_usage }}
     }

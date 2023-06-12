@@ -31,8 +31,8 @@ configs:
           format: "func:slo.{{ .reference_slo_success_rate }}"
           references:
             - reference_slo_success_rate
-        failure_slo_success_rate: "null"
-        warning_slo_success_rate: "null"
+        failure_slo_success_rate: 98
+        warning_slo_success_rate: 99
         
         objective_name_slo_availability: "Availability of API Method"
         reference_slo_availability: ["app.staging","slo", "slo_availability", "name"]
@@ -41,8 +41,8 @@ configs:
           format: "func:slo.{{ .reference_slo_availability }}"
           references:
             - reference_slo_availability
-        failure_slo_availability: "null"
-        warning_slo_availability: "null"
+        failure_slo_availability: 98
+        warning_slo_availability: 99
 
         objective_name_slo_cpu_usage: "Instance CPU Usage"
         reference_slo_cpu_usage: ["app.staging","builtin:monitoring.slo", "slo_process_cpu_usage", "name"]
@@ -51,8 +51,8 @@ configs:
           format: "func:slo.{{ .reference_slo_cpu_usage }}"
           references:
             - reference_slo_cpu_usage
-        failure_slo_cpu_usage: "null"
-        warning_slo_cpu_usage: "null"
+        failure_slo_cpu_usage: 0.9
+        warning_slo_cpu_usage: 0.6
       skip: false
 
   # workflow

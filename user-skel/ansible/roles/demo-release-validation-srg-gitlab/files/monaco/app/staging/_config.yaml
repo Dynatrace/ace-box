@@ -226,8 +226,8 @@ configs:
         timeFrame:
           type: environment
           name: TEST_TIMEFRAME        
-        target: 0.06
-        warning: 0.1
+        target: 0.6
+        warning: 0.9
 
   # dashboard
   - id: dashboard

@@ -63,7 +63,7 @@ monaco_prod:
 monaco_srg:
   image: dynatrace/dynatrace-configuration-as-code:$MONACO_VERSION
   stage: init
-  needs: ["monaco_infra"]
+  needs: ["monaco_staging"]
   variables:
     DT_OAUTH_CLIENT_ID: client.id
     DT_OAUTH_CLIENT_SECRET: client.secret
