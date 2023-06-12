@@ -96,12 +96,12 @@ configs:
       skip: false
 
   #calculated metrics service
-  - id: cmsFailureRate
+  - id: csmFailureRate
     type:
       api: calculated-metrics-service
     config:
       name: simplenode-prod.failure_rate_by_version
-      template: ../shared/cms-failure-rate.json
+      template: ../shared/csm-failure-rate.json
       skip: false
       parameters:
         metricKey:
@@ -117,12 +117,12 @@ configs:
           name: RELEASE_STAGE
 
 
-  - id: cmsResponseTime
+  - id: csmResponseTime
     type:
       api: calculated-metrics-service
     config:
       name: simplenode-prod.response_time_by_version
-      template: ../shared/cms-response-time.json
+      template: ../shared/csm-response-time.json
       skip: false
       parameters:
         metricKey:
@@ -138,13 +138,19 @@ configs:
           name: RELEASE_STAGE
         
   #slo
-  - id: slo
+  - id: slo_success_rate
     type:
       api: slo
     config:
       template: ../shared/slo.json
-      name: simplenode-prod.slo
+      name: slo_simplenode_prod_success_rate
       parameters:
+        description: "Service Errors Total SuccessCount / Service RequestCount Total"
+        metricNumerator: "builtin:service.errors.total.successCount:splitBy()"
+        metricDenominator: "builtin:service.requestCount.total:splitBy()"
+        filterType: "SERVICE"
+        target: 95
+        warning: 99
         releaseProduct:
           type: environment
           name: RELEASE_PRODUCT
@@ -169,9 +175,9 @@ configs:
         releaseStage:
           type: environment
           name: RELEASE_STAGE
-        sloId: ["slo", "slo", "id"]
-        cmsFailureRateMetricKey: ["calculated-metrics-service", "cmsFailureRate", "metricKey"]
-        cmsResponseTimeMetricKey: ["calculated-metrics-service", "cmsResponseTime", "metricKey"]
+        sloId: ["slo", "slo_success_rate", "id"]
+        csmFailureRateMetricKey: ["calculated-metrics-service", "csmFailureRate", "metricKey"]
+        csmResponseTimeMetricKey: ["calculated-metrics-service", "csmResponseTime", "metricKey"]
 
   
   # synthetic-monitor

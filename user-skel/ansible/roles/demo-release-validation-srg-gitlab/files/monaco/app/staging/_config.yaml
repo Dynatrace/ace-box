@@ -95,12 +95,12 @@ configs:
       skip: false
 
   #calculated metrics service
-  - id: cmsFailureRate
+  - id: csmFailureRate
     type:
       api: calculated-metrics-service
     config:
       name: simplenode-staging.failure_rate_by_version
-      template: ../shared/cms-failure-rate.json
+      template: ../shared/csm-failure-rate.json
       skip: false
       parameters:
         metricKey:
@@ -116,12 +116,12 @@ configs:
           name: RELEASE_STAGE
 
   
-  - id: cmsResponseTime
+  - id: csmResponseTime
     type:
       api: calculated-metrics-service
     config:
       name: simplenode-staging.response_time_by_version
-      template: ../shared/cms-response-time.json
+      template: ../shared/csm-response-time.json
       skip: false
       parameters:
         metricKey:
@@ -137,13 +137,19 @@ configs:
           name: RELEASE_STAGE
 
   #slo
-  - id: slo
+  - id: slo_success_rate
     type:
       api: slo
     config:
       template: ../shared/slo.json
-      name: simplenode_staging_srg_slo
+      name: slo_simplenode_staging_srg_success_rate
       parameters:
+        description: "Service Errors Total SuccessCount / Service RequestCount Total"
+        metricNumerator: "builtin:service.errors.total.successCount:splitBy()"
+        metricDenominator: "builtin:service.requestCount.total:splitBy()"
+        filterType: "SERVICE"
+        target: 95
+        warning: 99
         releaseProduct:
           type: environment
           name: RELEASE_PRODUCT
@@ -160,6 +166,69 @@ configs:
           name: TEST_TIMEFRAME
       skip: false
 
+  - id: slo_availability
+    type:
+      api: slo
+    config:
+      template: ../shared/slo.json
+      name: slo_simplenode_staging_srg_availability
+      parameters:
+        description: "Service Availability"
+        metricNumerator: "builtin:service.errors.server.successCount:splitBy()"
+        metricDenominator: "builtin:service.requestCount.server:splitBy()"
+        filterType: "SERVICE"
+        target: 95
+        warning: 99
+        releaseProduct:
+          type: environment
+          name: RELEASE_PRODUCT
+        releaseStage:
+          type: environment
+          name: RELEASE_STAGE
+        sloTimeFrame:
+          type: compound
+          format: "-{{ .timeFrame }}"
+          references:
+            - timeFrame
+        timeFrame:
+          type: environment
+          name: TEST_TIMEFRAME
+      skip: false
+
+  - id: slo_process_cpu_usage
+    type:
+      settings:
+        schema: builtin:monitoring.slo
+        scope: environment
+        schemaVersion: "6.0.11"
+    config:
+      name: slo_simplenode_staging_cpu_usage
+      template: ../shared/slo-settings.json
+      parameters:
+        description: "ProcessGroup"
+        metricName: "processgroup_instance_cpu_usage"
+        metricExpression: "builtin:tech.generic.cpu.usage:merge(dt.entity.process_group_instance):max"
+        filterType: "PROCESS_GROUP_INSTANCE"
+        releaseProduct:
+          type: environment
+          name: RELEASE_PRODUCT
+        releaseStage:
+          type: environment
+          name: RELEASE_STAGE
+        releaseVersion:
+          type: environment
+          name: RELEASE_VERSION
+        sloTimeFrame:
+          type: compound
+          format: "-{{ .timeFrame }}"
+          references:
+            - timeFrame
+        timeFrame:
+          type: environment
+          name: TEST_TIMEFRAME        
+        target: 0.06
+        warning: 0.1
+
   # dashboard
   - id: dashboard
     type:
@@ -175,9 +244,9 @@ configs:
         releaseStage:
           type: environment
           name: RELEASE_STAGE
-        sloId: ["slo", "slo", "id"]
-        cmsFailureRateMetricKey: ["calculated-metrics-service", "cmsFailureRate", "metricKey"]
-        cmsResponseTimeMetricKey: ["calculated-metrics-service", "cmsResponseTime", "metricKey"]
+        sloId: ["slo", "slo_success_rate", "id"]
+        csmFailureRateMetricKey: ["calculated-metrics-service", "csmFailureRate", "metricKey"]
+        csmResponseTimeMetricKey: ["calculated-metrics-service", "csmResponseTime", "metricKey"]
 
   
   # synthetic-monitor

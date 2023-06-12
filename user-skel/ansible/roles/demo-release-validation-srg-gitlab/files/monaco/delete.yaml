@@ -1,19 +1,5 @@
 delete:
   
-  # project - infrastructure
-  - project: infrastructure
-    type: synthetic-location
-    name: ACE-BOX
-  - project: infrastructure
-    type: request-attributes
-    name: LTN
-  - project: infrastructure
-    type: request-attributes
-    name: TSN
-  - project: infrastructure
-    type: request-attributes
-    name: LSN
- 
   # project - app - staging
   - project: app.staging
     type: builtin:tags.auto-tagging
@@ -35,7 +21,10 @@ delete:
     name: simplenode-staging.response_time_by_version
   - project: app.staging
     type: slo
-    name: simplenode-staging.srg.slo
+    name: slo_simplenode_staging_srg_success_rate
+  - project: app.staging
+    type: slo
+    name: slo_simplenode_staging_srg_availability
   - project: app.staging
     type: dashboard
     name: simplenode-staging-Tracker
@@ -64,10 +53,24 @@ delete:
     name: simplenode-prod.response_time_by_version
   - project: app.prod
     type: slo
-    name: simplenode-prod.slo
+    name: slo_simplenode_prod_success_rate
   - project: app.prod
     type: dashboard
     name: simplenode-prod-Tracker
   - project: app.prod
     type: synthetic-monitor
     name: simplenode-prod-health-check
+
+  # project - infrastructure
+  - project: infrastructure
+    type: request-attributes
+    name: LTN
+  - project: infrastructure
+    type: request-attributes
+    name: TSN
+  - project: infrastructure
+    type: request-attributes
+    name: LSN
+  - project: infrastructure
+    type: synthetic-location
+    name: ACE-BOX

@@ -1,14 +1,14 @@
 {
   "enabled": true,
   "name": "{{ .name }}",
-  "customDescription": "Service Errors Total SuccessCount / Service RequestCount Total",
+  "customDescription": "{{ .description }}",
   "useRateMetric": false,
   "metricRate": "",
-  "metricNumerator": "builtin:service.errors.total.successCount:splitBy()",
-  "metricDenominator": "builtin:service.requestCount.total:splitBy()",
+  "metricNumerator": "{{ .metricNumerator }}",
+  "metricDenominator": "{{ .metricDenominator }}",
   "evaluationType": "AGGREGATE",
-  "filter": "type(\"SERVICE\"),tag(\"[Environment]DT_RELEASE_PRODUCT:{{ .releaseProduct }}\",\"[Environment]DT_RELEASE_STAGE:{{ .releaseStage }}\")",
-  "target": 95,
-  "warning": 99,
+  "filter": "type(\"{{ .filterType }}\"),tag(\"[Environment]DT_RELEASE_PRODUCT:{{ .releaseProduct }}\",\"[Environment]DT_RELEASE_STAGE:{{ .releaseStage }}\")",
+  "target": "{{ .target }}",
+  "warning": "{{ .warning }}",
   "timeframe": "{{ .sloTimeFrame }}"
 }
