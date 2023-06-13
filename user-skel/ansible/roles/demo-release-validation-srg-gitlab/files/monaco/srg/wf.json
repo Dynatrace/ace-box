@@ -82,7 +82,7 @@
           "PRIVATE-TOKEN": "{{ .gitlab_private_token }}"
         },
         "method": "POST",
-        "url": "{{ .gitlab_url }}",
+        "url": "{{ .gitlab_url }}/api/v4/projects/2/issues",
         "payload": "{\n  \"title\": \"Site Reliability Guardian validation failed\",\n  \"description\": \"For the SRG validation details, go to {{ .dt_url }}/ui/apps/dynatrace.site.reliability.guardian/analysis/{{`{{`}} result(\"evaluate_srg\").guardian_id {{`}}`}}?validationId={{`{{`}} result(\"evaluate_srg\").validation_id {{`}}`}}\"\n}"
       },
       "name": "create_gitlab_issue",
