@@ -1,0 +1,3 @@
+---
+- debug:
+    msg: "demo_ar_workflows_ansible"

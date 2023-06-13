@@ -42,6 +42,12 @@
         - demo_ar_workflows_gitlab
         - never
 
+    # Use case - Auto Remediation Workflows with Ansible
+    - role: demo-ar-workflows-ansible
+      tags:
+        - demo_ar_workflows_ansible
+        - never
+
     # Use case - Quality Gates with Gitlab demo
     - role: demo-quality-gates-gitlab
       tags:
