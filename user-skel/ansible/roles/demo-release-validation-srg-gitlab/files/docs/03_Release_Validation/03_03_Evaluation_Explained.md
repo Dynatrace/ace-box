@@ -6,7 +6,7 @@ Now that we have a Quality Gate implemented that stopped a bad build from being 
 Let's start with re-examining the CI Pipeline in GitLab.
 
 1. Navigate to the **CI/CD* section in GitLab and open a previously run pipeline to get to the Stages Overview.
-    ![gitlab-cicd](../assets/demo_gitlab_cicd_pipeline.png)
+    ![gitlab-cicd](assets/demo_gitlab_cicd_pipeline.png)
 
 2. For our Quality Gate, there are two important jobs:
    1. `Init` stage, `init_cloudautomation` job: here we will set up our Cloud Automation configuration and inform Cloud Automation about our desired application behaviour through SLI and SLO definitons

@@ -5,31 +5,31 @@ During this step, we will deploy a Build of poor quality that will be stopped by
 ## Deploying a bad build
 
 1. Navigate to `CI/CD` on the left menu and click on the the blue `Run pipeline` button.
-    ![gitlab-cicd](../assets/demo_gitlab_cicd_pipeline_run.png)
+    ![gitlab-cicd](assets/demo_gitlab_cicd_pipeline_run.png)
 
 2. Set the `BUILD_ID` variable to `2`. This will control the deployment of the bad build. Click on `Run pipeline`. 
     > Note: This process will take about 10 minutes to complete. For a customer demo it is recommended to launch this step prior to the start of the session, this will result in it completing during the demonstration.
 
-    ![demo_gitlab_cicd_build_2](../assets/demo_gitlab_cicd_build_2.png)
+    ![demo_gitlab_cicd_build_2](assets/demo_gitlab_cicd_build_2.png)
 
 ## A failed build
 
 1. After about 10 minutes, you will notice that the pipeline has failed:
-    ![failed-run](../assets/demo_gitlab_cicd_pipeline_failed.png)
+    ![failed-run](assets/demo_gitlab_cicd_pipeline_failed.png)
 
 2. Click on the failed pipeline to open the details. Notice how the `quality_gate` job in the `Evaluate` stage failed. 
-    ![failed-run](../assets/demo_gitlab_cicd_pipeline_failed_stages.png)
+    ![failed-run](assets/demo_gitlab_cicd_pipeline_failed_stages.png)
 
 3. Click on the `quality_gate` job to open the details. This will produce the console output of the agent running the job.
-    ![failed-run](../assets/demo_gitlab_cicd_pipeline_failed_jobdetails.png)
+    ![failed-run](assets/demo_gitlab_cicd_pipeline_failed_jobdetails.png)
 
 4. Near the end of the output, you can see the details of the evaluation. Notice the score was printed (37.5) in this case. There is also a link to the Bridge for the evaluation details. Click on that link.
 
 5. The Bridge opens to the evaluation results of the corresponding pipeline run. Click on the graph icon to open the Heatmap and details of the evaluation.
-    ![failed-run](../assets/demo_gitlab_ca_evaluation_failed.png)
+    ![failed-run](assets/demo_gitlab_ca_evaluation_failed.png)
 
 6. The evaluation details present themselves. Investigate the individual **Service Level Indicators (SLIs)**, the values, and how they correspond to the **Service Level Objectives**
-    ![failed-run](../assets/demo_gitlab_ca_evaluation_failed_heatmap.png)
+    ![failed-run](assets/demo_gitlab_ca_evaluation_failed_heatmap.png)
 
 ## Approaching the failed build analysis from Dynatrace
 
