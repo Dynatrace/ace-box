@@ -14,10 +14,10 @@ variables:
   TEST_TIMEFRAME: "8m"
 
 stages:
-  - init
+  - configure-dynatrace
   - deploy-staging
   - test
-  - validate_release
+  - validate-release
   - deploy-production
   - cleanup
 
@@ -26,68 +26,66 @@ workflow:
     - if: $CI_PIPELINE_SOURCE == "web"
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "main"
 
-monaco_infra:
+.monaco_common:
   image: dynatrace/dynatrace-configuration-as-code:$MONACO_VERSION
-  stage: init
+  stage: configure-dynatrace
+  rules:
+    - if: $BUILD_ID == "1"
+
+
+1-monaco-infra:
+  extends:
+    - .monaco_common
   script:
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project infrastructure --dry-run
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project infrastructure
     - sleep 30
-  rules:
-    - if: $BUILD_ID == "1"
 
-monaco_staging:
-  image: dynatrace/dynatrace-configuration-as-code:$MONACO_VERSION
-  stage: init
-  needs: ["monaco_infra"]
+2-monaco-staging:
+  extends:
+    - .monaco_common
+  needs: ["1-monaco-infra"]
   variables:
     RELEASE_STAGE: "simplenode-gitlab-staging"
   script:
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app.staging --dry-run
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app.staging
-  rules:
-    - if: $BUILD_ID == "1"
 
-monaco_prod:
-  image: dynatrace/dynatrace-configuration-as-code:$MONACO_VERSION
-  stage: init
-  needs: ["monaco_infra"]
-  variables:
-    RELEASE_STAGE: "simplenode-gitlab-prod"
-  script:
-    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app.prod --dry-run
-    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app.prod
-  rules:
-    - if: $BUILD_ID == "1"
-
-monaco_srg:
-  image: dynatrace/dynatrace-configuration-as-code:$MONACO_VERSION
-  stage: init
-  needs: ["monaco_staging"]
+3-monaco-srg:
+  extends:
+    - .monaco_common
+  needs: ["2-monaco-staging"]
   variables:
     DT_OAUTH_CLIENT_ID: client.id
     DT_OAUTH_CLIENT_SECRET: client.secret
   script:
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project srg --dry-run
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project srg
-  rules:
-    - if: $BUILD_ID == "1"
 
-monaco_config_sleep:
-  image: dynatrace/dynatrace-configuration-as-code:$MONACO_VERSION
-  stage: init
-  needs: ["monaco_prod"]
+4-monaco-prod:
+  extends:
+    - .monaco_common
+  needs: ["2-monaco-staging"]
+  variables:
+    RELEASE_STAGE: "simplenode-gitlab-prod"
+  script:
+    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app.prod --dry-run
+    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app.prod
+
+5-monaco-sleep:
+  extends:
+    - .monaco_common
+  needs: ["4-monaco-prod"]
   script:
     # Sleep an additional 120 seconds to give Dynatrace some time
     # to tag host according to current config before sending config events
     - sleep 120
-  rules:
-    - if: $BUILD_ID == "1"
 
-monaco_config_event_staging:
-  extends: .dynatrace_event
-  stage: init
-  needs: ["monaco_config_sleep"]
+6-monaco-staging-dt-event:
+  extends:
+    - .monaco_common
+    - .dynatrace_event
+  needs: ["5-monaco-sleep"]
   variables:
     DYNATRACE_ENV_URL: "$DT_TENANT_URL"
     DYNATRACE_API_TOKEN: "$DT_API_TOKEN"
@@ -97,13 +95,13 @@ monaco_config_event_staging:
     DESCRIPTION: "Monaco deployment successful: simplenode-gitlab-staging"
     CONFIGURATION: "simplenode-gitlab-staging"
     CUSTOM_PROPERTIES: '{"Approved by": "ACE"}'
-  rules:
-    - if: $BUILD_ID == "1"
 
-monaco_config_event_prod:
-  extends: .dynatrace_event
-  stage: init
-  needs: ["monaco_config_sleep"]
+
+6-monaco-prod-dt-event:
+  extends:
+    - .monaco_common
+    - .dynatrace_event
+  needs: ["5-monaco-sleep"]
   variables:
     DYNATRACE_ENV_URL: "$DT_TENANT_URL"
     DYNATRACE_API_TOKEN: "$DT_API_TOKEN"
@@ -113,14 +111,10 @@ monaco_config_event_prod:
     DESCRIPTION: "Monaco deployment successful: simplenode-gitlab-prod"
     CONFIGURATION: "simplenode-gitlab-prod"
     CUSTOM_PROPERTIES: '{"Approved by": "ACE"}'
-  rules:
-    - if: $BUILD_ID == "1"
-
 
 deployment-staging:
   image: dtzar/helm-kubectl
   stage: deploy-staging
-  #needs: ["monaco_staging"]
   script:
     - echo "BUILD_ID $BUILD_ID is being deployed"
     - >
@@ -134,7 +128,7 @@ deployment-staging:
       --wait
     - sleep 150
 
-dynatrace_deploy_event_staging:
+dynatrace-deploy-event-staging:
   extends: .dynatrace_event
   stage: deploy-staging
   needs: ["deployment-staging"]
@@ -170,9 +164,9 @@ run-tests:
       - srg.test.starttime
       - srg.test.endtime
 
-srg_release_validation:
+srg-release-validation:
   image: dynatraceace/dt-automation-cli:latest
-  stage: validate_release
+  stage: validate-release
   needs: ["run-tests"]
   variables:
     #LOG_LEVEL: "verbose"
@@ -188,7 +182,7 @@ srg_release_validation:
     - eval_start=$(cat srg.test.starttime)
     - eval_end=$(cat srg.test.endtime)
     - export LOG_LEVEL=verbose
-    - /dta srg evaluate $APP_NAME --stop-on-failure
+    - dta srg evaluate $APP_NAME --stop-on-failure
 
 
 deployment-production:
@@ -196,7 +190,7 @@ deployment-production:
   stage: deploy-production
   variables:
     RELEASE_STAGE: "simplenode-gitlab-prod"
-  needs: ["srg_release_validation"]
+  needs: ["srg-release-validation"]
   script:
     - echo "BUILD_ID $BUILD_ID is being deployed to production"
     - >
@@ -227,8 +221,8 @@ dynatrace_deploy_event_production:
     DT_NAMESPACE: "$RELEASE_STAGE"
 
 
-cleanup_monaco:
-  image: dynatrace/dynatrace-configuration-as-code:$MONACO_VERSION
+cleanup-monaco:
+  image: dynatrace/configure-dynatrace-as-code:$MONACO_VERSION
   stage: cleanup
   script:
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco delete --manifest $MANIFEST_FILE --file ./monaco/delete.yaml
