@@ -222,7 +222,7 @@ dynatrace_deploy_event_production:
 
 
 cleanup-monaco:
-  image: dynatrace/configure-dynatrace-as-code:$MONACO_VERSION
+  image: dynatrace/dynatrace-configuration-as-code:$MONACO_VERSION
   stage: cleanup
   script:
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco delete --manifest $MANIFEST_FILE --file ./monaco/delete.yaml

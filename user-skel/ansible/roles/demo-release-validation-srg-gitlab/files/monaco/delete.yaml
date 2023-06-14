@@ -26,6 +26,9 @@ delete:
     type: slo
     name: slo_simplenode_staging_srg_availability
   - project: app.staging
+    type: builtin:monitoring.slo
+    id: slo_process_cpu_usage
+  - project: app.staging
     type: dashboard
     name: simplenode-staging-Tracker
   - project: app.staging
