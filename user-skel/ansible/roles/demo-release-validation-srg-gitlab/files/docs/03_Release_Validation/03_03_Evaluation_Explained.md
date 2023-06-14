@@ -117,4 +117,4 @@ By making changes to the `sli.yaml` and `slo.yaml` files, and re-running the pip
 
 ## (Optional): Deploying a successful build again
 
-If wanted, you can follow the steps outlined in [Deploying a bad build](2_failed_build.md#deploying-a-bad-build) to deploy a fast build by setting the `BUILD_ID` variable to `1` or `3`
+If wanted, you can follow the steps outlined in [Deploying a bad build](03_02_Failed_Build.md#deploying-a-bad-build) to deploy a fast build by setting the `BUILD_ID` variable to `1` or `3`
