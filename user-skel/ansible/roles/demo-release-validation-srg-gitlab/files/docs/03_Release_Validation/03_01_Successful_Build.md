@@ -47,4 +47,4 @@ We will start within Dynatrace
     ![Cloud Automation Success Heatmap](assets/demo_gitlab_ca_evaluation_success_heatmap.png)
 
 ## Next Steps
-Navigate to [2. Failed Build](2_failed_build.md)
+Navigate to [2. Failed Build](03_02_Failed_Build.md)

@@ -40,4 +40,4 @@ We approached the failed build above starting from the CI Pipeline run in GitLab
 If wanted, you can follow the steps outlined in [Deploying a bad build](#deploying-a-bad-build) to deploy a fast build by setting the `BUILD_ID` variable to `1` or `3`
 
 ## Next Steps
-Navigate to [3. Evaluation Explained](3_evaluation_explained.md) to gather details on how the Evaluation Was Performed.
+Navigate to [3. Evaluation Explained](03_03_Evaluation_Explained.md) to gather details on how the Evaluation Was Performed.
