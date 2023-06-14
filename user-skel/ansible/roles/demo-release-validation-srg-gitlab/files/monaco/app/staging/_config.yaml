@@ -207,7 +207,7 @@ configs:
       parameters:
         description: "ProcessGroup"
         metricName: "processgroup_instance_cpu_usage"
-        metricExpression: "builtin:tech.generic.cpu.usage:merge(dt.entity.process_group_instance):max"
+        metricExpression: "builtin:tech.generic.cpu.usage:merge(dt.entity.process_group_instance):max:default(0,always)"
         filterType: "PROCESS_GROUP_INSTANCE"
         releaseProduct:
           type: environment
