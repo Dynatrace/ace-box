@@ -45,7 +45,7 @@ configs:
         warning_slo_availability: 99
 
         objective_name_slo_cpu_usage: "Instance CPU Usage"
-        reference_slo_cpu_usage: ["app.staging","builtin:monitoring.slo", "slo_process_cpu_usage", "name"]
+        reference_slo_cpu_usage: ["app.staging","builtin:monitoring.slo", "slo_process_cpu_usage", "metricName"]
         reference_slo_metric_cpu_usage:
           type: compound
           format: "func:slo.{{ .reference_slo_cpu_usage }}"
