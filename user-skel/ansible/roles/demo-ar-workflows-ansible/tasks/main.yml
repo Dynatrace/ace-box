@@ -1,3 +1,20 @@
 ---
-- debug:
-    msg: "demo_ar_workflows_ansible"
+- name: Validate required extra_vars
+  include_role:
+    name: config-v2
+    tasks_from: validate-extra-vars
+  vars:
+    required_extra_vars:
+      - { key: 'dt_oauth_sso_endpoint' }
+      - { key: 'dt_oauth_client_id', regex: 'dt0s02\..' }
+      - { key: 'dt_oauth_client_secret', regex: 'dt0s02\..' }
+      - { key: 'dt_oauth_account_urn', regex: 'urn:dtaccount:.' }
+      - { key: 'dt_environment_url_gen3' }
+
+- include_role:
+    name: microk8s
+
+- include_role:
+    name: gitea
+
+- ansible.builtin.include_tasks: sync-simplenode.yml
