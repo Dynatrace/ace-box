@@ -8,7 +8,7 @@ In this first step, we will outline the different phases of our CI configuration
 
 1. Navigate to `CI/CD` on the left menu and click on the first build.
     The screen presented will show you the overview of the pipeline, as well as the individual stages and jobs that were part of it.
-    ![gitlab-cicd](../assets/demo_gitlab_cicd_pipeline.png)
+    ![gitlab-cicd](assets/demo_gitlab_cicd_pipeline.png)
 
 2. The following stages and jobs can be observed:
     1. Stage `Init`
