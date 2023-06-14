@@ -1,6 +1,6 @@
 # 1. Successful Build
 
-In this first step, we will outline the different phases of our CI configuration as well as show what happens in the background. At the end of this step, the simplenodeservice artifact will have been deployed and a quality gate will have been performed with a successful result.
+In this first step, we will outline the different phases of our CI configuration as well as show what happens in the background. At the end of this step, the simplenodeservice artifact will have been deployed and a release validation will have been performed with a successful result.
 
 > Note: Build numbers might differ from what you have in your environment. When creating documentation re-runs were performed.
 
@@ -11,14 +11,15 @@ In this first step, we will outline the different phases of our CI configuration
     ![gitlab-cicd](assets/demo_gitlab_cicd_pipeline.png)
 
 2. The following stages and jobs can be observed:
-    1. Stage `Init`
-       1. Job `init_cloudautomation`: initializes Cloud Automation by ensuring the project/service/stage exists and uploading relevant files such as SLI and SLO definitons
-       2. Job `monaco`: applies the relevant Dynatrace configuration that is stored in the `monaco/projects/simplenode-gitlab` folder within the repository
+    1. Stage `Configure-dynatrace`
+       1. Job `1-monaco-infra`, `2-monaco-staging`, `3-monaco-srg`, `4-monaco-prod` : applies the relevant Dynatrace configuration that is stored in the `monaco` folder within the repository
+       2. Job `5-monaco-sleep`, `6-monaco-staging-dt-event`, `6-monaco-prod-dt-event` : sends events to notify that the respective configurations are applied to Dynatrace staging and production environments. 
+          A sleep job is needed to give Dynatrace some time to tag host according to current config before sending the config event  
     2. Stage `Deploy-staging`  
        1. Job `deployment-staging` that deploys the simplenodeservice application using helm in the staging environment
        2. Job `dynatrace_deploy_event_staging` that sends a Deployment Event to Dynatrace indicating the act of deployment took place
-    3. Stage `test` contains one job `run-tests` that leverages Locust to test the application. The configuration of the tests can be found in the `locust` folder within the repository
-    4. Stage `evaluate` contains one job `quality_gate` which performs the Release Validation/Quality Gate
+    3. Stage `Test` contains one job `run-tests` that leverages Locust to test the application. The configuration of the tests can be found in the `locust` folder within the repository
+    4. Stage `Validate-release` contains a job `srg-release-validation` which performs the Release Validation
     5. Stage `Deploy-production`  
        1. Job `deployment-production` that deploys the simplenodeservice application using helm in the production environment
        2. Job `dynatrace_deploy_event_production` that sends a Deployment Event to Dynatrace indicating the act of deployment took place
