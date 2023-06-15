@@ -87,7 +87,7 @@ configs:
       parameters:
         tag:
           type: compound
-          format: "environment:{{ .releaseStage }}"
+          format: "[Environment]DT_RELEASE_STAGE:{{ .releaseStage }}"
           references:
             - releaseStage
         releaseStage:
