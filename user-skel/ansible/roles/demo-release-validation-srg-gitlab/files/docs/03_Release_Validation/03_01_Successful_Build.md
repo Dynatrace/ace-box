@@ -39,13 +39,7 @@ We will start within Dynatrace
     ![Dynatrace Releases](assets/demo_gitlab_dt_releases.png)
     > Note: if no events are visible, you might need to select a larger time frame
 3. Click on the release in the `simplenode-gitlab-staging` environment
-    ![Dynatrace Release Details](assets/demo_gitlab_dt_release_details.png)
-4. On the right, you will see an overview of the Release Events: 1 deployment and 1 evaluation result with a **pass* score. Check out the details of the evaluation event, there are details on the score, time frame (when did the tests run), a link back to the GitLab pipeline run and a link to the Keptn bridge with the evaluation details. Click on that link with the label `Keptn Bridge`.
-    > Note: at the moment this link is not clickable, this will be fixed in the future.
-5. Within the Bridge, click on the **Graph** icon which will bring you to the evaluation heatmap and details.
-    ![Cloud Automation Success](assets/demo_gitlab_ca_evaluation_success.png)
-6. The release details shows you a heatmap of previous evaluations and the score, as well as the details of the currently selected evaluation.
-    ![Cloud Automation Success Heatmap](assets/demo_gitlab_ca_evaluation_success_heatmap.png)
+    ![Dynatrace Release Details](assets/gitlab_dt_release_details.png)
 
 ## Next Steps
 Navigate to [2. Failed Build](03_02_Failed_Build.md)
