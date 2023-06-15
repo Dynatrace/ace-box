@@ -16,68 +16,24 @@
     name: gitea
     tasks_from: source-secret
 
-- name: Ensure repos directory
-  ansible.builtin.file:
-    path: "/home/{{ ace_box_user }}/repos"
-    state: directory
-    mode: '0755'
-
-- set_fact:
-    repo_src: "/home/{{ ace_box_user }}/repos/demo-ar-workflows-ansible"
-
-- name: Validating repo directory
-  ansible.builtin.stat:
-    path: "{{ repo_src }}"
-  register: repo_stat_result
-
-- block:
-  - name: Setup new repo
-    ansible.builtin.command: "git clone http://{{ gitea_username }}:{{ gitea_password }}@gitea.ace-box-tg.ace-innovation.info/demo/auto-remediation.git {{ repo_src }}"
-    args:
-      chdir: "/home/{{ ace_box_user }}/repos"
-  - name: Checkout main branch
-    command: git checkout -b main
-    args:
-      chdir: "{{ repo_src }}"
-  when: not repo_stat_result.stat.exists
-
-- name: Check repo status
-  ansible.builtin.command: "git rev-list --all --count"
-  args:
-    chdir: "{{ repo_src }}"
-  register: git_rev_list_result
-- set_fact:
-    publish_new: "{{ True if git_rev_list_result.stdout == '0' else False }}"
-
-- block:
-  - name: Pull latest changes
-    ansible.builtin.shell: |
-      git pull
-    args:
-      chdir: "{{ repo_src }}"
-  when: publish_new == False
-
-- block:
-  - name: Copy app-simplenode repo content
-    ansible.posix.synchronize:
-      src: "{{ playbook_dir }}/roles/app-simplenode/files/repos/simplenode/"
-      dest: "{{ repo_src }}"
-      delete: true
-      rsync_opts:
-      - "--exclude=.git"
-      - "--exclude=cloudautomation"
-      - "--exclude=jmeter"
-      - "--exclude=locust"
-      - "--exclude=monaco"
-      - "--exclude=jenkins"
-      - "--exclude=load-gen"
-      - "--exclude=build_number.txt"
-      - "--exclude=.gitlab-ci.yml"
-  - name: Commit and push local changes
-    ansible.builtin.shell: |
-      git add -A
-      git commit -am "Sync with local ACE-Box repo"
-      git push -u origin main
-    args:
-      chdir: "{{ repo_src }}"
-  when: publish_new == True
+- include_role:
+    name: app-simplenode
+  vars:
+    app_simplenode_overwrites:
+    - dest: demo/
+    - dest: cloudautomation/
+    - dest: jmeter/
+    - dest: locust/
+    - dest: monaco/
+      src: '{{ playbook_dir }}/roles/demo-ar-workflows-ansible/files/monaco/'
+    - dest: jenkins/
+    - dest: load-gen/
+    - dest: build_number.txt
+    - dest: .gitlab-ci.yml
+    git_username: "{{ gitea_username }}"
+    git_password: "{{ gitea_password }}"
+    # Either git_remote OR git_internal_endpoint is required!
+    git_remote: "gitea"
+    # git_internal_endpoint: "{{ gitea_internal_endpoint }}"
+    git_org_name: "{{ demo_ar_workflows_ansible_org }}"
+    repo_name: "{{ demo_ar_workflows_ansible_repo_name }}"

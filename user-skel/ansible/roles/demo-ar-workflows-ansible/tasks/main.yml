@@ -18,3 +18,8 @@
     name: gitea
 
 - ansible.builtin.include_tasks: sync-simplenode.yml
+
+# TBD: Add custom monaco
+
+# TBD: Deploy simplenode good build
+# TBD: Deploy simplenode bad build
