@@ -18,10 +18,10 @@ In this first step, we will outline the different phases of our CI configuration
     2. Stage `Deploy-staging`  
        1. Job `deployment-staging` that deploys the simplenodeservice application using helm in the staging environment
        2. Job `dynatrace_deploy_event_staging` that sends a Deployment Event to Dynatrace indicating the act of deployment took place
-    3. Stage `Test` contains one job `run-tests` that leverages Locust to test the application. The configuration of the tests can be found in the `locust` folder within the repository
-    4. Stage `Validate-release` contains a job `srg-release-validation` which performs the Release Validation
+    3. Stage `Test` contains one job, `run-tests` that leverages Locust to test the application. The configuration of the tests can be found in the `locust` folder within the repository
+    4. Stage `Validate-release` contains a job `srg-release-validation` which performs the Release Validation using Dynatrace Site Reliability Guardian. If this job is completed successfully, it will promote the release to the production environment. In the "fail" case, it will stop the pipeline
     5. Stage `Deploy-production`  
-       1. Job `deployment-production` that deploys the simplenodeservice application using helm in the production environment
+       1. Job `deployment-production` that deploys the simplenodeservice application using helm in the production environment in case the Validate-release stage is successfully completed.
        2. Job `dynatrace_deploy_event_production` that sends a Deployment Event to Dynatrace indicating the act of deployment took place
 
 3. By clicking on each job within the pipeline, it is possible to observe the logs of that execution
@@ -30,17 +30,17 @@ In this first step, we will outline the different phases of our CI configuration
 
 ## Execution details
 
-Once the pipeline has run completely, and normally successfully, it is now possible to observe the results of the evaluation.
+Once the pipeline has run completely and usually successfully, observing the evaluation results is possible.
 
 We will start within Dynatrace
 
 1. Navigate to the `Releases` screen
-2. A Management Zone called `simplenode-gitlab-staging` was created, select it if you would like to filter out the other releases that might be present.
+2. A Management Zone called `simplenode-gitlab-staging` was created; select it if you would like to filter out the other releases that might be present.
     ![Dynatrace Releases](assets/demo_gitlab_dt_releases.png)
     > Note: if no events are visible, you might need to select a larger time frame
 3. Click on the release in the `simplenode-gitlab-staging` environment
     ![Dynatrace Release Details](assets/demo_gitlab_dt_release_details.png)
-4. On the right you will see an overview of the Release Events: 1 deployment and 1 evaluation result with a **pass* score. Check out the details of the evaluation event, there are details on the score, time frame (when did the tests run), a link back to the GitLab pipeline run and also a link to the Keptn bridge with the evaluation details. Click on that link with the label `Keptn Bridge`.
+4. On the right, you will see an overview of the Release Events: 1 deployment and 1 evaluation result with a **pass* score. Check out the details of the evaluation event, there are details on the score, time frame (when did the tests run), a link back to the GitLab pipeline run and a link to the Keptn bridge with the evaluation details. Click on that link with the label `Keptn Bridge`.
     > Note: at the moment this link is not clickable, this will be fixed in the future.
 5. Within the Bridge, click on the **Graph** icon which will bring you to the evaluation heatmap and details.
     ![Cloud Automation Success](assets/demo_gitlab_ca_evaluation_success.png)
