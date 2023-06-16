@@ -20,6 +20,7 @@
 - ansible.builtin.include_tasks: sync-simplenode.yml
 
 # TBD: Add custom monaco
+# TBD: Add custom Jenkins
 
-# TBD: Deploy simplenode good build
-# TBD: Deploy simplenode bad build
+- include_role:
+    name: dashboard
