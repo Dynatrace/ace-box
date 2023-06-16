@@ -43,6 +43,15 @@ pipeline {
         //         }
         //     }
         // }
+        stage('Dynatrace ACE project - Validate') {
+            steps {
+                container('ace') {
+                    script {
+                        sh 'monaco version'
+                    }
+                }
+            }
+        }
         // stage('Dynatrace ACE project - Validate') {
         //     steps {
         //         container('ace') {

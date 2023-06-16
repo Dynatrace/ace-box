@@ -18,5 +18,7 @@
 
 - include_role:
     name: jenkins
+  vars:
+    jenkins_monaco_container_image: "dynatrace/dynatrace-configuration-as-code:2.3.0"
 
 # TBD: Trigger branch scan as it sporadically fails on initial Jenkins deployment
