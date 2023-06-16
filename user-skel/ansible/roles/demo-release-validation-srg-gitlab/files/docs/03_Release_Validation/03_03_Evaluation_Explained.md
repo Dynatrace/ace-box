@@ -1,6 +1,6 @@
 # 3. Evaluation Explained
 
-Now that we have a Release Validation implemented that stopped a bad build from being promoted, we will take a look behind the scenes to understand how this happened: which components were involved, how they were configured and how the `fail` result was calculated. By the end of this session, you will understand how the SLIs and SLOs were defined, how Site Reliability Guardian was leveraged for this, and how the GitLab pipeline was integrated with Dynatrace Workflows to evaluate the Site Reliability Guardian objectives.
+Now that we have a Release Validation implemented that stopped a bad build from being promoted, we will take a look behind the scenes to understand how this happened: which components were involved, how they were configured and how the `fail` result was calculated. By the end of this session, you will understand how the SLOs were defined, how Site Reliability Guardian was leveraged for this, and how the GitLab pipeline was integrated with Dynatrace Workflows to evaluate the Site Reliability Guardian objectives.
 
 ## The pipeline flow
 Let's start with re-examining the CI Pipeline in GitLab.
