@@ -32,5 +32,5 @@ run-tests:
 ```
 
 ## Continue to the Pipeline Stages
-- [Monaco](../05_Monaco/README.md)
-- [Evaluation Explained](../03_Release_Validation/03_03_Evaluation_Explained.md) to gather details on how the Performance Test was Performed.
+- [Monaco](../05_Monaco/README.md) to deep dive into Dynatrace configurations via Monaco
+- [Evaluation Explained](../03_Release_Validation/03_03_Evaluation_Explained.md) to gather details on how the Evaluation is performed.
