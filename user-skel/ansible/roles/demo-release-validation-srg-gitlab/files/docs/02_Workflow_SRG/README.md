@@ -48,6 +48,3 @@ The start time and end time expression _is already added to the SRG task_ like i
 `{{event()['timeframe.from']}}` and end time `{{event()['timeframe.to']}}`
 
 ![gitlab-cicd](assets/simplenode_wf_srg_definition.png)
-
-## Continue to the Pipeline Stages
-- [Evaluation Explained](../03_Release_Validation/03_03_Evaluation_Explained.md) to gather details on how the Evaluation is performed.
