@@ -4,7 +4,7 @@
 
  `run-tests` job under `Test` stage runs the performance tests within the duration specified in the `.gitlab-ci.yaml` file:
 
-![gitlab-cicd](gitlab_cicd_pipeline_locust_test_duration.png)
+![gitlab-cicd](assets/gitlab_cicd_pipeline_locust_test_duration.png)
 
 The following code part picks the start time before the test begins, and the end time after the test finishes. These information is stored as artifact to be used by SRG Evaluation explained [here](../03_Release_Validation/03_03_Evaluation_Explained.md)
 
