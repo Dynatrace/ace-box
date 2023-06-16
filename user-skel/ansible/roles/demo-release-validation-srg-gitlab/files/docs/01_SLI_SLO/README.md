@@ -10,15 +10,15 @@ Let's see how these can be defined in Dynatrace!
 
 1. We now want to create our first SLOs by hand in Dynatrace. To do this, go to your Dynatrace tenant and navigate to `Search > Search "Service-level objectives" -> Select "Service-level objectives"`. To create a new SLO click on `Add new SLO`. This will open the SLO Wizard used to create SLOs in the UI. 
 
-![AddNewSLO](../../assets/images/add_new_slo.png)
+![AddNewSLO](assets/add_new_slo.png)
 
 To create an SLO we need to define the following:
 1. **The SLO name**
 2. **The metric expression**: 
 This field uses the Dynatrace native "metric selector" which is used throughout the product, in the UI and API, to declaratively select metrics (see docs [here](https://www.dynatrace.com/support/help/dynatrace-api/environment-api/metric-v2/metric-selector)).
-3. **An entity filter**:
+1. **An entity filter**:
 This field uses the Dynatrace native "entity selector" which is a powerful way of declaratively selecting entities throughout your Dynatrace environment. (see docs [here](https://www.dynatrace.com/support/help/dynatrace-api/environment-api/entity-v2/entity-selector)).
-4. **Success criteria**:
+1. **Success criteria**:
 This will be the target scores to define if the SLO is met (or not).
 
 Now, let's define some SLOs.
