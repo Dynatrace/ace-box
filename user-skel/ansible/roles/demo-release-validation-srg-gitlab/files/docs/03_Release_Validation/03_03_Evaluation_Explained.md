@@ -16,12 +16,12 @@ To be able to reach out to this stage, we need to validate the build which is in
    2. If you click on the job to see the job logs, you will notice `DT automation` tool is leveraged to perform the evaluation. For the details, please click here: [dynatrace-automation-tools](https://github.com/dynatrace-ace/dynatrace-automation-tools/blob/10-feature-poc-srg-execute-evaluation/docs/Site-Reliability-Guardian/SRGAutomation.md)
       ![gitlab-cicd](assets/gitlab_cicd_pipeline_success_jobdetails_1.png)
       
-   3. SRG evaluation is performed by ´dta´ CLI. Evaluation start and end time are given as inputs to the Site Reliability Guardian to evaluate the application in the time period that the performance was executed.
+   3. SRG evaluation is performed by `dta` CLI. Evaluation start and end time are given as inputs to the Site Reliability Guardian to evaluate the application within the time period that the performance was executed.
    ```
-    - eval_start=$(cat srg.test.starttime)
-    - eval_end=$(cat srg.test.endtime)
-    - dta srg evaluate --start-time=$eval_start --end-time=$eval_end
-    ```
+    eval_start=$(cat srg.test.starttime)
+    eval_end=$(cat srg.test.endtime)
+    dta srg evaluate --start-time=$eval_start --end-time=$eval_end
+   ```
 3. We will outline each job in more detail in the following sections
 
 
