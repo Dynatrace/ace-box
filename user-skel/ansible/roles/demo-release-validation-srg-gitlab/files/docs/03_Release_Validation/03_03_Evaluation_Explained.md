@@ -51,3 +51,8 @@ To be able to reach out to this stage, we need to validate the build which is in
 
       ![gitlab-cicd](assets/gitlab_cicd_pipeline_success_jobdetails_result_event.png)
       ![gitlab-cicd](assets/gitlab_cicd_pipeline_success_jobdetails_final_result.png)
+
+
+## Continue to the Pipeline Stages
+- [Performance Test with Locust](../04_Performance_Test/README.md) to gather details on how the Performance Test was Performed.
+- to [Monaco](../05_Monaco/README.md)
