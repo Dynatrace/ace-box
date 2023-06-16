@@ -70,9 +70,6 @@ configs:
           configId: simplenodeguardian    
         wf_description: "Simplenode Workflow with Guardians by Monaco for demo purposes"
         appname: simplenode-gitlab
-        dt_events_api_token:
-          type: environment
-          name: DT_EVENTS_API_TOKEN
         gitlab_url:
           type: environment
           name: GITLAB_EXTERNAL_ENDPOINT

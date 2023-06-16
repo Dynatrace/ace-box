@@ -24,32 +24,6 @@
   },
 
   "tasks": {
-    "send_srg_result": {
-      "action": "dynatrace.automations:http-function",
-      "conditions": {
-        "states": {
-          "evaluate_srg": "OK"
-        }
-      },
-      "description": "Issue an HTTP request to any API",
-      "input": {
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Api-Token {{ .dt_events_api_token }}"
-        },
-        "method": "POST",
-        "url": "{{ .dt_url }}/api/v2/events/ingest",
-        "payload": "{\"eventType\": \"CUSTOM_INFO\",\n\"title\": \"{{`{{`}} event()['event.id'] {{`}}`}}\",\n\"properties\": {\n  \"srg_evaluation_result\":\"{{`{{`}} result('evaluate_srg').validation_status {{`}}`}}\"\n}\n}"
-      },
-      "name": "send_srg_result",
-      "position": {
-        "x": 0,
-        "y": 2
-      },
-      "predecessors": [
-        "evaluate_srg"
-      ]
-    },
     "evaluate_srg": {
       "action": "dynatrace.site.reliability.guardian:validate-guardian-action",
       "description": "Automation action to start a Site Reliability Guardian validation",
@@ -87,7 +61,7 @@
       },
       "name": "create_gitlab_issue",
       "position": {
-        "x": -1,
+        "x": 0,
         "y": 2
       },
       "predecessors": [
