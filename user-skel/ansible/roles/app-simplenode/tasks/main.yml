@@ -19,8 +19,8 @@
       name: gitea
       tasks_from: source-endpoints
   - set_fact:
-      git_internal_endpoint: "{{ gitea_internal_endpoint }}"
-  when: git_internal_endpoint is not defined and git_remote == "gitea"
+      git_endpoint: "{{ gitea_internal_endpoint | regex_replace(\"http://\") }}"
+  when: git_endpoint is not defined and git_remote == "gitea"
 
 - block:
   - name: Source Gitlab endpoint
@@ -28,12 +28,12 @@
       name: gitea
       tasks_from: source-endpoints
   - set_fact:
-      git_internal_endpoint: "{{ gitlab_internal_endpoint }}"
-  when: git_internal_endpoint is not defined and git_remote == "gitlab"
+      git_endpoint: "{{ gitlab_internal_endpoint | regex_replace(\"http://\") }}"
+  when: git_endpoint is not defined and git_remote == "gitlab"
 
 - block:
   - name: Setup new repo
-    ansible.builtin.command: "git clone http://{{ git_username }}:{{ git_password }}@{{ git_internal_endpoint | regex_replace(\"http://\") }}/{{ git_org_name }}/{{ repo_name }}.git {{ repo_src }}"
+    ansible.builtin.command: "git clone http://{{ git_username }}:{{ git_password }}@{{ git_endpoint }}/{{ git_org_name }}/{{ repo_name }}.git {{ repo_src }}"
     args:
       chdir: "/home/{{ ace_box_user }}/repos"
   - name: Checkout main branch
