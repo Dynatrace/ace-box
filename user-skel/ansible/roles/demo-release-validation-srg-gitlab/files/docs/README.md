@@ -48,6 +48,6 @@ As mentioned above, the first pipeline automatically triggers when GitLab gets d
 1. [Release Awareness](/01_Release_Awareness/README.md)
 2. [SLI & SLO](/02_SLI_SLO/README.md)
 3. [Release Validation](/03_Release_Validation/README.md)
-   - [Successful Build](/03_Release_Validation/03_01_Successfull_Build.md)
+   - [Successful Build](/03_Release_Validation/03_01_Successful_Build.md)
    - [Failed Build](/03_Release_Validation/03_02_Failed_Build.md)
    - [Evaluation Explained](/03_Release_Validation/03_03_Evaluation_Explained.md)
