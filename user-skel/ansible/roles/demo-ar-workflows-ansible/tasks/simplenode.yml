@@ -27,6 +27,7 @@
     - dest: monaco/
       src: '{{ playbook_dir }}/roles/demo-ar-workflows-ansible/files/monaco/'
     - dest: jenkins/
+      src: '{{ playbook_dir }}/roles/demo-ar-workflows-ansible/files/jenkins/'
     - dest: load-gen/
     - dest: build_number.txt
     - dest: .gitlab-ci.yml

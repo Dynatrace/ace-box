@@ -1,0 +1,91 @@
+controller:
+  JCasC:
+    configScripts:
+      demo-ar-workflows-ansible-jenkins: |
+        jobs:            
+        - script: >
+            folder('{{ demo_jenkins_folder }}')
+        - script: >
+            multibranchPipelineJob('{{ demo_jenkins_folder }}/1. Build images') {
+              branchSources {
+                git {
+                  id('17CE1AAF-8E81-4A49-ACCB-4CCA68DCD46C')
+                  remote('{{ ingress_protocol }}://{{ git_domain }}/{{ demo_org }}/{{ demo_repo }}')
+                  credentialsId('git-creds-ace')
+                  includes('main')
+                }
+              }
+              factory {
+                workflowBranchProjectFactory {
+                  scriptPath('jenkins/01_build_images.Jenkinsfile')
+                }
+              }
+            }
+        - script: >
+            pipelineJob('{{ demo_jenkins_folder }}/2. Monaco') {
+              definition {
+                cpsScm {
+                  scriptPath('jenkins/02_monaco.Jenkinsfile')
+                  scm {
+                    git {
+                        remote { 
+                          url('{{ ingress_protocol }}://{{ git_domain }}/{{ demo_org }}/{{ demo_repo }}')
+                          credentials('git-creds-ace')
+                        }
+                        branch('*/main')
+                    }
+                  }
+                  lightweight()
+                }
+              }
+            }
+        - script: >
+            pipelineJob('{{ demo_jenkins_folder }}/3. Deploy') {
+              parameters {
+                stringParam('RELEASE_PRODUCT')
+                stringParam('IMAGE_NAME')
+                stringParam('IMAGE_TAG')
+                stringParam('RELEASE_VERSION')
+                stringParam('RELEASE_BUILD_VERSION')
+                stringParam('RELEASE_STAGE')
+                stringParam('CANARY_WEIGHT', '0', 'Weight of traffic that will be routed to service.')
+                booleanParam('IS_CANARY', false, 'Is canary version of service?')
+              }
+              definition {
+                cpsScm {
+                  scriptPath('jenkins/03_deploy.Jenkinsfile')
+                  scm {
+                    git {
+                        remote { 
+                          url('{{ ingress_protocol }}://{{ git_domain }}/{{ demo_org }}/{{ demo_repo }}')
+                          credentials('git-creds-ace')
+                        }
+                        branch('*/main')
+                    }
+                  }
+                  lightweight()
+                }
+              }
+            }
+        - script: >
+            pipelineJob('{{ demo_jenkins_folder }}/4. Shift traffic') {
+              parameters {
+                stringParam('CANARY_WEIGHT', '0', 'Weight of traffic that will be routed to service.')
+                stringParam('REMEDIATION_URL', '0', 'Remediation script to call if canary release fails.')
+              }
+              definition {
+                cpsScm {
+                  scriptPath('jenkins/04_canary.Jenkinsfile')
+                  scm {
+                    git {
+                        remote { 
+                          url('{{ ingress_protocol }}://{{ git_domain }}/{{ demo_org }}/{{ demo_repo }}')
+                          credentials('git-creds-ace')
+                        }
+                        branch('*/main')
+                    }
+                  }
+                  lightweight()
+                }
+              }
+            }

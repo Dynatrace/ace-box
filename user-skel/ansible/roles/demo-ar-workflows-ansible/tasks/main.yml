@@ -17,10 +17,11 @@
 - include_role:
     name: gitea
 
-- ansible.builtin.include_tasks: sync-simplenode.yml
-
 # TBD: Add custom monaco
-# TBD: Add custom Jenkins
+
+- ansible.builtin.include_tasks: simplenode.yml
+
+- ansible.builtin.include_tasks: jenkins.yml
 
 - include_role:
     name: dashboard
