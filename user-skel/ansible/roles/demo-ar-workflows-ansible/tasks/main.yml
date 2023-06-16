@@ -21,6 +21,12 @@
 
 - ansible.builtin.include_tasks: simplenode.yml
 
+- include_role:
+    name: load-generator
+  vars:
+    load_gen_endpoint: "{{ ingress_protocol }}://simplenodeservice-canary-jenkins.{{ ingress_domain }}/api/invoke?url=https://www.dynatrace.com"
+    load_gen_namespace: "canary-jenkins-loadgen"
+
 - ansible.builtin.include_tasks: jenkins.yml
 
 - include_role:
