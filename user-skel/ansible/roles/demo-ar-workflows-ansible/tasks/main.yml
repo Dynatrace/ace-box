@@ -25,3 +25,5 @@
 
 - include_role:
     name: dashboard
+  vars:
+    include_dashboard_value_file: "{{ playbook_dir }}/roles/demo-ar-workflows-ansible/templates/demo-ar-workflows-ansible-dashboard.yml.j2"
