@@ -50,7 +50,7 @@ To be able to reach out to this stage, we need to validate the build which is in
     6. After a short while, the validation is completed with a result that shows the validation status, summary and the other details: 
 
       ![gitlab-cicd](assets/gitlab_cicd_pipeline_success_jobdetails_result_event.png)
-      ![gitlab-cicd](assets/![gitlab-cicd](assets/gitlab_cicd_pipeline_success_jobdetails_result_event.png).png)
+      ![gitlab-cicd](assets/gitlab_cicd_pipeline_success_jobdetails_result_event.png)
 
 
 ### SLO definition
