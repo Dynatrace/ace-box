@@ -7,16 +7,16 @@ configs:
         schemaVersion: 1.0.1
         scope: environment
     config:
-      name: "Simplenode Guardian by Monaco v2"
+      name: "Simplenode Guardian by Monaco for ACE Demo"
       template: srg.json
       
       parameters:
-        description: "Simplenode Guardian by Monaco v2 for demo purposes"
+        description: "Simplenode Guardian by Monaco for demo purposes"
         tags:
           type: list
           values:
             - "stage:staging"
-            - "owner:is"
+            - "owner:ace"
             - "app:simplenode"
         objective_name_dql: "Response Time of API Method"
         dqlQuery: "fetch logs\n| filter dt.process.name == \"simplenodeservice.simplenode-gitlab-staging\"\n| filter k8s.namespace.name == \"simplenode-gitlab-staging\"\n| filter matchesPhrase(content, \"/api/invoke\")\n| parse content, \"DATA '/api/' DATA 'rt:' SPACE? FLOAT:responsetime \" \n| filter isNotNull(responsetime) \n| summarize avg(responsetime), alias:response_time "
@@ -24,7 +24,7 @@ configs:
         failure_dql: 500
         warning_dql: 400
         
-        objective_name_slo_success_rate: "Success Rate of API Method"
+        objective_name_slo_success_rate: "Success Rate"
         reference_slo_success_rate: ["app.staging","slo", "slo_success_rate", "name"]
         reference_slo_metric_success_rate:
           type: compound
@@ -34,7 +34,7 @@ configs:
         failure_slo_success_rate: 98
         warning_slo_success_rate: 99
         
-        objective_name_slo_availability: "Availability of API Method"
+        objective_name_slo_availability: "Availability of Service"
         reference_slo_availability: ["app.staging","slo", "slo_availability", "name"]
         reference_slo_metric_availability:
           type: compound
@@ -44,7 +44,7 @@ configs:
         failure_slo_availability: 98
         warning_slo_availability: 99
 
-        objective_name_slo_cpu_usage: "Instance CPU Usage"
+        objective_name_slo_cpu_usage: "Process Group Instance CPU Usage"
         reference_slo_cpu_usage: ["app.staging","builtin:monitoring.slo", "slo_process_cpu_usage", "metricName"]
         reference_slo_metric_cpu_usage:
           type: compound
@@ -68,7 +68,7 @@ configs:
           property: id
           type: reference
           configId: simplenodeguardian    
-        wf_description: "Simplenode Workflow with Guardians"
+        wf_description: "Simplenode Workflow with Guardians by Monaco for demo purposes"
         appname: simplenode-gitlab
         dt_events_api_token:
           type: environment
