@@ -10,8 +10,8 @@ This currated role contains content for the demo application "Simplenodeservice"
 |---|---|---|
 |git_username|Required|Username for your VCS (version control system).|
 |git_password|Required|Password for your VCS.|
-|git_org_name|Required|...|
-|repo_name|Required|...|
+|git_org_name|Required|Organization/Grouping in your VCS.|
+|repo_name|Required|Repository name will be used to create/sync with a repository in you VCS, as well as to set up the repository locally in the `/repos` folder.|
 |git_remote|Conditionally required|Specifies which remote to use. Supported values are "gitea" or "gitlab", the ACE-Box internal VCSs. Either _git_remote_ or _git_endpoint_ is required.|
 |git_endpoint|Conditionally required|Specifies the endpopint to use, without protocol, for example "github.com". This value will be used in combination with _git_org_name_ and _repo_name_ will to sync repositories. Either _git_remote_ or _git_endpoint_ is required.|
 |app_simplenode_overwrites|Optional|Allows you to overwrite certain simplenode resources before the repository is set up. Value needs to be a list ob objects. Each object is required to contain at least a "dest" key and value. See example below.|
