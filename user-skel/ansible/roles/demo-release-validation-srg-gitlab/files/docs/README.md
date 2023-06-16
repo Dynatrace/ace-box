@@ -47,7 +47,7 @@ As mentioned above, the first pipeline automatically triggers when GitLab gets d
 
 1. Release Validation
    - [Successful Build](03_Release_Validation/03_01_Successful_Build.md)
-   - [Failed Build](/03_Release_Validation/03_02_Failed_Build.md)
-   - [Evaluation Explained](/03_Release_Validation/03_03_Evaluation_Explained.md)
-2. [Workflow and SRG Definitions](/02_Workflow_SRG/README.md)
-3. [SLI & SLO](/01_SLI_SLO/README.md)
+   - [Failed Build](03_Release_Validation/03_02_Failed_Build.md)
+   - [Evaluation Explained](03_Release_Validation/03_03_Evaluation_Explained.md)
+2. [Workflow and SRG Definitions](02_Workflow_SRG/README.md)
+3. [SLI & SLO](01_SLI_SLO/README.md)
