@@ -25,3 +25,5 @@ We perform Dynatrace configurations automatically via `Monaco` in the beginning 
   - Workflow
   - SRG to utilize SLO definitions for defining validation objectives
 
+## Continue to the Pipeline Stages
+- [Performance Test with Locust](../04_Performance_Test/README.md) to gather details on how the Performance Test is performed.
