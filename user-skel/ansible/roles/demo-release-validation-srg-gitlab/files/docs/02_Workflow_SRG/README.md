@@ -1,4 +1,4 @@
-# Site Reliability Guardian (SRG) - initial setup
+# Site Reliability Guardian (SRG) and Workflow
 
 To configure the initial Site Reliability Guardian for a CI/CD usage follow the steps:
 
