@@ -46,7 +46,7 @@ The following noteable files/folders exist:
 As mentioned above, the first pipeline automatically triggers when GitLab gets deployed on the ACE-BOX. Follow the links below to get more details on what happens and how to perform the demo.
 
 1. Release Validation
-   - [Successful Build](/03_Release_Validation/03_01_Successful_Build.md)
+   - [Successful Build](03_Release_Validation/03_01_Successful_Build.md)
    - [Failed Build](/03_Release_Validation/03_02_Failed_Build.md)
    - [Evaluation Explained](/03_Release_Validation/03_03_Evaluation_Explained.md)
 2. [Workflow and SRG Definitions](/02_Workflow_SRG/README.md)
