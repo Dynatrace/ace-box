@@ -64,6 +64,14 @@ delete:
     type: synthetic-monitor
     name: simplenode-prod-health-check
 
+  # project - srg
+  - project: srg
+    type: app:dynatrace.site.reliability.guardian:guardians
+    id: simplenodeguardian
+  - project: srg
+    type: workflow
+    id: simplenodeworkflow
+
   # project - infrastructure
   - project: infrastructure
     type: request-attributes

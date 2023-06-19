@@ -28,7 +28,7 @@ We perform Dynatrace configurations automatically via `Monaco` in the beginning 
     > Note: `5-monaco-sleep` job is needed to give Dynatrace some time to tag host before sending config events
 
 ## Cleanup
-  To remove the configurations applied to Dynatrace (except for Workflow and SRG) for this demo activity, you can trigger the manual task from the Gitlab pipeline. 
+  To remove the configurations applied to Dynatrace for this demo activity, you can trigger the manual task from the Gitlab pipeline. 
   
   ![gitlab-cicd](assets/gitlab_cicd_pipeline_monaco_cleanup.png)
 
