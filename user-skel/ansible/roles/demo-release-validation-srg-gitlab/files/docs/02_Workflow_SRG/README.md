@@ -23,10 +23,12 @@ After installing the application, you are ready to configure a guardian yourself
 ![gitlab-cicd](assets/gitlab_pipeline_srg_job.png)
 
 
-If you open the Site Reliability Guardian `Simplenode Guardian by Monaco for ACE Demo`, you will see below screen:
+If you open the Site Reliability Guardian `Simplenode Guardian for ACE Demo`, you will see below screen:
+
 ![gitlab-cicd](assets/srg_edit_name.png)
 
 There are multiple objectives attached to this SRG using the type DQL or SLO. 
+
 ![gitlab-cicd](assets/srg_objective_1.png)
 ![gitlab-cicd](assets/srg_objective_2.png)
 
