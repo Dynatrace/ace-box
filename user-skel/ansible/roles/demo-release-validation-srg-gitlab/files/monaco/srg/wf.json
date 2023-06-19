@@ -26,7 +26,7 @@
   "tasks": {
     "evaluate_srg": {
       "action": "dynatrace.site.reliability.guardian:validate-guardian-action",
-      "description": "Automation action to start a Site Reliability Guardian validation",
+      "description": "{{ .srg_task_description }}",
       "input": {
         "executionId": "{{`{{`}} execution().id {{`}}`}}",
         "objectId": "{{ .guardian_id }}",
@@ -49,7 +49,7 @@
           "evaluate_srg": "OK"
         }
       },
-      "description": "Issue an HTTP request to any API",
+      "description": "{{ .gitlab_task_description }}",
       "input": {
         "headers": {
           "Content-Type": "application/json",
