@@ -192,6 +192,7 @@ configs:
         location: ["infrastructure","synthetic-location", "synthetic-location-ace-box", "id"]
         managementZoneId: ["builtin:management-zones", "managementZoneProd", "id"]
         tag: ["builtin:tags.auto-tagging", "autoTagProd", "name"]
+        frequencyMin: 5
         url:
           type: compound
           format: "{{ .ingressProtocol }}://{{ .releaseProduct }}-{{ .releaseStage }}.{{ .ingressDomain }}"

@@ -1,6 +1,6 @@
 {
   "name": "{{ .name }}",
-  "frequencyMin": 5,
+  "frequencyMin": "{{ .frequencyMin }}",
   "enabled": true,
   "type": "HTTP",
   "script": {

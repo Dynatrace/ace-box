@@ -261,6 +261,7 @@ configs:
         location: ["infrastructure","synthetic-location", "synthetic-location-ace-box", "id"]
         managementZoneId: ["builtin:management-zones", "managementZoneStaging", "id"]
         tag: ["builtin:tags.auto-tagging", "autoTagStaging", "name"]
+        frequencyMin: 1 
         url:
           type: compound
           format: "{{ .ingressProtocol }}://{{ .releaseProduct }}-{{ .releaseStage }}.{{ .ingressDomain }}"
