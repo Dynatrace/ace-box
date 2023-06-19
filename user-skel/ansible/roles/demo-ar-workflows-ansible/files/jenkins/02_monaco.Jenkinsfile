@@ -1,11 +1,9 @@
 @Library('ace@v1.1')
 def event = new com.dynatrace.ace.Event()
 
-ENVS_FILE = 'monaco/environments.yaml'
-
 pipeline {
     agent {
-        label 'ace'
+        label 'monaco-runner'
     }
     environment {
         DT_API_TOKEN = credentials('DT_API_TOKEN')
@@ -45,7 +43,7 @@ pipeline {
         // }
         stage('Dynatrace ACE project - Validate') {
             steps {
-                container('ace') {
+                container('monaco') {
                     script {
                         sh 'monaco version'
                     }
