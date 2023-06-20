@@ -1,45 +1,5 @@
 ---
 
-#
-# Use-case specific overwrites
-#
-
-- name: Delete irrelevant app-simplenode
-  ansible.builtin.file:
-    state: absent
-    path: "{{ item }}"
-  loop:
-    - "{{ role_path }}/../app-simplenode/files/repos/simplenode/jenkins/"
-    - "{{ role_path }}/../app-simplenode/files/repos/simplenode/jmeter/"
-    - "{{ role_path }}/../app-simplenode/files/repos/simplenode/load-gen/"
-    - "{{ role_path }}/../app-simplenode/files/repos/simplenode/cloudautomation/"
-    - "{{ role_path }}/../app-simplenode/files/repos/simplenode/monaco/"
-
-- name: Overwrite .gitlab-ci.yml
-  ansible.builtin.copy:
-    src: "{{ role_path }}/files/.gitlab-ci.yml"
-    dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/.gitlab-ci.yml"
-
-- name: Overwrite simplenode app.js
-  ansible.builtin.copy:
-    src: "{{ role_path }}/files/simplenode/app.js"
-    dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/app.js"
-
-- name: Add simplenode logger.js
-  ansible.builtin.copy:
-    src: "{{ role_path }}/files/simplenode/logger.js"
-    dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/logger.js"
-
-- name: Add Monaco configurations
-  ansible.builtin.copy:
-    src: "{{ role_path }}/files/monaco"
-    dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/"
-
-- name: Overwrite Locust configurations
-  ansible.builtin.copy:
-    src: "{{ role_path }}/files/locust"
-    dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/"
-
 - include_role:
     name: microk8s
 
@@ -101,6 +61,25 @@
     - { key: 'GITLAB_PRIVATE_TOKEN', value: '{{ gitlab_oauth_token }}' }
     - { key: 'GITLAB_EXTERNAL_ENDPOINT', value: '{{ gitlab_external_endpoint }}' }
 
+#
+# Use-case specific overwrites
+#
+# - name: Overwrite .gitlab-ci.yml
+#   ansible.builtin.copy:
+#     src: "{{ role_path }}/files/.gitlab-ci.yml"
+#     dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/.gitlab-ci.yml"
+
+# - name: Overwrite simplenode app.js
+#   ansible.builtin.copy:
+#     src: "{{ role_path }}/files/simplenode/app.js"
+#     dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/app.js"
+
+# - name: Add simplenode logger.js
+#   ansible.builtin.copy:
+#     src: "{{ role_path }}/files/simplenode/logger.js"
+#     dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/logger.js"
+
+
 - include_role:
     name: app-simplenode
   vars:
@@ -110,7 +89,26 @@
     git_remote: "gitlab"
     git_org_name: "{{ gitlab_demo_default_group }}"
     repo_name: "{{ gitlab_demo_default_repo_name }}"
-  #when: new_gitlab_group_created is defined and new_gitlab_group_created == true
+    app_simplenode_overwrites:
+      # Ignores folders from being copied to the repo:
+      - dest: demo/
+      - dest: jenkins/
+      - dest: jmeter/
+      - dest: load-gen/
+      - dest: cloudautomation/
+      
+      # Substitutes folder/files with specified sources:
+      - dest: monaco/
+        src: '{{ role_path }}/files/monaco/'
+      - dest: locust/
+        src: '{{ role_path }}/files/locust/'
+      - dest: .gitlab-ci.yml
+        src: '{{ role_path }}/files/.gitlab-ci.yml'
+      - dest: app.js
+        src: '{{ role_path }}/files/simplenode/app.js'
+      - dest: logger.js
+        src: '{{ role_path }}/files/simplenode/logger.js'
+
 
 # Include use case specific Dahboard values
 - set_fact:
