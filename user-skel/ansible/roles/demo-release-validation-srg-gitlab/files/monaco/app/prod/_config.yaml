@@ -1,30 +1,4 @@
 configs:
-
-  # auto-tag
-  - id: autoTagProd
-    type:
-      settings:
-        schema: builtin:tags.auto-tagging
-        scope: environment
-        schemaVersion: "1.0.11"
-    config:
-      template: ../shared/auto-tag.json
-      name: 
-        type: compound
-        format: "{{ .releaseStage }}-tag"
-        references:
-          - releaseStage
-      parameters:
-        releaseProduct:
-          type: environment
-          name: RELEASE_PRODUCT
-        releaseStage:
-          type: environment
-          name: RELEASE_STAGE
-        namespace: 
-          type: environment
-          name: RELEASE_STAGE
-
   # application-web 
   - id: appProd
     type:

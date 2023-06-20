@@ -1,0 +1,11 @@
+configs:
+  # auto-tag
+  - id: autoTagApp
+    type:
+      settings:
+        schema: builtin:tags.auto-tagging
+        scope: environment
+        schemaVersion: "1.0.11"
+    config:
+      template: ../shared/auto-tag.json
+      name: app

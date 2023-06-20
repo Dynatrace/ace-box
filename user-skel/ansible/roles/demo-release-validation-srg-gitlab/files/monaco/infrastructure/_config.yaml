@@ -1,5 +1,20 @@
 configs:
 
+  # auto-tag
+  - id: autoTagInfra
+    type:
+      settings:
+        schema: builtin:tags.auto-tagging
+        scope: environment
+        schemaVersion: "1.0.11"
+    config:
+      template: auto-tag.json
+      name: environment
+      parameters:
+        namespace: 
+          type: environment
+          name: RELEASE_STAGE
+
   # private-sythetic-location
   - id: synthetic-location-ace-box
     type:

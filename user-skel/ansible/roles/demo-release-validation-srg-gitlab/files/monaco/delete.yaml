@@ -2,9 +2,6 @@ delete:
   
   # project - app - staging
   - project: app.staging
-    type: builtin:tags.auto-tagging
-    id: autoTagStaging  
-  - project: app.staging
     type: application-web
     name: simplenode-staging  
   - project: app.staging
@@ -37,9 +34,6 @@ delete:
 
   # project - app - prod
   - project: app.prod
-    type: builtin:tags.auto-tagging
-    id: autoTagProd
-  - project: app.prod
     type: application-web
     name: simplenode-prod  
   - project: app.prod
@@ -63,6 +57,11 @@ delete:
   - project: app.prod
     type: synthetic-monitor
     name: simplenode-prod-health-check
+
+  # project - app - shared
+  - project: app.shared
+    type: builtin:tags.auto-tagging
+    id: autoTagApp
 
   # project - srg
   - project: srg

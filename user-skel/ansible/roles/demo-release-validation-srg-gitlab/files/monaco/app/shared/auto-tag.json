@@ -1,25 +1,24 @@
 {
-    "name": "{{ .name }}",
-    "rules": [
-      {
-        "enabled": true,
-        "valueFormat": "{ProcessGroup:KubernetesContainerName}",
-        "valueNormalization": "Leave text as-is",
-        "type": "ME",
-        "attributeRule": {
-          "entityType": "PROCESS_GROUP",
-          "conditions": [
-            {
-              "key": "CLOUD_APPLICATION_NAMESPACE_NAME",
-              "operator": "EQUALS",
-              "stringValue": "{{ .namespace }}",
-              "caseSensitive": true
-            }
-          ],
-          "pgToHostPropagation": false,
-          "pgToServicePropagation": true
-        }
+  "name": "{{ .name }}",
+  "description": null,
+  "rules": [
+    {
+      "enabled": true,
+      "valueFormat": "{ProcessGroup:KubernetesContainerName}",
+      "valueNormalization": "Leave text as-is",
+      "type": "ME",
+      "attributeRule": {
+        "entityType": "PROCESS_GROUP",
+        "conditions": [
+          {
+            "key": "PROCESS_GROUP_PREDEFINED_METADATA",
+            "dynamicKey": "KUBERNETES_CONTAINER_NAME",
+            "operator": "EXISTS"
+          }
+        ],
+        "pgToHostPropagation": false,
+        "pgToServicePropagation": true
       }
-    ]
-  }
-  
+    }
+  ]
+}
