@@ -1,11 +1,90 @@
 ---
-- name: Publish simplenode repository
-  include_role:
-    name: repository
-  vars:
-    repo_src: "{{ item.repo_src }}"
-    git_org: "{{ item.git_org }}"
-    git_repo: "{{ item.repo_target }}"
-    track_upstream: true
-  loop:
-  - { repo_target: "{{ repo_name }}", repo_src: "{{ role_path }}/files/repos/simplenode", git_org: "{{ git_org_name }}" }
+- name: Ensure repos directory
+  ansible.builtin.file:
+    path: "/home/{{ ace_box_user }}/repos"
+    state: directory
+    mode: '0755'
+
+- set_fact:
+    repo_src: "/home/{{ ace_box_user }}/repos/{{ repo_name }}"
+
+- name: Validating repo directory
+  ansible.builtin.stat:
+    path: "{{ repo_src }}"
+  register: repo_stat_result
+
+- block:
+  - name: Source Gitea endpoint
+    include_role:
+      name: gitea
+      tasks_from: source-endpoints
+  - set_fact:
+      git_endpoint: "{{ gitea_internal_endpoint | regex_replace(\"http://\") }}"
+  when: git_endpoint is not defined and git_remote == "gitea"
+
+- block:
+  - name: Source Gitlab endpoint
+    include_role:
+      name: gitea
+      tasks_from: source-endpoints
+  - set_fact:
+      git_endpoint: "{{ gitlab_internal_endpoint | regex_replace(\"http://\") }}"
+  when: git_endpoint is not defined and git_remote == "gitlab"
+
+- block:
+  - name: Setup new repo
+    ansible.builtin.command: "git clone http://{{ git_username }}:{{ git_password }}@{{ git_endpoint }}/{{ git_org_name }}/{{ repo_name }}.git {{ repo_src }}"
+    args:
+      chdir: "/home/{{ ace_box_user }}/repos"
+  - name: Checkout main branch
+    command: git checkout -b main
+    args:
+      chdir: "{{ repo_src }}"
+  when: not repo_stat_result.stat.exists
+
+- name: Check repo status
+  ansible.builtin.command: "git rev-list --all --count"
+  args:
+    chdir: "{{ repo_src }}"
+  register: git_rev_list_result
+- set_fact:
+    publish_new: "{{ True if git_rev_list_result.stdout == '0' else False }}"
+
+- block:
+  - name: Pull latest changes
+    ansible.builtin.shell: |
+      git pull
+    args:
+      chdir: "{{ repo_src }}"
+  when: publish_new == False
+
+- set_fact:
+    default_excludes:
+    - "--exclude=.git"
+    custom_excludes: "{{ app_simplenode_overwrites | default([]) | map(attribute='dest') }}"
+    custom_includes: "{{ app_simplenode_overwrites | default([]) | selectattr('src', 'defined') }}"
+
+- set_fact:
+    rsync_opts: "{{ default_excludes + (['--exclude='] | product(custom_excludes) | map('join') | list) }}"
+
+- block:
+  - name: Copy app-simplenode repo content
+    ansible.posix.synchronize:
+      src: "{{ playbook_dir }}/roles/app-simplenode/files/repos/simplenode/"
+      dest: "{{ repo_src }}"
+      delete: true
+      rsync_opts: "{{ rsync_opts }}"
+  - ansible.posix.synchronize:
+      src: "{{ item.src }}"
+      dest: "{{ repo_src }}/{{ item.dest }}"
+      delete: true
+    loop: "{{ custom_includes }}"
+  - name: Commit and push local changes
+    ansible.builtin.shell: |
+      git add -A
+      git commit -am "Sync with local ACE-Box repo"
+      git push -u origin main
+    args:
+      chdir: "{{ repo_src }}"
+  when: publish_new == True
+
