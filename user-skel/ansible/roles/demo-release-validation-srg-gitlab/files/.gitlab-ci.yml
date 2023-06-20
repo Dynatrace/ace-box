@@ -10,7 +10,8 @@ variables:
   RELEASE_PRODUCT: "simplenodeservice"
   RELEASE_STAGE: "simplenode-gitlab-staging"
   MANIFEST_FILE: ./monaco/manifest.yaml
-  MONACO_VERSION: 2.2.0
+  MONACO_IMAGE_VERSION: 2.2.0
+  DTA_IMAGE_VERSION: latest
   TEST_TIMEFRAME: "8m"
 
 stages:
@@ -27,11 +28,8 @@ workflow:
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "main"
 
 .monaco_common:
-  image: dynatrace/dynatrace-configuration-as-code:$MONACO_VERSION
+  image: dynatrace/dynatrace-configuration-as-code:$MONACO_IMAGE_VERSION
   stage: configure-dynatrace
-  rules:
-    - if: $BUILD_ID == "1"
-
 
 1-monaco-infra:
   extends:
@@ -39,7 +37,6 @@ workflow:
   script:
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project infrastructure --dry-run
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project infrastructure
-    - sleep 30
 
 2-monaco-staging:
   extends:
@@ -75,7 +72,7 @@ workflow:
 5-monaco-sleep:
   extends:
     - .monaco_common
-  needs: ["4-monaco-prod"]
+  needs: ["1-monaco-infra"]
   script:
     # Sleep an additional 120 seconds to give Dynatrace some time
     # to tag host according to current config before sending config events
@@ -165,7 +162,7 @@ run-tests:
       - srg.test.endtime
 
 srg-release-validation:
-  image: dynatraceace/dt-automation-cli:latest
+  image: dynatraceace/dt-automation-cli:$DTA_IMAGE_VERSION
   stage: validate-release
   needs: ["run-tests"]
   variables:
@@ -222,7 +219,7 @@ dynatrace_deploy_event_production:
 
 
 cleanup-monaco:
-  image: dynatrace/dynatrace-configuration-as-code:$MONACO_VERSION
+  image: dynatrace/dynatrace-configuration-as-code:$MONACO_IMAGE_VERSION
   stage: cleanup
   script:
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco delete --manifest $MANIFEST_FILE --file ./monaco/delete.yaml
