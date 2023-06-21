@@ -8,15 +8,11 @@ configs:
       template: auto-tag.json
       name:
         type: compound
-        format: "{{ .releaseProduct }}-{{ .releaseStage }}"
+        format: "{{ .releaseStage }}"
         references:
-          - releaseProduct
           - releaseStage
       skip: false
       parameters:
-        releaseProduct:
-          type: environment
-          name: RELEASE_PRODUCT
         releaseStage:
           type: environment
           name: RELEASE_STAGE
