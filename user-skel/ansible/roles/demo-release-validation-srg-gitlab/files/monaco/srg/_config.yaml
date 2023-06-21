@@ -67,7 +67,12 @@ configs:
         #wf related
         wf_description: "Simplenode Workflow with Guardians by Monaco for demo purposes"
         #trigger related
-        appname: simplenode-gitlab
+        tag_service:
+          type: environment
+          name: SRG_EVALUATION_SERVICE
+        tag_stage:
+          type: environment
+          name: SRG_EVALUATION_STAGE
         #srg related
         srg_task_description: "Evaluate simplenode app guardian objectives"
         guardian_id:

@@ -166,8 +166,8 @@ srg-release-validation:
   stage: validate-release
   needs: ["run-tests"]
   variables:
-    #LOG_LEVEL: "verbose"
-    APP_NAME: "simplenode-gitlab"
+    SRG_EVALUATION_SERVICE: "simplenode" 
+    SRG_EVALUATION_STAGE: "staging"
     DYNATRACE_URL_GEN3: $DT_PLATFORM_TENANT_URL
     ACCOUNT_URN: $DT_OAUTH_ACCOUNT_URN
     DYNATRACE_CLIENT_ID: $DT_OAUTH_CLIENT_ID
@@ -179,7 +179,7 @@ srg-release-validation:
     - eval_start=$(cat srg.test.starttime)
     - eval_end=$(cat srg.test.endtime)
     - export LOG_LEVEL=verbose
-    - dta srg evaluate $APP_NAME --start-time=$eval_start --end-time=$eval_end --stop-on-failure
+    - dta srg evaluate --service $SRG_EVALUATION_SERVICE --stage $SRG_EVALUATION_STAGE --start-time=$eval_start --end-time=$eval_end --stop-on-failure
 
 
 deployment-production:

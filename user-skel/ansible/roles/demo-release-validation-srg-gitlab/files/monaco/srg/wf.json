@@ -10,13 +10,13 @@
   "triggerType": "Event",
   "trigger": {
     "eventTrigger": {
-      "filterQuery": "event.type == \"guardian.validation.triggered\" AND tag.application==\"{{ .appname }}\"",
+      "filterQuery": "type == \"guardian.validation.triggered\" AND tag.service==\"{{ .tag_service }}\" AND tag.stage==\"{{ .tag_stage }}\"",
       "isActive": true,
       "triggerConfiguration": {
         "type": "event",
         "value": {
           "eventType": "bizevents",
-          "query": "event.type == \"guardian.validation.triggered\" AND tag.application==\"{{ .appname }}\""  
+          "query": "type == \"guardian.validation.triggered\" AND tag.service==\"{{ .tag_service }}\" AND tag.stage==\"{{ .tag_stage }}\""  
         }
       },
       "uniqueExpression": null
