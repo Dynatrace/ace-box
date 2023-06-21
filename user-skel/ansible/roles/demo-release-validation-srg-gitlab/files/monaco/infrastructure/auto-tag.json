@@ -1,24 +1,69 @@
 {
     "name": "{{ .name }}",
-    "description": null,
     "rules": [
-        {
-            "enabled": true,
-            "valueFormat": "{ProcessGroup:KubernetesNamespace}",
-            "valueNormalization": "Leave text as-is",
-            "type": "ME",
-            "attributeRule": {
-                "entityType": "PROCESS_GROUP",
-                "conditions": [
-                    {
-                        "key": "PROCESS_GROUP_PREDEFINED_METADATA",
-                        "dynamicKey": "KUBERNETES_NAMESPACE",
-                        "operator": "EXISTS"
-                    }
-                ],
-                "pgToHostPropagation": false,
-                "pgToServicePropagation": true
+      {
+        "type": "PROCESS_GROUP",
+        "enabled": true,
+        "valueFormat": null,
+        "propagationTypes": ["PROCESS_GROUP_TO_SERVICE"],
+        "conditions": [
+          {
+            "key": {
+              "attribute": "PROCESS_GROUP_PREDEFINED_METADATA",
+              "dynamicKey": "KUBERNETES_NAMESPACE",
+              "type": "PROCESS_PREDEFINED_METADATA_KEY"
+            },
+            "comparisonInfo": {
+              "type": "STRING",
+              "operator": "EQUALS",
+              "value": "{{ .releaseStage }}",
+              "negate": false,
+              "caseSensitive": true
             }
-        }
+          }
+        ]
+      },
+      {
+        "type": "SERVICE",
+        "enabled": true,
+        "valueFormat": null,
+        "propagationTypes": [],
+        "conditions": [
+          {
+            "key": {
+              "attribute": "SERVICE_TYPE"
+            },
+            "comparisonInfo": {
+              "type": "SERVICE_TYPE",
+              "operator": "EQUALS",
+              "value": "DATABASE_SERVICE",
+              "negate": false
+            }
+          }
+        ]
+      },
+      {
+        "type": "HOST",
+        "enabled": true,
+        "valueFormat": null,
+        "normalization": "LEAVE_TEXT_AS_IS",
+        "propagationTypes": [],
+        "conditions": [
+          {
+            "key": {
+              "attribute": "HOST_GROUP_NAME",
+              "type": "STATIC"
+            },
+            "comparisonInfo": {
+              "type": "STRING",
+              "operator": "EQUALS",
+              "value": "{{ .hostGroup }}",
+              "negate": false,
+              "caseSensitive": true
+            }
+          }
+        ]
+      }
     ]
-}
+  }
+  

@@ -1,15 +1,30 @@
 configs:
 
   # auto-tag
-  - id: autoTagInfra
+  - id: autoTag
     type:
-      settings:
-        schema: builtin:tags.auto-tagging
-        scope: environment
-        schemaVersion: "1.0.11"
+      api: auto-tag
     config:
       template: auto-tag.json
-      name: environment
+      name:
+        type: compound
+        format: "{{ .releaseProduct }}-{{ .releaseStage }}"
+        references:
+          - releaseProduct
+          - releaseStage
+      skip: false
+      parameters:
+        releaseProduct:
+          type: environment
+          name: RELEASE_PRODUCT
+        releaseStage:
+          type: environment
+          name: RELEASE_STAGE
+        hostGroup:
+          type: environment
+          name: HOST_GROUP
+          default: "ace-box"
+
 
   # private-sythetic-location
   - id: synthetic-location-ace-box
