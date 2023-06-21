@@ -77,6 +77,10 @@
   ansible.builtin.copy:
     src: "{{ role_path }}/files/simplenode/logger.js"
     dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/logger.js"
+- name: Add simplenode package.json
+  ansible.builtin.copy:
+    src: "{{ role_path }}/files/simplenode/package.json"
+    dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/package.json"
 - name: Overwrite dynatrace.attachrules.yaml
   ansible.builtin.copy:
     src: "{{ role_path }}/files/dynatrace.attachrules.yaml"
