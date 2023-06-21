@@ -12,6 +12,8 @@ variables:
   MANIFEST_FILE: ./monaco/manifest.yaml
   MONACO_IMAGE_VERSION: 2.2.0
   DTA_IMAGE_VERSION: latest
+  SRG_EVALUATION_SERVICE: "simplenode" 
+  SRG_EVALUATION_STAGE: "staging"
   TEST_TIMEFRAME: "8m"
 
 stages:
@@ -52,9 +54,6 @@ workflow:
   extends:
     - .monaco_common
   needs: ["2-monaco-staging"]
-  variables:
-    DT_OAUTH_CLIENT_ID: client.id
-    DT_OAUTH_CLIENT_SECRET: client.secret
   script:
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project srg --dry-run
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project srg
@@ -166,8 +165,6 @@ srg-release-validation:
   stage: validate-release
   needs: ["run-tests"]
   variables:
-    SRG_EVALUATION_SERVICE: "simplenode" 
-    SRG_EVALUATION_STAGE: "staging"
     DYNATRACE_URL_GEN3: $DT_PLATFORM_TENANT_URL
     ACCOUNT_URN: $DT_OAUTH_ACCOUNT_URN
     DYNATRACE_CLIENT_ID: $DT_OAUTH_CLIENT_ID

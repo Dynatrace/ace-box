@@ -10,10 +10,6 @@ configs:
     config:
       template: auto-tag.json
       name: environment
-      parameters:
-        namespace: 
-          type: environment
-          name: RELEASE_STAGE
 
   # private-sythetic-location
   - id: synthetic-location-ace-box

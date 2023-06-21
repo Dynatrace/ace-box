@@ -12,7 +12,7 @@
                 "conditions": [
                     {
                         "key": "PROCESS_GROUP_PREDEFINED_METADATA",
-                        "dynamicKey": "{{ .namespace }}",
+                        "dynamicKey": "KUBERNETES_NAMESPACE",
                         "operator": "EXISTS"
                     }
                 ],

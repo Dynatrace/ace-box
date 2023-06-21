@@ -235,7 +235,7 @@ configs:
         description: Health check for simplenode in app-one       
         location: ["infrastructure","synthetic-location", "synthetic-location-ace-box", "id"]
         managementZoneId: ["builtin:management-zones", "managementZoneStaging", "id"]
-        tag: ["builtin:tags.auto-tagging", "autoTagStaging", "name"]
+        tag: ["app.shared","builtin:tags.auto-tagging", "autoTagApp", "name"]
         frequencyMin: 1 
         url:
           type: compound
