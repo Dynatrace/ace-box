@@ -110,6 +110,25 @@
         src: '{{ role_path }}/files/simplenode/logger.js'
 
 
+#
+# Docs
+#
+- set_fact:
+    dt_srg_gitlab_docs_repo_src: "{{ role_path }}/files/docs"
+
+- name: Publish docs
+  include_role:
+    name: repository
+  vars:
+    git_username: "root"
+    git_password: "{{ gitlab_password }}"
+    git_domain: "{{ gitlab_domain }}"
+    git_remote: "gitlab"
+    git_org: "{{ gitlab_demo_default_group }}"
+    git_repo: "{{ gitlab_demo_docs_repo_name }}"
+    repo_src: "{{ dt_srg_gitlab_docs_repo_src }}"
+    track_upstream: true
+
 # Include use case specific Dahboard values
 - set_fact:
     include_dashboard_value_file: "{{ role_path }}/templates/demo-release-validation-srg-gitlab-dashboard.yml.j2"
