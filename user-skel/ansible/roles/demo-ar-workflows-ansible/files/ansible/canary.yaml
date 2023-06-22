@@ -1,0 +1,40 @@
+---
+- hosts: localhost
+  gather_facts: true
+  tasks:
+    - name: trigger jenkins pipeline
+      vars:
+        payload:
+          {
+            "parameter":
+              [
+                { "name": "CANARY_WEIGHT", "value": "{{ item.canaryWeight }}" },
+                { "name": "REMEDIATION_URL", "value": "{{ remediation_url }}" },
+              ],
+          }
+      command: curl -k -X POST {{ jenkins_url }} --user {{ jenkins_user }}:{{ jenkins_token }} --data-urlencode json='{{ payload | to_json }}'
+      loop:
+        - canaryWeight: 30
+        - canaryWeight: 70
+        - canaryWeight: 100
+      loop_control:
+        pause: 120
+
+    - name: reset load balancing to 100/0
+      vars:
+        payload: { "parameter": [{ "name": "CANARY_WEIGHT", "value": "0" }] }
+      command: curl -k -X POST {{ jenkins_url }} --user {{ jenkins_user }}:{{ jenkins_token }} --data-urlencode json='{{ payload | to_json }}'
+      tags:
+        - canary_reset
+# - name: ""
+#   ansible.builtin.uri:
+#     url: "http://jenkins.ace-box-tg.ace-innovation.info/job/demo-ar-workflows-ansible/job/4.%20Shift%20traffic/build?delay=0sec"
+#     method: POST
+#     url_username: "{{ jenkins_username }}"
+#     url_password: "{{ jenkins_api_token }}"
+#     force_basic_auth: true
+#     body_format: form-urlencoded
+#     body:
+#       json: "{{ json_form_input|to_json }}"
+#     status_code: 303
+#   register: resp

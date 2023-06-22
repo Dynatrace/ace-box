@@ -1,0 +1,228 @@
+---
+- include_role:
+    name: awx
+
+- include_role:
+    name: dt-access-token
+  vars:
+    access_token_var_name: "{{ awx_dt_access_token_name }}"
+    access_token_scope: ["problems.write","DataExport"]
+
+- name: AWX - Source secrets
+  include_role:
+    name: awx
+    tasks_from: source-secrets.yml
+
+- name: AWX - Source configuration
+  include_role:
+    name: awx
+    tasks_from: source-configuration.yml
+
+- name: AWX - Source Jenkins secrets
+  include_role:
+    name: jenkins
+    tasks_from: source-secret.yml
+
+- name: AWX - Source Jenkins endpoints
+  include_role:
+    name: jenkins
+    tasks_from: source-endpoints.yml
+
+- name: AWX - Source Gitea secrets
+  include_role:
+    name: gitea
+    tasks_from: source-secret
+
+- name: AWX - Set Git fact
+  set_fact:
+    git_url: "{{ ingress_protocol }}://gitea.{{ ingress_domain }}"
+    git_password: "{{ gitea_password }}"
+    git_username: "{{ gitea_username }}"
+
+- name: AWX - Retrieve Jenkins URL
+  set_fact:
+    jenkins_url: "{{ ingress_protocol }}://jenkins.{{ ingress_domain }}"
+
+- name: AWX - Wait for API to be up
+  uri:
+    url: "{{ awx_internal_endpoint }}/api/v2/ping/"
+    status_code: 200
+    validate_certs: no
+  register: result
+  retries: 60
+  delay: 5
+  until: result.status == 200
+
+- name: Create default organization
+  awx.awx.organization:
+    name: "{{ awx_org_name }}"
+    description: "Dynatrace organization"
+    state: present
+    controller_host: "{{ awx_internal_endpoint }}"
+    controller_password: "{{ awx_admin_password }}"
+    controller_username: "{{ awx_admin_username }}"
+  register: organization
+  retries: 60
+  delay: 5
+  until: organization is not failed
+
+- name: Create DT credential type
+  awx.awx.credential_type:
+    name: "Dynatrace API Token"
+    description: ""
+    kind: cloud
+    inputs:
+      fields:
+        - id: dt_api_token
+          type: string
+          label: Dynatrace API Token
+          secret: true
+      required:
+        - dt_api_token
+    injectors:
+      extra_vars:
+        DYNATRACE_API_TOKEN: "{% raw %}{{ dt_api_token }}{% endraw %}"
+    state: present
+    controller_host: "{{ awx_internal_endpoint }}"
+    controller_password: "{{ awx_admin_password }}"
+    controller_username: "{{ awx_admin_username }}"
+  register: credential_type_dt_api_token
+
+- name: Create DT credentials
+  awx.awx.credential:
+    name: "{{ dynatrace_tenant_url }} API Token"
+    organization: "{{ organization.id }}"
+    state: present
+    credential_type: "{{ credential_type_dt_api_token.id }}"
+    inputs:
+      dt_api_token: "{{ vars[awx_dt_access_token_name] }}"
+    controller_host: "{{ awx_internal_endpoint }}"
+    controller_password: "{{ awx_admin_password }}"
+    controller_username: "{{ awx_admin_username }}"
+  register: credential_dt_api_token
+
+- name: Create Git credentials
+  awx.awx.credential:
+    name: "{{ git_url }} Credentials"
+    organization: "{{ organization.id }}"
+    state: present
+    credential_type: "Source Control"
+    inputs:
+      password: "{{ git_password }}"
+      username: "{{ git_username }}"
+    controller_host: "{{ awx_internal_endpoint }}"
+    controller_password: "{{ awx_admin_password }}"
+    controller_username: "{{ awx_admin_username }}"
+  register: credential_git
+
+- name: Add project
+  awx.awx.project:
+    name: "{{ demo_ar_workflows_ansible_repo_name }}"
+    description: ""
+    organization: "{{ organization.id }}"
+    state: present
+    scm_type: git
+    scm_url: "{{ git_url }}/{{ demo_ar_workflows_ansible_org }}/{{ demo_ar_workflows_ansible_repo_name }}"
+    scm_branch: main
+    scm_clean: true
+    scm_delete_on_update: false
+    credential: "{{ credential_git.id }}"
+    wait: true
+    controller_host: "{{ awx_internal_endpoint }}"
+    controller_password: "{{ awx_admin_password }}"
+    controller_username: "{{ awx_admin_username }}"
+  register: project
+
+- name: Create remediation inventory
+  awx.awx.inventory:
+    name: "Canary Auto Remediation Inventory"
+    description: ""
+    organization: "{{ organization.id }}"
+    variables:
+      tenant: "{{ dynatrace_tenant_url }}"
+      commentuser: Ansible Playbook
+      tower_user: "{{ awx_admin_username }}"
+      tower_password: "{{ awx_admin_password }}"
+      jenkins_user: "{{ jenkins_username }}"
+      jenkins_token: "{{ jenkins_api_token }}"
+      dtcommentapiurl: "{% raw %}{{ tenant }}/api/v1/problem/details/{{ pid }}/comments?Api-Token={{ DYNATRACE_API_TOKEN }}{% endraw %}"
+      dteventapiurl: "{% raw %}{{ tenant }}/api/v1/events/?Api-Token={{ DYNATRACE_API_TOKEN }}{% endraw %}"
+    state: present
+    controller_host: "{{ awx_internal_endpoint }}"
+    controller_password: "{{ awx_admin_password }}"
+    controller_username: "{{ awx_admin_username }}"
+  register: inventory
+
+- name: Create remediation template
+  awx.awx.job_template:
+    name: "Remediation"
+    job_type: "run"
+    organization: "{{ organization.id }}"
+    inventory: "{{ inventory.id }}"
+    project: "{{ project.id }}"
+    playbook: "ansible/remediation.yaml"
+    verbosity: 0
+    ask_variables_on_launch: true
+    credentials:
+      - "{{ credential_dt_api_token.id }}"
+    controller_host: "{{ awx_internal_endpoint }}"
+    controller_password: "{{ awx_admin_password }}"
+    controller_username: "{{ awx_admin_username }}"
+  register: remediation_template
+
+- set_fact:
+    remediation_template_url: "{{ awx_external_endpoint }}/#/templates/job_template/{{ remediation_template.id }}"
+    jenkins_pipeline_url_shift_traffic: "{{ jenkins_url }}/job/{{ demo_ar_workflows_ansible_repo_name | urlencode() }}/job/{{ '4. Shift traffic' | urlencode() }}/build?delay=0sec"
+
+- name: Create Canary Reset template
+  awx.awx.job_template:
+    name: "Canary Reset"
+    job_type: "run"
+    organization: "{{ organization.id }}"
+    inventory: "{{ inventory.id }}"
+    project: "{{ project.id }}"
+    playbook: "ansible/canary.yaml"
+    verbosity: 0
+    ask_variables_on_launch: false
+    job_tags: canary_reset
+    extra_vars:
+      jenkins_url: "{{ jenkins_pipeline_url_shift_traffic }}"
+      remediation_url: ""
+    credentials:
+      - "{{ credential_dt_api_token.id }}"
+    controller_host: "{{ awx_internal_endpoint }}"
+    controller_password: "{{ awx_admin_password }}"
+    controller_username: "{{ awx_admin_username }}"
+  register: canary_reset_template
+
+# - name: Create Canary Shift template
+#   awx.awx.job_template:
+#     name: "Canary Shift"
+#     job_type: "run"
+#     organization: "{{ organization.id }}"
+#     inventory: "{{ inventory.id }}"
+#     project: "{{ project.id }}"
+#     playbook: "playbooks/canary.yaml"
+#     verbosity: 0
+#     ask_variables_on_launch: true
+#     skip_tags: canary_reset
+#     extra_vars:
+#       jenkins_url: "{{ jenkins_pipeline_url_shift_traffic }}"
+#       remediation_url: "{{ awx_external_endpoint }}/api/v2/job_templates/{{ canary_reset_template.id }}/launch/"
+#     credentials:
+#       - "{{ credential_dt_api_token.id }}"
+#     controller_host: "{{ awx_internal_endpoint }}"
+#     controller_password: "{{ awx_admin_password }}"
+#     controller_username: "{{ awx_admin_username }}"
+
+# - name: Create remediation meta configmap
+#   kubernetes.core.k8s:
+#     name: "awx-meta-canary"
+#     api_version: v1
+#     kind: ConfigMap
+#     state: present
+#     namespace: "{{ awx_namespace }}"
+#     resource_definition:
+#       data:
+#         remediation_template_id: "{{ remediation_template.id }}"
+#         remediation_template_url: "{{ remediation_template_url }}"

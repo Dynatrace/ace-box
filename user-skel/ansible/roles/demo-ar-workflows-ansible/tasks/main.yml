@@ -29,6 +29,30 @@
 
 - ansible.builtin.include_tasks: jenkins.yml
 
+- ansible.builtin.include_tasks: awx.yml
+
+- include_role:
+    name: awx
+    tasks_from: source-secrets
+
+- include_role:
+    name: jenkins-config
+    tasks_from: ensure-credentials
+  vars:
+    credentials_value: "{{ awx_admin_username }}"
+    credentials_id: "AWX_ADMIN_USER"
+    credentials_description: "AWX_ADMIN_USER"
+    credentials_class: StringCredentialsImpl
+
+- include_role:
+    name: jenkins-config
+    tasks_from: ensure-credentials
+  vars:
+    credentials_value: "{{ awx_admin_password }}"
+    credentials_id: "AWX_ADMIN_PASSWORD"
+    credentials_description: "AWX_ADMIN_PASSWORD"
+    credentials_class: StringCredentialsImpl
+
 - include_role:
     name: dashboard
   vars:
