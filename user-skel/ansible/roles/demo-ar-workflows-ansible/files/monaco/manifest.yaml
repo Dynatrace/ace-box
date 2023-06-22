@@ -1,0 +1,43 @@
+manifestVersion: "1.0"
+
+projects:
+  # - name: simplenode
+  #   path: simplenode
+  - name: global
+    path: global
+
+environmentGroups:
+  - name: staging
+    environments:
+      - name: staging-environment
+        url:
+          type: environment
+          value: DT_TENANT_URL
+        auth:
+          token:
+            name: DT_API_TOKEN
+          oAuth:
+            clientId:
+              name: DT_OAUTH_CLIENT_ID
+            clientSecret:
+              name: DT_OAUTH_CLIENT_SECRET
+            tokenEndpoint:
+              type: environment
+              value: DT_OAUTH_SSO_ENDPOINT
+  - name: production
+    environments:
+      - name: production-environment
+        url:
+          type: environment
+          value: DT_TENANT_URL
+        auth:
+          token:
+            name: DT_API_TOKEN
+          oAuth:
+            clientId:
+              name: DT_OAUTH_CLIENT_ID
+            clientSecret:
+              name: DT_OAUTH_CLIENT_SECRET
+            tokenEndpoint:
+              type: environment
+              value: DT_OAUTH_SSO_ENDPOINT

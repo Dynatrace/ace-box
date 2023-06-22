@@ -1,0 +1,26 @@
+---
+configs:
+- id: demoArWorkflowsAnsibleDebounce
+  config:
+    name: "ACE-Box - Demo AR Workflows Ansible - Debounce"
+    template: debounce-workflow.json
+    skip: false
+    parameters: 
+      auto_remediation_workflow_id: ["global", "workflow", "demoArWorkflowsAnsibleRemediation", "id"]
+  type:
+    automation:
+      resource: workflow
+- id: demoArWorkflowsAnsibleRemediation
+  config:
+    name: "ACE-Box - Demo AR Workflows Ansible - Remediation"
+    template: remediation-workflow.json
+    skip: false
+    parameters: 
+      dt_environment_url_gen3: ""
+      ingress_protocol: ""
+      ingress_domain: ""
+      gitlab_username: ""
+      gitlab_password: "" 
+  type:
+    automation:
+      resource: workflow
