@@ -18,7 +18,7 @@ In this first step, we will outline the different phases of our CI configuration
     2. Stage `Deploy-staging`  
        1. Job `deployment-staging` that deploys the simplenodeservice application using helm in the staging environment
        2. Job `dynatrace_deploy_event_staging` that sends a Deployment Event to Dynatrace indicating the act of deployment took place
-    3. Stage `Test` contains one job, `run-tests` that leverages Locust to test the application. The configuration of the tests can be found in the `locust` folder within the repository
+    3. Stage `Test` contains one job, `run-tests` that leverages Locust to send multiple requests to the application to test the performance. The configuration of the tests can be found in the `locust` folder within the repository
     4. Stage `Validate-release` contains a job `srg-release-validation` which performs the Release Validation using Dynatrace Site Reliability Guardian. If this job is completed successfully, it will promote the release to the production environment. In the "fail" case, it will stop the pipeline
     5. Stage `Deploy-production`  
        1. Job `deployment-production` that deploys the simplenodeservice application using helm in the production environment in case the Validate-release stage is successfully completed.
@@ -32,13 +32,14 @@ In this first step, we will outline the different phases of our CI configuration
 
 Once the pipeline has run completely and usually successfully, observing the evaluation results is possible.
 
-We will start within Dynatrace
+Let´s start within Dynatrace.
 
 1. Navigate to the `Releases` screen
 2. A Management Zone called `simplenode-gitlab-staging` was created; select it if you would like to filter out the other releases that might be present.
-    ![Dynatrace Releases](assets/demo_gitlab_dt_releases.png)
+    ![Dynatrace Releases](assets/gitlab_dt_releases.png)
     > Note: if no events are visible, you might need to select a larger time frame
 3. Click on the release in the `simplenode-gitlab-staging` environment
+   
     ![Dynatrace Release Details](assets/gitlab_dt_release_details.png)
 
 ## Next Steps
