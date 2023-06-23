@@ -24,11 +24,14 @@ All demo applications as well as tools are deployed on *Kubernetes* (*Microk8s*)
 
 ## Demo pipeline
 1. Navigate to your GitLab instance. The link and credentials can be found on the ACE dashboard.
-    ![gitlab-home](assets_home/gitlab_home.png)
-2. Within the GitLab UI, select the `demo/srg-pipeline` project
+   
+     ![gitlab-home](assets_home/gitlab_home.png)
+2.  Within the GitLab UI, select the `demo/srg-pipeline` project
 3. Click on the `CI/CD` link in the left menu bar
+   
     ![gitlab-repo](assets_home/gitlab_home_pipeline_select.png)
 4. You will see that the initial pipeline automatically started. Depending on how long it has been since the ACE-BOX was provisioned, it might have already finished
+ 
     ![gitlab-cicd](assets_home/gitlab_home_cicd.png)
 
 
