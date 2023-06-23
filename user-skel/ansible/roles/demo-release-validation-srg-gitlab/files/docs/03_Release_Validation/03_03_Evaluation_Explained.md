@@ -56,5 +56,5 @@ Let's start by examining the CI Pipeline in reverse order, from the last to the 
 
 
 ## Continue to the Pipeline Stages
-- [4. Performance Test with Locust](../04_Performance_Test/README.md) to gather details on how the Performance Test is performed.
-- [5. Monaco](../05_Monaco/README.md) to deep dive into Dynatrace configurations via Monaco
+- [Test Stage](../04_Performance_Test/README.md) to gather details on how the Performance Test is performed.
+- [Configure Dynatrace Stage](../05_Monaco/README.md) to deep dive into Dynatrace configurations via Monaco
