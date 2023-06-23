@@ -53,6 +53,6 @@ The start time and end time expression _is already added to the SRG task_ like i
 ![gitlab-cicd](assets/simplenode_wf_srg_definition.png)
 
 ## DQL and SLO Details
-- [DQL](https://www.dynatrace.com/support/help/platform/grail/dynatrace-query-language/dql-guide)
-- [SLO](../01_SLI_SLO/README.md)
+- [DQL](https://www.dynatrace.com/support/help/platform/grail/dynatrace-query-language/dql-guide) to gather details about DQL
+- [SLO](../01_SLI_SLO/README.md) to deep dive into SLO definitions in Dynatrace
 
