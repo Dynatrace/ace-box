@@ -38,7 +38,7 @@ Let's start by examining the CI Pipeline in reverse order, from the last to the 
         ```
    ![gitlab-cicd](assets/gitlab_cicd_pipeline_success_jobdetails_send_event.png)
 
-   The bizevent that is sent to Dynatrace will trigger the particular (distingished by SRG_EVALUATION_SERVICE: "simplenode" AND SRG_EVALUATION_STAGE: "staging") [workflow](..\02_Workflow_SRG\README.md) which contains a [Site Reliability Guardian](..\02_Workflow_SRG\README.md). `Dynatrace automation tool` waits for the evaluation result which is another bizevent that is generated after the SRG validation is finished. You can query it via `Dynatrace Notebook` as in the following DQL statement.
+   The bizevent that is sent to Dynatrace will trigger the particular (distingished by SRG_EVALUATION_SERVICE: "simplenode" AND SRG_EVALUATION_STAGE: "staging") [workflow](../02_Workflow_SRG/README.md) which contains a [Site Reliability Guardian](../02_Workflow_SRG/README.md). `Dynatrace automation tool` waits for the evaluation result which is another bizevent that is generated after the SRG validation is finished. You can query it via `Dynatrace Notebook` as in the following DQL statement.
 
       ```
       fetch bizevents 
