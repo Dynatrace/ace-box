@@ -53,6 +53,6 @@ The start time and end time expression _is already added to the SRG task_ like i
 ![gitlab-cicd](assets/simplenode_wf_srg_definition.png)
 
 ## DQL and SLO Details
-- [Workflow](../02_Workflow_SRG/README.md#3-create-a-dynatrace-workflow)
-- [Site Reliability Guardian](../02_Workflow_SRG/README.md#2-create-a-new-guardian)
+- [DQL](https://www.dynatrace.com/support/help/platform/grail/dynatrace-query-language/dql-guide)
+- [SLO](../01_SLI_SLO/README.md)
 
