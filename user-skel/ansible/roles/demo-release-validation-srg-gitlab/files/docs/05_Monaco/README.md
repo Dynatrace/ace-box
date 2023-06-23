@@ -4,8 +4,6 @@ We perform Dynatrace configurations automatically via `Monaco` in the beginning 
 
 ![gitlab-cicd](assets/gitlab_cicd_pipeline_monaco_stage.png)
 
-> Note: `Configure-dynatrace` stage is executed only once at the beginning where the default `BUILD ID` is `1`. When you run the pipeline with `BUILD ID` `2`,`3` or `4`, the pipeline will not activate this stage to avoid losing time to configure the same settings on Dynatrace.  
-
 - infrastructure (job: `1-monaco-infra`): More generic settings
   - private synthetic location (ACE-Box)
   - request attributes (LTN,LSN,TSN)
