@@ -27,7 +27,7 @@ If you open the Site Reliability Guardian `Simplenode Guardian for ACE Demo`, yo
 
 ![gitlab-cicd](assets/srg_edit_name.png)
 
-There are multiple objectives attached to this SRG using the type DQL or SLO. 
+There are multiple objectives attached to this SRG using the type [DQL](https://www.dynatrace.com/support/help/platform/grail/dynatrace-query-language/dql-guide) or [SLO](../01_SLI_SLO/README.md). 
 
 ![gitlab-cicd](assets/srg_objective_1.png)
 ![gitlab-cicd](assets/srg_objective_2.png)
@@ -51,3 +51,8 @@ The start time and end time expression _is already added to the SRG task_ like i
 `{{event()['timeframe.from']}}` and end time `{{event()['timeframe.to']}}`
 
 ![gitlab-cicd](assets/simplenode_wf_srg_definition.png)
+
+## DQL and SLO Details
+- [Workflow](../02_Workflow_SRG/README.md#3-create-a-dynatrace-workflow)
+- [Site Reliability Guardian](../02_Workflow_SRG/README.md#2-create-a-new-guardian)
+
