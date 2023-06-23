@@ -33,4 +33,4 @@ We perform Dynatrace configurations automatically via `Monaco` in the beginning 
   ![gitlab-cicd](assets/gitlab_cicd_pipeline_monaco_cleanup.png)
 
 ## Continue to the Pipeline Stages
-- [Performance Test with Locust](../04_Performance_Test/README.md) to gather details on how the Performance Test is performed.
+- [4. Test Stage](../04_Performance_Test/README.md) to gather details on how the Performance Test is performed.
