@@ -1,8 +1,9 @@
 # Demo use case: Release Validation with Site Reliability Guardian
-This document outlines how to demo a release validation use case leveraging Dynatrace Site Reliability Guardian (SRG) using the ACE-BOX with **GitLab**.  From this point forward, the acronym SRG will be used to refer to this app.
+This document outlines how to demo a release validation use case leveraging Dynatrace Site Reliability Guardian (SRG) using the ACE-BOX with **GitLab**.
 
 ## Demo overview
 As part of this demo, we will use a set of multi-staged pipelines that have been pre-deployed within GitLab. In one of the stages, we will deploy a *simplenodeservice* application based on a healthy image (*build 1*) to a *staging* environment. This version of the application passes the validation objectives defined in a Site Reliability Guardian and is promoted to the *production* environment. 
+
 To demonstrate a fail case, we will deploy a faulty image (*build 2*) that shows a decrease in response time and an increase in request failures compared to the healthy version. These performance degradations will be caught by SRG release validation objectives during the evaluation stage to prevent this release from being promoted to the production environment.
 
 ## Demo setup
@@ -10,12 +11,12 @@ A dashboard has been deployed and is available at `http(s)://dashboard.<ingress 
 
 All code and docs have been made available in the *demo* organization on *Gitlab* ( `http(s)://gitlab.<ingress domain>/demo` ):
 
-- *srg* contains all application source code, Gitlab pipelines and Monaco resources.
+- *srg-pipeline* contains all application source code, Gitlab pipelines and Monaco resources.
 - *srg-docs* contains step-by-step instructions for the use case.
 
 >Note: the name of the organization might be different depending on the deployment of the ace-box.
 
-*Gitlab* is our CI/CD tool of choice and is available at `http(s)://gitlab.<ingress domain>`. Pipeline configuration that we use as part of this use case can be found in repo *srg*.
+*Gitlab* is our CI/CD tool of choice and is available at `http(s)://gitlab.<ingress domain>`. Pipeline configuration that we use as part of this use case can be found in repo *srg-pipeline*.
 
 *Dynatrace* will monitor our demo application and is the source of truth for deployment and configuration change events. In addition, Dynatrace's AutomationEngine workflows, site reliability guardians provide all capabilities needed for release validation.
 
