@@ -61,6 +61,7 @@ configs:
       parameters: 
         #wf related
         wf_description: "Simplenode Workflow with Guardians by Monaco for demo purposes"
+        wf_isPrivate: false
         #trigger related
         tag_service:
           type: environment
