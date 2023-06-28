@@ -22,4 +22,4 @@ extra_vars = {
 
 ### Use Case Documentation
 
-Check out [Use case documentation](user-skel/ansible/roles/demo-release-validation-srg-gitlab/README.md) for more details.
+Check out [Use case documentation](files/docs/README.md) for more details.
