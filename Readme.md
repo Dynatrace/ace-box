@@ -75,9 +75,9 @@ The recommended way of installing any ACE box version, local or cloud, is via Te
   `demo_quality_gates_jenkins` | x | x | x | x | x | x |  |  | x | x | Demo flow for Quality Gates using Jenkins/Gitea/Cloud Automation. `demo_default` and `demo_quality_gates_jenkins` can be used interchangeably. |
   `demo_security_gates_jenkins` | x | x | x | x | x | x |  |  | x |  x | Demo flow for Security Gates using Jenkins/Gitea/Cloud Automation |
   `demo_quality_gates_gitlab` | x | x | x |  |  |  | x |  | x |  x | Demo flow for Quality Gates using GitLab/Cloud Automation |
-  `demo_release_validation_srg_gitlab` | x | x | x |  |  |  | x |  | x |  x | Demo flow for Release Validation using GitLab/Site Reliability Guardian |
+  [`demo_release_validation_srg_gitlab`](user-skel/ansible/roles/demo-release_validation-srg-gitlab/README.md) | x | x | x |  |  |  | x |  | x |  x | Demo flow for Release Validation using GitLab/Site Reliability Guardian |
   `demo_auto_remediation_ansible` | x | x | x | x | x | x |  | x |  | x | Demo flow for Quality Gates using Jenkins/Gitea/Cloud Automation |
-  `demo_ar_workflows_gitlab` | x | x | x | x | x | x |  | x |  | x | Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows |
+  [`demo_ar_workflows_gitlab`](user-skel/ansible/roles/demo-ar-workflows-gitlab/README.md) | x | x | x | x | x | x |  | x |  | x | Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows |
   `demo_monaco_gitops` | x | x | x | x | x | x |  |  |  | x | Demo flow for Quality Gates using Jenkins/Gitea/Cloud Automation |
 
   > Note: When specifying Cloud Automation instance details, Keptn will not be deployed
