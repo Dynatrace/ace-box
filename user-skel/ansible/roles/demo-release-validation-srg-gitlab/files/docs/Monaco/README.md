@@ -1,4 +1,4 @@
-# 5. Dynatrace Configurations leveraging Monaco 2.0
+# 6. Dynatrace Configurations leveraging Monaco 2.0
 
 We perform Dynatrace configurations automatically via `Monaco` in the beginning of the pipeline execution. Thus, all the initial configurations are applied before the next stages. 
 
@@ -31,4 +31,4 @@ We perform Dynatrace configurations automatically via `Monaco` in the beginning 
   ![gitlab-cicd](assets/gitlab_cicd_pipeline_monaco_cleanup.png)
 
 ## Continue to the Pipeline Stages
-- [4. Test Stage](../04_Performance_Test/README.md) to gather details on how the Performance Test is performed.
+- [5. Deployment Stage](../Deployment/README.md) to have the detailed explanation of Simplenode application deployments with the respective build options.

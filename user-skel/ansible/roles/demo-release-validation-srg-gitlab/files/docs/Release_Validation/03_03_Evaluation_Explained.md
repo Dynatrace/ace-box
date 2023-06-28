@@ -38,7 +38,7 @@ Let's start by examining the CI Pipeline in reverse order, from the last to the 
         ```
    ![gitlab-cicd](assets/gitlab_cicd_pipeline_success_jobdetails_send_event.png)
 
-   The bizevent that is sent to Dynatrace will trigger the particular (distingished by SRG_EVALUATION_SERVICE: "simplenode" AND SRG_EVALUATION_STAGE: "staging") [Workflow](../02_Workflow_SRG/README.md#3-create-a-dynatrace-workflow) which contains a [Site Reliability Guardian](../02_Workflow_SRG/README.md#2-create-a-new-guardian). `Dynatrace automation tool` waits for the evaluation result which is another bizevent that is generated after the SRG validation is finished. You can query it via `Dynatrace Notebook` as in the following DQL statement.
+   The bizevent that is sent to Dynatrace will trigger the particular (distingished by SRG_EVALUATION_SERVICE: "simplenode" AND SRG_EVALUATION_STAGE: "staging") [Workflow](../Workflow_SRG/README.md#3-create-a-dynatrace-workflow) which contains a [Site Reliability Guardian](../Workflow_SRG/README.md#2-create-a-new-guardian). `Dynatrace automation tool` waits for the evaluation result which is another bizevent that is generated after the SRG validation is finished. You can query it via `Dynatrace Notebook` as in the following DQL statement.
 
       ```
       fetch bizevents 
@@ -55,9 +55,10 @@ Let's start by examining the CI Pipeline in reverse order, from the last to the 
       ![gitlab-cicd](assets/gitlab_cicd_pipeline_success_jobdetails_final_result.png)
 
 ## Workflow and SRG Details
-- [Workflow](../02_Workflow_SRG/README.md#3-create-a-dynatrace-workflow)
-- [Site Reliability Guardian](../02_Workflow_SRG/README.md#2-create-a-new-guardian)
+- [Workflow](../Workflow_SRG/README.md#3-create-a-dynatrace-workflow)
+- [Site Reliability Guardian](../Workflow_SRG/README.md#2-create-a-new-guardian)
 
 ## Continue to the Pipeline Stages
-- [4. Test Stage](../04_Performance_Test/README.md) to gather details on how the Performance Test is performed.
-- [5. Configure Dynatrace Stage](../05_Monaco/README.md) to deep dive into Dynatrace configurations via Monaco
+- [4. Test Stage](../Performance_Test/README.md) to gather details on how the Performance Test is performed.
+- [5. Deployment Stage](../Deployment/README.md) to have the detailed explanation of Simplenode application deployments with the respective build options.
+- [6. Configure Dynatrace Stage](../Monaco/README.md) to deep dive into Dynatrace configurations via Monaco

@@ -1,4 +1,4 @@
-# 4. Performance Test with Locust
+# 5. Deployment of Simplenode Application
 
 [Locust](https://locust.io/) is an open-source load testing tool for developers written in Python. It allows users to describe user behavior using ordinary Python code, making it easy to create HTTP requests and scripts. Load testing is the practice of testing a software application with the primary purpose of stressing the application's capabilities. 
 
@@ -6,7 +6,7 @@
 
 ![gitlab-cicd](assets/gitlab_cicd_pipeline_locust_test_duration.png)
 
-The following code part picks the start time before the test begins, and the end time after the test finishes. These information is stored as artifact to be used by SRG Evaluation explained [here](../03_Release_Validation/03_03_Evaluation_Explained.md)
+The following code part picks the start time before the test begins, and the end time after the test finishes. These information is stored as artifact to be used by SRG Evaluation explained [here](../Release_Validation/03_03_Evaluation_Explained.md)
 
 ```
 run-tests:
@@ -32,5 +32,5 @@ run-tests:
 ```
 
 ## Continue to the Pipeline Stages
-- [5. Configure Dynatrace](../05_Monaco/README.md) to deep dive into Dynatrace configurations via Monaco
-- [3. Evaluation Explained](../03_Release_Validation/03_03_Evaluation_Explained.md) to gather details on how the Evaluation is performed.
+- [5. Configure Dynatrace](../Monaco/README.md) to deep dive into Dynatrace configurations via Monaco
+- [3. Evaluation Explained](../Release_Validation/03_03_Evaluation_Explained.md) to gather details on how the Evaluation is performed.

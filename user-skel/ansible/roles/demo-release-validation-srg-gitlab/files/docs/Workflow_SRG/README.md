@@ -27,7 +27,7 @@ If you open the Site Reliability Guardian `Simplenode Guardian for ACE Demo`, yo
 
 ![gitlab-cicd](assets/srg_edit_name.png)
 
-There are multiple objectives attached to this SRG using the type [DQL](https://www.dynatrace.com/support/help/platform/grail/dynatrace-query-language/dql-guide) or [SLO](../01_SLI_SLO/README.md). 
+There are multiple objectives attached to this SRG using the type [DQL](https://www.dynatrace.com/support/help/platform/grail/dynatrace-query-language/dql-guide) or [SLO](../SLI_SLO/README.md). 
 
 ![gitlab-cicd](assets/srg_objective_1.png)
 ![gitlab-cicd](assets/srg_objective_2.png)
@@ -54,5 +54,5 @@ The start time and end time expression _is already added to the SRG task_ like i
 
 ## DQL and SLO Details
 - [DQL](https://www.dynatrace.com/support/help/platform/grail/dynatrace-query-language/dql-guide) to gather details about DQL
-- [SLO](../01_SLI_SLO/README.md) to deep dive into SLO definitions in Dynatrace
+- [SLO](../SLI_SLO/README.md) to deep dive into SLO definitions in Dynatrace
 

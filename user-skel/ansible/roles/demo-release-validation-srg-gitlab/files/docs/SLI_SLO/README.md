@@ -95,5 +95,5 @@ The first SLO will be for availability, with the following values:
     ```
 
 ## Site Reliability Guardian Details
-- [Site Reliability Guardian](../02_Workflow_SRG/README.md#2-create-a-new-guardian) to embed the SLO definitions as an objective into a Site Reliability Guardian
+- [Site Reliability Guardian](../Workflow_SRG/README.md#2-create-a-new-guardian) to embed the SLO definitions as an objective into a Site Reliability Guardian
 
