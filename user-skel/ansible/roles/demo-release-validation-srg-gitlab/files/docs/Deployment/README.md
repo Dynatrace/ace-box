@@ -9,7 +9,7 @@ It has been modified and extended it with a couple of additional API calls such 
 * "login" with a username
 * get the currently running version
 
-![](images/simplenodesersviceui.png)
+![](assets/simplenodesersviceui.png)
 
 ## Builds with different behavior
 
@@ -24,8 +24,8 @@ The app has 4 built-in "build number" behaviors - meaning - if you launch the ap
 |5|Performance good, introduce Application Security Vulnerability |
 
 Every build shows the build number and has its own color:
-![](images/4buildoverview.png)
+![](assets/4buildoverview.png)
 
 ## Continue to the Pipeline Stages
 - [6. Configure Dynatrace](../Monaco/README.md) to deep dive into Dynatrace configurations via Monaco
-- [3. Evaluation Explained](../Release_Validation/03_03_Evaluation_Explained.md) to gather details on how the Evaluation is performed
+- [4. Test Stage](../Performance_Test/README.md) to gather details on how the Performance Test is performed.
