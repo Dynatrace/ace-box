@@ -61,7 +61,7 @@ The recommended way of installing any ACE box version, local or cloud, is via Te
         Please consult our dedicated readmes for [AWS](terraform/aws/Readme.md), [MS Azure](terraform/azure/Readme.md) and [Google Cloud](terraform/gcloud/Readme.md) specific variables.
 
         \*: `demo_ar_workflows_gitlab` requires extra variables. See [use case README](user-skel/ansible/roles/demo-ar-workflows-gitlab/README.md) for details.
-         \*: `demo_release_validation_srg_gitlab` requires extra variables. See [use case README](user-skel/ansible/roles/demo-release-validation-srg-gitlab/README.md) for details.
+        \*: `demo_release_validation_srg_gitlab` requires extra variables. See [use case README](user-skel/ansible/roles/demo-release-validation-srg-gitlab/README.md) for details.
 
 4. Run `terraform init`
 5. Run `terraform apply`
@@ -75,7 +75,7 @@ The recommended way of installing any ACE box version, local or cloud, is via Te
   `demo_quality_gates_jenkins` | x | x | x | x | x | x |  |  | x | x | Demo flow for Quality Gates using Jenkins/Gitea/Cloud Automation. `demo_default` and `demo_quality_gates_jenkins` can be used interchangeably. |
   `demo_security_gates_jenkins` | x | x | x | x | x | x |  |  | x |  x | Demo flow for Security Gates using Jenkins/Gitea/Cloud Automation |
   `demo_quality_gates_gitlab` | x | x | x |  |  |  | x |  | x |  x | Demo flow for Quality Gates using GitLab/Cloud Automation |
-  [`demo_release_validation_srg_gitlab`](user-skel/ansible/roles/demo-release_validation-srg-gitlab/README.md) | x | x | x |  |  |  | x |  | x |  x | Demo flow for Release Validation using GitLab/Site Reliability Guardian |
+  [`demo_release_validation_srg_gitlab`](user-skel/ansible/roles/demo-release-validation-srg-gitlab/README.md) | x | x | x |  |  |  | x |  | x |  x | Demo flow for Release Validation using GitLab/Site Reliability Guardian |
   `demo_auto_remediation_ansible` | x | x | x | x | x | x |  | x |  | x | Demo flow for Quality Gates using Jenkins/Gitea/Cloud Automation |
   [`demo_ar_workflows_gitlab`](user-skel/ansible/roles/demo-ar-workflows-gitlab/README.md) | x | x | x | x | x | x |  | x |  | x | Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows |
   `demo_monaco_gitops` | x | x | x | x | x | x |  |  |  | x | Demo flow for Quality Gates using Jenkins/Gitea/Cloud Automation |
