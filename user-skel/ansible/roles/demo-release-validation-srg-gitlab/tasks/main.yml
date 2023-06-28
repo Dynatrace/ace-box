@@ -24,14 +24,14 @@
     name: gitlab
     tasks_from: ensure-group
   vars:
-    gitlab_group_name: "{{ gitlab_demo_default_group }}"
+    gitlab_group_name: "{{ gitlab_demo_srg_group }}"
 
 - name: Gitlab - Ensure Project
   include_role:
     name: gitlab
     tasks_from: ensure-project
   vars:
-    gitlab_prj: "{{ gitlab_demo_default_repo_name }}"
+    gitlab_prj: "{{ gitlab_demo_srg_repo_name }}"
     gitlab_prj_namespace_id: "{{ gitlab_group_id }}"
 
 - include_role:
@@ -104,8 +104,8 @@
     git_password: "{{ gitlab_password }}"
     git_domain: "{{ gitlab_domain }}"
     git_remote: "gitlab"
-    git_org_name: "{{ gitlab_demo_default_group }}"
-    repo_name: "{{ gitlab_demo_default_repo_name }}"
+    git_org_name: "{{ gitlab_demo_srg_group }}"
+    repo_name: "{{ gitlab_demo_srg_repo_name }}"
     app_simplenode_overwrites:
       # Ignores folders from being copied to the repo:
       - dest: demo/
@@ -129,7 +129,7 @@
     git_password: "{{ gitlab_password }}"
     git_domain: "{{ gitlab_domain }}"
     git_remote: "gitlab"
-    git_org: "{{ gitlab_demo_default_group }}"
+    git_org: "{{ gitlab_demo_srg_group }}"
     git_repo: "{{ gitlab_demo_docs_repo_name }}"
     repo_src: "{{ dt_srg_gitlab_docs_repo_src }}"
     track_upstream: true
