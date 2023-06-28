@@ -16,6 +16,17 @@
   vars:
     monaco_version: "v2.1.0"
 
+- name: Monaco - Cleanup potential conflicting Monaco resources
+  shell:      
+    cmd: MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco delete --manifest {{ role_path }}/files/monaco/manifest.yaml --file {{ role_path }}/files/monaco/delete.yaml
+  environment:
+      DT_PLATFORM_TENANT_URL: "{{ dynatrace_tenant_url }}"
+      DT_API_TOKEN: "{{ ace_box_monaco_api_token }}"
+      DT_OAUTH_CLIENT_ID: "{{ extra_vars.dt_oauth_client_id }}"
+      DT_OAUTH_CLIENT_SECRET: "{{ extra_vars.dt_oauth_client_secret }}"
+      DT_OAUTH_SSO_ENDPOINT: "{{ extra_vars.dt_oauth_sso_endpoint }}"
+
+
 - include_role:
     name: gitlab
 
@@ -97,6 +108,11 @@
     src: "{{ role_path }}/files/locust"
     dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/"
 
+- name: Add Demo Use case documentation
+  ansible.builtin.copy:
+    src: "{{ role_path }}/files/docs"
+    dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/"
+
 - include_role:
     name: app-simplenode
   vars:
@@ -118,21 +134,21 @@
 #
 # Docs
 #
-- set_fact:
-    dt_srg_gitlab_docs_repo_src: "{{ role_path }}/files/docs"
+# - set_fact:
+#     dt_srg_gitlab_docs_repo_src: "{{ role_path }}/files/docs"
 
-- name: Publish docs
-  include_role:
-    name: repository
-  vars:
-    git_username: "root"
-    git_password: "{{ gitlab_password }}"
-    git_domain: "{{ gitlab_domain }}"
-    git_remote: "gitlab"
-    git_org: "{{ gitlab_demo_srg_group }}"
-    git_repo: "{{ gitlab_demo_docs_repo_name }}"
-    repo_src: "{{ dt_srg_gitlab_docs_repo_src }}"
-    track_upstream: true
+# - name: Publish docs
+#   include_role:
+#     name: repository
+#   vars:
+#     git_username: "root"
+#     git_password: "{{ gitlab_password }}"
+#     git_domain: "{{ gitlab_domain }}"
+#     git_remote: "gitlab"
+#     git_org: "{{ gitlab_demo_srg_group }}"
+#     git_repo: "{{ gitlab_demo_docs_repo_name }}"
+#     repo_src: "{{ dt_srg_gitlab_docs_repo_src }}"
+#     track_upstream: true
 
 # Include use case specific Dahboard values
 - set_fact:
