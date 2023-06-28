@@ -61,6 +61,7 @@ The recommended way of installing any ACE box version, local or cloud, is via Te
         Please consult our dedicated readmes for [AWS](terraform/aws/Readme.md), [MS Azure](terraform/azure/Readme.md) and [Google Cloud](terraform/gcloud/Readme.md) specific variables.
 
         \*: `demo_ar_workflows_gitlab` requires extra variables. See [use case README](user-skel/ansible/roles/demo-ar-workflows-gitlab/README.md) for details.
+       
         \*: `demo_release_validation_srg_gitlab` requires extra variables. See [use case README](user-skel/ansible/roles/demo-release-validation-srg-gitlab/README.md) for details.
 
 4. Run `terraform init`
