@@ -76,42 +76,42 @@
 # Use-case specific overwrites
 #
 
-- name: Overwrite .gitlab-ci.yml
-  ansible.builtin.copy:
-    src: "{{ role_path }}/files/.gitlab-ci.yml"
-    dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/.gitlab-ci.yml"
-- name: Overwrite simplenode app.js
-  ansible.builtin.copy:
-    src: "{{ role_path }}/files/simplenode/app.js"
-    dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/app.js"
-- name: Add simplenode logger.js
-  ansible.builtin.copy:
-    src: "{{ role_path }}/files/simplenode/logger.js"
-    dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/logger.js"
-- name: Add simplenode package.json
-  ansible.builtin.copy:
-    src: "{{ role_path }}/files/simplenode/package.json"
-    dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/package.json"
-- name: Overwrite dynatrace.attachrules.yaml
-  ansible.builtin.copy:
-    src: "{{ role_path }}/files/dynatrace.attachrules.yaml"
-    dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/dynatrace/dynatrace.attachrules.yaml"
+# - name: Overwrite .gitlab-ci.yml
+#   ansible.builtin.copy:
+#     src: "{{ role_path }}/files/.gitlab-ci.yml"
+#     dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/.gitlab-ci.yml"
+# - name: Overwrite simplenode app.js
+#   ansible.builtin.copy:
+#     src: "{{ role_path }}/files/simplenode/app.js"
+#     dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/app.js"
+# - name: Add simplenode logger.js
+#   ansible.builtin.copy:
+#     src: "{{ role_path }}/files/simplenode/logger.js"
+#     dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/logger.js"
+# - name: Add simplenode package.json
+#   ansible.builtin.copy:
+#     src: "{{ role_path }}/files/simplenode/package.json"
+#     dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/package.json"
+# - name: Overwrite dynatrace.attachrules.yaml
+#   ansible.builtin.copy:
+#     src: "{{ role_path }}/files/dynatrace.attachrules.yaml"
+#     dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/dynatrace/dynatrace.attachrules.yaml"
 
 
-- name: Add Monaco configurations
-  ansible.builtin.copy:
-    src: "{{ role_path }}/files/monaco"
-    dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/"
+# - name: Add Monaco configurations
+#   ansible.builtin.copy:
+#     src: "{{ role_path }}/files/monaco"
+#     dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/"
 
-- name: Overwrite Locust configurations
-  ansible.builtin.copy:
-    src: "{{ role_path }}/files/locust"
-    dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/"
+# - name: Overwrite Locust configurations
+#   ansible.builtin.copy:
+#     src: "{{ role_path }}/files/locust"
+#     dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/"
 
-- name: Add Demo Use case documentation
-  ansible.builtin.copy:
-    src: "{{ role_path }}/files/docs"
-    dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/"
+# - name: Add Demo Use case documentation
+#   ansible.builtin.copy:
+#     src: "{{ role_path }}/files/docs"
+#     dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/"
 
 - include_role:
     name: app-simplenode
@@ -129,7 +129,21 @@
       - dest: jmeter/
       - dest: load-gen/
       - dest: cloudautomation/
-
+      # Overwrites folders in the repo:
+      - dest: monaco/
+        src: '{{ playbook_dir }}/roles/demo-release-validation-srg-gitlab/files/monaco/'
+      - dest: locust/
+        src: '{{ playbook_dir }}/roles/demo-release-validation-srg-gitlab/files/locust/'
+      - dest: docs/
+        src: '{{ playbook_dir }}/roles/demo-release-validation-srg-gitlab/files/docs/'
+      # Overwrites files in the repo:
+      - dest: .gitlab-ci.yml
+      - dest: app.js
+      - dest: logger.js
+      - dest: package.json
+      - dest: logger.js
+      - dest: dynatrace/dynatrace.attachrules.yaml
+        src: '{{ playbook_dir }}/roles/demo-release-validation-srg-gitlab/files/dynatrace.attachrules.yaml'
 
 #
 # Docs
