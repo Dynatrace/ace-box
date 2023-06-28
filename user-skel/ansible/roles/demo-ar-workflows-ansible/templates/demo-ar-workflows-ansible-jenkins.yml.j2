@@ -6,18 +6,20 @@ controller:
         - script: >
             folder('{{ demo_jenkins_folder }}')
         - script: >
-            multibranchPipelineJob('{{ demo_jenkins_folder }}/1. Build images') {
-              branchSources {
-                git {
-                  id('17CE1AAF-8E81-4A49-ACCB-4CCA68DCD46C')
-                  remote('{{ ingress_protocol }}://{{ git_domain }}/{{ demo_org }}/{{ demo_repo }}')
-                  credentialsId('git-creds-ace')
-                  includes('main')
-                }
-              }
-              factory {
-                workflowBranchProjectFactory {
+            pipelineJob('{{ demo_jenkins_folder }}/1. Build images') {
+              definition {
+                cpsScm {
                   scriptPath('jenkins/01_build_images.Jenkinsfile')
+                  scm {
+                    git {
+                        remote { 
+                          url('{{ ingress_protocol }}://{{ git_domain }}/{{ demo_org }}/{{ demo_repo }}')
+                          credentials('git-creds-ace')
+                        }
+                        branch('*/main')
+                    }
+                  }
+                  lightweight()
                 }
               }
             }
