@@ -19,3 +19,7 @@ extra_vars = {
   ...
 }
 ```
+
+### Use Case Documentation
+
+Check out [Use case documentation]((user-skel/ansible/roles/demo-release-validation-srg-gitlab/README.md)) for more details.
