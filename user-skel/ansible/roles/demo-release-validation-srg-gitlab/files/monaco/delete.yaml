@@ -1,7 +1,7 @@
 delete:
   
   # project - app - staging
-  - project: app.staging
+  - project: app
     type: application-web
     name: simplenode-staging  
   - project: app.staging

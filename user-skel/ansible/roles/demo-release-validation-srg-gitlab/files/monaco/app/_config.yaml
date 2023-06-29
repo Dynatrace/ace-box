@@ -1,15 +1,48 @@
 configs:
+  # auto-tag
+  - id: autoTagApp
+    type:
+      settings:
+        schema: builtin:tags.auto-tagging
+        scope: environment
+        schemaVersion: "1.0.11"
+    config:
+      template: auto-tag.json
+      name:
+        type: compound
+        format: "app-{{ .demoIdentifier }}"
+        references:
+          - demoIdentifier
+      demoIdentifier:
+        type: environment
+        name: DEMO_IDENTIFIER
+  
   # application-web 
-  - id: appProd
+  - id: app
     type:
       api: application-web
     config:
-      template: ../shared/application.json
-      name: simplenode-prod
+      template: application.json
+      name:
+        type: compound
+        format: "{{ .releaseProduct }}-{{ .releaseStage }}-{{ .demoIdentifier }}"
+        references:
+          - releaseProduct
+          - releaseStage
+          - demoIdentifier
+      releaseProduct:
+        type: environment
+        name: RELEASE_PRODUCT
+      releaseStage:
+        type: environment
+        name: RELEASE_STAGE
+      demoIdentifier:
+        type: environment
+        name: DEMO_IDENTIFIER
       skip: false
 
   # app-detection-rule 
-  - id: appDetectionProd
+  - id: appDetection
     type:
       settings:
         schema: builtin:rum.web.app-detection
@@ -18,12 +51,13 @@ configs:
     config:
       name: 
         type: compound
-        format: "{{ .releaseStage }}-app-detection-rule"
+        format: "{{ .releaseStage }}-app-detection-{{ .demoIdentifier }}"
         references:
           - releaseStage
-      template: ../shared/application-detection-rule.json
+          - demoIdentifier
+      template: application-detection-rule.json
       parameters:
-        applicationId: ["application-web", "appProd", "id"]
+        applicationId: ["application-web", "app", "id"]
         pattern:
           type: compound
           format: "{{ .ingressProtocol }}://{{ .releaseProduct }}-{{ .releaseStage }}.{{ .ingressDomain }}"
@@ -44,29 +78,9 @@ configs:
         ingressDomain:
           type: environment
           name: INGRESS_DOMAIN
-      skip: false
-
-  # management-zone 
-  - id: managementZoneProd
-    type:
-      settings:
-        schema: builtin:management-zones
-        scope: environment
-        schemaVersion: "1.0.5"
-    config:
-      name:
-        type: environment
-        name: RELEASE_STAGE
-      template: ../shared/management-zone.json
-      parameters:
-        tag:
-          type: compound
-          format: "[Environment]DT_RELEASE_STAGE:{{ .releaseStage }}"
-          references:
-            - releaseStage
-        releaseStage:
+        demoIdentifier:
           type: environment
-          name: RELEASE_STAGE
+          name: DEMO_IDENTIFIER
       skip: false
 
   #calculated metrics service
@@ -74,8 +88,13 @@ configs:
     type:
       api: calculated-metrics-service
     config:
-      name: simplenode-prod.failure_rate_by_version
-      template: ../shared/csm-failure-rate.json
+      name: 
+        type: compound
+        format: "{{ .releaseStage }}-failure_rate_by_version-{{ .demoIdentifier }}"
+        references:
+          - releaseStage
+          - demoIdentifier      
+      template: csm-failure-rate.json
       skip: false
       parameters:
         metricKey:
@@ -89,14 +108,21 @@ configs:
         releaseStage:
           type: environment
           name: RELEASE_STAGE
-
-
+        demoIdentifier:
+          type: environment
+          name: DEMO_IDENTIFIER
+      
   - id: csmResponseTime
     type:
       api: calculated-metrics-service
     config:
-      name: simplenode-prod.response_time_by_version
-      template: ../shared/csm-response-time.json
+      name: 
+        type: compound
+        format: "{{ .releaseStage }}-response_time_by_version-{{ .demoIdentifier }}"
+        references:
+          - releaseStage
+          - demoIdentifier 
+      template: csm-response-time.json
       skip: false
       parameters:
         metricKey:
@@ -110,14 +136,22 @@ configs:
         releaseStage:
           type: environment
           name: RELEASE_STAGE
-        
+        demoIdentifier:
+          type: environment
+          name: DEMO_IDENTIFIER
+    
   #slo
   - id: slo_success_rate
     type:
       api: slo
     config:
-      template: ../shared/slo.json
-      name: slo_simplenode_prod_success_rate
+      template: slo.json
+      name:
+        type: compound
+        format: "{{ .releaseStage }}-slo-success-rate-{{ .demoIdentifier }}"
+        references:
+          - releaseStage
+          - demoIdentifier
       parameters:
         description: "Service Errors Total SuccessCount / Service RequestCount Total"
         metricNumerator: "builtin:service.errors.total.successCount:splitBy()"
@@ -131,7 +165,17 @@ configs:
         releaseStage:
           type: environment
           name: RELEASE_STAGE
-        sloTimeFrame: "-1w"
+        sloTimeFrame:
+          type: compound
+          format: "-{{ .timeFrame }}"
+          references:
+            - timeFrame
+        timeFrame:
+          type: environment
+          name: TEST_TIMEFRAME
+        demoIdentifier:
+          type: environment
+          name: DEMO_IDENTIFIER
       skip: false
 
   # dashboard
@@ -139,8 +183,13 @@ configs:
     type:
       api: dashboard
     config:
-      template: ../shared/dashboard.json
-      name: simplenode-prod-Tracker
+      template: dashboard.json
+      name: 
+        type: compound
+        format: "{{ .releaseStage }}-dashboard-{{ .demoIdentifier }}"
+        references:
+          - releaseStage
+          - demoIdentifier
       skip: false
       parameters:
         releaseProduct:
@@ -152,15 +201,22 @@ configs:
         sloId: ["slo", "slo_success_rate", "id"]
         csmFailureRateMetricKey: ["calculated-metrics-service", "csmFailureRate", "metricKey"]
         csmResponseTimeMetricKey: ["calculated-metrics-service", "csmResponseTime", "metricKey"]
-
+        demoIdentifier:
+          type: environment
+          name: DEMO_IDENTIFIER
   
   # synthetic-monitor
-  - id: health-simplenode-prod
+  - id: health-simplenode
     type:
       api: synthetic-monitor
     config:
-      name: simplenode-prod-health-check
-      template: ../shared/health-check-monitor.json      
+      name:
+        type: compound
+        format: "{{ .releaseStage }}-health-simplenode-{{ .demoIdentifier }}"
+        references:
+          - releaseStage
+          - demoIdentifier
+      template: health-check-monitor.json      
       parameters:
         description: Health check for simplenode in app-one       
         location: ["infrastructure","synthetic-location", "synthetic-location-ace-box", "id"]
@@ -187,5 +243,7 @@ configs:
         ingressDomain:
           type: environment
           name: INGRESS_DOMAIN
+        demoIdentifier: 
+          type: environment
+          name: DEMO_IDENTIFIER
       skip: false
-

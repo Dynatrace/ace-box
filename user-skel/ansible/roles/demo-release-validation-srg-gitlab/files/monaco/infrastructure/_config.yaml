@@ -8,30 +8,36 @@ configs:
       template: auto-tag.json
       name:
         type: compound
-        format: "{{ .releaseStage }}"
+        format: "environment-{{ .demoIdentifier }}"
         references:
-          - releaseStage
+          - demoIdentifier
       skip: false
       parameters:
-        releaseStage:
-          type: environment
-          name: RELEASE_STAGE
         hostGroup:
           type: environment
           name: HOST_GROUP
           default: "ace-box"
-
+        demoIdentifier: 
+          type: environment
+          name: DEMO_IDENTIFIER 
 
   # private-sythetic-location
   - id: synthetic-location-ace-box
     type:
       api: synthetic-location
     config:
-      name: ACE-BOX
+      name:
+        type: compound
+        format: "synth-location-{{ .demoIdentifier }}"
+        references:
+          - demoIdentifier
       template: private-synthetic-location.json
       parameters:
         nodeId:
           name: SYNTH_NODE_ID
+          type: environment
+        demoIdentifier:
+          name: DEMO_IDENTIFIER
           type: environment
       skip: false
 
@@ -40,35 +46,56 @@ configs:
     type:
       api: request-attributes
     config:
-      name: LTN
+      name:
+        type: compound
+        format: "LTN-{{ .demoIdentifier }}"
+        references:
+          - demoIdentifier
       template: request-attribute.json
       parameters:
         delimiter: LTN=
         endDelimiter: ;
         headerName: x-dynatrace-test
+        demoIdentifier:
+          name: DEMO_IDENTIFIER
+          type: environment
       skip: false
   
   - id: tsn-request-attribute
     type:
       api: request-attributes
     config:
-      name: TSN
+      name: 
+        type: compound
+        format: "TSN-{{ .demoIdentifier }}"
+        references:
+          - demoIdentifier
       template: request-attribute.json
       parameters:
         delimiter: TSN=
         endDelimiter: ;
         headerName: x-dynatrace-test
+        demoIdentifier:
+          name: DEMO_IDENTIFIER
+          type: environment
       skip: false
   
   - id: lsn-request-attribute
     type:
       api: request-attributes
     config:
-      name: LSN
+      name:  
+        type: compound
+        format: "LSN-{{ .demoIdentifier }}"
+        references:
+          - demoIdentifier
       template: request-attribute.json
       parameters:
         delimiter: LSN=
         endDelimiter: ;
         headerName: x-dynatrace-test
+        demoIdentifier:
+          name: DEMO_IDENTIFIER
+          type: environment
       skip: false
 

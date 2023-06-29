@@ -14,18 +14,23 @@
 - include_role:
     name: monaco
   vars:
-    monaco_version: "v2.1.0"
+    monaco_version: "v2.3.0"
+
+- include_role:
+    name: dt-access-token
+  vars:
+    access_token_var_name: "monaco_cleanup_api_token"
+    access_token_scope: ["slo.read","slo.write","CaptureRequestData","credentialVault.read","credentialVault.write","DataExport","DataPrivacy","ExternalSyntheticIntegration","ReadConfig","WriteConfig","events.ingest","settings.read","settings.write"]
 
 - name: Monaco - Cleanup potential conflicting Monaco resources
   shell:      
     cmd: MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco delete --manifest {{ role_path }}/files/monaco/manifest.yaml --file {{ role_path }}/files/monaco/delete.yaml
   environment:
-      DT_PLATFORM_TENANT_URL: "{{ dynatrace_tenant_url }}"
-      DT_API_TOKEN: "{{ ace_box_monaco_api_token }}"
+      DT_PLATFORM_TENANT_URL: "{{ extra_vars.dt_environment_url_gen3 }}"
+      DT_API_TOKEN: "{{ monaco_cleanup_api_token }}"
       DT_OAUTH_CLIENT_ID: "{{ extra_vars.dt_oauth_client_id }}"
       DT_OAUTH_CLIENT_SECRET: "{{ extra_vars.dt_oauth_client_secret }}"
       DT_OAUTH_SSO_ENDPOINT: "{{ extra_vars.dt_oauth_sso_endpoint }}"
-
 
 - include_role:
     name: gitlab
@@ -45,11 +50,6 @@
     gitlab_prj: "{{ gitlab_demo_srg_repo_name }}"
     gitlab_prj_namespace_id: "{{ gitlab_group_id }}"
 
-- include_role:
-    name: dt-access-token
-  vars:
-    access_token_var_name: "{{ gitlab_srg_dt_access_token_name }}"
-    access_token_scope: ["events.ingest", "events.read"]
 
 - include_role:
     name: gitlab
@@ -71,6 +71,7 @@
     
     - { key: 'GITLAB_PRIVATE_TOKEN', value: '{{ gitlab_oauth_token }}' }
     - { key: 'GITLAB_EXTERNAL_ENDPOINT', value: '{{ gitlab_external_endpoint }}' }
+    - { key: 'DEMO_IDENTIFIER', value: '{{ demo_identifier }}' }
 
 #
 # Use-case specific overwrites
@@ -138,10 +139,15 @@
         src: '{{ playbook_dir }}/roles/demo-release-validation-srg-gitlab/files/docs/'
       # Overwrites files in the repo:
       - dest: .gitlab-ci.yml
+        src: '{{ playbook_dir }}/roles/demo-release-validation-srg-gitlab/files/.gitlab-ci.yml'
       - dest: app.js
+        src: '{{ playbook_dir }}/roles/demo-release-validation-srg-gitlab/files/simplenode/app.js'
       - dest: logger.js
+        src: '{{ playbook_dir }}/roles/demo-release-validation-srg-gitlab/files/simplenode/logger.js'
       - dest: package.json
+        src: '{{ playbook_dir }}/roles/demo-release-validation-srg-gitlab/files/simplenode/package.json'
       - dest: logger.js
+        src: '{{ playbook_dir }}/roles/demo-release-validation-srg-gitlab/files/simplenode/logger.js'
       - dest: dynatrace/dynatrace.attachrules.yaml
         src: '{{ playbook_dir }}/roles/demo-release-validation-srg-gitlab/files/dynatrace.attachrules.yaml'
 

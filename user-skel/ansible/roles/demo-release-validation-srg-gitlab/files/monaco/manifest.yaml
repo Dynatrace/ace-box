@@ -5,14 +5,30 @@ projects:
     path: infrastructure
   - name: app
     path: app
-    type: grouping
   - name: srg
     path: srg
 
 environmentGroups:
-  - name: default
+  - name: staging
     environments:
-      - name: ace-box
+      - name: staging-environment
+        url:
+          type: environment
+          value: DT_PLATFORM_TENANT_URL
+        auth:
+          token:
+            name: DT_API_TOKEN
+          oAuth:
+            clientId:
+              name: DT_OAUTH_CLIENT_ID
+            clientSecret:
+              name: DT_OAUTH_CLIENT_SECRET
+            tokenEndpoint:
+              type: environment
+              value: DT_OAUTH_SSO_ENDPOINT
+  - name: production
+    environments:
+      - name: prod-environment
         url:
           type: environment
           value: DT_PLATFORM_TENANT_URL
