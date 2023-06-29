@@ -153,25 +153,7 @@
     controller_username: "{{ awx_admin_username }}"
   register: inventory
 
-- name: Create remediation template
-  awx.awx.job_template:
-    name: "Remediation"
-    job_type: "run"
-    organization: "{{ organization.id }}"
-    inventory: "{{ inventory.id }}"
-    project: "{{ project.id }}"
-    playbook: "ansible/remediation.yaml"
-    verbosity: 0
-    ask_variables_on_launch: true
-    credentials:
-      - "{{ credential_dt_api_token.id }}"
-    controller_host: "{{ awx_internal_endpoint }}"
-    controller_password: "{{ awx_admin_password }}"
-    controller_username: "{{ awx_admin_username }}"
-  register: remediation_template
-
 - set_fact:
-    remediation_template_url: "{{ awx_external_endpoint }}/#/templates/job_template/{{ remediation_template.id }}"
     jenkins_pipeline_url_shift_traffic: "{{ jenkins_url }}/job/{{ demo_ar_workflows_ansible_repo_name | urlencode() }}/job/{{ '4. Shift traffic' | urlencode() }}/build?delay=0sec"
 
 - name: Create Canary Reset template
@@ -195,34 +177,22 @@
     controller_username: "{{ awx_admin_username }}"
   register: canary_reset_template
 
-# - name: Create Canary Shift template
-#   awx.awx.job_template:
-#     name: "Canary Shift"
-#     job_type: "run"
-#     organization: "{{ organization.id }}"
-#     inventory: "{{ inventory.id }}"
-#     project: "{{ project.id }}"
-#     playbook: "playbooks/canary.yaml"
-#     verbosity: 0
-#     ask_variables_on_launch: true
-#     skip_tags: canary_reset
-#     extra_vars:
-#       jenkins_url: "{{ jenkins_pipeline_url_shift_traffic }}"
-#       remediation_url: "{{ awx_external_endpoint }}/api/v2/job_templates/{{ canary_reset_template.id }}/launch/"
-#     credentials:
-#       - "{{ credential_dt_api_token.id }}"
-#     controller_host: "{{ awx_internal_endpoint }}"
-#     controller_password: "{{ awx_admin_password }}"
-#     controller_username: "{{ awx_admin_username }}"
-
-# - name: Create remediation meta configmap
-#   kubernetes.core.k8s:
-#     name: "awx-meta-canary"
-#     api_version: v1
-#     kind: ConfigMap
-#     state: present
-#     namespace: "{{ awx_namespace }}"
-#     resource_definition:
-#       data:
-#         remediation_template_id: "{{ remediation_template.id }}"
-#         remediation_template_url: "{{ remediation_template_url }}"
+- name: Create Canary Shift template
+  awx.awx.job_template:
+    name: "Canary Shift"
+    job_type: "run"
+    organization: "{{ organization.id }}"
+    inventory: "{{ inventory.id }}"
+    project: "{{ project.id }}"
+    playbook: "ansible/canary.yaml"
+    verbosity: 0
+    ask_variables_on_launch: true
+    skip_tags: canary_reset
+    extra_vars:
+      jenkins_url: "{{ jenkins_pipeline_url_shift_traffic }}"
+      remediation_url: "{{ awx_external_endpoint }}/api/v2/job_templates/{{ canary_reset_template.id }}/launch/"
+    credentials:
+      - "{{ credential_dt_api_token.id }}"
+    controller_host: "{{ awx_internal_endpoint }}"
+    controller_password: "{{ awx_admin_password }}"
+    controller_username: "{{ awx_admin_username }}"
