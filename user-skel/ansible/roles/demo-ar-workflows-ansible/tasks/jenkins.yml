@@ -25,5 +25,3 @@
     dt_oauth_client_secret: "{{ extra_vars.dt_oauth_client_secret }}"
     dt_oauth_account_urn: "{{ extra_vars.dt_oauth_account_urn }}"
     dt_environment_url_gen3: "{{ extra_vars.dt_environment_url_gen3 }}"
-
-# TBD: Trigger branch scan as it sporadically fails on initial Jenkins deployment

@@ -1,0 +1,34 @@
+{
+  "responseTime": {
+    "enabled": true,
+    "detectionMode": "auto",
+    "autoDetection": {
+      "responseTimeAll": {
+        "degradationMilliseconds": 100,
+        "degradationPercent": 50
+      },
+      "responseTimeSlowest": {
+        "slowestDegradationMilliseconds": 1000,
+        "slowestDegradationPercent": 100
+      },
+      "overAlertingProtection": {
+        "requestsPerMinute": 10,
+        "minutesAbnormalState": 1
+      }
+    }
+  },
+  "failureRate": {
+    "enabled": true,
+    "detectionMode": "fixed",
+    "fixedDetection": {
+      "threshold": 10,
+      "overAlertingProtection": {
+        "requestsPerMinute": 10,
+        "minutesAbnormalState": 1
+      },
+      "sensitivity": "high"
+    }
+  },
+  "loadDrops": { "enabled": false },
+  "loadSpikes": { "enabled": false }
+}

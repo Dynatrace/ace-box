@@ -11,14 +11,32 @@
       - { key: 'dt_oauth_account_urn', regex: 'urn:dtaccount:.' }
       - { key: 'dt_environment_url_gen3' }
 
+#
+# k8s & DT operator
+#
 - include_role:
     name: microk8s
 
 - include_role:
+    name: dt-operator
+
+#
+# Monaco + DT config
+#
+- include_role:
+    name: monaco
+  vars:
+    monaco_version: "v2.3.0"
+
+#
+# Gitea
+#
+- include_role:
     name: gitea
 
-# TBD: Add custom monaco
-
+#
+# Simplenodeservice + load generator
+#
 - ansible.builtin.include_tasks: simplenode.yml
 
 - include_role:
@@ -27,33 +45,34 @@
     load_gen_endpoint: "{{ ingress_protocol }}://simplenodeservice-canary-jenkins.{{ ingress_domain }}/api/invoke?url=https://www.dynatrace.com"
     load_gen_namespace: "canary-jenkins-loadgen"
 
+#
+# Jenkins & AWX
+# 
+# Configure Jenkins after AWX is available
+# 
 - ansible.builtin.include_tasks: jenkins.yml
 
 - ansible.builtin.include_tasks: awx.yml
 
-- include_role:
-    name: awx
-    tasks_from: source-secrets
+- ansible.builtin.include_tasks: jenkins-configuration.yml
 
 - include_role:
-    name: jenkins-config
-    tasks_from: ensure-credentials
+    name: jenkins
+    tasks_from: trigger-build
   vars:
-    credentials_value: "{{ awx_admin_username }}"
-    credentials_id: "AWX_ADMIN_USER"
-    credentials_description: "AWX_ADMIN_USER"
-    credentials_class: StringCredentialsImpl
+    jenkins_job_path: "/demo-ar-workflows-ansible/job/1. Build images"
 
-- include_role:
-    name: jenkins-config
-    tasks_from: ensure-credentials
-  vars:
-    credentials_value: "{{ awx_admin_password }}"
-    credentials_id: "AWX_ADMIN_PASSWORD"
-    credentials_description: "AWX_ADMIN_PASSWORD"
-    credentials_class: StringCredentialsImpl
-
+#
+# ACE-Box dashboard
+#
 - include_role:
     name: dashboard
   vars:
     include_dashboard_value_file: "{{ playbook_dir }}/roles/demo-ar-workflows-ansible/templates/demo-ar-workflows-ansible-dashboard.yml.j2"
+
+#
+# Deploy Monaco at the very end, as the chances are the highest that 
+# the ACE-Box host group is available by then.
+#
+- include_tasks:
+    file: deploy-dt-configuration.yml

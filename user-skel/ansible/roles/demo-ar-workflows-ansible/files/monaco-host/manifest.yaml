@@ -1,0 +1,17 @@
+---
+manifestVersion: "1.0"
+
+projects:
+- name: project
+
+environmentGroups:
+- name: default
+  environments:
+  - name: project
+    url:
+      type: environment
+      value: DT_TENANT_URL
+    auth:
+      token:
+        type: environment
+        name: DT_API_TOKEN
