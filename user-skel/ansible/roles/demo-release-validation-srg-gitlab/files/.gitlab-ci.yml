@@ -17,7 +17,7 @@ variables:
   TEST_TIMEFRAME: "8m"
 
 stages:
-  - configure-dt-infra
+  - configure-dynatrace
   - deploy-staging
   - test
   - validate-release
@@ -32,25 +32,25 @@ workflow:
 .monaco_common:
   image: dynatrace/dynatrace-configuration-as-code:$MONACO_IMAGE_VERSION
 
-monaco-infra:
+configure-dt-infra:
   extends:
     - .monaco_common
-  stage: configure-dt-infra
+  stage: configure-dynatrace
   script:
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project infrastructure --dry-run
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project infrastructure
 
-monaco-sleep:
+sleep:
   extends:
     - .monaco_common
-  stage: configure-dt-infra
-  needs: ["monaco-infra"]
+  stage: configure-dynatrace
+  needs: ["configure-dt-infra"]
   script:
     # Sleep an additional 120 seconds (90 + delay for the start of the next jobs) to give Dynatrace some time
     # to tag host according to current config before sending config events
     - sleep 90
 
-monaco-staging:
+1-configure-dt-staging:
   extends:
     - .monaco_common
   stage: deploy-staging
@@ -63,26 +63,26 @@ monaco-staging:
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project srg --group staging --dry-run
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project srg --group staging
 
-monaco-staging-dt-event:
+2-send-config-event-dt-staging:
   extends:
     - .monaco_common
     - .dynatrace_event
   stage: deploy-staging
-  needs: ["monaco-staging"]
+  needs: ["1-configure-dt-staging"]
   variables:
     DYNATRACE_ENV_URL: "$DT_TENANT_URL"
     DYNATRACE_API_TOKEN: "$DT_API_TOKEN"
     EVENT_TYPE: "CUSTOM_CONFIGURATION"
     ATTACH_RULES_FILE: "dynatrace/dynatrace.host-attachrules.yaml"
-    DT_HOST_TAG: "simplenode-gitlab-staging"
+    DT_HOST_TAG: "simplenode-gitlab-staging-$DEMO_IDENTIFIER"
     DESCRIPTION: "Monaco deployment successful: simplenode-gitlab-staging"
     CONFIGURATION: "simplenode-gitlab-staging"
     CUSTOM_PROPERTIES: '{"Approved by": "ACE"}'
 
-deployment-staging:
+3-deployment-staging:
   image: dtzar/helm-kubectl
   stage: deploy-staging
-  needs: ["monaco-staging"]
+  needs: ["1-configure-dt-staging"]
   script:
     - echo "BUILD_ID $BUILD_ID is being deployed"
     - >
@@ -96,10 +96,10 @@ deployment-staging:
       --wait
     - sleep 150
 
-dynatrace-deploy-event-staging:
+4-send-deploy-event-dt-staging:
   extends: .dynatrace_event
   stage: deploy-staging
-  needs: ["deployment-staging"]
+  needs: ["3-deployment-staging"]
   variables:
     DYNATRACE_ENV_URL: "$DT_TENANT_URL"
     DYNATRACE_API_TOKEN: "$DT_API_TOKEN"
@@ -149,7 +149,7 @@ srg-release-validation:
     - dta srg evaluate --service $SRG_EVALUATION_SERVICE --stage $SRG_EVALUATION_STAGE --start-time=$eval_start --end-time=$eval_end --stop-on-failure
 
 
-monaco-production:
+1-configure-dt-production:
   extends:
     - .monaco_common
   stage: deploy-production
@@ -159,26 +159,26 @@ monaco-production:
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group production --dry-run
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group production
 
-monaco-production-dt-event:
+2-send-config-event-dt-production:
   extends:
     - .monaco_common
     - .dynatrace_event
   stage: deploy-production
-  needs: ["monaco-production"]
+  needs: ["1-configure-dt-production"]
   variables:
     DYNATRACE_ENV_URL: "$DT_TENANT_URL"
     DYNATRACE_API_TOKEN: "$DT_API_TOKEN"
     EVENT_TYPE: "CUSTOM_CONFIGURATION"
     ATTACH_RULES_FILE: "dynatrace/dynatrace.host-attachrules.yaml"
-    DT_HOST_TAG: "simplenode-gitlab-prod"
+    DT_HOST_TAG: "simplenode-gitlab-prod-$DEMO_IDENTIFIER"
     DESCRIPTION: "Monaco deployment successful: simplenode-gitlab-prod"
     CONFIGURATION: "simplenode-gitlab-prod"
     CUSTOM_PROPERTIES: '{"Approved by": "ACE"}'
 
-deployment-production:
+3-deployment-production:
   image: dtzar/helm-kubectl
   stage: deploy-production
-  needs: ["monaco-production"]
+  needs: ["1-configure-dt-production"]
   variables:
     RELEASE_STAGE: "simplenode-gitlab-prod"
   script:
@@ -194,10 +194,10 @@ deployment-production:
       --wait
     - sleep 150
 
-dynatrace_deploy_event_production:
+4-send-deploy-event-dt-production:
   extends: .dynatrace_event
   stage: deploy-production
-  needs: ["deployment-production"]
+  needs: ["3-deployment-production"]
   variables:
     RELEASE_STAGE: "simplenode-gitlab-prod"
     DYNATRACE_ENV_URL: "$DT_TENANT_URL"

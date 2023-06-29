@@ -53,6 +53,5 @@
       ]
     }
   },
-  "tags": ["{{ .tag }}"],
-  "managementZones": ["{{ .managementZoneId }}"]
+  "tags": ["{{ .tag }}"]
 }

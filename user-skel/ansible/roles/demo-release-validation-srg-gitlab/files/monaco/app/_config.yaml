@@ -1,22 +1,29 @@
 configs:
   # auto-tag
   - id: autoTagApp
-    type:
-      settings:
-        schema: builtin:tags.auto-tagging
-        scope: environment
-        schemaVersion: "1.0.11"
+    type: 
+      api: auto-tag
     config:
-      template: auto-tag.json
+      template: auto-tag-app.json
       name:
         type: compound
-        format: "app-{{ .demoIdentifier }}"
+        format: "{{ .releaseStage }}-{{ .demoIdentifier }}"
         references:
+          - releaseStage
           - demoIdentifier
-      demoIdentifier:
-        type: environment
-        name: DEMO_IDENTIFIER
-  
+      parameters:
+        demoIdentifier:
+          type: environment
+          name: DEMO_IDENTIFIER
+        releaseStage:
+          type: environment
+          name: RELEASE_STAGE
+        applicationName: ["application-web", "app", "name"]
+        hostGroup:
+          type: environment
+          name: HOST_GROUP
+          default: "ace-box"
+
   # application-web 
   - id: app
     type:
@@ -30,15 +37,16 @@ configs:
           - releaseProduct
           - releaseStage
           - demoIdentifier
-      releaseProduct:
-        type: environment
-        name: RELEASE_PRODUCT
-      releaseStage:
-        type: environment
-        name: RELEASE_STAGE
-      demoIdentifier:
-        type: environment
-        name: DEMO_IDENTIFIER
+      parameters:  
+        releaseProduct:
+          type: environment
+          name: RELEASE_PRODUCT
+        releaseStage:
+          type: environment
+          name: RELEASE_STAGE
+        demoIdentifier:
+          type: environment
+          name: DEMO_IDENTIFIER
       skip: false
 
   # app-detection-rule 
@@ -148,9 +156,9 @@ configs:
       template: slo.json
       name:
         type: compound
-        format: "{{ .releaseStage }}-slo-success-rate-{{ .demoIdentifier }}"
+        format: "{{ .tag_stage }}_slo_success_rate_{{ .demoIdentifier }}"
         references:
-          - releaseStage
+          - tag_stage
           - demoIdentifier
       parameters:
         description: "Service Errors Total SuccessCount / Service RequestCount Total"
@@ -176,7 +184,51 @@ configs:
         demoIdentifier:
           type: environment
           name: DEMO_IDENTIFIER
+        tag_stage:
+          type: environment
+          name: SRG_EVALUATION_STAGE
       skip: false
+
+  - id: slo_availability
+    type:
+      api: slo
+    config:
+      template: slo.json
+      name:
+        type: compound
+        format: "{{ .tag_stage }}_slo_availability_{{ .demoIdentifier }}"
+        references:
+          - tag_stage
+          - demoIdentifier
+      parameters:
+        description: "Service Availability"
+        metricNumerator: "builtin:service.errors.server.successCount:splitBy()"
+        metricDenominator: "builtin:service.requestCount.server:splitBy()"
+        filterType: "SERVICE"
+        target: 95
+        warning: 99
+        releaseProduct:
+          type: environment
+          name: RELEASE_PRODUCT
+        releaseStage:
+          type: environment
+          name: RELEASE_STAGE
+        sloTimeFrame:
+          type: compound
+          format: "-{{ .timeFrame }}"
+          references:
+            - timeFrame
+        timeFrame:
+          type: environment
+          name: TEST_TIMEFRAME
+        demoIdentifier:
+          type: environment
+          name: DEMO_IDENTIFIER
+        tag_stage:
+          type: environment
+          name: SRG_EVALUATION_STAGE
+      skip: false
+
 
   # dashboard
   - id: dashboard
@@ -220,8 +272,7 @@ configs:
       parameters:
         description: Health check for simplenode in app-one       
         location: ["infrastructure","synthetic-location", "synthetic-location-ace-box", "id"]
-        managementZoneId: ["builtin:management-zones", "managementZoneProd", "id"]
-        tag: ["app.shared","builtin:tags.auto-tagging", "autoTagApp", "name"]
+        tag: ["auto-tag", "autoTagApp", "name"]
         frequencyMin: 5
         url:
           type: compound

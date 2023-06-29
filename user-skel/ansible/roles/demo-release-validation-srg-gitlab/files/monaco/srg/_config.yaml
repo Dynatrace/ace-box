@@ -26,7 +26,7 @@ configs:
         warning_dql: 400
         # objective - slo - success rate
         objective_name_slo_success_rate: "Success Rate"
-        reference_slo_success_rate: ["app.staging","slo", "slo_success_rate", "name"]
+        reference_slo_success_rate: ["app","slo", "slo_success_rate", "name"]
         reference_slo_metric_success_rate:
           type: compound
           format: "func:slo.{{ .reference_slo_success_rate }}"
@@ -36,7 +36,7 @@ configs:
         warning_slo_success_rate: 99
         # objective - slo - availability
         objective_name_slo_availability: "Availability of Service"
-        reference_slo_availability: ["app.staging","slo", "slo_availability", "name"]
+        reference_slo_availability: ["app","slo", "slo_availability", "name"]
         reference_slo_metric_availability:
           type: compound
           format: "func:slo.{{ .reference_slo_availability }}"
