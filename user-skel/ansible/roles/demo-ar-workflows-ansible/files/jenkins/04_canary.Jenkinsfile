@@ -8,6 +8,7 @@ pipeline {
     parameters {
         string(name: 'CANARY_WEIGHT', defaultValue: '0', description: 'Weight of traffic that will be routed to service.', trim: true)
         string(name: 'REMEDIATION_URL', defaultValue: '', description: 'Remediation script to call if canary release fails', trim: true)
+        string(name: 'REMEDIATION_TYPE', defaultValue: '', description: 'Remediation type to target specific remediation handler', trim: true)
     }
     environment {
         DT_API_TOKEN = credentials('DT_API_TOKEN')
@@ -47,7 +48,8 @@ pipeline {
                         source : 'Jenkins',
                         configuration : 'Load Balancer',
                         customProperties : [
-                            'remediationAction': "${params.REMEDIATION_URL}"
+                            'remediationAction': "${params.REMEDIATION_URL}",
+                            'remediationType': "${params.REMEDIATION_TYPE}"
                         ]
                     )
                 }
