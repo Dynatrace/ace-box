@@ -264,7 +264,7 @@ configs:
     config:
       name:
         type: compound
-        format: "{{ .releaseStage }}-health-simplenode-{{ .demoIdentifier }}"
+        format: "{{ .releaseStage }}-health-check-{{ .demoIdentifier }}"
         references:
           - releaseStage
           - demoIdentifier

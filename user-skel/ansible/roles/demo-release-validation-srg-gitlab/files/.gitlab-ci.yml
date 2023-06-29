@@ -215,5 +215,6 @@ cleanup-monaco:
   image: dynatrace/dynatrace-configuration-as-code:$MONACO_IMAGE_VERSION
   stage: cleanup
   script:
-    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco delete --manifest $MANIFEST_FILE --file ./monaco/delete.yaml
+    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco delete --manifest $MANIFEST_FILE --file ./monaco/delete.yaml --group production
+    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco delete --manifest $MANIFEST_FILE --file ./monaco/delete.yaml --group staging
   when: manual

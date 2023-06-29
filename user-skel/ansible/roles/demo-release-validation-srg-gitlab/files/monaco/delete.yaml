@@ -2,66 +2,60 @@ delete:
   
   # project - app - staging
   - project: app
+    type: auto-tag
+    name: simplenode-gitlab-staging-srg
+  - project: app
     type: application-web
-    name: simplenode-staging  
-  - project: app.staging
-    type: builtin:rum.web.app-detection
-    id: appDetectionStaging
-  - project: app.staging
-    type: builtin:management-zones
-    id: managementZoneStaging
-  - project: app.staging
+    name: simplenodeservice-simplenode-gitlab-staging-srg
+  - project: app
     type: calculated-metrics-service
-    name: simplenode-staging.failure_rate_by_version
-  - project: app.staging
+    name: simplenode-gitlab-staging.failure_rate_by_version-srg
+  - project: app
     type: calculated-metrics-service
-    name: simplenode-staging.response_time_by_version
-  - project: app.staging
+    name: simplenode-gitlab-staging.response_time_by_version-srg
+  - project: app
     type: slo
-    name: slo_simplenode_staging_srg_success_rate
-  - project: app.staging
+    name: staging_slo_success_rate_srg
+  - project: app
     type: slo
-    name: slo_simplenode_staging_srg_availability
-  - project: app.staging
-    type: builtin:monitoring.slo
-    id: slo_process_cpu_usage
-  - project: app.staging
+    name: staging_slo_availability_srg
+  - project: app
     type: dashboard
-    name: simplenode-staging-Tracker
-  - project: app.staging
+    name: simplenode-gitlab-staging-dashboard-srg
+  - project: app
     type: synthetic-monitor
-    name: simplenode-staging-health-check
+    name: simplenode-gitlab-staging-health-check-srg
+
+    # settings
+  - project: app
+    type: builtin:rum.web.app-detection
+    id: appDetection
 
   # project - app - prod
-  - project: app.prod
+  - project: app
+    type: auto-tag
+    name: simplenode-gitlab-prod-srg
+  - project: app
     type: application-web
-    name: simplenode-prod  
-  - project: app.prod
-    type: builtin:rum.web.app-detection
-    id: appDetectionProd
-  - project: app.prod
-    type: builtin:management-zones
-    id: managementZoneProd
-  - project: app.prod
+    name: simplenodeservice-simplenode-gitlab-prod-srg
+  - project: app
     type: calculated-metrics-service
-    name: simplenode-prod.failure_rate_by_version
-  - project: app.prod
+    name: simplenode-gitlab-prod.failure_rate_by_version-srg
+  - project: app
     type: calculated-metrics-service
-    name: simplenode-prod.response_time_by_version
-  - project: app.prod
+    name: simplenode-gitlab-prod.response_time_by_version-srg
+  - project: app
     type: slo
-    name: slo_simplenode_prod_success_rate
-  - project: app.prod
+    name: prod_slo_success_rate_srg
+  - project: app
+    type: slo
+    name: prod_slo_availability_srg
+  - project: app
     type: dashboard
-    name: simplenode-prod-Tracker
-  - project: app.prod
+    name: simplenode-gitlab-prod-dashboard-srg
+  - project: app
     type: synthetic-monitor
-    name: simplenode-prod-health-check
-
-  # project - app - shared
-  - project: app.shared
-    type: builtin:tags.auto-tagging
-    id: autoTagApp
+    name: simplenode-gitlab-prod-health-check-srg
 
   # project - srg
   - project: srg
@@ -73,14 +67,20 @@ delete:
 
   # project - infrastructure
   - project: infrastructure
-    type: request-attributes
-    name: LTN
+    type: auto-tag
+    name: environment-srg  
+  - project: infrastructure
+    type: auto-tag
+    name: app-srg    
   - project: infrastructure
     type: request-attributes
-    name: TSN
+    name: LTN-srg
   - project: infrastructure
     type: request-attributes
-    name: LSN
+    name: TSN-srg
+  - project: infrastructure
+    type: request-attributes
+    name: LSN-srg
   - project: infrastructure
     type: synthetic-location
-    name: ACE-BOX
+    name: synth-location-srg
