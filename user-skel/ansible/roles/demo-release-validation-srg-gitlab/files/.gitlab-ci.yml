@@ -17,12 +17,12 @@ variables:
   TEST_TIMEFRAME: "8m"
 
 stages:
-  - configure-dynatrace
-  - deploy-staging
-  - test
-  - validate-release
-  - deploy-production
-  - cleanup
+  - Configure Dynatrace
+  - Deploy Staging
+  - Test
+  - Validate Release
+  - Deploy Production
+  - Cleanup
 
 workflow:
   rules:
@@ -32,28 +32,28 @@ workflow:
 .monaco_common:
   image: dynatrace/dynatrace-configuration-as-code:$MONACO_IMAGE_VERSION
 
-configure-dt-infra:
+Configure DT Infra - Monaco:
   extends:
     - .monaco_common
-  stage: configure-dynatrace
+  stage: Configure Dynatrace
   script:
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project infrastructure --dry-run
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project infrastructure
 
-sleep:
+Sleep:
   extends:
     - .monaco_common
-  stage: configure-dynatrace
-  needs: ["configure-dt-infra"]
+  stage: Configure Dynatrace
+  needs: ["Configure DT Infra - Monaco"]
   script:
     # Sleep an additional 120 seconds (90 + delay for the start of the next jobs) to give Dynatrace some time
     # to tag host according to current config before sending config events
     - sleep 90
 
-1-configure-dt-staging:
+1-Configure DT Staging - Monaco:
   extends:
     - .monaco_common
-  stage: deploy-staging
+  stage: Deploy Staging
   variables:
     RELEASE_STAGE: "simplenode-gitlab-staging"
   script:
@@ -63,12 +63,12 @@ sleep:
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project srg --group staging --dry-run
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project srg --group staging
 
-2-send-config-event-dt-staging:
+2-Send DT Config Event Staging:
   extends:
     - .monaco_common
     - .dynatrace_event
-  stage: deploy-staging
-  needs: ["1-configure-dt-staging"]
+  stage: Deploy Staging
+  needs: ["1-Configure DT Staging - Monaco"]
   variables:
     DYNATRACE_ENV_URL: "$DT_TENANT_URL"
     DYNATRACE_API_TOKEN: "$DT_API_TOKEN"
@@ -79,10 +79,10 @@ sleep:
     CONFIGURATION: "simplenode-gitlab-staging"
     CUSTOM_PROPERTIES: '{"Approved by": "ACE"}'
 
-3-deployment-staging:
+3-Deploy App Staging:
   image: dtzar/helm-kubectl
-  stage: deploy-staging
-  needs: ["1-configure-dt-staging"]
+  stage: Deploy Staging
+  needs: ["1-Configure DT Staging - Monaco"]
   script:
     - echo "BUILD_ID $BUILD_ID is being deployed"
     - >
@@ -96,10 +96,10 @@ sleep:
       --wait
     - sleep 150
 
-4-send-deploy-event-dt-staging:
+4-Send DT Deploy Event Staging:
   extends: .dynatrace_event
-  stage: deploy-staging
-  needs: ["3-deployment-staging"]
+  stage: Deploy Staging
+  needs: ["3-Deploy App Staging"]
   variables:
     DYNATRACE_ENV_URL: "$DT_TENANT_URL"
     DYNATRACE_API_TOKEN: "$DT_API_TOKEN"
@@ -111,12 +111,12 @@ sleep:
     REMEDIATION_ACTION: "Ansible Tower"
     DT_NAMESPACE: "$RELEASE_STAGE"
 
-run-tests:
+Run Tests:
   before_script:
     - echo $(date -u +"%Y-%m-%dT%H:%M:%SZ") > srg.test.starttime
   after_script:
     - echo $(date -u +"%Y-%m-%dT%H:%M:%SZ") > srg.test.endtime
-  stage: test
+  stage: Test
   variables:
     LOCUST_LOCUSTFILE: locust/locustfile.py
     LOCUST_CONFIG: locust/locust.conf
@@ -131,9 +131,9 @@ run-tests:
       - srg.test.starttime
       - srg.test.endtime
 
-srg-release-validation:
+Validate Release with SRG:
   image: dynatraceace/dt-automation-cli:$DTA_IMAGE_VERSION
-  stage: validate-release
+  stage: Validate Release
   variables:
     DYNATRACE_URL_GEN3: $DT_PLATFORM_TENANT_URL
     ACCOUNT_URN: $DT_OAUTH_ACCOUNT_URN
@@ -149,22 +149,22 @@ srg-release-validation:
     - dta srg evaluate --service $SRG_EVALUATION_SERVICE --stage $SRG_EVALUATION_STAGE --start-time=$eval_start --end-time=$eval_end --stop-on-failure
 
 
-1-configure-dt-production:
+1-Configure DT Production - Monaco:
   extends:
     - .monaco_common
-  stage: deploy-production
+  stage: Deploy Production
   variables:
     RELEASE_STAGE: "simplenode-gitlab-prod"
   script:
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group production --dry-run
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group production
 
-2-send-config-event-dt-production:
+2-Send DT Config Event Production:
   extends:
     - .monaco_common
     - .dynatrace_event
-  stage: deploy-production
-  needs: ["1-configure-dt-production"]
+  stage: Deploy Production
+  needs: ["1-Configure DT Production - Monaco"]
   variables:
     DYNATRACE_ENV_URL: "$DT_TENANT_URL"
     DYNATRACE_API_TOKEN: "$DT_API_TOKEN"
@@ -175,10 +175,10 @@ srg-release-validation:
     CONFIGURATION: "simplenode-gitlab-prod"
     CUSTOM_PROPERTIES: '{"Approved by": "ACE"}'
 
-3-deployment-production:
+3-Deploy App Production:
   image: dtzar/helm-kubectl
-  stage: deploy-production
-  needs: ["1-configure-dt-production"]
+  stage: Deploy Production
+  needs: ["1-Configure DT Production - Monaco"]
   variables:
     RELEASE_STAGE: "simplenode-gitlab-prod"
   script:
@@ -194,10 +194,10 @@ srg-release-validation:
       --wait
     - sleep 150
 
-4-send-deploy-event-dt-production:
+4-Send DT Deploy Event Production:
   extends: .dynatrace_event
-  stage: deploy-production
-  needs: ["3-deployment-production"]
+  stage: Deploy Production
+  needs: ["3-Deploy App Production"]
   variables:
     RELEASE_STAGE: "simplenode-gitlab-prod"
     DYNATRACE_ENV_URL: "$DT_TENANT_URL"
@@ -211,9 +211,9 @@ srg-release-validation:
     DT_NAMESPACE: "$RELEASE_STAGE"
 
 
-cleanup-monaco:
+Cleanup DT Configs - Monaco:
   image: dynatrace/dynatrace-configuration-as-code:$MONACO_IMAGE_VERSION
-  stage: cleanup
+  stage: Cleanup
   script:
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco delete --manifest $MANIFEST_FILE --file ./monaco/delete.yaml --group production
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco delete --manifest $MANIFEST_FILE --file ./monaco/delete.yaml --group staging
