@@ -6,9 +6,24 @@ pipeline {
         label 'kubegit'
     }
     parameters {
-        string(name: 'CANARY_WEIGHT', defaultValue: '0', description: 'Weight of traffic that will be routed to service.', trim: true)
-        string(name: 'REMEDIATION_URL', defaultValue: '', description: 'Remediation script to call if canary release fails', trim: true)
-        string(name: 'REMEDIATION_TYPE', defaultValue: '', description: 'Remediation type to target specific remediation handler', trim: true)
+        string(
+            name: 'CANARY_WEIGHT',
+            defaultValue: '0',
+            description: 'Weight of traffic that will be routed to service.',
+            trim: true
+        )
+        string(
+            name: 'REMEDIATION_URL',
+            defaultValue: '',
+            description: 'Remediation script to call if canary release fails',
+            trim: true
+        )
+        string(
+            name: 'REMEDIATION_TYPE',
+            defaultValue: '',
+            description: 'Remediation type to target specific remediation handler',
+            trim: true
+        )
     }
     environment {
         DT_API_TOKEN = credentials('DT_API_TOKEN')
@@ -40,10 +55,8 @@ pipeline {
         stage('Dynatrace configuration change event') {
             steps {
                 script {
-                    def rootDir = pwd()
-                    def sharedLib = load "${rootDir}/jenkins/shared/shared.groovy"
                     event.pushDynatraceConfigurationEvent(
-                        tagRule : sharedLib.getTagRulesForServiceEvent(),
+                        tagRule : getTagRulesForServiceEvent(),
                         description : "${env.RELEASE_PRODUCT} canary weight set to ${params.CANARY_WEIGHT}%",
                         source : 'Jenkins',
                         configuration : 'Load Balancer',
@@ -56,4 +69,24 @@ pipeline {
             }
         }
     }
+}
+
+//
+// Legacy tag rules function can be removed with availabilty of dta feature
+//
+def getTagRulesForServiceEvent() {
+    def tagMatchRules = [
+        [
+            'meTypes': ['SERVICE'],
+            tags: [
+                ['context': 'ENVIRONMENT', 'key': 'DT_RELEASE_BUILD_VERSION', 'value': "${env.RELEASE_BUILD_VERSION}"],
+                ['context': 'KUBERNETES', 'key': 'app.kubernetes.io/name', 'value': "${env.RELEASE_PRODUCT}"],
+                ['context': 'KUBERNETES', 'key': 'app.kubernetes.io/part-of', 'value': 'simplenodeservice'],
+                ['context': 'KUBERNETES', 'key': 'app.kubernetes.io/component', 'value': 'webservice'],
+                ['context': 'CONTEXTLESS', 'key': 'environment', 'value': "${env.RELEASE_STAGE}"]
+            ]
+        ]
+    ]
+
+    return tagMatchRules
 }

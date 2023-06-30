@@ -63,10 +63,8 @@ pipeline {
                     // Give Dynatrace a couple seconds to tag host according to current config
                     sleep(time:120, unit:'SECONDS')
 
-                    def rootDir = pwd()
-                    def sharedLib = load "${rootDir}/jenkins/shared/shared.groovy"
                     event.pushDynatraceConfigurationEvent(
-                        tagRule: sharedLib.getTagRulesForHostEvent('ace-demo-canary'),
+                        tagRule: getTagRulesForHostEvent('ace-demo-canary'),
                         description: 'Monaco deployment successful: ace-demo-canary',
                         configuration: 'ace-demo-canary',
                         customProperties: [
@@ -77,4 +75,20 @@ pipeline {
             }
         }
     }
+}
+
+//
+// Legacy tag rules function can be removed with availabilty of dta feature
+//
+def getTagRulesForHostEvent(hostTag) {
+    def tagMatchRules = [
+        [
+            'meTypes': ['HOST'],
+            tags: [
+                ['context': 'CONTEXTLESS', 'key': hostTag]
+            ]
+        ]
+    ]
+
+    return tagMatchRules
 }

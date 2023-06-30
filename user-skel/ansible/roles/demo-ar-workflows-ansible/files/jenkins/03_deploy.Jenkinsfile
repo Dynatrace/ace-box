@@ -48,10 +48,8 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    def rootDir = pwd()
-                    def sharedLib = load "${rootDir}/jenkins/shared/shared.groovy"
-                    env.DT_CUSTOM_PROP = sharedLib.readMetaData() + ' ' + generateDynamicMetaData()
-                    env.DT_TAGS = sharedLib.readTags() + ' ' + generateDynamicTags()
+                    env.DT_CUSTOM_PROP = generateMetaData()
+                    env.DT_TAGS = "non-prod  BUILD=${env.RELEASE_BUILD_VERSION}"
                 }
                 container('helm') {
                     sh "helm upgrade --install ${env.RELEASE_PRODUCT} helm/simplenodeservice \
@@ -75,10 +73,8 @@ pipeline {
                 script {
                     sleep(time:150, unit:'SECONDS')
 
-                    def rootDir = pwd()
-                    def sharedLib = load "${rootDir}/jenkins/shared/shared.groovy"
                     event.pushDynatraceDeploymentEvent(
-                        tagRule: sharedLib.getTagRulesForPGIEvent(),
+                        tagRule: getTagRulesForPGIEvent(),
                         deploymentName: "${env.RELEASE_PRODUCT} ${env.RELEASE_BUILD_VERSION} deployed",
                         deploymentVersion: "${env.RELEASE_BUILD_VERSION}",
                         deploymentProject: "${env.RELEASE_PRODUCT}",
@@ -93,8 +89,16 @@ pipeline {
     }
 }
 
-def generateDynamicMetaData() {
+def generateMetaData() {
     String returnValue = ''
+
+    returnValue += 'FriendlyName=simplenode '
+    returnValue += 'SERVICE_TYPE=FRONTEND '
+    returnValue += 'Project=simpleproject '
+    returnValue += 'DesignDocument=https://simple-corp.com/stories/simplenodeservice '
+    returnValue += 'Tier=1 '
+    returnValue += 'Class=Gold '
+    returnValue += 'Purpose=ACE '
     returnValue += "SCM=${env.GIT_URL} "
     returnValue += "Branch=${env.GIT_BRANCH} "
     returnValue += "Build=${env.RELEASE_BUILD_VERSION} "
@@ -104,9 +108,22 @@ def generateDynamicMetaData() {
     return returnValue
 }
 
-// related to https://github.com/Dynatrace/ace-box/issues/158, can be removed once fixed in Dynatrace (136+)
-def generateDynamicTags() {
-    String returnValue = ''
-    returnValue += "BUILD=${env.RELEASE_BUILD_VERSION} "
-    return returnValue
+//
+// Legacy tag rules function can be removed with availabilty of dta feature
+//
+def getTagRulesForPGIEvent() {
+    def tagMatchRules = [
+        [
+            'meTypes': ['PROCESS_GROUP_INSTANCE'],
+            tags: [
+                ['context': 'ENVIRONMENT', 'key': 'DT_RELEASE_BUILD_VERSION', 'value': "${env.RELEASE_BUILD_VERSION}"],
+                ['context': 'KUBERNETES', 'key': 'app.kubernetes.io/name', 'value': "${env.RELEASE_PRODUCT}"],
+                ['context': 'KUBERNETES', 'key': 'app.kubernetes.io/part-of', 'value': 'simplenodeservice'],
+                ['context': 'KUBERNETES', 'key': 'app.kubernetes.io/component', 'value': 'webservice'],
+                ['context': 'CONTEXTLESS', 'key': 'environment', 'value': "${env.RELEASE_STAGE}"]
+            ]
+        ]
+    ]
+
+    return tagMatchRules
 }
