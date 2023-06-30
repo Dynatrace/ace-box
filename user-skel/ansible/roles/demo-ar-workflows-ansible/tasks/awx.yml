@@ -156,9 +156,9 @@
 - set_fact:
     jenkins_pipeline_url_shift_traffic: "{{ jenkins_url }}/job/{{ demo_ar_workflows_ansible_repo_name | urlencode() }}/job/{{ '4. Shift traffic' | urlencode() }}/build?delay=0sec"
 
-- name: Create Canary Reset template
+- name: Create canary reset template
   awx.awx.job_template:
-    name: "Canary Reset"
+    name: "Reset canary weighting"
     job_type: "run"
     organization: "{{ organization.id }}"
     inventory: "{{ inventory.id }}"
@@ -177,9 +177,9 @@
     controller_username: "{{ awx_admin_username }}"
   register: canary_reset_template
 
-- name: Create Canary Shift template
+- name: Create canary deployment template
   awx.awx.job_template:
-    name: "Canary Shift"
+    name: "Start canary deployment"
     job_type: "run"
     organization: "{{ organization.id }}"
     inventory: "{{ inventory.id }}"
