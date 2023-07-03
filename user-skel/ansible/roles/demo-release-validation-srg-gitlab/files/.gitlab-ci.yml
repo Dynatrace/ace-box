@@ -2,15 +2,23 @@ include:
   - remote: "https://gitlab.com/dynatrace-ace/dynatrace-gitlab-library/-/raw/master/dynatrace_event.yaml"
 
 variables:
+  #build and deploy
   BUILD_ID:
     value: "1"
     description: "Build ID. Please set to 1, 2, 3 or 4."
-  RELEASE_VERSION: "v$BUILD_ID.0.3"
-  RELEASE_BUILD_VERSION: "$BUILD_ID.0.3"
+  
+  RELEASE_VERSION: "$BUILD_ID.0.0"
+  RELEASE_BUILD_VERSION: "$BUILD_ID.0.0-$CI_COMMIT_SHORT_SHA"
+  
   RELEASE_PRODUCT: "simplenodeservice"
   RELEASE_STAGE: "simplenode-gitlab-staging"
+  
+  IMAGE_NAME: "$DOCKER_REGISTRY_URL/$RELEASE_PRODUCT"
+  IMAGE_TAG: "$RELEASE_BUILD_VERSION"
+  #monaco
   MANIFEST_FILE: ./monaco/manifest.yaml
-  MONACO_IMAGE_VERSION: 2.2.0
+  MONACO_IMAGE_VERSION: 2.3.0
+  #dta and srg
   DTA_IMAGE_VERSION: latest
   SRG_EVALUATION_SERVICE: "simplenode" 
   SRG_EVALUATION_STAGE: "staging"
@@ -32,6 +40,68 @@ workflow:
 .monaco_common:
   image: dynatrace/dynatrace-configuration-as-code:$MONACO_IMAGE_VERSION
 
+.deployment_common:
+  image: dtzar/helm-kubectl
+  script:
+    - echo "BUILD_ID $BUILD_ID is being deployed to $RELEASE_STAGE namespace"
+    - >
+      helm upgrade --install $RELEASE_STAGE helm/simplenodeservice 
+      --set image="$IMAGE_NAME:$IMAGE_TAG"
+      --set domain="$INGRESS_DOMAIN" 
+      --set version="$RELEASE_VERSION"
+      --set build_version="$RELEASE_BUILD_VERSION" 
+      --set environment="$RELEASE_STAGE" 
+      --namespace "$RELEASE_STAGE" --create-namespace 
+      --wait
+    - sleep 150
+
+.dt_deployment_event_common:
+  extends: .dynatrace_event
+  variables:
+    DYNATRACE_ENV_URL: "$DT_TENANT_URL"
+    DYNATRACE_API_TOKEN: "$DT_API_TOKEN"
+    DESCRIPTION: "$RELEASE_PRODUCT $RELEASE_BUILD_VERSION deployed"
+    CUSTOM_PROPERTIES: '{"namespace":"$RELEASE_STAGE"}'
+    EVENT_TYPE: "CUSTOM_DEPLOYMENT"
+    DEPLOYMENT_NAME: "$RELEASE_STAGE"
+    DEPLOYMENT_VERSION: "$RELEASE_BUILD_VERSION"
+    REMEDIATION_ACTION: "Ansible Tower"
+    DT_NAMESPACE: "$RELEASE_STAGE"
+    DT_RELEASE_PRODUCT: "$RELEASE_PRODUCT"
+    DT_RELEASE_STAGE: "$RELEASE_STAGE"
+    DT_RELEASE_BUILD_VERSION: "$RELEASE_BUILD_VERSION"
+
+.dt_config_event_common:
+  extends: .dynatrace_event
+  variables:
+    DYNATRACE_ENV_URL: "$DT_TENANT_URL"
+    DYNATRACE_API_TOKEN: "$DT_API_TOKEN"
+    EVENT_TYPE: "CUSTOM_CONFIGURATION"
+    ATTACH_RULES_FILE: "dynatrace/dynatrace.host-attachrules.yaml"
+    DT_HOST_TAG: "$RELEASE_STAGE-$DEMO_IDENTIFIER"
+    DESCRIPTION: "Monaco deployment successful: $RELEASE_STAGE"
+    CONFIGURATION: "$RELEASE_STAGE"
+    CUSTOM_PROPERTIES: '{"Approved by": "ACE"}'
+
+Build Image:
+  image: docker:20.10.16
+  stage: Initialize
+  variables:
+    DOCKER_HOST: tcp://docker:2376
+    DOCKER_TLS_CERTDIR: "/certs"
+    DOCKER_TLS_VERIFY: 0
+    DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
+    DOCKER_DAEMON_OPTIONS: "--insecure-registry=$DOCKER_REGISTRY_URL"
+  services:
+    - name: docker:20.10.16-dind
+      entrypoint: [ "sh", "-c", "dockerd-entrypoint.sh $DOCKER_DAEMON_OPTIONS" ]
+  before_script:
+    - until docker info; do sleep 1; done
+  script:
+    - docker info
+    - docker build --build-arg BUILD_NUMBER="$BUILD_ID" -t "$IMAGE_NAME:$IMAGE_TAG" .
+    - docker push "$IMAGE_NAME:$IMAGE_TAG"
+
 Configure DT Infra - Monaco:
   extends:
     - .monaco_common
@@ -40,7 +110,7 @@ Configure DT Infra - Monaco:
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project infrastructure --dry-run
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project infrastructure
 
-Upsert Gitlab Oauth Token:
+Refresh Gitlab Oauth Token:
   stage: Initialize
   image: alpine
   script:
@@ -71,52 +141,22 @@ Upsert Gitlab Oauth Token:
     - sleep 90
 
 2-Send DT Config Event Staging:
-  extends:
-    - .monaco_common
-    - .dynatrace_event
+  extends: .dt_config_event_common
   stage: Deploy Staging
   needs: ["1-Configure DT Staging - Monaco"]
-  variables:
-    DYNATRACE_ENV_URL: "$DT_TENANT_URL"
-    DYNATRACE_API_TOKEN: "$DT_API_TOKEN"
-    EVENT_TYPE: "CUSTOM_CONFIGURATION"
-    ATTACH_RULES_FILE: "dynatrace/dynatrace.host-attachrules.yaml"
-    DT_HOST_TAG: "simplenode-gitlab-staging-$DEMO_IDENTIFIER"
-    DESCRIPTION: "Monaco deployment successful: simplenode-gitlab-staging"
-    CONFIGURATION: "simplenode-gitlab-staging"
-    CUSTOM_PROPERTIES: '{"Approved by": "ACE"}'
 
 3-Deploy App Staging:
-  image: dtzar/helm-kubectl
+  variables:
+    RELEASE_STAGE: "simplenode-gitlab-staging" 
   stage: Deploy Staging
   needs: ["1-Configure DT Staging - Monaco"]
-  script:
-    - echo "BUILD_ID $BUILD_ID is being deployed"
-    - >
-      helm upgrade --install simplenode-gitlab-staging helm/simplenodeservice 
-      --set image="dynatraceace/simplenodeservice:$RELEASE_BUILD_VERSION"
-      --set domain="$INGRESS_DOMAIN" 
-      --set version="$RELEASE_VERSION"
-      --set build_version="$RELEASE_BUILD_VERSION" 
-      --set environment="$RELEASE_STAGE" 
-      --namespace "$RELEASE_STAGE" --create-namespace 
-      --wait
-    - sleep 150
-
+  extends:
+    - .deployment_common
+  
 4-Send DT Deploy Event Staging:
-  extends: .dynatrace_event
+  extends: .dt_deployment_event_common
   stage: Deploy Staging
   needs: ["3-Deploy App Staging"]
-  variables:
-    DYNATRACE_ENV_URL: "$DT_TENANT_URL"
-    DYNATRACE_API_TOKEN: "$DT_API_TOKEN"
-    DESCRIPTION: "$RELEASE_PRODUCT $RELEASE_VERSION deployed"
-    CUSTOM_PROPERTIES: '{"namespace":"$RELEASE_STAGE"}'
-    EVENT_TYPE: "CUSTOM_DEPLOYMENT"
-    DEPLOYMENT_NAME: "simplenode_gitlab"
-    DEPLOYMENT_VERSION: "$RELEASE_VERSION"
-    REMEDIATION_ACTION: "Ansible Tower"
-    DT_NAMESPACE: "$RELEASE_STAGE"
 
 Run Tests:
   before_script:
@@ -167,56 +207,22 @@ Validate Release with SRG:
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group production
 
 2-Send DT Config Event Production:
-  extends:
-    - .monaco_common
-    - .dynatrace_event
+  extends: .dt_config_event_common
   stage: Deploy Production
   needs: ["1-Configure DT Production - Monaco"]
-  variables:
-    DYNATRACE_ENV_URL: "$DT_TENANT_URL"
-    DYNATRACE_API_TOKEN: "$DT_API_TOKEN"
-    EVENT_TYPE: "CUSTOM_CONFIGURATION"
-    ATTACH_RULES_FILE: "dynatrace/dynatrace.host-attachrules.yaml"
-    DT_HOST_TAG: "simplenode-gitlab-prod-$DEMO_IDENTIFIER"
-    DESCRIPTION: "Monaco deployment successful: simplenode-gitlab-prod"
-    CONFIGURATION: "simplenode-gitlab-prod"
-    CUSTOM_PROPERTIES: '{"Approved by": "ACE"}'
 
 3-Deploy App Production:
-  image: dtzar/helm-kubectl
+  variables:
+    RELEASE_STAGE: "simplenode-gitlab-prod"
   stage: Deploy Production
   needs: ["1-Configure DT Production - Monaco"]
-  variables:
-    RELEASE_STAGE: "simplenode-gitlab-prod"
-  script:
-    - echo "BUILD_ID $BUILD_ID is being deployed to production"
-    - >
-      helm upgrade --install simplenode-gitlab-production helm/simplenodeservice 
-      --set image="dynatraceace/simplenodeservice:$RELEASE_BUILD_VERSION"
-      --set domain="$INGRESS_DOMAIN" 
-      --set version="$RELEASE_VERSION"
-      --set build_version="$RELEASE_BUILD_VERSION" 
-      --set environment="$RELEASE_STAGE" 
-      --namespace "$RELEASE_STAGE" --create-namespace 
-      --wait
-    - sleep 150
+  extends:
+    - .deployment_common
 
 4-Send DT Deploy Event Production:
-  extends: .dynatrace_event
+  extends: .dt_deployment_event_common
   stage: Deploy Production
   needs: ["3-Deploy App Production"]
-  variables:
-    RELEASE_STAGE: "simplenode-gitlab-prod"
-    DYNATRACE_ENV_URL: "$DT_TENANT_URL"
-    DYNATRACE_API_TOKEN: "$DT_API_TOKEN"
-    DESCRIPTION: "$RELEASE_PRODUCT $RELEASE_VERSION deployed"
-    CUSTOM_PROPERTIES: '{"namespace":"$RELEASE_STAGE"}'
-    EVENT_TYPE: "CUSTOM_DEPLOYMENT"
-    DEPLOYMENT_NAME: "simplenode_gitlab"
-    DEPLOYMENT_VERSION: "$RELEASE_VERSION"
-    REMEDIATION_ACTION: "Ansible Tower"
-    DT_NAMESPACE: "$RELEASE_STAGE"
-
 
 Cleanup DT Configs - Monaco:
   image: dynatrace/dynatrace-configuration-as-code:$MONACO_IMAGE_VERSION
