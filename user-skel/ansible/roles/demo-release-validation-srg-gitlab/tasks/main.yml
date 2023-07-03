@@ -50,7 +50,6 @@
     gitlab_prj: "{{ gitlab_demo_srg_repo_name }}"
     gitlab_prj_namespace_id: "{{ gitlab_group_id }}"
 
-
 - include_role:
     name: gitlab
     tasks_from: source-endpoints-external
@@ -69,6 +68,8 @@
     - { key: 'DT_OAUTH_SSO_ENDPOINT', value: '{{ extra_vars.dt_oauth_sso_endpoint }}' }
     - { key: 'DT_OAUTH_ACCOUNT_URN', value: '{{ extra_vars.dt_oauth_account_urn }}' }
     
+    - { key: 'GITLAB_USERNAME', value: '{{ gitlab_username }}' }
+    - { key: 'GITLAB_PASSWORD', value: '{{ gitlab_password }}' }
     - { key: 'GITLAB_PRIVATE_TOKEN', value: '{{ gitlab_oauth_token }}' }
     - { key: 'GITLAB_EXTERNAL_ENDPOINT', value: '{{ gitlab_external_endpoint }}' }
     - { key: 'DEMO_IDENTIFIER', value: '{{ demo_identifier }}' }
@@ -79,7 +80,7 @@
   vars:
     git_username: "root"
     git_password: "{{ gitlab_password }}"
-    git_domain: "{{ gitlab_domain }}"
+    #git_domain: "{{ gitlab_domain }}"
     git_remote: "gitlab"
     git_org_name: "{{ gitlab_demo_srg_group }}"
     repo_name: "{{ gitlab_demo_srg_repo_name }}"

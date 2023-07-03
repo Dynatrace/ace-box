@@ -17,7 +17,7 @@ variables:
   TEST_TIMEFRAME: "8m"
 
 stages:
-  - Configure Dynatrace
+  - Initialize
   - Deploy Staging
   - Test
   - Validate Release
@@ -35,20 +35,22 @@ workflow:
 Configure DT Infra - Monaco:
   extends:
     - .monaco_common
-  stage: Configure Dynatrace
+  stage: Initialize
   script:
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project infrastructure --dry-run
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project infrastructure
 
-Sleep:
-  extends:
-    - .monaco_common
-  stage: Configure Dynatrace
-  needs: ["Configure DT Infra - Monaco"]
+Upsert Gitlab Oauth Token:
+  stage: Initialize
+  image: alpine
   script:
-    # Sleep an additional 120 seconds (90 + delay for the start of the next jobs) to give Dynatrace some time
-    # to tag host according to current config before sending config events
-    - sleep 90
+    - apk add --no-cache curl jq
+    - |
+      export GITLAB_PRIVATE_TOKEN=$(curl -s -X POST -H "Content-Type: application/json" -d '{"grant_type": "password", "username": "'"$GITLAB_USERNAME"'", "password": "'"$GITLAB_PASSWORD"'"}' $GITLAB_EXTERNAL_ENDPOINT/oauth/token | jq -r '.access_token')
+    - echo $GITLAB_PRIVATE_TOKEN > token.txt
+  artifacts:
+    paths:
+      - token.txt
 
 1-Configure DT Staging - Monaco:
   extends:
@@ -56,12 +58,17 @@ Sleep:
   stage: Deploy Staging
   variables:
     RELEASE_STAGE: "simplenode-gitlab-staging"
+  before_script:
+    - GITLAB_PRIVATE_TOKEN=$(cat token.txt)
   script:
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group staging --dry-run
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group staging
     # SRG and WF configrations
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project srg --group staging --dry-run
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project srg --group staging
+    # Sleep an additional 120 seconds (90 + delay for the start of the next jobs) to give Dynatrace some time
+    # to tag host according to current config before sending config events
+    - sleep 90
 
 2-Send DT Config Event Staging:
   extends:
