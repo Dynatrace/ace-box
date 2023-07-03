@@ -25,7 +25,7 @@ variables:
   TEST_TIMEFRAME: "8m"
 
 stages:
-  - Initialize
+  - Build
   - Deploy Staging
   - Test
   - Validate Release
