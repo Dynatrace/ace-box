@@ -45,7 +45,7 @@ workflow:
   script:
     - echo "BUILD_ID $BUILD_ID is being deployed to $RELEASE_STAGE namespace"
     - >
-      helm upgrade --install $RELEASE_STAGE helm/simplenodeservice 
+      helm upgrade --install $RELEASE_PRODUCT helm/simplenodeservice 
       --set image="$IMAGE_NAME:$IMAGE_TAG"
       --set domain="$INGRESS_DOMAIN" 
       --set version="$RELEASE_VERSION"
