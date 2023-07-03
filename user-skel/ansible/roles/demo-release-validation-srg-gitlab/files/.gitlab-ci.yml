@@ -25,7 +25,7 @@ variables:
   TEST_TIMEFRAME: "8m"
 
 stages:
-  - Build
+  - Build and Initialize
   - Deploy Staging
   - Test
   - Validate Release
@@ -85,7 +85,7 @@ workflow:
 
 Build Image:
   image: docker:20.10.16
-  stage: Initialize
+  stage: Build and Initialize
   variables:
     DOCKER_HOST: tcp://docker:2376
     DOCKER_TLS_CERTDIR: "/certs"
@@ -105,13 +105,13 @@ Build Image:
 Configure DT Infra - Monaco:
   extends:
     - .monaco_common
-  stage: Initialize
+  stage: Build and Initialize
   script:
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project infrastructure --dry-run
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project infrastructure
 
 Refresh Gitlab Oauth Token:
-  stage: Initialize
+  stage: Build and Initialize
   image: alpine
   script:
     - apk add --no-cache curl jq
