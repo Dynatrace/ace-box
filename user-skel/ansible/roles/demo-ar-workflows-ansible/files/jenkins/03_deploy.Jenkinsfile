@@ -36,6 +36,12 @@ pipeline {
             trim: true
         )
         booleanParam(name: 'IS_CANARY', defaultValue: false, description: 'Is canary version of service.')
+        string(
+            name: 'HELM_RELEASE_NAME',
+            defaultValue: 'simplenodeservice',
+            description: 'The name of the Helm release.',
+            trim: true
+        )
     }
     agent {
         label 'kubegit'
@@ -52,14 +58,14 @@ pipeline {
                     env.DT_TAGS = "non-prod  BUILD=${env.RELEASE_BUILD_VERSION}"
                 }
                 container('helm') {
-                    sh "helm upgrade --install ${env.RELEASE_PRODUCT} helm/simplenodeservice \
+                    sh "helm upgrade --install ${env.HELM_RELEASE_NAME} helm/simplenodeservice \
                     --set image=\"${env.IMAGE_NAME}:${env.IMAGE_TAG}\" \
                     --set domain=${env.INGRESS_DOMAIN} \
                     --set version=${env.RELEASE_VERSION} \
                     --set build_version=${env.RELEASE_BUILD_VERSION} \
                     --set ingress.isCanary=${env.IS_CANARY} \
                     --set ingress.canaryWeight=${env.CANARY_WEIGHT} \
-                    --set dt_release_product=\"simplenodeservice\" \
+                    --set dt_release_product=\"${env.RELEASE_PRODUCT}\" \
                     --set dt_owner=\"demo-ar-workflows-ansible\" \
                     --set dt_tags=\"${env.DT_TAGS}\" \
                     --set dt_custom_prop=\"${env.DT_CUSTOM_PROP}\" \
@@ -71,7 +77,7 @@ pipeline {
         stage('Dynatrace deployment event') {
             steps {
                 script {
-                    sleep(time:150, unit:'SECONDS')
+                    sleep(time:120, unit:'SECONDS')
 
                     event.pushDynatraceDeploymentEvent(
                         tagRule: getTagRulesForPGIEvent(),
@@ -116,11 +122,9 @@ def getTagRulesForPGIEvent() {
         [
             'meTypes': ['PROCESS_GROUP_INSTANCE'],
             tags: [
-                ['context': 'ENVIRONMENT', 'key': 'DT_RELEASE_BUILD_VERSION', 'value': "${env.RELEASE_BUILD_VERSION}"],
-                ['context': 'KUBERNETES', 'key': 'app.kubernetes.io/name', 'value': "${env.RELEASE_PRODUCT}"],
-                ['context': 'KUBERNETES', 'key': 'app.kubernetes.io/part-of', 'value': 'simplenodeservice'],
-                ['context': 'KUBERNETES', 'key': 'app.kubernetes.io/component', 'value': 'webservice'],
-                ['context': 'CONTEXTLESS', 'key': 'environment', 'value': "${env.RELEASE_STAGE}"]
+                ['context': 'ENVIRONMENT', 'key': 'DT_RELEASE_PRODUCT', 'value': "${env.RELEASE_PRODUCT}"],
+                ['context': 'ENVIRONMENT', 'key': 'DT_RELEASE_STAGE', 'value': "${env.RELEASE_STAGE}"],
+                ['context': 'ENVIRONMENT', 'key': 'DT_RELEASE_BUILD_VERSION', 'value': "${env.RELEASE_BUILD_VERSION}"]
             ]
         ]
     ]

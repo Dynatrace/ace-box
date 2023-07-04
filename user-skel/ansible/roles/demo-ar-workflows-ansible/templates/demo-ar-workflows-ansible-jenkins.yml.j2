@@ -45,13 +45,14 @@ controller:
             pipelineJob('{{ demo_jenkins_folder }}/3. Deploy') {
               parameters {
                 stringParam('RELEASE_PRODUCT')
+                stringParam('HELM_RELEASE_NAME')
                 stringParam('IMAGE_NAME')
                 stringParam('IMAGE_TAG')
                 stringParam('RELEASE_VERSION')
                 stringParam('RELEASE_BUILD_VERSION')
                 stringParam('RELEASE_STAGE')
-                stringParam('CANARY_WEIGHT', '0', 'Weight of traffic that will be routed to service.')
-                booleanParam('IS_CANARY', false, 'Is canary version of service?')
+                stringParam('CANARY_WEIGHT')
+                booleanParam('IS_CANARY')
               }
               definition {
                 cpsScm {
@@ -72,9 +73,9 @@ controller:
         - script: >
             pipelineJob('{{ demo_jenkins_folder }}/4. Shift traffic') {
               parameters {
-                stringParam('CANARY_WEIGHT', '0', 'Weight of traffic that will be routed to service.')
-                stringParam('REMEDIATION_URL', '', 'Remediation script to call if canary release fails.')
-                stringParam('REMEDIATION_TYPE', '', 'Remediation type to target specific remediation handler.')
+                stringParam('CANARY_WEIGHT')
+                stringParam('REMEDIATION_URL')
+                stringParam('REMEDIATION_TYPE')
               }
               definition {
                 cpsScm {
