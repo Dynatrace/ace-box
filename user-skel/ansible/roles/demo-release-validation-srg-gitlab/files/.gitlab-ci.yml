@@ -111,26 +111,15 @@ Configure DT Infra - Monaco:
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project infrastructure --dry-run
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project infrastructure
 
-Refresh Gitlab Oauth Token:
-  stage: Build and Initialize
-  image: alpine
-  script:
-    - apk add --no-cache curl jq
-    - |
-      export GITLAB_PRIVATE_TOKEN=$(curl -s -X POST -H "Content-Type: application/json" -d '{"grant_type": "password", "username": "'"$GITLAB_USERNAME"'", "password": "'"$GITLAB_PASSWORD"'"}' $GITLAB_EXTERNAL_ENDPOINT/oauth/token | jq -r '.access_token')
-    - echo $GITLAB_PRIVATE_TOKEN > token.txt
-  artifacts:
-    paths:
-      - token.txt
-
 1-Configure DT Staging - Monaco:
   extends:
     - .monaco_common
   stage: Deploy Staging
   variables:
     RELEASE_STAGE: "simplenode-gitlab-staging"
-  before_script:
-    - GITLAB_PRIVATE_TOKEN=$(cat token.txt)
+    DT_OWNER_IDENTIFIER: "$RELEASE_PRODUCT-$RELEASE_STAGE-$DEMO_IDENTIFIER"
+    GITLAB_PROJECT_ID: "$CI_PROJECT_ID"
+    GITLAB_DEFAULT_ASSIGNEE_ID: "$GITLAB_USER_ID"
   script:
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group staging --dry-run
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group staging
