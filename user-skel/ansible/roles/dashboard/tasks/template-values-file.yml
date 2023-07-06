@@ -3,7 +3,7 @@
     path: "{{ role_path }}/files/helm-values"
     state: directory
 
-- name: Template additional Helm values file
+- name: "Template {{ include_dashboard_value_file }} file"
   template:
     src: "{{ include_dashboard_value_file }}"
     dest: "{{ role_path }}/files/helm-values/{{ include_dashboard_value_file | basename | replace('.j2', '') }}"
