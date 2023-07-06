@@ -46,7 +46,7 @@
         "y": 2
       },
       "conditions": {
-        "custom": "`{{` result('debounce_event_trigger').isUnique `}}`",
+        "custom": "{{`{{ result('debounce_event_trigger').isUnique }}`}}",
         "states": {
           "debounce_event_trigger": "OK"
         }
@@ -65,7 +65,7 @@
         "y": 2
       },
       "conditions": {
-        "custom": "`{{` not result('debounce_event_trigger').isUnique `}}`",
+        "custom": "{{`{{ not result('debounce_event_trigger').isUnique }}`}}",
         "states": {
           "debounce_event_trigger": "OK"
         }

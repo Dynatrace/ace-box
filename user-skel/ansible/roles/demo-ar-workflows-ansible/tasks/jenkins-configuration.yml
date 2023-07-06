@@ -7,18 +7,9 @@
     name: jenkins-config
     tasks_from: ensure-credentials
   vars:
-    credentials_value: "{{ awx_admin_username }}"
-    credentials_id: "AWX_ADMIN_USER"
-    credentials_description: "AWX_ADMIN_USER"
-    credentials_class: StringCredentialsImpl
-
-- include_role:
-    name: jenkins-config
-    tasks_from: ensure-credentials
-  vars:
-    credentials_value: "{{ awx_admin_password }}"
-    credentials_id: "AWX_ADMIN_PASSWORD"
-    credentials_description: "AWX_ADMIN_PASSWORD"
+    credentials_value: "{{ [awx_admin_username, awx_admin_password] | join(':') | b64encode }}"
+    credentials_id: "AWX_BASIC_AUTH"
+    credentials_description: "AWX_BASIC_AUTH"
     credentials_class: StringCredentialsImpl
 
 - include_role:

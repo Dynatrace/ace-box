@@ -16,11 +16,9 @@ configs:
     template: remediation-workflow.json
     skip: false
     parameters: 
-      dt_environment_url_gen3: ""
-      ingress_protocol: ""
-      ingress_domain: ""
-      gitlab_username: ""
-      gitlab_password: "" 
+      awx_basic_auth:
+        type: environment
+        name: AWX_BASIC_AUTH
   type:
     automation:
       resource: workflow

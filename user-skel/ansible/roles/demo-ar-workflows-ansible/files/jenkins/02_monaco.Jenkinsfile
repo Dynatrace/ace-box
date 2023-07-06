@@ -11,8 +11,7 @@ pipeline {
         DT_OAUTH_CLIENT_ID = credentials('DT_OAUTH_CLIENT_ID')
         DT_OAUTH_CLIENT_SECRET = credentials('DT_OAUTH_CLIENT_SECRET')
         DT_OAUTH_SSO_ENDPOINT = credentials('DT_OAUTH_SSO_ENDPOINT')
-        AWX_ADMIN_USER = credentials('AWX_ADMIN_USER')
-        AWX_ADMIN_PASSWORD = credentials('AWX_ADMIN_PASSWORD')
+        AWX_BASIC_AUTH = credentials('AWX_BASIC_AUTH')
         // As of June 2023, MONACO_FEAT_AUTOMATION_RESOURCES flag required as feature is in preview
         MONACO_FEAT_AUTOMATION_RESOURCES = '1'
         // Monaco variables
