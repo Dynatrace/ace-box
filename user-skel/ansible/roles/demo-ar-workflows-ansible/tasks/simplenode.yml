@@ -21,15 +21,19 @@
   vars:
     app_simplenode_overwrites:
     - dest: demo/
+    - dest: README.md
+      src: "{{ playbook_dir }}/roles/demo-ar-workflows-ansible/files/README.md"
+    - dest: docs/
+      src: "{{ playbook_dir }}/roles/demo-ar-workflows-ansible/files/docs/"
     - dest: cloudautomation/
     - dest: jmeter/
     - dest: locust/
     - dest: monaco/
-      src: '{{ playbook_dir }}/roles/demo-ar-workflows-ansible/files/monaco/'
+      src: "{{ playbook_dir }}/roles/demo-ar-workflows-ansible/files/monaco/"
     - dest: jenkins/
-      src: '{{ playbook_dir }}/roles/demo-ar-workflows-ansible/files/jenkins/'
+      src: "{{ playbook_dir }}/roles/demo-ar-workflows-ansible/files/jenkins/"
     - dest: ansible/
-      src: '{{ playbook_dir }}/roles/demo-ar-workflows-ansible/files/ansible/'
+      src: "{{ playbook_dir }}/roles/demo-ar-workflows-ansible/files/ansible/"
     - dest: load-gen/
     - dest: build_number.txt
     - dest: .gitlab-ci.yml
