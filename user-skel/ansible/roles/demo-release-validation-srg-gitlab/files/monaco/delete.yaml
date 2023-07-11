@@ -1,61 +1,33 @@
 delete:
   
-  # project - app - staging
+  # project - app
   - project: app
     type: auto-tag
-    name: simplenode-gitlab-staging-srg
+    name: $RELEASE_STAGE-$DEMO_IDENTIFIER
   - project: app
     type: application-web
-    name: simplenodeservice-simplenode-gitlab-staging-srg
+    name: $RELEASE_PRODUCT-$RELEASE_STAGE-$DEMO_IDENTIFIER
   - project: app
     type: calculated-metrics-service
-    name: simplenode-gitlab-staging.failure_rate_by_version-srg
+    name: $RELEASE_STAGE.failure_rate_by_version-$DEMO_IDENTIFIER
   - project: app
     type: calculated-metrics-service
-    name: simplenode-gitlab-staging.response_time_by_version-srg
+    name: $RELEASE_STAGE.response_time_by_version-$DEMO_IDENTIFIER
   - project: app
     type: slo
-    name: staging_slo_success_rate_srg
+    name: staging_slo_success_rate_$DEMO_IDENTIFIER
   - project: app
     type: slo
-    name: staging_slo_availability_srg
+    name: staging_slo_availability_$DEMO_IDENTIFIER
   - project: app
     type: dashboard
-    name: simplenode-gitlab-staging-dashboard-srg
+    name: $RELEASE_STAGE-dashboard-$DEMO_IDENTIFIER
   - project: app
     type: synthetic-monitor
-    name: simplenode-gitlab-staging-health-check-srg
-
-    # settings
+    name: $RELEASE_STAGE-health-check-$DEMO_IDENTIFIER
   - project: app
     type: builtin:rum.web.app-detection
     id: appDetection
-
-  # project - app - prod
-  - project: app
-    type: auto-tag
-    name: simplenode-gitlab-prod-srg
-  - project: app
-    type: application-web
-    name: simplenodeservice-simplenode-gitlab-prod-srg
-  - project: app
-    type: calculated-metrics-service
-    name: simplenode-gitlab-prod.failure_rate_by_version-srg
-  - project: app
-    type: calculated-metrics-service
-    name: simplenode-gitlab-prod.response_time_by_version-srg
-  - project: app
-    type: slo
-    name: prod_slo_success_rate_srg
-  - project: app
-    type: slo
-    name: prod_slo_availability_srg
-  - project: app
-    type: dashboard
-    name: simplenode-gitlab-prod-dashboard-srg
-  - project: app
-    type: synthetic-monitor
-    name: simplenode-gitlab-prod-health-check-srg
 
   # project - srg
   - project: srg
@@ -68,19 +40,19 @@ delete:
   # project - infrastructure
   - project: infrastructure
     type: auto-tag
-    name: environment-srg  
+    name: environment-$DEMO_IDENTIFIER  
   - project: infrastructure
     type: auto-tag
-    name: app-srg    
+    name: app-$DEMO_IDENTIFIER    
   - project: infrastructure
     type: request-attributes
-    name: LTN-srg
+    name: LTN-$DEMO_IDENTIFIER
   - project: infrastructure
     type: request-attributes
-    name: TSN-srg
+    name: TSN-$DEMO_IDENTIFIER
   - project: infrastructure
     type: request-attributes
-    name: LSN-srg
+    name: LSN-$DEMO_IDENTIFIER
   - project: infrastructure
     type: synthetic-location
-    name: synth-location-srg
+    name: synth-location-$DEMO_IDENTIFIER

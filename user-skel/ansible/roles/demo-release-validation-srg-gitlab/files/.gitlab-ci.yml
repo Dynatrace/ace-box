@@ -39,6 +39,10 @@ workflow:
 
 .monaco_common:
   image: dynatrace/dynatrace-configuration-as-code:$MONACO_IMAGE_VERSION
+  variables:
+    DT_OWNER_IDENTIFIER: "$RELEASE_PRODUCT-$RELEASE_STAGE-$DEMO_IDENTIFIER"
+    GITLAB_PROJECT_ID: "$CI_PROJECT_ID"
+    GITLAB_DEFAULT_ASSIGNEE_ID: "$GITLAB_USER_ID"
 
 .deployment_common:
   image: dtzar/helm-kubectl
@@ -117,9 +121,6 @@ Configure DT Infra - Monaco:
   stage: Deploy Staging
   variables:
     RELEASE_STAGE: "simplenode-gitlab-staging"
-    DT_OWNER_IDENTIFIER: "$RELEASE_PRODUCT-$RELEASE_STAGE-$DEMO_IDENTIFIER"
-    GITLAB_PROJECT_ID: "$CI_PROJECT_ID"
-    GITLAB_DEFAULT_ASSIGNEE_ID: "$GITLAB_USER_ID"
   script:
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group staging --dry-run
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group staging
@@ -218,6 +219,7 @@ Cleanup DT Configs - Monaco:
   image: dynatrace/dynatrace-configuration-as-code:$MONACO_IMAGE_VERSION
   stage: Cleanup
   script:
-    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco delete --manifest $MANIFEST_FILE --file ./monaco/delete.yaml --group production
-    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco delete --manifest $MANIFEST_FILE --file ./monaco/delete.yaml --group staging
+    - sed -e "s/\$RELEASE_STAGE/$RELEASE_STAGE/g" -e "s/\$DEMO_IDENTIFIER/$DEMO_IDENTIFIER/g" -e "s/\$RELEASE_PRODUCT/$RELEASE_PRODUCT/g" ./monaco/delete.yaml > ./monaco/delete-optimized.yaml
+    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco delete --manifest $MANIFEST_FILE --file ./monaco/delete-optimized.yaml --group production
+    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco delete --manifest $MANIFEST_FILE --file ./monaco/delete-optimized.yaml --group staging
   when: manual
