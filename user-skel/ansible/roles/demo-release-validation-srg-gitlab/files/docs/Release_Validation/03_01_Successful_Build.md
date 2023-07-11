@@ -12,19 +12,27 @@ In this first step, we will outline the different phases of our CI configuration
     ![gitlab-cicd](assets/gitlab_cicd_pipeline.png)
 
 2. The following stages and jobs can be observed:
-    1. Stage `Configure-dynatrace`
-       1. Job `1-monaco-infra`, `2-monaco-staging`, `3-monaco-srg`, `4-monaco-prod` : applies the relevant Dynatrace configuration that is stored in the `monaco` folder within the repository
-       2. Job `5-monaco-sleep`, `6-monaco-staging-dt-event`, `6-monaco-prod-dt-event` : sends events to notify that the respective configurations are applied to Dynatrace staging and production environments. 
-          A sleep job is needed to give Dynatrace some time to tag host according to current config before sending the config event  
+    1. Stage `Build and Initialize`
+       1. Job `Build Image` that builds the image with a selected build ID (e.g. 1, 2, 3, 4) before running the pipeline
+       2. Job `Configure DT Infra - Monaco` that applies the infrastructure-related Dynatrace configurations to both staging and production Dynatrace environments. Configurations are stored in the `monaco/infrastructure` folder within the repository.  
     2. Stage `Deploy-staging`  
-       1. Job `deployment-staging` that deploys the simplenodeservice application using helm in the staging environment
-       2. Job `dynatrace_deploy_event_staging` that sends a Deployment Event to Dynatrace indicating the act of deployment took place
-    3. Stage `Test` contains one job, `run-tests` that leverages Locust to send multiple requests to the application to test the performance. The configuration of the tests can be found in the `locust` folder within the repository
-    4. Stage `Validate-release` contains a job `srg-release-validation` which performs the Release Validation using Dynatrace Site Reliability Guardian. If this job is completed successfully, it will promote the release to the production environment. In the "fail" case, it will stop the pipeline
-    5. Stage `Deploy-production`  
-       1. Job `deployment-production` that deploys the simplenodeservice application using helm in the production environment in case the Validate-release stage is successfully completed.
-       2. Job `dynatrace_deploy_event_production` that sends a Deployment Event to Dynatrace indicating the act of deployment took place
-    6. Stage `Cleanup` contains a job `cleanup-monaco` that removes the configurations applied to Dynatrace for this demo activity via Monaco
+       1. Job `1-Configure DT Staging - Monaco` that configures the Dynatrace staging environment with the application and workflow related configurations that are stored in the `monaco/app` and `monaco/srg` folders within the repository. 
+          A sleep is needed to give Dynatrace some time to tag host according to current config before sending the config event 
+       2. Job `2-Send DT Config Event Staging` that sends events to notify that the respective configurations are applied to Dynatrace staging environment
+       3. Job `3-Deploy App Staging` that deploys the simplenodeservice application using helm in the staging environment
+       4. Job `4-Send DT Deploy Event Staging` that sends a Deployment Event to Dynatrace indicating the act of deployment took place in the staging environment
+    3. Stage `Test` contains one job, `Run Tests` that leverages Locust to send multiple requests to the application to test the performance. The configuration of the tests can be found in the `locust` folder within the repository
+    4. Stage `Validate Release` contains a job `Validate Release with SRG` which performs the Release Validation using Dynatrace Site Reliability Guardian. If this job is completed successfully, it will promote the release to the production environment. In the "fail" case, it will stop the pipeline
+    5. Stage `Deploy Production`  
+       1. Job `1-Configure DT Production - Monaco` that configures the Dynatrace production environment with the application related configurations that are stored in the `monaco/app` folder within the repository. 
+          A sleep is needed to give Dynatrace some time to tag host according to current config before sending the config event 
+       2. Job `2-Send DT Config Event Production` that sends events to notify that the respective configurations are applied to Dynatrace production environment
+       3. Job `3-Deploy App Production` that deploys the simplenodeservice application using helm in the production environment
+       4. Job `4-Send DT Deploy Event Production` that sends a Deployment Event to Dynatrace indicating the act of deployment took place in the production environment
+    6. Stage `Cleanup` contains a job `Cleanup DT Configs - Monaco` that removes the configurations applied to Dynatrace staging and production environments for this demo activity via Monaco
+
+   > Note: Dynatrace staging and production environments are the same for this demo activity. The best practice is to have a separate Dynatrace environments for staging and production requirements. 
+
 3. By clicking on each job within the pipeline, it is possible to observe the logs of that execution
 
 4. The `.gitlab-ci.yml` file contains the definition of the above steps
@@ -35,12 +43,10 @@ Once the pipeline has run completely and usually successfully, observing the eva
 
 Let´s start within Dynatrace.
 
-1. Navigate to the `Releases` screen
-2. A Management Zone called `simplenode-gitlab-staging` was created; select it if you would like to filter out the other releases that might be present.
-   
+1. Navigate to the `Releases` screen   
     ![Dynatrace Releases](assets/gitlab_dt_releases.png)
     > Note: if no events are visible, you might need to select a larger time frame
-3. Click on the release in the `simplenode-gitlab-staging` environment
+2. Click on the release in the `simplenode-gitlab-staging` environment
    
     ![Dynatrace Release Details](assets/gitlab_dt_release_details.png)
 

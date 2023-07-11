@@ -42,7 +42,7 @@ The following noteable files/folders exist:
 - `helm/simplenodeservice` folder: contains the helm chart for the simplenodeservice
 - `locust` folder: contains the test files
 - `monaco` folder: contains the monaco configuration
-- `app.js`: simplenodeservice application code. Note: the application does not get built each time in the GitLab demo, instead pre-built images are leveraged
+- `app.js`: simplenodeservice application code
 - `Dockerfile`: simplenodeservice Dockerfile definition for building the container image
 - `.gitlab-ci.yml`: The GitLab pipeline definition
 

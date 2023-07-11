@@ -37,44 +37,55 @@ The first SLO will be for availability, with the following values:
 
 ### Create an SLO from a template via Monaco
 
-   Navigate to `monaco > app > staging > _config.yaml` to see the SLO configuration parameters.
+   Navigate to `monaco > app > _config.yaml` to see the SLO configuration parameters.
 
     ```
     #slo
     - id: slo_success_rate
-        type:
+      type:
         api: slo
-        config:
-        template: ../shared/slo.json
-        name: slo_simplenode_staging_srg_success_rate
+      config:
+        template: slo.json
+        name:
+          type: compound
+          format: "{{ .tag_stage }}_slo_success_rate_{{ .demoIdentifier }}"
+          references:
+            - tag_stage
+            - demoIdentifier
         parameters:
-            description: "Service Errors Total SuccessCount / Service RequestCount Total"
-            metricNumerator: "builtin:service.errors.total.successCount:splitBy()"
-            metricDenominator: "builtin:service.requestCount.total:splitBy()"
-            filterType: "SERVICE"
-            target: 95
-            warning: 99
-            releaseProduct:
+          description: "Service Errors Total SuccessCount / Service RequestCount Total"
+          metricNumerator: "builtin:service.errors.total.successCount:splitBy()"
+          metricDenominator: "builtin:service.requestCount.total:splitBy()"
+          filterType: "SERVICE"
+          target: 95
+          warning: 99
+          releaseProduct:
             type: environment
             name: RELEASE_PRODUCT
-            releaseStage:
+          releaseStage:
             type: environment
             name: RELEASE_STAGE
-            sloTimeFrame:
+          sloTimeFrame:
             type: compound
             format: "-{{ .timeFrame }}"
             references:
-                - timeFrame
-            timeFrame:
+              - timeFrame
+          timeFrame:
             type: environment
             name: TEST_TIMEFRAME
+          demoIdentifier:
+            type: environment
+            name: DEMO_IDENTIFIER
+          tag_stage:
+            type: environment
+            name: SRG_EVALUATION_STAGE
         skip: false
     ```
 ### Use the SLOs for SRG Objectives
 
     ```
     objective_name_slo_success_rate: "Success Rate"
-    reference_slo_success_rate: ["app.staging","slo", "slo_success_rate", "name"]
+    reference_slo_success_rate: ["app","slo", "slo_success_rate", "name"]
     reference_slo_metric_success_rate:
         type: compound
         format: "func:slo.{{ .reference_slo_success_rate }}"
@@ -84,7 +95,7 @@ The first SLO will be for availability, with the following values:
     warning_slo_success_rate: 99
     
     objective_name_slo_availability: "Availability of Service"
-    reference_slo_availability: ["app.staging","slo", "slo_availability", "name"]
+    reference_slo_availability: ["app","slo", "slo_availability", "name"]
     reference_slo_metric_availability:
         type: compound
         format: "func:slo.{{ .reference_slo_availability }}"

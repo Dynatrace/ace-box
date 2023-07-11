@@ -19,11 +19,11 @@ During this step, we will deploy a Build of poor quality (i.e. a decrease in res
    
     ![failed-run](assets/gitlab_cicd_pipeline_failed.png)
 
-2. Click on the failed pipeline to open the details. Notice how the `srg-release-validation` job in the `Validate-release` stage failed. 
+2. Click on the failed pipeline to open the details. Notice how the `Validate Release with SRG` job in the `Validate Release` stage failed. 
    
     ![failed-run](assets/gitlab_cicd_pipeline_failed_stages.png)
 
-3. Click on the `srg-release-validation` job to open the details. This will produce the console output of the agent running the job.
+3. Click on the `Validate Release with SRG` job to open the details. This will produce the console output of the agent running the job.
    
     ![failed-run](assets/gitlab_cicd_pipeline_failed_jobdetails_1.png)
     ![failed-run](assets/gitlab_cicd_pipeline_failed_jobdetails_2.png)

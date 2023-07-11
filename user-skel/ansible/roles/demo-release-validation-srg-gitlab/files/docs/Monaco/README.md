@@ -1,29 +1,29 @@
 # 6. Dynatrace Configurations leveraging Monaco 2.0
 
-We perform Dynatrace configurations automatically via `Monaco` in the beginning of the pipeline execution. Thus, all the initial configurations are applied before the next stages. 
+We perform Dynatrace configurations automatically via `Monaco`. Thus, all the infrastructure related configurations are applied before the next stages. Application-related Dynatrace configurations are applied before the application deployments on their respective environments (staging and production). 
 
 ![gitlab-cicd](assets/gitlab_cicd_pipeline_monaco_stage.png)
 
-- infrastructure (job: `1-monaco-infra`): More generic settings
+- infrastructure (job: `Configure DT Infra - Monaco` under stage: `Build and Initialize`): More generic settings that can be applied   to both Dynatrace staging and production environments
   - private synthetic location (ACE-Box)
   - request attributes (LTN,LSN,TSN)
-- app-simplenode: Application specific settings
-  - staging (job: `2-monaco-staging`): Corresponding to the application release on staging environment
-  - production (job: `4-monaco-prod`) : Corresponding to the application release on production environment
+  - Auto-tags (auto-tag-env, auto-tag-app)
+- app: Application specific settings
+  - staging (job: `1-Configure DT Staging - Monaco` under stage: `Deploy Staging`): Corresponding to the application release on staging environment
+  - production (job: `1-Configure DT Production - Monaco` under stage: `Deploy Production`) : Corresponding to the application release on production environment
   common settings for staging and production releases:
+    - Ownership
     - Auto-tag
     - Application Detection
     - Application
     - Synthetic Monitor
-    - Management Zone
     - Calculated Metrics Service
     - SLO 
     - Dashboard
-- SRG and Workflow definitions (job: `3-monaco-srg`):
+- SRG and Workflow definitions (job: `1-Configure DT Staging - Monaco` under stage: `Deploy Staging`):
   - Workflow
   - SRG to utilize SLO definitions for defining validation objectives
-- Sending events to notify Dynatrace about the configurations done via Monaco (jobs: `6-monaco-staging-dt-event`, `6-monaco-prod-dt-event` )
-    > Note: `5-monaco-sleep` job is needed to give Dynatrace some time to tag host before sending config events
+- Sending events to notify Dynatrace about the configurations done via Monaco (job: `2-Send DT Config Event Staging` under stage: `Deploy Staging`  and job: `2-Send DT Config Event Production` under stage: `Deploy Production` )
 
 ## Cleanup
   To remove the configurations applied to Dynatrace for this demo activity, you can trigger the manual task from the Gitlab pipeline. 

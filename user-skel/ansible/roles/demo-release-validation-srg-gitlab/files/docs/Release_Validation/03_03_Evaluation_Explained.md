@@ -6,13 +6,13 @@ In this section, we will examine the Release Validation process that prevents a 
 
 Let's start by examining the CI Pipeline in reverse order, from the last to the first stage.
 
-1. The ultimate goal is to deploy a stable and reliable build to the production environment. The `deployment-production` job, located in the `Deploy-production` stage, is responsible for installing the app-simplenode into the production environment. Additionally, the `dynatrace-deploy-event-production` notifies Dynatrace about this deployment, which can be viewed on the `Releases` page.
+1. The ultimate goal is to deploy a stable and reliable build to the production environment. The `3-Deploy App Production` job, located in the `Deploy Production` stage, is responsible for installing the app-simplenode into the production environment. Additionally, the `4-Send DT Deploy Event Production` notifies Dynatrace about this deployment, which can be viewed on the `Releases` page.
 
-   However, before we can proceed to this stage, we need to ensure that the build in the staging environment is of sufficient quality to be promoted to the production environment. This is where the `Validate-release` stage comes into play.
+   However, before we can proceed to this stage, we need to ensure that the build in the staging environment is of sufficient quality to be promoted to the production environment. This is where the `Validate Release` stage comes into play.
 
 2. For the Release Validation, one single job is enough:
    
-   `Validate-release` stage `srg-release-validation` job: here it will send an event to trigger a `Workflow` to perform an evaluation through `Site Reliability Guardian` and process the results. 
+   `Validate Release` stage `Validate Release with SRG` job: here it will send an event to trigger a `Workflow` to perform an evaluation through `Site Reliability Guardian` and process the results. 
    If you click on the job to see the job logs, you will notice `DT automation` tool is leveraged to perform the evaluation. For the details, please click here: [dynatrace-automation-tools](https://github.com/dynatrace-ace/dynatrace-automation-tools/blob/10-feature-poc-srg-execute-evaluation/docs/Site-Reliability-Guardian/SRGAutomation.md)
   
     ![gitlab-cicd](assets/gitlab_cicd_pipeline_success_jobdetails_1.png)
@@ -22,7 +22,7 @@ Let's start by examining the CI Pipeline in reverse order, from the last to the 
       ```
       eval_start=$(cat srg.test.starttime)
       eval_end=$(cat srg.test.endtime)
-      dta srg evaluate $APP_NAME --start-time=$eval_start --end-time=$eval_end
+      dta srg evaluate --service $SRG_EVALUATION_SERVICE --stage $SRG_EVALUATION_STAGE --start-time=$eval_start --end-time=$eval_end
       ```
 
      `dta srg evaluate` command sends a [bizevent](https://www.dynatrace.com/support/help/platform-modules/business-analytics/apps/explore-business-events) on behalf of you with the environment variables given as the inputs in the `.gitlab-ci.yaml` file:

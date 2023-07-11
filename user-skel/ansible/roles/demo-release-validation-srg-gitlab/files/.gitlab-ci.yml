@@ -10,8 +10,12 @@ variables:
   RELEASE_VERSION: "$BUILD_ID.0.0"
   RELEASE_BUILD_VERSION: "$BUILD_ID.0.0-$CI_COMMIT_SHORT_SHA"
   
+  STAGE_NAME_STAGING: "staging"
+  STAGE_NAME_PROD: "prod"
+  STAGE_NAME: "$STAGE_NAME_STAGING" # default
+
   RELEASE_PRODUCT: "simplenodeservice"
-  RELEASE_STAGE: "simplenode-gitlab-staging"
+  RELEASE_STAGE: "simplenode-gitlab-$STAGE_NAME"
   
   IMAGE_NAME: "$DOCKER_REGISTRY_URL/$RELEASE_PRODUCT"
   IMAGE_TAG: "$RELEASE_BUILD_VERSION"
@@ -20,9 +24,9 @@ variables:
   MONACO_IMAGE_VERSION: 2.3.0
   #dta and srg
   DTA_IMAGE_VERSION: latest
-  SRG_EVALUATION_SERVICE: "simplenode" 
-  SRG_EVALUATION_STAGE: "staging"
-  TEST_TIMEFRAME: "8m"
+  SRG_EVALUATION_SERVICE: "$RELEASE_PRODUCT" 
+  SRG_EVALUATION_STAGE: "$STAGE_NAME_STAGING"
+  TEST_TIMEFRAME: "5m"
 
 stages:
   - Build and Initialize
@@ -120,7 +124,7 @@ Configure DT Infra - Monaco:
     - .monaco_common
   stage: Deploy Staging
   variables:
-    RELEASE_STAGE: "simplenode-gitlab-staging"
+    STAGE_NAME: "$STAGE_NAME_STAGING"
   script:
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group staging --dry-run
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group staging
@@ -134,11 +138,13 @@ Configure DT Infra - Monaco:
 2-Send DT Config Event Staging:
   extends: .dt_config_event_common
   stage: Deploy Staging
+  variables:
+    STAGE_NAME: "$STAGE_NAME_STAGING"  
   needs: ["1-Configure DT Staging - Monaco"]
 
 3-Deploy App Staging:
   variables:
-    RELEASE_STAGE: "simplenode-gitlab-staging" 
+    STAGE_NAME: "$STAGE_NAME_STAGING" 
   stage: Deploy Staging
   needs: ["1-Configure DT Staging - Monaco"]
   extends:
@@ -192,7 +198,7 @@ Validate Release with SRG:
     - .monaco_common
   stage: Deploy Production
   variables:
-    RELEASE_STAGE: "simplenode-gitlab-prod"
+    STAGE_NAME: "$STAGE_NAME_PROD"
   script:
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group production --dry-run
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group production
@@ -200,11 +206,13 @@ Validate Release with SRG:
 2-Send DT Config Event Production:
   extends: .dt_config_event_common
   stage: Deploy Production
+  variables:
+    STAGE_NAME: "$STAGE_NAME_PROD"  
   needs: ["1-Configure DT Production - Monaco"]
 
 3-Deploy App Production:
   variables:
-    RELEASE_STAGE: "simplenode-gitlab-prod"
+    STAGE_NAME: "$STAGE_NAME_PROD"
   stage: Deploy Production
   needs: ["1-Configure DT Production - Monaco"]
   extends:
@@ -213,6 +221,8 @@ Validate Release with SRG:
 4-Send DT Deploy Event Production:
   extends: .dt_deployment_event_common
   stage: Deploy Production
+  variables:
+    STAGE_NAME: "$STAGE_NAME_PROD"  
   needs: ["3-Deploy App Production"]
 
 Cleanup DT Configs - Monaco:

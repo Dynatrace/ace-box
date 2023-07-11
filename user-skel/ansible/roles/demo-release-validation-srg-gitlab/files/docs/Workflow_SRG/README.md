@@ -18,7 +18,7 @@ Locate the Site Reliability Guardian app in the sidebar and click `+ guardian` b
 
 <img src="./assets/srg-create-ui.png"  width="550" height="200">
 
-After installing the application, you are ready to configure a guardian yourself. However, for this demo activity, you don´t need to do anything manually. When the demo environment is provisioned, the Gitlab pipeline automatically triggers a Monaco job (`3-monaco-srg`).
+After installing the application, you are ready to configure a guardian yourself. However, for this demo activity, you don´t need to do anything manually. When the demo environment is provisioned, the Gitlab pipeline automatically triggers a Monaco job (`1-Configure DT Staging - Monaco` under the stage `Deploy Staging`).
 
 ![gitlab-cicd](assets/gitlab_pipeline_srg_job.png)
 
