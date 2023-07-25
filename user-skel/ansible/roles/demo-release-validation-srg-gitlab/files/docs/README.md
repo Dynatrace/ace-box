@@ -11,8 +11,8 @@ A dashboard has been deployed and is available at `http(s)://dashboard.<ingress 
 
 All code and docs have been made available in the *demo* organization on *Gitlab* ( `http(s)://gitlab.<ingress domain>/demo` ):
 
-- *srg-pipeline* contains all application source code, Gitlab pipelines and Monaco resources.
-- *srg-docs* contains step-by-step instructions for the use case.
+- *srg-pipeline* project contains all application source code, Gitlab pipelines and Monaco resources. 
+- *docs* folder under *srg-pipeline* project contains step-by-step instructions for the use case.
 
 >Note: the name of the organization might be different depending on the deployment of the ace-box.
 
