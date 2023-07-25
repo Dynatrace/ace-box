@@ -14,7 +14,8 @@ In this first step, we will outline the different phases of our CI configuration
 2. The following stages and jobs can be observed:
     1. Stage `Build and Initialize`
        1. Job `Build Image` that builds the image with a selected build ID (e.g. 1, 2, 3, 4) before running the pipeline
-       2. Job `Configure DT Infra - Monaco` that applies the infrastructure-related Dynatrace configurations to both staging and production Dynatrace environments. Configurations are stored in the `monaco/infrastructure` folder within the repository.  
+       2. Job `Configure DT Infra - Monaco` that applies the infrastructure-related Dynatrace configurations to both staging and production Dynatrace environments. Configurations are stored in the `monaco/infrastructure` folder within the repository.
+       3. Manual Job `Cleanup DT Configs - Monaco` that cleans up the Dynatrace configurations related to this demo from Dynatrace staging and production environments via Monaco. It is recommended to run this job manually when you finish your demo session. 
     2. Stage `Deploy-staging`  
        1. Job `1-Configure DT Staging - Monaco` that configures the Dynatrace staging environment with the application and workflow related configurations that are stored in the `monaco/app` and `monaco/srg` folders within the repository. 
           A sleep is needed to give Dynatrace some time to tag host according to current config before sending the config event 
@@ -29,9 +30,7 @@ In this first step, we will outline the different phases of our CI configuration
        2. Job `2-Send DT Config Event Production` that sends events to notify that the respective configurations are applied to Dynatrace production environment
        3. Job `3-Deploy App Production` that deploys the simplenodeservice application using helm in the production environment
        4. Job `4-Send DT Deploy Event Production` that sends a Deployment Event to Dynatrace indicating the act of deployment took place in the production environment
-    6. Stage `Cleanup` contains a job `Cleanup DT Configs - Monaco` that removes the configurations applied to Dynatrace staging and production environments for this demo activity via Monaco
-
-   > Note: Dynatrace staging and production environments are the same for this demo activity. The best practice is to have a separate Dynatrace environments for staging and production requirements. 
+   > Note: Dynatrace staging and production environments are the same for this demo activity. The best practice is to have separate Dynatrace environments for staging and production requirements. 
 
 3. By clicking on each job within the pipeline, it is possible to observe the logs of that execution
 
