@@ -111,14 +111,6 @@ Build Image:
     - docker build --build-arg BUILD_NUMBER="$BUILD_ID" -t "$IMAGE_NAME:$IMAGE_TAG" .
     - docker push "$IMAGE_NAME:$IMAGE_TAG"
 
-Configure DT Infra - Monaco:
-  extends:
-    - .monaco_common
-  stage: Build and Initialize
-  script:
-    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project infrastructure --dry-run
-    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project infrastructure
-
 1-Configure DT Staging - Monaco:
   extends:
     - .monaco_common
@@ -126,6 +118,10 @@ Configure DT Infra - Monaco:
   variables:
     STAGE_NAME: "$STAGE_NAME_STAGING"
   script:
+    # Infrastructure related configrations
+    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project infrastructure --group staging --dry-run
+    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project infrastructure --group staging
+    # App related configrations
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group staging --dry-run
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group staging
     # SRG and WF configrations
@@ -200,6 +196,10 @@ Validate Release with SRG:
   variables:
     STAGE_NAME: "$STAGE_NAME_PROD"
   script:
+    # Infrastructure related configrations
+    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project infrastructure --group production --dry-run
+    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project infrastructure --group production
+    # App related configrations
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group production --dry-run
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group production
 
