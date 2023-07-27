@@ -1,6 +1,6 @@
 configs:
   # ownership
-  - id: ownershipment
+  - id: teams
     config:
       name:
         type: environment

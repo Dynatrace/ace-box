@@ -127,7 +127,7 @@ Build Image:
     # SRG and WF configrations
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project srg --group staging --dry-run
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project srg --group staging
-    # Sleep an additional 120 seconds (90 + delay for the start of the next jobs) to give Dynatrace some time
+    # Sleep an additional (90 + delay for the start of the next jobs) to give Dynatrace some time
     # to tag host according to current config before sending config events
     - sleep 90
 
