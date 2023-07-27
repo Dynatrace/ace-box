@@ -1,5 +1,13 @@
 delete:
   
+  # project - srg
+  - project: srg
+    type: app:dynatrace.site.reliability.guardian:guardians
+    id: simplenodeguardian
+  - project: srg
+    type: workflow
+    id: simplenodeworkflow
+
   # project - app
   - project: app
     type: auto-tag
@@ -28,31 +36,6 @@ delete:
   - project: app
     type: builtin:rum.web.app-detection
     id: appDetection
-
-  # project - srg
-  - project: srg
-    type: app:dynatrace.site.reliability.guardian:guardians
-    id: simplenodeguardian
-  - project: srg
-    type: workflow
-    id: simplenodeworkflow
-
-  # project - infrastructure
-  - project: infrastructure
-    type: auto-tag
-    name: environment-$DEMO_IDENTIFIER  
-  - project: infrastructure
-    type: auto-tag
-    name: app-$DEMO_IDENTIFIER    
-  - project: infrastructure
-    type: request-attributes
-    name: LTN-$DEMO_IDENTIFIER
-  - project: infrastructure
-    type: request-attributes
-    name: TSN-$DEMO_IDENTIFIER
-  - project: infrastructure
-    type: request-attributes
-    name: LSN-$DEMO_IDENTIFIER
-  - project: infrastructure
-    type: synthetic-location
-    name: synth-location-$DEMO_IDENTIFIER
+  - project: app
+    type: builtin:ownership.teams
+    id: teams
