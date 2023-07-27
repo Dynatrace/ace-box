@@ -121,6 +121,8 @@ Build Image:
     # Infrastructure related configrations
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project infrastructure --group staging --dry-run
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project infrastructure --group staging
+    # Wait for infrastructure configurations to be fulfilled before deploying app configurations
+    - sleep 60
     # App related configrations
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group staging --dry-run
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group staging
@@ -199,6 +201,8 @@ Validate Release with SRG:
     # Infrastructure related configrations
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project infrastructure --group production --dry-run
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project infrastructure --group production
+      # Wait for infrastructure configurations to be fulfilled before deploying app configurations
+    - sleep 60  
     # App related configrations
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group production --dry-run
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group production
