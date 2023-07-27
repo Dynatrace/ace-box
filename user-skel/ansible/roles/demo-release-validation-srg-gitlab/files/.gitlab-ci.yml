@@ -122,7 +122,7 @@ Build Image:
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project infrastructure --group staging --dry-run
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project infrastructure --group staging
     # Wait for infrastructure configurations to be fulfilled before deploying app configurations
-    - sleep 60
+    - sleep 20 # You can adjust the wait time if this is not enough
     # App related configrations
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group staging --dry-run
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group staging
@@ -202,7 +202,7 @@ Validate Release with SRG:
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project infrastructure --group production --dry-run
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project infrastructure --group production
       # Wait for infrastructure configurations to be fulfilled before deploying app configurations
-    - sleep 60  
+    - sleep 20 # You can adjust the wait time if this is not enough
     # App related configrations
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group production --dry-run
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group production
@@ -229,7 +229,7 @@ Validate Release with SRG:
     STAGE_NAME: "$STAGE_NAME_PROD"  
   needs: ["3-Deploy App Production"]
 
-DT Configs Cleanup - Monaco:
+Cleanup DT Configs - Monaco:
   image: dynatrace/dynatrace-configuration-as-code:$MONACO_IMAGE_VERSION
   stage: Build and Initialize
   script:

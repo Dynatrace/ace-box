@@ -24,7 +24,12 @@
 
 - name: Monaco - Cleanup potential conflicting Monaco resources
   shell:      
-    cmd: MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco delete --manifest {{ role_path }}/files/monaco/manifest.yaml --file {{ role_path }}/files/monaco/delete.yaml --group staging
+    cmd: |
+      MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco delete --manifest {{ role_path }}/files/monaco/manifest.yaml --file {{ role_path }}/files/monaco/delete.yaml --group staging
+      sed -e "s/\$RELEASE_STAGE/$RELEASE_STAGE/g" -e "s/\$DEMO_IDENTIFIER/$DEMO_IDENTIFIER/g" -e "s/\$RELEASE_PRODUCT/$RELEASE_PRODUCT/g" {{ role_path }}/files/monaco/delete.yaml > {{ role_path }}/files/monaco/delete-optimized.yaml
+      MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco delete --manifest {{ role_path }}/files/monaco/manifest.yaml --file {{ role_path }}/files/monaco/delete-optimized.yaml --group production
+      MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco delete --manifest {{ role_path }}/files/monaco/manifest.yaml --file {{ role_path }}/files/monaco/delete-optimized.yaml --group staging
+ 
   environment:
       DT_PLATFORM_TENANT_URL: "{{ extra_vars.dt_environment_url_gen3 }}"
       DT_API_TOKEN: "{{ monaco_cleanup_api_token }}"
