@@ -2,9 +2,8 @@
 
 [Locust](https://locust.io/) is an open-source load testing tool for developers written in Python. It allows users to describe user behavior using ordinary Python code, making it easy to create HTTP requests and scripts. Load testing is the practice of testing a software application with the primary purpose of stressing the application's capabilities. 
 
- `run-tests` job under `Test` stage runs the performance tests within the duration specified in the `.gitlab-ci.yaml` file:
+ `run-tests` job under `Test` stage runs the performance tests within the duration specified in the `.gitlab-ci.yaml` file with the `TEST_TIMEFRAME` variable:
 
-![gitlab-cicd](assets/gitlab_cicd_pipeline_locust_test_duration.png)
 
 The following code part picks the start time before the test begins, and the end time after the test finishes. These information is stored as artifact to be used by SRG Evaluation explained [here](../Release_Validation/03_03_Evaluation_Explained.md)
 
