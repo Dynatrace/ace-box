@@ -10,8 +10,14 @@ delete:
 
   # project - app
   - project: app
+    type: synthetic-monitor
+    name: $RELEASE_STAGE-health-check-$DEMO_IDENTIFIER
+  - project: app
     type: auto-tag
     name: $RELEASE_STAGE-$DEMO_IDENTIFIER
+  - project: app
+    type: builtin:rum.web.app-detection
+    id: appDetection
   - project: app
     type: application-web
     name: $RELEASE_PRODUCT-$RELEASE_STAGE-$DEMO_IDENTIFIER
@@ -30,12 +36,6 @@ delete:
   - project: app
     type: dashboard
     name: $RELEASE_STAGE-dashboard-$DEMO_IDENTIFIER
-  - project: app
-    type: synthetic-monitor
-    name: $RELEASE_STAGE-health-check-$DEMO_IDENTIFIER
-  - project: app
-    type: builtin:rum.web.app-detection
-    id: appDetection
   - project: app
     type: builtin:ownership.teams
     id: teams

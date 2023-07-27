@@ -205,7 +205,7 @@ Validate Release with SRG:
     - sleep 20 # You can adjust the wait time if this is not enough
     # App related configrations
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group production --dry-run
-    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group production
+    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group production --continue-on-error
 
 2-Send DT Config Event Production:
   extends: .dt_config_event_common
@@ -233,9 +233,9 @@ Cleanup DT Configs - Monaco:
   image: dynatrace/dynatrace-configuration-as-code:$MONACO_IMAGE_VERSION
   stage: Build and Initialize
   script:
-    - STAGE_NAME="$STAGE_NAME_STAGING"
+    - RELEASE_STAGE="simplenode-gitlab-$STAGE_NAME_STAGING"
     - sed -e "s/\$RELEASE_STAGE/$RELEASE_STAGE/g" -e "s/\$DEMO_IDENTIFIER/$DEMO_IDENTIFIER/g" -e "s/\$RELEASE_PRODUCT/$RELEASE_PRODUCT/g" ./monaco/delete-app.yaml > ./monaco/delete-app-staging-optimized.yaml 
-    - STAGE_NAME="$STAGE_NAME_PROD"
+    - RELEASE_STAGE="simplenode-gitlab-$STAGE_NAME_PROD"
     - sed -e "s/\$RELEASE_STAGE/$RELEASE_STAGE/g" -e "s/\$DEMO_IDENTIFIER/$DEMO_IDENTIFIER/g" -e "s/\$RELEASE_PRODUCT/$RELEASE_PRODUCT/g" ./monaco/delete-app.yaml > ./monaco/delete-app-prod-optimized.yaml 
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco delete --manifest $MANIFEST_FILE --file ./monaco/delete-app-prod-optimized.yaml --group production
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco delete --manifest $MANIFEST_FILE --file ./monaco/delete-app-staging-optimized.yaml --group staging
