@@ -205,7 +205,7 @@ Validate Release with SRG:
     - sleep 20 # You can adjust the wait time if this is not enough
     # App related configrations
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group production --dry-run
-    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group production --continue-on-error
+    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group production
 
 2-Send DT Config Event Production:
   extends: .dt_config_event_common
