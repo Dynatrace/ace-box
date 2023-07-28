@@ -1,0 +1,24 @@
+---
+configs:
+- id: demoArWorkflowsAnsibleDebounce
+  config:
+    name: "ACE-Box - Demo AR Workflows Ansible - Debounce"
+    template: debounce-workflow.json
+    skip: false
+    parameters: 
+      auto_remediation_workflow_id: ["global", "workflow", "demoArWorkflowsAnsibleRemediation", "id"]
+  type:
+    automation:
+      resource: workflow
+- id: demoArWorkflowsAnsibleRemediation
+  config:
+    name: "ACE-Box - Demo AR Workflows Ansible - Remediation"
+    template: remediation-workflow.json
+    skip: false
+    parameters: 
+      awx_basic_auth:
+        type: environment
+        name: AWX_BASIC_AUTH
+  type:
+    automation:
+      resource: workflow

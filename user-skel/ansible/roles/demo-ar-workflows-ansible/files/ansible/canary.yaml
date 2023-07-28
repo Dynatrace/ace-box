@@ -1,0 +1,50 @@
+---
+- name: Canary
+  hosts: localhost
+  gather_facts: true
+  tasks:
+    - name: Increment canary weight
+      vars:
+        payload:
+          parameter:
+            - name: CANARY_WEIGHT
+              value: "{{ item.canaryWeight }}"
+            - name: REMEDIATION_URL
+              value: "{{ remediation_url }}"
+            - name: REMEDIATION_TYPE
+              value: "ansible"
+      ansible.builtin.uri:
+        url: "{{ jenkins_url }}"
+        method: POST
+        url_username: "{{ jenkins_user }}"
+        url_password: "{{ jenkins_token }}"
+        force_basic_auth: true
+        body_format: form-urlencoded
+        body:
+          json: "{{ payload | to_json }}"
+        status_code: 201
+      loop:
+        - canaryWeight: 30
+        - canaryWeight: 70
+        - canaryWeight: 100
+      loop_control:
+        pause: 120
+
+    - name: Reset canary weight to 0
+      vars:
+        payload:
+          parameter:
+            - name: CANARY_WEIGHT
+              value: "0"
+      ansible.builtin.uri:
+        url: "{{ jenkins_url }}"
+        method: POST
+        url_username: "{{ jenkins_user }}"
+        url_password: "{{ jenkins_token }}"
+        force_basic_auth: true
+        body_format: form-urlencoded
+        body:
+          json: "{{ payload | to_json }}"
+        status_code: 201
+      tags:
+        - canary_reset

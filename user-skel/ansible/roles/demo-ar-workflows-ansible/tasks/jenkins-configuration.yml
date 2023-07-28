@@ -1,0 +1,40 @@
+---
+- include_role:
+    name: awx
+    tasks_from: source-secrets
+
+- include_role:
+    name: jenkins-config
+    tasks_from: ensure-credentials
+  vars:
+    credentials_value: "{{ [awx_admin_username, awx_admin_password] | join(':') | b64encode }}"
+    credentials_id: "AWX_BASIC_AUTH"
+    credentials_description: "AWX_BASIC_AUTH"
+    credentials_class: StringCredentialsImpl
+
+- include_role:
+    name: jenkins-config
+    tasks_from: ensure-credentials
+  vars:
+    credentials_value: "{{ extra_vars.dt_oauth_client_id }}"
+    credentials_id: "DT_OAUTH_CLIENT_ID"
+    credentials_description: "DT_OAUTH_CLIENT_ID"
+    credentials_class: StringCredentialsImpl
+
+- include_role:
+    name: jenkins-config
+    tasks_from: ensure-credentials
+  vars:
+    credentials_value: "{{ extra_vars.dt_oauth_client_secret }}"
+    credentials_id: "DT_OAUTH_CLIENT_SECRET"
+    credentials_description: "DT_OAUTH_CLIENT_SECRET"
+    credentials_class: StringCredentialsImpl
+
+- include_role:
+    name: jenkins-config
+    tasks_from: ensure-credentials
+  vars:
+    credentials_value: "{{ extra_vars.dt_oauth_sso_endpoint }}"
+    credentials_id: "DT_OAUTH_SSO_ENDPOINT"
+    credentials_description: "DT_OAUTH_SSO_ENDPOINT"
+    credentials_class: StringCredentialsImpl

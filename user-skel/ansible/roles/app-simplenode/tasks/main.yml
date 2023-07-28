@@ -87,4 +87,3 @@
     args:
       chdir: "{{ repo_src }}"
   when: publish_new == True
-

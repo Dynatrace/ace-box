@@ -1,0 +1,36 @@
+{
+  "tsmMetricKey": "{{ .metricKey }}",
+  "name": "{{ .name }}",
+  "enabled": true,
+  "metricDefinition": {
+    "metric": "FAILURE_RATE",
+    "requestAttribute": null
+  },
+  "unit": "PERCENT",
+  "unitDisplayName": "",
+  "entityId": null,
+  "managementZones": [],
+  "conditions": [
+    {
+      "attribute": "SERVICE_TAG",
+      "comparisonInfo": {
+        "type": "TAG",
+        "comparison": "EQUALS",
+        "value": {
+          "context": "ENVIRONMENT",
+          "key": "DT_RELEASE_STAGE",
+          "value": "{{ .releaseStage }}"
+        },
+        "negate": false
+      }
+    }
+  ],
+  "dimensionDefinition": {
+    "name": "version",
+    "dimension": "{Request:ApplicationBuildVersion}",
+    "placeholders": [],
+    "topX": 100,
+    "topXDirection": "DESCENDING",
+    "topXAggregation": "OF_INTEREST_RATIO"
+  }
+}

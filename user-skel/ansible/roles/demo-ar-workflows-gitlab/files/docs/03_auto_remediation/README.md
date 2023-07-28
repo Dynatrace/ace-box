@@ -53,4 +53,4 @@ The issue is assigned to the responsible owner as identified by Dynatrace, and k
 
 After the remediation ran, Dynatrace will detect the improvement in service performance and close the issue. The issue close event will  run the remediation workflow a second time. This time, instead of triggering the remediation action, the previouly created Gitlab issue will be updated and closed.
 
-This marks the end of th eauto remediatino flow.
+This marks the end of the auto remediation flow.
