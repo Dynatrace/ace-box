@@ -38,4 +38,4 @@ delete:
     name: $RELEASE_STAGE-dashboard-$DEMO_IDENTIFIER
   - project: app
     type: builtin:ownership.teams
-    id: teams
+    id: ownerSimplenodeSRG

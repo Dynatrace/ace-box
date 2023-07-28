@@ -93,7 +93,7 @@ configs:
         dt_url:
           type: environment
           name: DT_TENANT_URL
-        owner_entity_id: ["app","builtin:ownership.teams", "teams", "id"]
+        owner_entity_id: ["app","builtin:ownership.teams", "ownerSimplenodeSRG", "id"]
     type:
       automation:
         resource: workflow

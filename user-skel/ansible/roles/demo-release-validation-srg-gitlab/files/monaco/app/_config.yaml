@@ -1,6 +1,6 @@
 configs:
   # ownership
-  - id: teams
+  - id: ownerSimplenodeSRG
     config:
       name:
         type: environment
