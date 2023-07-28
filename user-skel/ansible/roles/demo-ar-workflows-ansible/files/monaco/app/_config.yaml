@@ -1,5 +1,7 @@
 configs:
-- id: owner
+# Type "settings" Monaco config ids have to be unique across demos.
+# We therefore add a demo identifier.
+- id: demo_ar_workflows_ansible_owner
   config:
     name:
       type: environment
