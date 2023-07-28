@@ -1,6 +1,6 @@
 ---
 gitlab_demo_srg_group: "demo"
 gitlab_demo_srg_repo_name: "srg-pipeline"
-demo_identifier: "srg"
+demo_identifier: "rv_srg"
 # gitlab_demo_docs_repo_name: "srg-docs"
 # gitlab_srg_dt_access_token_name: "ace_box_gitlab_srg_api_token"

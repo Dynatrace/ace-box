@@ -1,6 +1,6 @@
 configs:
   # ownership
-  - id: ownerSimplenodeSRG
+  - id: owner_simplenode_rv_srg_staging
     config:
       name:
         type: environment
