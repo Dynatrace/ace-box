@@ -21,7 +21,7 @@ locals {
     CUSTOM  = var.custom_vpc_id,
   }[var.vpc_type]
   subnet_ids = {
-    DEFAULT = tolist(data.aws_subnet_ids.all.ids)
+    DEFAULT = tolist(data.aws_subnets.all.ids)
     NEW     = (length(module.custom_vpc) == 1 ? (var.is_private ? module.custom_vpc[0].private_subnets : module.custom_vpc[0].public_subnets) : []),
     CUSTOM  = var.custom_vpc_subnet_ids,
   }[var.vpc_type]

@@ -1,0 +1,21 @@
+---
+- include_role:
+    name: jenkins
+    tasks_from: source-secret
+  when: jenkins_username is not defined or jenkins_api_token is not defined
+
+- set_fact:
+    jenkins_build_url: "{{ ingress_protocol }}://jenkins.{{ ingress_domain }}/job/{{ jenkins_job_path.lstrip('/').rstrip('/') | urlencode }}/build?delay=0sec"
+    jenkins_build_json_body: "{\"parameter\": {{ parameters | default([]) | to_json }} }"
+
+- name: "Build {{ jenkins_job_path }}"
+  ansible.builtin.uri:
+    url: "{{ jenkins_build_url }}"
+    method: POST
+    url_username: "{{ jenkins_username }}"
+    url_password: "{{ jenkins_api_token }}"
+    force_basic_auth: true
+    body_format: form-urlencoded
+    body:
+      json: "{{ jenkins_build_json_body | to_json }}"
+    status_code: 201

@@ -38,8 +38,7 @@ To publish the contents to a git repository, you first need to provide the git_e
     git_remote: "" # e.g. "gitea" or "gitlab" or "github" or any other git tool
     git_username: "" # a username to connect to a git tool
     git_password: "" # a password to connect to a git tool
-    git_endpoint: "http://<git_username>:<git_password>@<gitea_internal_endpoint>" # if the git_remote is gitea or gitlab, git_endpoint is generated automatically. For the rest, you can directly set an endpoint
-
+    git_endpoint: "" # Specifies the endpoint to use, without protocol, for example "github.com". If git_remote is gitea or gitlab, git_endpoint is generated automatically. For the rest, you can directly set an endpoint.
     repo_src: "<folder/files path>" # the path you want to upload to a git repository
     git_org: "<organization-name>" # organization or group name to be created in a git tool
     git_repo: "<repository-name>" # repository name

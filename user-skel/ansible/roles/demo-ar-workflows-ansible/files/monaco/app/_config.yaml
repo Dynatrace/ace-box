@@ -1,7 +1,7 @@
 configs:
 # Type "settings" Monaco config ids have to be unique across demos.
 # We therefore add a demo identifier.
-- id: demo_ar_workflows_gitlab_owner
+- id: demo_ar_workflows_ansible_owner
   config:
     name:
       type: environment
@@ -14,15 +14,6 @@ configs:
         name: DT_OWNER_IDENTIFIER
       email: ace@dynatrace.com
       solution: ACE-Box
-      # As of May 2023 there is no Gitlab integration. We therefore repurpose
-      # the JIRA integration as it has the biggest overlap with what we need for
-      # integrating with Gitlab's issue tracker.
-      gitlabProjectId:
-        type: environment
-        name: GITLAB_PROJECT_ID
-      gitlabDefaultAssigneeId:
-        type: environment
-        name: GITLAB_DEFAULT_ASSIGNEE_ID
   type:
     settings:
       schema: builtin:ownership.teams

@@ -1,0 +1,14 @@
+---
+- name: Verify extra_vars presence
+  assert:
+    that: (item.key in extra_vars) and (extra_vars[item.key]|length > 0)
+    fail_msg: "{{ item.key }} is not defined."
+    quiet: true
+  loop: "{{ required_extra_vars }}"
+
+- name: Verify extra_vars format
+  assert:
+    that: ('regex' not in item) or (extra_vars[item.key] is regex(item.regex))
+    fail_msg: "Value of {{ item.key }} doesn't match provided regex \"{{ item.regex | default(None) }}\""
+    quiet: true
+  loop: "{{ required_extra_vars }}"

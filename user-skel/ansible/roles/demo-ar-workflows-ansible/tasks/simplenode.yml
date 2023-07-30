@@ -1,0 +1,46 @@
+---
+- include_role:
+    name: gitea
+    tasks_from: create-organization
+  vars:
+    gitea_org: "{{ demo_ar_workflows_ansible_org }}"
+
+- include_role:
+    name: gitea
+    tasks_from: create-repository
+  vars:
+    gitea_org: "{{ demo_ar_workflows_ansible_org }}"
+    gitea_repo: "{{ demo_ar_workflows_ansible_repo_name }}"
+
+- include_role:
+    name: gitea
+    tasks_from: source-secret
+
+- include_role:
+    name: app-simplenode
+  vars:
+    app_simplenode_overwrites:
+    - dest: demo/
+    - dest: README.md
+      src: "{{ playbook_dir }}/roles/demo-ar-workflows-ansible/files/README.md"
+    - dest: docs/
+      src: "{{ playbook_dir }}/roles/demo-ar-workflows-ansible/files/docs/"
+    - dest: cloudautomation/
+    - dest: jmeter/
+    - dest: locust/
+    - dest: monaco/
+      src: "{{ playbook_dir }}/roles/demo-ar-workflows-ansible/files/monaco/"
+    - dest: jenkins/
+      src: "{{ playbook_dir }}/roles/demo-ar-workflows-ansible/files/jenkins/"
+    - dest: ansible/
+      src: "{{ playbook_dir }}/roles/demo-ar-workflows-ansible/files/ansible/"
+    - dest: load-gen/
+    - dest: build_number.txt
+    - dest: .gitlab-ci.yml
+    git_username: "{{ gitea_username }}"
+    git_password: "{{ gitea_password }}"
+    # Either git_remote OR git_endpoint is required!
+    git_remote: "gitea"
+    # git_internal_endpoint: "{{ gitea_endpoint }}"
+    git_org_name: "{{ demo_ar_workflows_ansible_org }}"
+    repo_name: "{{ demo_ar_workflows_ansible_repo_name }}"

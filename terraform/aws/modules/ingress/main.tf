@@ -11,8 +11,8 @@ locals {
 # ElasticIP
 #
 resource "aws_eip" "acebox" {
-  count = var.associate_eip ? 1 : 0
-  vpc   = true
+  count  = var.associate_eip ? 1 : 0
+  domain = "vpc"
 }
 
 resource "aws_eip_association" "eip_assoc" {
