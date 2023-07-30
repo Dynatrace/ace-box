@@ -1,0 +1,99 @@
+configs:
+  # srg
+  - id: simplenodeguardian
+    type:
+      settings:
+        schema: app:dynatrace.site.reliability.guardian:guardians
+        schemaVersion: 1.0.1
+        scope: environment
+    config:
+      name: "Simplenode Guardian for ACE Demo"
+      template: srg.json
+      
+      parameters:
+        description: "Simplenode Guardian for ACE Demo - created by Monaco"
+        tags:
+          type: list
+          values:
+            - "stage:staging"
+            - "owner:ace"
+            - "app:simplenode"
+        # objective - dql - response time
+        objective_name_dql: "Response Time of API Method"
+        dqlQuery: "fetch logs\n| filter dt.process.name == \"simplenodeservice.simplenode-gitlab-staging\"\n| filter k8s.namespace.name == \"simplenode-gitlab-staging\"\n| filter matchesPhrase(content, \"/api/invoke\")\n| parse content, \"DATA '/api/' DATA 'rt:' SPACE? FLOAT:responsetime \" \n| filter isNotNull(responsetime) \n| summarize avg(responsetime), alias:response_time "
+        comparisonOperator: "LESS_THAN_OR_EQUAL"
+        failure_dql: 500
+        warning_dql: 400
+        # objective - slo - success rate
+        objective_name_slo_success_rate: "Success Rate"
+        reference_slo_success_rate: ["app","slo", "slo_success_rate", "name"]
+        reference_slo_metric_success_rate:
+          type: compound
+          format: "func:slo.{{ .reference_slo_success_rate }}"
+          references:
+            - reference_slo_success_rate
+        failure_slo_success_rate: 98
+        warning_slo_success_rate: 99
+        # objective - slo - availability
+        objective_name_slo_availability: "Availability of Service"
+        reference_slo_availability: ["app","slo", "slo_availability", "name"]
+        reference_slo_metric_availability:
+          type: compound
+          format: "func:slo.{{ .reference_slo_availability }}"
+          references:
+            - reference_slo_availability
+        failure_slo_availability: 98
+        warning_slo_availability: 99
+        # objective - slo - process cpu usage
+        objective_name_dql_cpu_usage: "Process Group Instance CPU Usage"
+        dqlQuery_cpu_usage: "timeseries cpu=avg(dt.process.cpu.usage), by:{dt.entity.process_group, host.name} \n| lookup [fetch dt.entity.process_group], sourceField:dt.entity.process_group, lookupField:id \n| filter matchesPhrase(lookup.entity.name,\"simplenode-gitlab-staging\") \n| fields usageCpuAvg = arrayAvg(cpu) \n| summarize cpuUsageAvg = max(usageCpuAvg)  "
+        failure_dql_cpu_usage: 0.4
+        warning_dql_cpu_usage: 0.3
+      skip: false
+
+  # workflow
+  - id: simplenodeworkflow
+    config:
+      name: Simplenode SRG Evaluation
+      template: wf.json
+      skip: false
+      
+      parameters: 
+        #wf related
+        wf_description: "Simplenode Workflow with Guardians by Monaco for demo purposes"
+        wf_isPrivate: false
+        #trigger related
+        tag_service:
+          type: environment
+          name: SRG_EVALUATION_SERVICE
+        tag_stage:
+          type: environment
+          name: SRG_EVALUATION_STAGE
+        #srg related
+        srg_task_description: "Evaluate simplenode app guardian objectives"
+        guardian_id:
+          configType: app:dynatrace.site.reliability.guardian:guardians
+          property: id
+          type: reference
+          configId: simplenodeguardian   
+        #gitlab related
+        gitlab_task_description: "Create a Gitlab Issue when SRG fails"
+        gitlab_url:
+          type: environment
+          name: GITLAB_EXTERNAL_ENDPOINT
+        gitlab_private_token:
+          type: environment
+          name: GITLAB_PRIVATE_TOKEN
+        gitlab_username:
+          type: environment
+          name: GITLAB_USERNAME
+        gitlab_passwd:
+          type: environment
+          name: GITLAB_PASSWORD        
+        dt_url:
+          type: environment
+          name: DT_TENANT_URL
+        owner_entity_id: ["app","builtin:ownership.teams", "owner_simplenode_rv_srg_staging", "id"]
+    type:
+      automation:
+        resource: workflow

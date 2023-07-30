@@ -53,7 +53,7 @@ The recommended way of installing any ACE box version, local or cloud, is via Te
         | ca_tenant | string | no | Dynatrace Cloud Automation environment URL. **Note**: if not set, Keptn will be installed and used instead |
         | ca_api_token | string | no | Dynatrace Cloud Automation api token. **Note**: if not set, Keptn will be installed and used instead |
         | acebox_user | string | no | User, for which home directory will be provisioned (Default: "ace") |
-        | use_case | string | no | Use case, the ACE Box will be prepared for. Options are:<ul> <li>`demo_default` (Default)</li><li>`demo_quality_gates_jenkins`</li><li>`demo_security_gates_jenkins`</li><li>`demo_quality_gates_gitlab`</li><li>`demo_auto_remediation_ansible`</li><li>`demo_all`</li><li>`demo_monaco_gitops`</li><li>`demo_ar_workflows_gitlab` (ATTENTION: Requires [extra vars](user-skel/ansible/roles/demo-ar-workflows-gitlab/README.md))</li><li>URL to an external repository (see below)</li></ul>|
+        | use_case | string | no | Use case, the ACE Box will be prepared for. Options are:<ul> <li>`demo_default` (Default)</li><li>`demo_quality_gates_jenkins`</li><li>`demo_security_gates_jenkins`</li><li>`demo_quality_gates_gitlab`</li><li>`demo_auto_remediation_ansible`</li><li>`demo_all`</li><li>`demo_monaco_gitops`</li><li>`demo_ar_workflows_gitlab` (ATTENTION: Requires [extra vars](user-skel/ansible/roles/demo-ar-workflows-gitlab/README.md))</li><li>`demo_release_validation_srg_gitlab` (ATTENTION: Requires [extra vars](user-skel/ansible/roles/demo-release-validation-srg-gitlab/README.md))</li><li>URL to an external repository (see below)</li></ul>|
         | extra_vars | map(string) | no | Additional variables that are passed and persisted on the VM. Variables can be sourced as `extra_vars.<variable key>` for e.g. external use cases |
         |dashboard_user|string|no|ACE-Box dashboard user (Default: "dynatrace")|
         |dashboard_password|string|no|ACE-Box dashboard password. If not set, a random password will be generated. The password can retrieved by running `terraform output dashboard_password`. **Note**: Output shows leading and trailing quotes that are not part of the password!|
@@ -61,6 +61,8 @@ The recommended way of installing any ACE box version, local or cloud, is via Te
         Please consult our dedicated readmes for [AWS](terraform/aws/Readme.md), [MS Azure](terraform/azure/Readme.md) and [Google Cloud](terraform/gcloud/Readme.md) specific variables.
 
         \*: `demo_ar_workflows_gitlab` requires extra variables. See [use case README](user-skel/ansible/roles/demo-ar-workflows-gitlab/README.md) for details.
+       
+        \*: `demo_release_validation_srg_gitlab` requires extra variables. See [use case README](user-skel/ansible/roles/demo-release-validation-srg-gitlab/README.md) for details.
 
 4. Run `terraform init`
 5. Run `terraform apply`
@@ -74,7 +76,9 @@ The recommended way of installing any ACE box version, local or cloud, is via Te
   `demo_quality_gates_jenkins` | x | x | x | x | x | x |  |  | x | x | Demo flow for Quality Gates using Jenkins/Gitea/Cloud Automation. `demo_default` and `demo_quality_gates_jenkins` can be used interchangeably. |
   `demo_security_gates_jenkins` | x | x | x | x | x | x |  |  | x |  x | Demo flow for Security Gates using Jenkins/Gitea/Cloud Automation |
   `demo_quality_gates_gitlab` | x | x | x |  |  |  | x |  | x |  x | Demo flow for Quality Gates using GitLab/Cloud Automation |
+  [`demo_release_validation_srg_gitlab`](user-skel/ansible/roles/demo-release-validation-srg-gitlab/README.md) | x | x | x |  |  |  | x |  | x |  x | Demo flow for Release Validation using GitLab/Site Reliability Guardian |
   `demo_auto_remediation_ansible` | x | x | x | x | x | x |  | x |  | x | Demo flow for Quality Gates using Jenkins/Gitea/Cloud Automation |
+  [`demo_ar_workflows_gitlab`](user-skel/ansible/roles/demo-ar-workflows-gitlab/README.md) | x | x | x | x | x | x |  | x |  | x | Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows |
   `demo_monaco_gitops` | x | x | x | x | x | x |  |  |  | x | Demo flow for Quality Gates using Jenkins/Gitea/Cloud Automation |
 
   > Note: When specifying Cloud Automation instance details, Keptn will not be deployed

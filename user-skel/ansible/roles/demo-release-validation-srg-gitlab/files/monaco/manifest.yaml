@@ -1,0 +1,45 @@
+manifestVersion: 1.0
+
+projects:
+  - name: infrastructure
+    path: infrastructure
+  - name: app
+    path: app
+  - name: srg
+    path: srg
+
+environmentGroups:
+  - name: staging
+    environments:
+      - name: staging-environment
+        url:
+          type: environment
+          value: DT_PLATFORM_TENANT_URL
+        auth:
+          token:
+            name: DT_API_TOKEN
+          oAuth:
+            clientId:
+              name: DT_OAUTH_CLIENT_ID
+            clientSecret:
+              name: DT_OAUTH_CLIENT_SECRET
+            tokenEndpoint:
+              type: environment
+              value: DT_OAUTH_SSO_ENDPOINT
+  - name: production
+    environments:
+      - name: prod-environment
+        url:
+          type: environment
+          value: DT_PLATFORM_TENANT_URL
+        auth:
+          token:
+            name: DT_API_TOKEN
+          oAuth:
+            clientId:
+              name: DT_OAUTH_CLIENT_ID
+            clientSecret:
+              name: DT_OAUTH_CLIENT_SECRET
+            tokenEndpoint:
+              type: environment
+              value: DT_OAUTH_SSO_ENDPOINT

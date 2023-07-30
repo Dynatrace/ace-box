@@ -1,0 +1,41 @@
+delete:
+  
+  # project - srg
+  - project: srg
+    type: app:dynatrace.site.reliability.guardian:guardians
+    id: simplenodeguardian
+  - project: srg
+    type: workflow
+    id: simplenodeworkflow
+
+  # project - app
+  - project: app
+    type: synthetic-monitor
+    name: $RELEASE_STAGE-health-check-$DEMO_IDENTIFIER
+  - project: app
+    type: auto-tag
+    name: $RELEASE_STAGE-$DEMO_IDENTIFIER
+  - project: app
+    type: builtin:rum.web.app-detection
+    id: appDetection
+  - project: app
+    type: application-web
+    name: $RELEASE_PRODUCT-$RELEASE_STAGE-$DEMO_IDENTIFIER
+  - project: app
+    type: calculated-metrics-service
+    name: $RELEASE_STAGE.failure_rate_by_version-$DEMO_IDENTIFIER
+  - project: app
+    type: calculated-metrics-service
+    name: $RELEASE_STAGE.response_time_by_version-$DEMO_IDENTIFIER
+  - project: app
+    type: slo
+    name: staging_slo_success_rate_$DEMO_IDENTIFIER
+  - project: app
+    type: slo
+    name: staging_slo_availability_$DEMO_IDENTIFIER
+  - project: app
+    type: dashboard
+    name: $RELEASE_STAGE-dashboard-$DEMO_IDENTIFIER
+  - project: app
+    type: builtin:ownership.teams
+    id: owner_simplenode_rv_srg_staging

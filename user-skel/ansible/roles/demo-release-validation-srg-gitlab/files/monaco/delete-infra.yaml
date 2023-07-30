@@ -1,0 +1,21 @@
+delete:
+  
+  # project - infrastructure
+  - project: infrastructure
+    type: auto-tag
+    name: environment-$DEMO_IDENTIFIER  
+  - project: infrastructure
+    type: auto-tag
+    name: app-$DEMO_IDENTIFIER    
+  - project: infrastructure
+    type: request-attributes
+    name: LTN-$DEMO_IDENTIFIER
+  - project: infrastructure
+    type: request-attributes
+    name: TSN-$DEMO_IDENTIFIER
+  - project: infrastructure
+    type: request-attributes
+    name: LSN-$DEMO_IDENTIFIER
+  - project: infrastructure
+    type: synthetic-location
+    name: synth-location-$DEMO_IDENTIFIER

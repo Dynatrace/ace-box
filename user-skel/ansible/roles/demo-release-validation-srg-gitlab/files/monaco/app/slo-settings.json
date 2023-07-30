@@ -1,0 +1,15 @@
+{
+  "enabled": true,
+  "name": "{{ .name }}",
+  "customDescription": "{{ .description }}",
+  "metricName": "{{ .metricName }}",
+  "metricExpression": "{{ .metricExpression }}",
+  "evaluationType": "AGGREGATE",
+  "filter": "type({{ .filterType }}),tag([Environment]DT_RELEASE_STAGE:{{ .releaseStage }}),tag([ENVIRONMENT]DT_RELEASE_VERSION:{{ .releaseVersion }})",
+  "evaluationWindow": "{{ .sloTimeFrame }}",
+  "targetSuccess": {{ .target }},
+  "targetWarning": {{ .warning }},
+  "errorBudgetBurnRate": {
+    "burnRateVisualizationEnabled": false
+  }
+}

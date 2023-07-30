@@ -1,0 +1,333 @@
+configs:
+  # ownership
+  - id: owner_simplenode_rv_srg_staging
+    config:
+      name:
+        type: environment
+        name: DT_OWNER_IDENTIFIER
+      template: ownership.json
+      skip: false
+      parameters:
+        identifier:
+          type: environment
+          name: DT_OWNER_IDENTIFIER
+        email: ace@dynatrace.com
+        solution: ACE-Box
+        # As of May 2023 there is no Gitlab integration. We therefore repurpose
+        # the JIRA integration as it has the biggest overlap with what we need for
+        # integrating with Gitlab's issue tracker.
+        gitlabProjectId:
+          type: environment
+          name: GITLAB_PROJECT_ID
+        gitlabDefaultAssigneeId:
+          type: environment
+          name: GITLAB_DEFAULT_ASSIGNEE_ID
+    type:
+      settings:
+        schema: builtin:ownership.teams
+        schemaVersion: 1.0.6
+        scope: environment
+    groupOverrides:
+    - group: production
+      override:
+        skip: true
+
+  # auto-tag
+  - id: autoTagApp
+    type: 
+      api: auto-tag
+    config:
+      template: auto-tag-app.json
+      name:
+        type: compound
+        format: "{{ .releaseStage }}-{{ .demoIdentifier }}"
+        references:
+          - releaseStage
+          - demoIdentifier
+      parameters:
+        demoIdentifier:
+          type: environment
+          name: DEMO_IDENTIFIER
+        releaseStage:
+          type: environment
+          name: RELEASE_STAGE
+        applicationName: ["application-web", "app", "name"]
+        hostGroup:
+          type: environment
+          name: HOST_GROUP
+          default: "ace-box"
+
+  # application-web 
+  - id: app
+    type:
+      api: application-web
+    config:
+      template: application.json
+      name:
+        type: compound
+        format: "{{ .releaseProduct }}-{{ .releaseStage }}-{{ .demoIdentifier }}"
+        references:
+          - releaseProduct
+          - releaseStage
+          - demoIdentifier
+      parameters:  
+        releaseProduct:
+          type: environment
+          name: RELEASE_PRODUCT
+        releaseStage:
+          type: environment
+          name: RELEASE_STAGE
+        demoIdentifier:
+          type: environment
+          name: DEMO_IDENTIFIER
+      skip: false
+
+  # app-detection-rule 
+  - id: appDetection
+    type:
+      settings:
+        schema: builtin:rum.web.app-detection
+        scope: environment
+        schemaVersion: "2.0.1"
+    config:
+      name: 
+        type: compound
+        format: "{{ .releaseStage }}-app-detection-{{ .demoIdentifier }}"
+        references:
+          - releaseStage
+          - demoIdentifier
+      template: application-detection-rule.json
+      parameters:
+        applicationId: ["application-web", "app", "id"]
+        pattern:
+          type: compound
+          format: "{{ .ingressProtocol }}://{{ .releaseProduct }}-{{ .releaseStage }}.{{ .ingressDomain }}"
+          references:
+            - ingressProtocol
+            - releaseProduct
+            - releaseStage
+            - ingressDomain
+        ingressProtocol:
+          type: environment
+          name: INGRESS_PROTOCOL
+        releaseProduct:
+          type: environment
+          name: RELEASE_PRODUCT
+        releaseStage:
+          type: environment
+          name: RELEASE_STAGE
+        ingressDomain:
+          type: environment
+          name: INGRESS_DOMAIN
+        demoIdentifier:
+          type: environment
+          name: DEMO_IDENTIFIER
+      skip: false
+
+  #calculated metrics service
+  - id: csmFailureRate
+    type:
+      api: calculated-metrics-service
+    config:
+      name: 
+        type: compound
+        format: "{{ .releaseStage }}-failure_rate_by_version-{{ .demoIdentifier }}"
+        references:
+          - releaseStage
+          - demoIdentifier      
+      template: csm-failure-rate.json
+      skip: false
+      parameters:
+        metricKey:
+          type: compound
+          format: "calc:service.{{ .name }}"
+          references:
+            - name
+        releaseProduct:
+          type: environment
+          name: RELEASE_PRODUCT
+        releaseStage:
+          type: environment
+          name: RELEASE_STAGE
+        demoIdentifier:
+          type: environment
+          name: DEMO_IDENTIFIER
+      
+  - id: csmResponseTime
+    type:
+      api: calculated-metrics-service
+    config:
+      name: 
+        type: compound
+        format: "{{ .releaseStage }}-response_time_by_version-{{ .demoIdentifier }}"
+        references:
+          - releaseStage
+          - demoIdentifier 
+      template: csm-response-time.json
+      skip: false
+      parameters:
+        metricKey:
+          type: compound
+          format: "calc:service.{{ .name }}"
+          references:
+            - name
+        releaseProduct:
+          type: environment
+          name: RELEASE_PRODUCT
+        releaseStage:
+          type: environment
+          name: RELEASE_STAGE
+        demoIdentifier:
+          type: environment
+          name: DEMO_IDENTIFIER
+    
+  #slo
+  - id: slo_success_rate
+    type:
+      api: slo
+    config:
+      template: slo.json
+      name:
+        type: compound
+        format: "{{ .tag_stage }}_slo_success_rate_{{ .demoIdentifier }}"
+        references:
+          - tag_stage
+          - demoIdentifier
+      parameters:
+        description: "Service Errors Total SuccessCount / Service RequestCount Total"
+        metricNumerator: "builtin:service.errors.total.successCount:splitBy()"
+        metricDenominator: "builtin:service.requestCount.total:splitBy()"
+        filterType: "SERVICE"
+        target: 95
+        warning: 99
+        releaseProduct:
+          type: environment
+          name: RELEASE_PRODUCT
+        releaseStage:
+          type: environment
+          name: RELEASE_STAGE
+        sloTimeFrame:
+          type: compound
+          format: "-{{ .timeFrame }}"
+          references:
+            - timeFrame
+        timeFrame:
+          type: environment
+          name: TEST_TIMEFRAME
+        demoIdentifier:
+          type: environment
+          name: DEMO_IDENTIFIER
+        tag_stage:
+          type: environment
+          name: SRG_EVALUATION_STAGE
+      skip: false
+
+  - id: slo_availability
+    type:
+      api: slo
+    config:
+      template: slo.json
+      name:
+        type: compound
+        format: "{{ .tag_stage }}_slo_availability_{{ .demoIdentifier }}"
+        references:
+          - tag_stage
+          - demoIdentifier
+      parameters:
+        description: "Service Availability"
+        metricNumerator: "builtin:service.errors.server.successCount:splitBy()"
+        metricDenominator: "builtin:service.requestCount.server:splitBy()"
+        filterType: "SERVICE"
+        target: 95
+        warning: 99
+        releaseProduct:
+          type: environment
+          name: RELEASE_PRODUCT
+        releaseStage:
+          type: environment
+          name: RELEASE_STAGE
+        sloTimeFrame:
+          type: compound
+          format: "-{{ .timeFrame }}"
+          references:
+            - timeFrame
+        timeFrame:
+          type: environment
+          name: TEST_TIMEFRAME
+        demoIdentifier:
+          type: environment
+          name: DEMO_IDENTIFIER
+        tag_stage:
+          type: environment
+          name: SRG_EVALUATION_STAGE
+      skip: false
+
+
+  # dashboard
+  - id: dashboard
+    type:
+      api: dashboard
+    config:
+      template: dashboard.json
+      name: 
+        type: compound
+        format: "{{ .releaseStage }}-dashboard-{{ .demoIdentifier }}"
+        references:
+          - releaseStage
+          - demoIdentifier
+      skip: false
+      parameters:
+        releaseProduct:
+          type: environment
+          name: RELEASE_PRODUCT
+        releaseStage:
+          type: environment
+          name: RELEASE_STAGE
+        sloId: ["slo", "slo_success_rate", "id"]
+        csmFailureRateMetricKey: ["calculated-metrics-service", "csmFailureRate", "metricKey"]
+        csmResponseTimeMetricKey: ["calculated-metrics-service", "csmResponseTime", "metricKey"]
+        demoIdentifier:
+          type: environment
+          name: DEMO_IDENTIFIER
+  
+  # synthetic-monitor
+  - id: health-simplenode
+    type:
+      api: synthetic-monitor
+    config:
+      name:
+        type: compound
+        format: "{{ .releaseStage }}-health-check-{{ .demoIdentifier }}"
+        references:
+          - releaseStage
+          - demoIdentifier
+      template: health-check-monitor.json      
+      parameters:
+        description: Health check for simplenode in app-one       
+        location: ["infrastructure","synthetic-location", "synthetic-location-ace-box", "id"]
+        tag: ["auto-tag", "autoTagApp", "name"]
+        frequencyMin: 5
+        url:
+          type: compound
+          format: "{{ .ingressProtocol }}://{{ .releaseProduct }}-{{ .releaseStage }}.{{ .ingressDomain }}"
+          references:
+            - ingressProtocol
+            - releaseProduct
+            - releaseStage
+            - ingressDomain
+        ingressProtocol:
+          type: environment
+          name: INGRESS_PROTOCOL
+        releaseProduct:
+          type: environment
+          name: RELEASE_PRODUCT
+        releaseStage:
+          type: environment
+          name: RELEASE_STAGE
+        ingressDomain:
+          type: environment
+          name: INGRESS_DOMAIN
+        demoIdentifier: 
+          type: environment
+          name: DEMO_IDENTIFIER
+      skip: false
