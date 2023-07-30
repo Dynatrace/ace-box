@@ -46,6 +46,8 @@
     - role: demo-release-validation-srg-gitlab
       tags:
         - demo_release_validation_srg_gitlab
+        - never
+
     # Use case - Auto Remediation Workflows with Ansible
     - role: demo-ar-workflows-ansible
       tags:
