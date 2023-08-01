@@ -1,11 +1,4 @@
 ---
-- include_role:
-    name: config-v2
-    tasks_from: set-var
-  vars:
-    var_key_to_set: "demo_all"
-    var_value_to_set: true
-
 # Certain values are only templated as a first step, their
 # deployment is skipped.
 # This speeds up the overall deployment process as such tools
@@ -15,16 +8,13 @@
     dashboard_skip_install: True
 
 - include_role:
-    name: demo-quality-gates-jenkins
+    name: demo-release-validation-srg-gitlab
 
 - include_role:
-    name: demo-security-gates-jenkins
+    name: demo-ar-workflows-gitlab
 
-- include_role:
-    name: demo-quality-gates-gitlab
-
-- include_role:
-    name: demo-monaco-gitops
+# - include_role:
+#     name: demo-monaco-gitops
 
 # Last role also installs Jenkins, Dashboard, ...
 - set_fact:
@@ -32,4 +22,4 @@
     dashboard_skip_install: False
 
 - include_role:
-    name: demo-auto-remediation-ansible
+    name: demo-ar-workflows-ansible
