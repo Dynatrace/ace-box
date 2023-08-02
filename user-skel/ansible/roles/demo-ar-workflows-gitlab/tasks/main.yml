@@ -131,15 +131,10 @@
 #
 # Dasboard
 #
-- block:
-  - set_fact:
-      include_dashboard_value_file: "{{ role_path }}/templates/demo-ar-workflows-dashboard.yml.j2"
-  - include_role:
-      name: dashboard
-      tasks_from: template-values-file
-
 - include_role:
     name: dashboard
+  vars:
+    include_dashboard_value_file: "{{ playbook_dir }}/roles/demo-ar-workflows-gitlab/templates/demo-ar-workflows-gitlab-dashboard.yml.j2"
 
 #
 # Deploy Monaco at the very end, as the chances are the highest that 

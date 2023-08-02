@@ -127,13 +127,7 @@
       - dest: dynatrace/dynatrace.attachrules.yaml
         src: '{{ playbook_dir }}/roles/demo-release-validation-srg-gitlab/files/dynatrace.attachrules.yaml'
 
-# Include use case specific Dahboard values
-- set_fact:
-    include_dashboard_value_file: "{{ role_path }}/templates/demo-release-validation-srg-gitlab-dashboard.yml.j2"
-
 - include_role:
     name: dashboard
-    tasks_from: template-values-file
-
-- include_role:
-    name: dashboard
+  vars:
+    include_dashboard_value_file: "{{ playbook_dir }}/roles/demo-release-validation-srg-gitlab/templates/demo-release-validation-srg-gitlab-dashboard.yml.j2"
