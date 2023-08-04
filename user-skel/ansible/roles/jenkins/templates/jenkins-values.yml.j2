@@ -92,21 +92,13 @@ controller:
               - key: "GIT_REPO_DEMO"
                 value: "{{ git_repo_demo }}"
 {% endif %}
-{% if ca_endpoint is defined and ca_endpoint != "" %}
-              - key: "CLOUD_AUTOMATION_ENDPOINT"
-                value: "{{ ca_endpoint | default(None) | replace("/api","") }}"
+{% if keptn_endpoint is defined and keptn_endpoint != "" %}
+              - key: "KEPTN_ENDPOINT"
+                value: "{{ keptn_endpoint | default(None) | replace("/api","") }}"
 {% endif %}
-{% if ca_bridge is defined and ca_bridge != "" %}
+{% if keptn_bridge is defined and keptn_bridge != "" %}
               - key: "KEPTN_BRIDGE"
-                value: "{{ ca_bridge }}"
-{% endif %}
-{% if ca_endpoint is defined and ca_endpoint != "" %}
-              - key: "CA_ENDPOINT"
-                value: "{{ ca_endpoint }}"
-{% endif %}
-{% if ca_bridge is defined and ca_bridge != "" %}
-              - key: "CA_BRIDGE"
-                value: "{{ ca_bridge }}"
+                value: "{{ keptn_bridge }}"
 {% endif %}
 {% if host_group is defined and host_group != "" %}
               - key: "HOST_GROUP"
@@ -212,12 +204,12 @@ controller:
                     scope: GLOBAL
                     secret: "{{ git_access_token }}"
 {% endif %}
-{% if ca_api_token is defined and ca_api_token != "" %}
+{% if keptn_api_token is defined and keptn_api_token != "" %}
                 - string:
-                    id: "CA_API_TOKEN"
+                    id: "KEPTN_API_TOKEN"
                     scope: GLOBAL
                     description: "Cloud Automation api token"
-                    secret: "{{ ca_api_token }}"
+                    secret: "{{ keptn_api_token }}"
 {% endif %}
 {% if dynatrace_tenant_url is defined and dynatrace_tenant_url != "" %}
                 - string:

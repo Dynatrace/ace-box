@@ -56,16 +56,6 @@ variable "ingress_protocol" {
   default     = "http"
 }
 
-variable "ca_tenant" {
-  description = "Dynatrace Cloud Automation Endpoint"
-  default     = ""
-}
-
-variable "ca_api_token" {
-  description = "Dynatrace Cloud Automation API token"
-  default     = ""
-}
-
 variable "use_case" {
   type        = string
   description = "Use cases the ACE-Box will be enabled for."

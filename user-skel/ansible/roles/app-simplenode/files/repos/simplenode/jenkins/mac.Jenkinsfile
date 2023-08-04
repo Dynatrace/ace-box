@@ -8,7 +8,6 @@ pipeline {
         label 'ace'
     }
     environment {
-        CLOUD_AUTOMATION_API_TOKEN = credentials('CA_API_TOKEN')
         DT_API_TOKEN = credentials('DT_API_TOKEN')
         DT_TENANT_URL = credentials('DT_TENANT_URL')
     }

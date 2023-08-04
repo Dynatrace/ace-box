@@ -39,12 +39,13 @@ pipeline {
         VU = 1
         TESTDURATION = 180
 
-        // Credentials
-        CLOUD_AUTOMATION_API_TOKEN = credentials('CA_API_TOKEN')
+        // DT params
         DT_API_TOKEN = credentials('DT_API_TOKEN')
         DT_TENANT_URL = credentials('DT_TENANT_URL')
 
-        // cloudautomation tool params
+        // Keptn params
+        CLOUD_AUTOMATION_API_TOKEN = credentials('KEPTN_API_TOKEN')
+        CLOUD_AUTOMATION_ENDPOINT = "${env.KEPTN_ENDPOINT}"
         CLOUD_AUTOMATION_PROJECT = "${env.RELEASE_PRODUCT}"
         CLOUD_AUTOMATION_SERVICE = "${env.RELEASE_PRODUCT}"
         CLOUD_AUTOMATION_STAGE = 'staging' // For the sake of this demo, "staging" is preferred over "${env.RELEASE_STAGE}".

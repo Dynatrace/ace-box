@@ -29,8 +29,6 @@ metadata:
     value: "ACE"
 tags:
   - key: "non-prod"
-  - key: "Provisioner"
-    value: "Vagrant"
 ```
 
 From within this file, everything under `metadata` will be added as a custom property and everything under `tags` will be added as a tag in Dynatrace. A method in the Jenkins pipeline will transform the yaml to the right environment variables. Lateron the string variable will be set using the helm chart.

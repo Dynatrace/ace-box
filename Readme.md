@@ -2,12 +2,11 @@
 
 The ace-box is an all-in-one Autonomous Cloud Enablement machine that you can use as a portable sandbox, demo and testing environment. 
 
-Vagrant (Local) or Terraform (Cloud) are used for spinning up the VM, Ansible is used for setting up the various components.
+Terraform (Cloud) are used for spinning up the VM, Ansible is used for setting up the various components.
 - [Welcome to the ACE-BOX](#welcome-to-the-ace-box)
   - [Installation](#installation)
     - [Available use cases:](#available-use-cases)
     - [Useful Terraform Commands](#useful-terraform-commands)
-  - [Alt: Local installation with Vagrant](#alt-local-installation-with-vagrant)
   - [Alt: Bring-your-own-VM](#alt-bring-your-own-vm)
   - [Default mode](#default-mode)
   - [External use case](#external-use-case)
@@ -20,12 +19,12 @@ Vagrant (Local) or Terraform (Cloud) are used for spinning up the VM, Ansible is
 
 
 ## Installation
-The recommended way of installing any ACE box version, local or cloud, is via Terraform (scroll down for alternatives). Check the [Azure](terraform/azure/Readme.md), [AWS](terraform/aws/Readme.md), [Google Cloud](terraform/gcloud/Readme.md) and [Vagrant](terraform/vagrant/Readme.md) subfolders for additional instructions.
+The recommended way of installing any ACE box version, local or cloud, is via Terraform (scroll down for alternatives). Check the [Azure](terraform/azure/Readme.md), [AWS](terraform/aws/Readme.md) or [Google Cloud](terraform/gcloud/Readme.md) subfolders for additional instructions.
 
 1. Check prereqs:
-     - Terraform installed (+ Vagrant for local installation)
+     - Terraform installed
      - Dynatrace tenant (prod or sprint, dev not recommended)
-2. Go to folder `./terraform/<aws, azure, gcloud or vagrant>/`
+2. Go to folder `./terraform/<aws, azure or gcloud>/`
 3. Set required Terraform variables:
    1. Check out the `Readme.md` for your specific cloud provider to verify the provider-specific configuration that needs to be set
    2. Add ace-box specific information (see below for more details)
@@ -34,15 +33,13 @@ The recommended way of installing any ACE box version, local or cloud, is via Te
           ```
           dt_tenant = "https://....dynatrace.com"
           dt_api_token = "dt0c01...."
-          ca_tenant = "https://abc12345.cloudautomation...com"
-          ca_api_token = "xyz123"
+          ...
           ```
       2. Or by setting environment variables:
           ```
           export TF_VAR_dt_tenant=https://....dynatrace.com
           export TF_VAR_dt_api_token=dt0c01....
-          export TF_VAR_ca_tenant=...
-          export TF_VAR_ca_api_token=...
+          ...
           ```
           For details and alternatives see https://www.terraform.io/docs/language/values/variables.html
     4. The following variables are available:
@@ -50,8 +47,6 @@ The recommended way of installing any ACE box version, local or cloud, is via Te
         | --- | --- | -------- | ------- |
         | dt_tenant | string | **yes** | Dynatrace environment URL |
         | dt_api_token | string | **yes** | Initial API token with scopes `apiTokens.read` and `apiTokens.write`. This token will be used by various roles to manage their own tokens. |
-        | ca_tenant | string | no | Dynatrace Cloud Automation environment URL. **Note**: if not set, Keptn will be installed and used instead |
-        | ca_api_token | string | no | Dynatrace Cloud Automation api token. **Note**: if not set, Keptn will be installed and used instead |
         | acebox_user | string | no | User, for which home directory will be provisioned (Default: "ace") |
         | use_case | string | no | Use case, the ACE Box will be prepared for. Options are:<ul> <li>`demo_default` (Default)</li><li>`demo_quality_gates_jenkins`</li><li>`demo_security_gates_jenkins`</li><li>`demo_quality_gates_gitlab`</li><li>`demo_auto_remediation_ansible`</li><li>`demo_all`</li><li>`demo_monaco_gitops`</li><li>`demo_ar_workflows_gitlab` (ATTENTION: Requires [extra vars](user-skel/ansible/roles/demo-ar-workflows-gitlab/README.md))</li><li>`demo_release_validation_srg_gitlab` (ATTENTION: Requires [extra vars](user-skel/ansible/roles/demo-release-validation-srg-gitlab/README.md))</li><li>URL to an external repository (see below)</li></ul>|
         | extra_vars | map(string) | no | Additional variables that are passed and persisted on the VM. Variables can be sourced as `extra_vars.<variable key>` for e.g. external use cases |
@@ -92,11 +87,6 @@ Command  | Result
 `terraform destroy` | deletes any resources created by Terraform |
 `terraform plan -destroy` | view a speculative destroy plan, to see what the effect of destroying would be |
 `terraform show` | Outputs the resources created by Terraform. Useful to verify IP addresses and the dashboard URL. 
-
-
-## Alt: Local installation with Vagrant
-Check [Vagrant instructions](terraform/vagrant/Readme.md)
-
 
 ## Alt: Bring-your-own-VM
 
@@ -141,8 +131,7 @@ Gitea | 2 mCores, 250MB RAM
 
 
 ## Troubleshooting
-1. For Vagrant troubleshooting, check [Vagrant](terraform/vagrant/Readme.md#troubleshooting)
-2. Make sure that the cloud account you are using for provisioning has sufficient permissions to create all the resources in the particular region
+1. Make sure that the cloud account you are using for provisioning has sufficient permissions to create all the resources in the particular region
    
 
 ## Accessing ACE Dashboard
@@ -151,7 +140,7 @@ At the end of the provisioning, an ACE Dashboard gets created with more informat
 ## Behind the scenes
 Spinning up an ACE-Box can be split into two main parts:
 
-1) Deploying a VM: This can either happen locally via Vagrant or a VM is can be created in your Cloud Account.
+1) Deploying a VM: This happens automatically when you use the included Terraform projects or you can bring your own VM.
 2) After a VM is available, provisioners install the actual application (i.e. "ACE-Box" logic). This process itself consists of a couple steps:
    1) Copying working directory: Everything in [user-skel](/user-skel) is copied to the VM
    2) Package manager update: [init.sh](/user-skel/init.sh) is run. This runs an `apt-get` update and installs `Python3.9`, Ansible and the `ace-cli`
