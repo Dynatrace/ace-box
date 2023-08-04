@@ -17,12 +17,14 @@
 - include_role:
     name: demo-quality-gates-jenkins
 
+- include_role:
+    name: demo-security-gates-jenkins
 
 - include_role:
     name: demo-quality-gates-gitlab
 
-# - include_role:
-#     name: demo-monaco-gitops
+- include_role:
+    name: demo-monaco-gitops
 
 # Last role also installs Jenkins, Dashboard, ...
 - set_fact:
@@ -30,7 +32,4 @@
     dashboard_skip_install: False
 
 - include_role:
-    name: demo-security-gates-jenkins
-
-# - include_role:
-#     name: demo-auto-remediation-ansible
+    name: demo-auto-remediation-ansible
