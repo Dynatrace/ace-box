@@ -1,20 +1,5 @@
 ---
-- set_fact:
-    is_ca_flavor_change: false
-
-- block:
-  - set_fact:
-      is_ca_flavor_change: true
-  - name: Update Cloud Automation flavor
-    include_role:
-      name: config-v2
-      tasks_from: set-var
-    vars:
-      var_key_to_set: "cloud_automation_flavor"
-      var_value_to_set: "KEPTN"
-  when: cloud_automation_flavor != "KEPTN"
-
-#Ensure Gitea is installed when we are using Keptn to have auto repository provisioning
+# Ensure Gitea is installed when we are using Keptn to have auto repository provisioning
 - include_role:
     name: gitea
 
@@ -36,7 +21,7 @@
   include_role:
     name: keptn-cli
   vars:
-    force_install: "{{ is_ca_flavor_change | bool }}"
+    force_install: "{{ true | bool }}"
 
 # USING KEPTN V1 HELM REPO
 ##############
@@ -65,7 +50,8 @@
         versionCheck:
           enabled: false
         installationType: "QUALITY_GATES"
-        lookAndFeelUrl: "{{ keptn_look_and_feel_url }}"
+        # Enable to make Keptn look like CloudAutomation
+        # lookAndFeelUrl: "{{ keptn_look_and_feel_url }}"
       continuous-delivery:
         enabled: true
         ingressConfig:
