@@ -25,7 +25,7 @@
 - block:
   - name: Source Gitlab endpoint
     include_role:
-      name: gitea
+      name: gitlab
       tasks_from: source-endpoints
   - set_fact:
       git_endpoint: "{{ gitlab_internal_endpoint | regex_replace(\"http://\") }}"
