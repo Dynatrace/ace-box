@@ -95,8 +95,6 @@ module "provisioner" {
   ingress_protocol   = var.ingress_protocol
   dt_tenant          = var.dt_tenant
   dt_api_token       = var.dt_api_token
-  ca_tenant          = var.ca_tenant
-  ca_api_token       = var.ca_api_token
   use_case           = var.use_case
   extra_vars         = var.extra_vars
   dashboard_user     = var.dashboard_user

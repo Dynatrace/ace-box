@@ -15,11 +15,6 @@ git_flavor: "{{ git_flavor | default('GITEA') }}"
 dynatrace_tenant_url: "{{ dynatrace_tenant_url.rstrip('/') if (dynatrace_tenant_url is defined and dynatrace_tenant_url|length > 0) else None }}"
 dynatrace_api_token: "{{ dynatrace_api_token | default(None) }}"
 # END ANSIBLE MANAGED BLOCK - dynatrace
-# BEGIN ANSIBLE MANAGED BLOCK - cloud_automation
-cloud_automation_flavor: "{{ cloud_automation_flavor | default('KEPTN') }}"
-cloud_automation_tenant_url: "{{ ca_tenant_url.rstrip('/') if (ca_tenant_url is defined and ca_tenant_url|length > 0) else None }}"
-cloud_automation_api_token: "{{ ca_api_token | default(None) }}"
-# END ANSIBLE MANAGED BLOCK - cloud_automation
 # BEGIN ANSIBLE MANAGED BLOCK - dashboard
 dashboard_user: "{{ dashboard_user }}"
 dashboard_password: "{{ dashboard_password }}"

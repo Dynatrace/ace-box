@@ -1,4 +1,4 @@
 ---
 dashboard_namespace: "ace"
-dashboard_image: "dynatraceace/ace-box-dashboard:1.3.0"
+dashboard_image: "dynatraceace/ace-box-dashboard:1.4.0"
 dashboard_skip_install: False

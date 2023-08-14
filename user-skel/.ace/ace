@@ -29,7 +29,6 @@ install_targets = [
     'jenkins',
     'dashboard',
     'awx',
-    'cloudautomation',
     'app_easytravel',
     'app_unguard',
     'app_hipstershop'
@@ -180,20 +179,6 @@ def ace(
     envvar='ACE_DASHBOARD_PASSWORD',
 )
 @click.option(
-    '--ca-tenant',
-    help=(
-        'Please enter your Cloud Automation tenant URL'
-    ),
-    envvar='ACE_CA_TENANT',
-)
-@click.option(
-    '--ca-api-token',
-    help=(
-        'Please enter your Cloud Automation API token'
-    ),
-    envvar='ACE_CA_API_TOKEN',
-)
-@click.option(
     '--host-group',
     help=(
         'Please enter a host group the ACE-Box will be assigned to'
@@ -214,8 +199,6 @@ def prepare(
     dt_api_token,
     dashboard_user,
     dashboard_password,
-    ca_tenant,
-    ca_api_token,
     host_group,
     ansible_workdir,
     user,
@@ -277,12 +260,6 @@ def prepare(
         'dashboard_password': dashboard_password,
         'extra_vars': {}
     }
-
-    if ca_tenant:
-        prepare_extra_vars['ca_tenant_url'] = ca_tenant
-    
-    if ca_api_token:
-        prepare_extra_vars['ca_api_token'] = ca_api_token
     
     if host_group:
         prepare_extra_vars['host_group'] = host_group

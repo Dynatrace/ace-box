@@ -8,8 +8,6 @@ locals {
   ingress_protocol   = var.ingress_protocol
   dt_tenant          = var.dt_tenant
   dt_api_token       = var.dt_api_token
-  ca_tenant          = var.ca_tenant
-  ca_api_token       = var.ca_api_token
   host_group         = var.host_group
   extra_vars         = var.extra_vars
   dashboard_user     = var.dashboard_user
@@ -59,8 +57,6 @@ locals {
     "ACE_INGRESS_PROTOCOL=${local.ingress_protocol}",
     "ACE_DT_TENANT=${local.dt_tenant}",
     "ACE_DT_API_TOKEN=${local.dt_api_token}",
-    "ACE_CA_TENANT=${local.ca_tenant}",
-    "ACE_CA_API_TOKEN=${local.ca_api_token}",
     "ACE_HOST_GROUP=${local.host_group}",
     "ACE_DASHBOARD_USER=${local.dashboard_user}",
     "ACE_DASHBOARD_PASSWORD=\"${local.dashboard_password}\"",

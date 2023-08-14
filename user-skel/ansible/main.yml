@@ -6,112 +6,105 @@
   vars:
     ace_config_file_path: "./ace.config.yml"
   roles:
-  # Role "config-v2" is always executed 
-  # and makes sure that all previous settings 
-  # are sourced alongside newly enabled/disabled
-  - role: config-v2
-    tags:
-    - always
+    # Role "config-v2" is always executed
+    # and makes sure that all previous settings
+    # are sourced alongside newly enabled/disabled
+    - role: config-v2
+      tags:
+        - always
   # Tool specific roles can be targeted by tags
   tasks:
-  - include_role:
-      name: init
-      apply:
-        tags:
+    - include_role:
+        name: init
+        apply:
+          tags:
+            - init
+      tags:
         - init
-    tags:
-    - init
-  - include_role:
-      name: microk8s
-      apply:
-        tags:
+    - include_role:
+        name: microk8s
+        apply:
+          tags:
+            - microk8s
+      tags:
         - microk8s
-    tags:
-    - microk8s
-  - include_role:
-      name: dt-activegate-classic
-      apply:
-        tags:
+    - include_role:
+        name: dt-activegate-classic
+        apply:
+          tags:
+            - dt_activegate_classic
+      tags:
         - dt_activegate_classic
-    tags:
-    - dt_activegate_classic
-  - include_role:
-      name: dt-operator
-      apply:
-        tags:
+    - include_role:
+        name: dt-operator
+        apply:
+          tags:
+            - dt_operator
+      tags:
         - dt_operator
-    tags:
-    - dt_operator
-  - include_role:
-      name: dt-oneagent-classic
-      apply:
-        tags:
+    - include_role:
+        name: dt-oneagent-classic
+        apply:
+          tags:
+            - dt_oneagent_classic
+      tags:
         - dt_oneagent_classic
-    tags:
-    - dt_oneagent_classic
-  - include_role:
-      name: keptn
-      apply:
-        tags:
+    - include_role:
+        name: keptn
+        apply:
+          tags:
+            - keptn
+      tags:
         - keptn
-    tags:
-    - keptn
-  - include_role:
-      name: cloudautomation
-      apply:
-        tags:
-        - cloudautomation
-    tags:
-    - cloudautomation
-  - include_role:
-      name: monaco
-      apply:
-        tags:
+    - include_role:
+        name: monaco
+        apply:
+          tags:
+            - monaco
+      tags:
         - monaco
-    tags:
-    - monaco
-  - include_role:
-      name: jenkins
-      apply:
-        tags:
+    - include_role:
+        name: jenkins
+        apply:
+          tags:
+            - jenkins
+      tags:
         - jenkins
-    tags:
-    - jenkins
-  - include_role:
-      name: gitea
-      apply:
-        tags:
+    - include_role:
+        name: gitea
+        apply:
+          tags:
+            - gitea
+      tags:
         - gitea
-    tags:
-    - gitea
-  - include_role:
-      name: gitlab
-      apply:
-        tags:
+    - include_role:
+        name: gitlab
+        apply:
+          tags:
+            - gitlab
+      tags:
         - gitlab
-    tags:
-    - gitlab
-  - include_role:
-      name: awx
-      apply:
-        tags:
+    - include_role:
+        name: awx
+        apply:
+          tags:
+            - awx
+      tags:
         - awx
-    tags:
-    - awx
-  - include_role:
-      name: dashboard
-      apply:
-        tags:
+    - include_role:
+        name: dashboard
+        apply:
+          tags:
+            - dashboard
+      tags:
         - dashboard
-    tags:
-    - dashboard
-  - include_role:
-      name: app-easytravel
-      apply:
-        tags:
+    - include_role:
+        name: app-easytravel
+        apply:
+          tags:
+            - app_easytravel
+      tags:
         - app_easytravel
-    tags:
-    - app_easytravel
   # - name: Uninstall Gitlab
   #   include_tasks:
   #     file: roles/gitlab/tasks/uninstall.yml

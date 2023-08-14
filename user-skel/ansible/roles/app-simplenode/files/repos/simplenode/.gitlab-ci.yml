@@ -73,10 +73,12 @@ monaco_config_event_prod:
     CONFIGURATION: "simplenode-gitlab-prod"
     CUSTOM_PROPERTIES: '{"Approved by": "ACE"}'
 
-init_cloudautomation:
+init_keptn:
   image: dynatraceace/cloud-automation-tools:1.0.0
   stage: init
   variables:
+    CLOUD_AUTOMATION_API_TOKEN: $KEPTN_API_TOKEN # From group variable
+    CLOUD_AUTOMATION_ENDPOINT: $KEPTN_ENDPOINT # From group variable
     CLOUD_AUTOMATION_PROJECT: $RELEASE_PRODUCT-gitlab
     CLOUD_AUTOMATION_SERVICE: $RELEASE_PRODUCT
     CLOUD_AUTOMATION_STAGE: staging # For the sake of this demo, "staging" is preferred over "$RELEASE_STAGE".
@@ -95,7 +97,7 @@ init_cloudautomation:
 build:
   image: docker:20.10.16
   stage: build
-  needs: ["monaco", "init_cloudautomation"]
+  needs: ["monaco", "init_keptn"]
   variables:
     DOCKER_HOST: tcp://docker:2376
     DOCKER_TLS_CERTDIR: "/certs"
@@ -165,6 +167,9 @@ run-tests:
 quality_gate:
   image: dynatraceace/cloud-automation-tools:1.0.0
   stage: evaluate
+  variables:
+    CLOUD_AUTOMATION_API_TOKEN: $KEPTN_API_TOKEN # From group variable
+    CLOUD_AUTOMATION_ENDPOINT: $KEPTN_ENDPOINT # From group variable
   script:
     - export CLOUD_AUTOMATION_LABELS='[{"DT_RELEASE_VERSION":"'${RELEASE_VERSION}'"},{"DT_RELEASE_BUILD_VERSION":"'${RELEASE_BUILD_VERSION}'"},{"DT_RELEASE_STAGE":"'${RELEASE_STAGE}'"},{"DT_RELEASE_PRODUCT":"'${RELEASE_PRODUCT}'"}]'
     - /cloud_automation/cloud_automation_eval.sh

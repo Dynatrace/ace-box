@@ -39,22 +39,6 @@
   - include_role:
       name: keptn
       tasks_from: source-endpoints
-  - set_fact:
-      ca_endpoint: "{{ keptn_endpoint | default(None) }}"
-      ca_bridge: "{{ keptn_bridge | default(None) }}"
-      ca_api_token: "{{ keptn_api_token | default(None) }}"
-  when: cloud_automation_flavor is defined and cloud_automation_flavor == "KEPTN"
-
-- block:
-  - name: Source Cloud Automation secrets
-    include_role:
-      name: cloudautomation
-      tasks_from: source-secret
-  - set_fact:
-      ca_endpoint: "{{ cloud_automation_endpoint | default(None) }}"
-      ca_bridge: "{{ cloud_automation_bridge | default(None) }}"
-      ca_api_token: "{{ cloud_automation_api_token | default(None) }}"
-  when: cloud_automation_flavor is defined and cloud_automation_flavor == "CLOUD_AUTOMATION"
 
 - include_role:
     name: microk8s

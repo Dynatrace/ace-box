@@ -36,8 +36,6 @@ At the moment, GCP and Azure are supported with a ready-made Terraform config.
     |---|---|---|---|
     | dt_tenant |Dynatrace environment URL |**yes** |-|
     | dt_api_token  |Initial API token with scopes `apiTokens.read` and `apiTokens.write`. This token will be used by various roles to manage their own tokens. |**yes** |-|
-    | ca_tenant |Dynatrace Cloud Automation environment URL. **Note**: if not set, Keptn will be installed and used instead |-|-|
-    | ca_api_token |Dynatrace Cloud Automation api token. **Note**: if not set, Keptn will be installed and used instead |-|-|
     | use_case |Use case, the ACE Box will be prepared for. Options are:<ul> <li>`demo_default`</li><li>`demo_quality_gates_jenkins`</li><li>`demo_security_gates_jenkins`</li><li>`demo_quality_gates_gitlab`</li><li>`demo_auto_remediation_ansible`</li><li>`demo_all`</li><li>`demo_monaco_gitops`</li><li>URL to an external repository ([see docs](docs/external-use-case.md))</li></ul>|-|demo_default|
     | extra_vars |Additional variables that are passed and persisted on the VM. Variables can be sourced as `extra_vars.<variable key>` for e.g. external use cases |-|-|
     |dashboard_user|ACE-Box dashboard user.|-|dynatrace|

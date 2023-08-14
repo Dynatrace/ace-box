@@ -8,9 +8,6 @@
   tasks:
     - include_vars: "{{ ace_config_file_path }}"
     - include_role:
-        name: cloudautomation
-        tasks_from: destroy
-    - include_role:
         name: demo-auto-remediation-ansible
         tasks_from: destroy
     - include_role:
