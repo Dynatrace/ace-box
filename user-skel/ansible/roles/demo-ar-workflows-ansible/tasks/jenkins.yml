@@ -20,8 +20,8 @@
     name: jenkins
   vars:
     jenkins_monaco_container_image: "dynatrace/dynatrace-configuration-as-code:2.3.0"
-    dt_oauth_sso_endpoint: "{{ extra_vars.dt_oauth_sso_endpoint }}"
+    dt_oauth_sso_endpoint: "{{ extra_vars.dt_oauth_sso_endpoint.rstrip('/') }}"
     dt_oauth_client_id: "{{ extra_vars.dt_oauth_client_id }}"
     dt_oauth_client_secret: "{{ extra_vars.dt_oauth_client_secret }}"
     dt_oauth_account_urn: "{{ extra_vars.dt_oauth_account_urn }}"
-    dt_environment_url_gen3: "{{ extra_vars.dt_environment_url_gen3 }}"
+    dt_environment_url_gen3: "{{ extra_vars.dt_environment_url_gen3.rstrip('/') }}"

@@ -106,7 +106,7 @@ controller:
 {% endif %}
 {% if dt_environment_url_gen3 is defined and dt_environment_url_gen3 != "" %}
               - key: "DYNATRACE_URL_GEN3"
-                value: "{{ dt_environment_url_gen3 }}"
+                value: "{{ dt_environment_url_gen3.rstrip('/') }}"
 {% endif %}
       library-config: |
         unclassified:
@@ -166,7 +166,7 @@ controller:
                     id: "DYNATRACE_SSO_URL"
                     description: ""
                     scope: GLOBAL
-                    secret: "{{ dt_oauth_sso_endpoint }}"
+                    secret: "{{ dt_oauth_sso_endpoint.rstrip('/') }}"
 {% endif %}
 {% if dt_oauth_client_id is defined and dt_oauth_client_id != "" %}
                 - string:
