@@ -34,11 +34,11 @@
       MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco delete --manifest {{ role_path }}/files/monaco/manifest.yaml --file {{ role_path }}/files/monaco/delete-infra-optimized.yaml --group production
       MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco delete --manifest {{ role_path }}/files/monaco/manifest.yaml --file {{ role_path }}/files/monaco/delete-infra-optimized.yaml --group staging
   environment:
-      DT_PLATFORM_TENANT_URL: "{{ extra_vars.dt_environment_url_gen3 }}"
+      DT_PLATFORM_TENANT_URL: "{{ extra_vars.dt_environment_url_gen3.rstrip('/') }}"
       DT_API_TOKEN: "{{ monaco_cleanup_api_token }}"
       DT_OAUTH_CLIENT_ID: "{{ extra_vars.dt_oauth_client_id }}"
       DT_OAUTH_CLIENT_SECRET: "{{ extra_vars.dt_oauth_client_secret }}"
-      DT_OAUTH_SSO_ENDPOINT: "{{ extra_vars.dt_oauth_sso_endpoint }}"
+      DT_OAUTH_SSO_ENDPOINT: "{{ extra_vars.dt_oauth_sso_endpoint.rstrip('/') }}"
       DEMO_IDENTIFIER: "{{ demo_identifier }}"
       RELEASE_STAGE_STAGING: "simplenode-gitlab-staging"
       RELEASE_STAGE_PROD: "simplenode-gitlab-prod"
@@ -74,10 +74,10 @@
     gitlab_var_key: "{{ item.key }}"
     gitlab_var_value: "{{ item.value }}"
   loop:
-    - { key: 'DT_PLATFORM_TENANT_URL', value: '{{ extra_vars.dt_environment_url_gen3 }}' }
+    - { key: "DT_PLATFORM_TENANT_URL", value: "{{ extra_vars.dt_environment_url_gen3.rstrip('/') }}" }
     - { key: 'DT_OAUTH_CLIENT_ID', value: '{{ extra_vars.dt_oauth_client_id }}' }
     - { key: 'DT_OAUTH_CLIENT_SECRET', value: '{{ extra_vars.dt_oauth_client_secret }}' }
-    - { key: 'DT_OAUTH_SSO_ENDPOINT', value: '{{ extra_vars.dt_oauth_sso_endpoint }}' }
+    - { key: "DT_OAUTH_SSO_ENDPOINT", value: "{{ extra_vars.dt_oauth_sso_endpoint.rstrip('/') }}" }
     - { key: 'DT_OAUTH_ACCOUNT_URN', value: '{{ extra_vars.dt_oauth_account_urn }}' }
     - { key: 'GITLAB_USERNAME', value: '{{ gitlab_username }}' }
     - { key: 'GITLAB_PASSWORD', value: '{{ gitlab_password }}' }
