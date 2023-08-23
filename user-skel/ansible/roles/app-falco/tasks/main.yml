@@ -1,0 +1,55 @@
+---
+- include_role:
+    name: dt-access-token
+  vars:
+    access_token_var_name: "{{ dt_operator_dt_access_token_name }}"
+    access_token_scope: ["DataExport", "InstallerDownload", "activeGateTokenManagement.create", "entities.read", "settings.read", "settings.write"]
+
+- include_role:
+    name: dt-access-token
+  vars:
+    access_token_var_name: "{{ dt_operator_dt_data_ingest_token_name }}"
+    access_token_scope: ["metrics.ingest"] 
+
+- name: Create Dynatrace namespace
+  kubernetes.core.k8s:
+    name: "{{ dt_operator_namespace }}"
+    api_version: v1
+    kind: Namespace
+    state: present
+
+- file:
+    path: "{{ role_path }}/files"
+    state: directory
+
+- block:
+  - name: Download dynatrace-operator manifest
+    ansible.builtin.get_url:
+      url: "https://github.com/Dynatrace/dynatrace-operator/releases/download/{{ dt_operator_release }}/kubernetes.yaml"
+      dest: "{{ role_path }}/files/dt_operator.yaml"
+      mode: '0664'
+  - name: Apply dynatrace-operator manifest
+    kubernetes.core.k8s:
+      state: present
+      src: "{{ role_path }}/files/dt_operator.yaml"
+    register: dt_operator
+    retries: 10
+    delay: 5
+    until: dt_operator is not failed
+
+- block:
+  - name: Template Dynakube manifest
+    ansible.builtin.template:
+      src: dynakube.yaml.j2
+      dest: "{{ role_path }}/files/dynakube.yaml"
+      owner: "{{ ace_box_user }}"
+      group: "{{ ace_box_user }}"
+      mode: "0644"
+  - name: Apply Dynakube manifest
+    kubernetes.core.k8s:
+      state: present
+      src: "{{ role_path }}/files/dynakube.yaml"
+    register: dynakube
+    retries: 10
+    delay: 10
+    until: dynakube is not failed
