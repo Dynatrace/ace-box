@@ -3,7 +3,19 @@
     name: dt-access-token
   vars:
     access_token_var_name: "{{ monaco_dt_access_token_name }}"
-    access_token_scope: ["slo.read","slo.write","CaptureRequestData","credentialVault.read","credentialVault.write","DataExport","DataPrivacy","ExternalSyntheticIntegration","ReadConfig","WriteConfig", "settings.read","settings.write"]
+    access_token_scope:
+    - "slo.read"
+    - "slo.write"
+    - "CaptureRequestData"
+    - "credentialVault.read"
+    - "credentialVault.write"
+    - "DataExport"
+    - "DataPrivacy"
+    - "ExternalSyntheticIntegration"
+    - "ReadConfig"
+    - "WriteConfig"
+    - "settings.read"
+    - "settings.write"
 
 - set_fact:
     monaco_default_environment:
@@ -22,5 +34,5 @@
 
 - name: Monaco - Apply Configuration for Project
   shell:
-    cmd: /usr/local/bin/monaco deploy {{ monaco_projects_root }}/manifest.yaml {{ monaco_projects_argument }}
+    cmd: /usr/local/bin/monaco deploy {{ monaco_manifest_path }} {{ monaco_projects_argument }}
   environment: "{{ monaco_deploy_environment }}"
