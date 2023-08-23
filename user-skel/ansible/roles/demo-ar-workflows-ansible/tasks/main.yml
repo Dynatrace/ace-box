@@ -21,12 +21,10 @@
     name: dt-operator
 
 #
-# Monaco + DT config
+# Monaco
 #
 - include_role:
-    name: monaco
-  vars:
-    monaco_version: "v2.3.0"
+    name: monaco-v2
 
 #
 # Gitea
