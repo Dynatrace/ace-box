@@ -1,0 +1,4 @@
+acebox:
+  - name: "acebox"
+  - env-url: "{{ .Env.DT_ENV_URL }}" 
+  - env-token-name: "DT_API_TOKEN" 
