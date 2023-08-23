@@ -11,7 +11,7 @@
     name: dt-operator
 
 - include_role:
-    name: monaco
+    name: monaco-v2
 
 - include_role:
     name: gitea
