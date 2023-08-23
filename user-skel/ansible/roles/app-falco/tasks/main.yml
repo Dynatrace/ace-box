@@ -1,3 +1,5 @@
+---
+
 # Deploy falco from github repository
 - name: Add falco chart repo
   kubernetes.core.helm_repository:
