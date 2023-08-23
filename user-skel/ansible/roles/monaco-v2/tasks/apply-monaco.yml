@@ -19,7 +19,7 @@
 
 - set_fact:
     monaco_default_environment:
-      DT_ENV_URL: "{{ dynatrace_tenant_url }}"
+      DT_TENANT_URL: "{{ dynatrace_tenant_url }}"
       DT_API_TOKEN: "{{ vars[monaco_dt_access_token_name] }}"
 
 - set_fact:
