@@ -19,6 +19,6 @@
     chart_ref: falcosecurity/falco
     release_namespace: "falco"
     values_files:
-      - "{{ role_path }}"/files/values.yaml  # replace with the path to your values.yaml file
+      - "{{ role_path }}/files/values.yaml"  # replace with the path to your values.yaml file
     wait: true
     wait_timeout: 10m
