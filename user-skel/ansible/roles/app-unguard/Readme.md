@@ -1,4 +1,4 @@
-# app-unguard
+# app-falco
 
 This currated role can be used to deploy Unguard demo application on the ACE-Box. More information about falco [here](https://www.dynatrace.com/news/blog/ttp-based-threat-hunting-solves-alert-noise).
 
@@ -11,7 +11,7 @@ This role depends on the following roles to be deployed beforehand:
     name: microk8s
 
 ```
-### Deploying Unguard
+### Deploying Falco
 
 ```yaml
 - include_role:
