@@ -1,0 +1,26 @@
+manifestVersion: "1.0"
+
+projects:
+  - name: projects
+    path: projects
+    type: grouping
+
+environmentGroups:
+  - name: validation
+    environments:
+      - name: validation-environment
+        url:
+          type: environment
+          value: DT_TENANT_URL
+        auth:
+          token:
+            name: DT_API_TOKEN
+  - name: production
+    environments:
+      - name: production-environment
+        url:
+          type: environment
+          value: DT_TENANT_URL
+        auth:
+          token:
+            name: DT_API_TOKEN

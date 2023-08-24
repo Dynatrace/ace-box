@@ -1,0 +1,13 @@
+---
+configs:
+  - id: synthetic-location
+    config:
+      name: ACE-BOX
+      parameters:
+        nodeId:
+          name: SYNTH_NODE_ID
+          type: environment
+      template: private-synthetic.json
+      skip: false
+    type:
+      api: synthetic-location

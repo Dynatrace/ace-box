@@ -1,0 +1,38 @@
+---
+- include_role:
+    name: dt-access-token
+  vars:
+    access_token_var_name: "{{ monaco_dt_access_token_name }}"
+    access_token_scope:
+    - "slo.read"
+    - "slo.write"
+    - "CaptureRequestData"
+    - "credentialVault.read"
+    - "credentialVault.write"
+    - "DataExport"
+    - "DataPrivacy"
+    - "ExternalSyntheticIntegration"
+    - "ReadConfig"
+    - "WriteConfig"
+    - "settings.read"
+    - "settings.write"
+
+- set_fact:
+    monaco_default_environment:
+      DT_TENANT_URL: "{{ dynatrace_tenant_url }}"
+      DT_API_TOKEN: "{{ vars[monaco_dt_access_token_name] }}"
+
+- set_fact:
+    monaco_deploy_environment: "{{ monaco_environment | default({}) | combine(monaco_default_environment) }}"
+
+- set_fact:
+    monaco_projects_argument: ""
+
+- set_fact:
+    monaco_projects_argument: "-p {{ monaco_project }}"
+  when: monaco_project is defined and monaco_project | length > 0
+
+- name: Monaco - Apply Configuration for Project
+  shell:
+    cmd: /usr/local/bin/monaco deploy {{ monaco_manifest_path }} {{ monaco_projects_argument }}
+  environment: "{{ monaco_deploy_environment }}"

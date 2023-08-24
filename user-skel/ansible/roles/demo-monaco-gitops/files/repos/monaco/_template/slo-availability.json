@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "name": "{{ .name }}",
+  "description": "{{ .description }}",
+  "metricName": "{{ .metricName }}",
+  "metricExpression": "(builtin:synthetic.http.availability.location.total:splitBy())",
+  "evaluationType": "AGGREGATE",
+  "filter": "type(\"HTTP_CHECK\"),entityId(\"{{ .syntheticCheck }}\")",
+  "target": "{{ .availabilityTarget }}",
+  "warning": "{{ .availabilityTargetWarn }}",
+  "errorBudgetBurnRate": {
+    "burnRateVisualizationEnabled": true,
+    "fastBurnThreshold": 10.0
+  },
+  "timeframe": "-1h"
+}

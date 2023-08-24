@@ -1,8 +1,0 @@
-config:
-  - app-rule: "rule.json"
-  
-app-rule:
-  - name: "/PROJECT_NAME_PLACEHOLDER/base/application/app.name"
-  - applicationId: "/PROJECT_NAME_PLACEHOLDER/base/application/app.id"
-  - pattern: "APPLICATION_URL_PLACEHOLDER"
-

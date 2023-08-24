@@ -13,8 +13,8 @@
 - include_role:
     name: demo-ar-workflows-gitlab
 
-# - include_role:
-#     name: demo-monaco-gitops
+- include_role:
+    name: demo-monaco-gitops
 
 # Last role also installs Jenkins, Dashboard, ...
 - set_fact:

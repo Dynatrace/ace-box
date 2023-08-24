@@ -12,9 +12,7 @@
     name: dt-operator
 
 - include_role:
-    name: monaco
-  vars:
-    monaco_version: "v2.3.0"
+    name: monaco-v2
 
 - include_role:
     name: dt-access-token

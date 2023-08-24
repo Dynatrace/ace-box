@@ -1,9 +1,9 @@
-ENVS_FILE="environments.yaml"
 pipeline {
     agent {
-        label "monaco-runner"
+        label 'monaco-v2-runner'
     }
     environment {
+        MONACO_MANIFEST = 'manifest.yaml'
         DT_API_TOKEN = credentials('DT_API_TOKEN')
         DT_TENANT_URL = credentials('DT_TENANT_URL')
     }
@@ -19,13 +19,12 @@ pipeline {
                     env.MON_APP = env.BRANCH_NAME.substring(env.BRANCH_NAME.indexOf('/') + 1, env.BRANCH_NAME.length())
                 }
                 container('monaco') {
-                    script{
+                    script {
                         sh "echo $env.MON_APP"
-                        sh "monaco -v -dry-run -e=$ENVS_FILE -se=validation -p=$env.MON_APP projects/"
+                        sh "monaco deploy $MONACO_MANIFEST -g validation --dry-run"
                     }
                 }
             }
-          
         }
 
         stage('Deploy to Validation') {
@@ -39,9 +38,9 @@ pipeline {
                     env.MON_APP = env.BRANCH_NAME.substring(env.BRANCH_NAME.indexOf('/') + 1, env.BRANCH_NAME.length())
                 }
                 container('monaco') {
-                    script{
+                    script {
                         sh "echo $env.MON_APP"
-                        sh "monaco -v -e=$ENVS_FILE -se=validation -p=$env.MON_APP projects/"
+                        sh "monaco deploy $MONACO_MANIFEST -g validation"
                     }
                 }
             }
@@ -56,11 +55,10 @@ pipeline {
             steps {
                 script {
                     env.MON_APP = env.BRANCH_NAME.substring(env.BRANCH_NAME.indexOf('/') + 1, env.BRANCH_NAME.length())
-                
+
                     timeout(time:15, unit:'MINUTES') {
                         env.CREATE_PR = input message: 'Are you happy with the configuration in Validation?', ok: 'Continue', parameters: [choice(name: 'CREATE_PR', choices: 'YES\nNO', description: 'Create Pull Request?')]
                     }
-                
                 }
             }
         }
@@ -80,13 +78,13 @@ pipeline {
                         | "title": "Merge ${env.BRANCH_NAME} with main"
                     }""".stripMargin()
                     withCredentials([string(credentialsId: 'git-access-token', variable: 'GIT_TOKEN')]) {
-                        def encodedPassword = URLEncoder.encode("$GIT_TOKEN",'UTF-8')
+                        def encodedPassword = URLEncoder.encode("$GIT_TOKEN", 'UTF-8')
                         def response = httpRequest contentType: 'APPLICATION_JSON',
                             httpMode: 'POST',
                             requestBody: requestBody,
                             url: "${GIT_PROTOCOL}://${GIT_DOMAIN}/api/v1/repos/${GIT_ORG_DEMO}/monaco-gitops/pulls",
                             customHeaders: [[maskValue: true, name: 'Authorization', value: "token ${encodedPassword}"]],
-                            validResponseCodes: "100:201", 
+                            validResponseCodes: '100:201',
                             ignoreSslErrors: true
                     }
                 }
@@ -101,12 +99,11 @@ pipeline {
             }
             steps {
                 container('monaco') {
-                    script{
-                        sh "monaco -v -dry-run -e=$ENVS_FILE -se=production projects/"
+                    script {
+                        sh 'monaco deploy manifest.yaml -g production --dry-run'
                     }
                 }
             }
-          
         }
 
         stage('Deploy to Production') {
@@ -117,8 +114,8 @@ pipeline {
             }
             steps {
                 container('monaco') {
-                    script{
-                        sh "monaco -v -e=$ENVS_FILE -se=production projects/"
+                    script {
+                        sh 'monaco deploy manifest.yaml -g production'
                     }
                 }
             }
