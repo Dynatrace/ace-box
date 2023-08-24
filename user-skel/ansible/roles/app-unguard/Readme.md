@@ -18,7 +18,6 @@ This role depends on the following roles to be deployed beforehand:
     name: app-falco
 ```
 
-```
 ### (Optional) To demo falco with unguard
 
 ```yaml
