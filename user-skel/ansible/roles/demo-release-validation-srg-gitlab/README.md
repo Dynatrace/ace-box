@@ -1,5 +1,8 @@
 # demo-release-validation-srg-gitlab
 
+### Prerequisites
+Upgrade the Site Reliability Guardian app with the latest release from the Dynatrace Hub before applying the Terraform command.
+
 ### Required extra vars
 
 |Variable name|Description|
