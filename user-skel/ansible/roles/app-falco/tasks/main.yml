@@ -14,6 +14,9 @@
     create_namespace: true
     wait: true
     wait_timeout: 10m
+    values:
+      falcosidekick:
+        enabled: true
 
 - name: Upgrade Falco
   kubernetes.core.helm:
