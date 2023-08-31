@@ -1,7 +1,8 @@
 # demo-release-validation-srg-gitlab
 
 ### Prerequisites
- - Upgrade the Site Reliability Guardian app with the latest release from the Dynatrace Hub before applying the Terraform command.
+ - This demo is tested with Site Reliability Guardian schema version 1.0.2. If you are using an older version, please upgrade to the latest version. You can check the schema version in the schema info page as shown in the screenshot below.
+   ![schema_info](files/docs/assets_home/srg_schema_info.png)
  - Make sure that "Log Powered by Grail" is allowed for your account on the BAS admin page as shown in the screenshot below. If not, please contact your Dynatrace account admin.
    ![allow_grail](files/docs/assets_home/enable_grail.png)
 
