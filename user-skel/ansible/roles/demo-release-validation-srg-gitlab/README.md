@@ -1,16 +1,24 @@
 # demo-release-validation-srg-gitlab
 
-### Prerequisites
- - This demo is tested with Site Reliability Guardian schema version 1.0.2. If you are using an older version, please upgrade to the latest version. You can check the schema version in the schema info page as shown in the screenshot below.
-   ![schema_info](files/docs/assets_home/srg_schema_info.png)
+## Prerequisites
+
  - Make sure that "Log Powered by Grail" is allowed for your account on the BAS admin page as shown in the screenshot below. If not, please contact your Dynatrace account admin.
+   
    ![allow_grail](files/docs/assets_home/enable_grail.png)
 
  - Upgrade to new log Storage configuration from the "Settings -> Log Monitoring -> Log sources and storage" menu in Dynatrace. 
 
+## Version and compatibility
 
+   | Entity | Version verified  |
+   | --- | --- |
+   | Site reliability guardian schema | 1.0.2 |
 
-### Required extra vars
+- This demo is verified with the above Site Reliability Guardian Schema version. If you are using an older version, please upgrade to the latest version. You can check the schema version in the schema info page as shown in the screenshot below.
+   
+   ![schema_info](files/docs/assets_home/srg_schema_info.png)
+   
+## Required extra vars
 
 |Variable name|Description|
 |---|---|
