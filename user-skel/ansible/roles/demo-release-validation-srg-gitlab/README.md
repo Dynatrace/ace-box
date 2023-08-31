@@ -1,7 +1,13 @@
 # demo-release-validation-srg-gitlab
 
 ### Prerequisites
-Upgrade the Site Reliability Guardian app with the latest release from the Dynatrace Hub before applying the Terraform command.
+ - Upgrade the Site Reliability Guardian app with the latest release from the Dynatrace Hub before applying the Terraform command.
+ - Make sure that "Log Powered by Grail" is allowed for your account on the BAS admin page as shown in the screenshot below. If not, please contact your Dynatrace account admin.
+   ![allow_grail](files/docs/assets_home/enable_grail.png)
+
+ - Upgrade to new log Storage configuration from the "Settings -> Log Monitoring -> Log sources and storage" menu in Dynatrace. 
+
+
 
 ### Required extra vars
 
