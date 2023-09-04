@@ -18,10 +18,11 @@
       falcosidekick:
         enabled: true
 
+
 - name: Upgrade Falco
   kubernetes.core.helm:
-    name: falco
-    chart_ref: falcosecurity/falco
+    name: falcosidekick
+    chart_ref: falcosecurity/falcosidekick
     release_namespace: "falco"
     values_files:
       - "{{ role_path }}/files/values.yaml"  # replace with the path to your values.yaml file
