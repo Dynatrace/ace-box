@@ -18,6 +18,13 @@
       falcosidekick:
         enabled: true
 
+- name: Upgrade Falco
+  kubernetes.core.helm:
+    name: falcosidekick
+    chart_ref: falcosecurity/falcosidekick
+    release_namespace: "falco"
+    wait: true
+    wait_timeout: 10m
 
 - name: Upgrade Falco
   kubernetes.core.helm:
