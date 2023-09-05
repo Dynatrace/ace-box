@@ -1,1 +1,10 @@
-
+falcosidekick: 
+  enabled: true 
+  image: 
+    tag: 2.29.0-rc.1 
+  config:
+    extraEnv: 
+      - name: DYNATRACE_APITOKEN
+        value: "{{ dynatrace_api_token }}"
+      - name: DYNATRACE_APIURL
+        value: "{{ dynatrace_tenant_url }}/api"
