@@ -24,5 +24,5 @@
 
 - name: Upgrade falcosidekick using helm
   command:
-    cmd: helm upgrade falco falcosecurity/falco -f roles/app-falco/files/values.yaml --namespace falco
+    cmd: helm upgrade falco falcosecurity/falco -f {{ role_path }}/files/values.yaml --namespace falco
 
