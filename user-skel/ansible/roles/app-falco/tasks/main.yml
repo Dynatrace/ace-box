@@ -11,12 +11,9 @@
 
 - name: Install Falco
   command:
-    cmd: helm install falco falcosecurity/falco --namespace falco --create-namespace
-
-- name: Install falcosidekick using helm
-  command:
-    cmd: helm install falcosidekick falcosecurity/falcosidekick --namespace falco
+    cmd: helm install falco falcosecurity/falco --set falcosidekick.enabled=true --namespace falco --create-namespace
 
 - name: Upgrade falcosidekick using helm
   command:
-    cmd: helm upgrade falcosidekick falcosecurity/falcosidekick -f {{ role_path }}/files/values.yaml --namespace falco
+    cmd: helm upgrade falco falcosecurity/falco -f roles/app-falco/files/values.yaml --namespace falco
+
