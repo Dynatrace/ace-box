@@ -13,6 +13,15 @@
   command:
     cmd: helm install falco falcosecurity/falco --set falcosidekick.enabled=true --namespace falco --create-namespace
 
+- name: Falco - Template values file
+  ansible.builtin.template:
+    src: values.yml.j2
+    dest: "{{ role_name }}/files/values.yml"
+    owner: "{{ ace_box_user }}"
+    group: "{{ ace_box_user }}"
+    mode: '0644'
+
+
 - name: Upgrade falcosidekick using helm
   command:
     cmd: helm upgrade falco falcosecurity/falco -f roles/app-falco/files/values.yaml --namespace falco
