@@ -16,7 +16,7 @@
 - name: Falco - Template values file
   ansible.builtin.template:
     src: values.yml.j2
-    dest: "{{ role_name }}/files/values.yml"
+    dest: "{{ role_path }}/files/values.yml"
     owner: "{{ ace_box_user }}"
     group: "{{ ace_box_user }}"
     mode: '0644'
