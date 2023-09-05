@@ -1,37 +1,22 @@
 ---
-
 # Deploy falco from github repository
 - name: Add falco chart repo
   kubernetes.core.helm_repository:
     name: falcosecurity
     repo_url: "https://falcosecurity.github.io/charts"
 
-- name: Deploy Falco
-  kubernetes.core.helm:
-    name: falco
-    chart_ref: falcosecurity/falco
-    release_namespace: "falco"
-    create_namespace: true
-    wait: true
-    wait_timeout: 10m
-    values:
-      falcosidekick:
-        enabled: true
+- name: repo update
+  command:
+    cmd: helm repo update
 
-- name: Upgrade Falco
-  kubernetes.core.helm:
-    name: falcosidekick
-    chart_ref: falcosecurity/falcosidekick
-    release_namespace: "falco"
-    wait: true
-    wait_timeout: 10m
+- name: Install Falco
+  command:
+    cmd: helm install falco falcosecurity/falco --namespace falco --create-namespace
 
-- name: Upgrade Falco
-  kubernetes.core.helm:
-    name: falcosidekick
-    chart_ref: falcosecurity/falcosidekick
-    release_namespace: "falco"
-    values_files:
-      - "{{ role_path }}/files/values.yaml"  # replace with the path to your values.yaml file
-    wait: true
-    wait_timeout: 10m
+- name: Install falcosidekick using helm
+  command:
+    cmd: helm install falcosidekick falcosecurity/falcosidekick --namespace falco
+
+- name: Upgrade falcosidekick using helm
+  command:
+    cmd: helm upgrade falcosidekick falcosecurity/falcosidekick -f {{ role_path }}/files/values.yaml --namespace falco
