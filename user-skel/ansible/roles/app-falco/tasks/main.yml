@@ -1,28 +1,40 @@
 ---
-# Deploy falco from github repository
+
 - name: Add falco chart repo
   kubernetes.core.helm_repository:
     name: falcosecurity
     repo_url: "https://falcosecurity.github.io/charts"
 
-- name: repo update
-  command:
-    cmd: helm repo update
 
 - name: Install Falco
-  command:
-    cmd: helm install falco falcosecurity/falco --set falcosidekick.enabled=true --namespace falco --create-namespace
+  kubernetes.core.helm:
+    name: falco
+    chart_ref: falcosecurity/falco
+    release_namespace: "falco"
+    create_namespace: true
+    wait: true
+    wait_timeout: 10m
+    values:
+      falcosidekick:
+        enabled: true
+
 
 - name: Falco - Template values file
   ansible.builtin.template:
-    src: values.yml.j2
-    dest: "{{ role_path }}/files/values.yml"
+    src: values.yaml.j2
+    dest: "{{ role_path }}/files/values.yaml"
     owner: "{{ ace_box_user }}"
     group: "{{ ace_box_user }}"
     mode: '0644'
 
 
 - name: Upgrade falcosidekick using helm
-  command:
-    cmd: helm upgrade falco falcosecurity/falco -f {{ role_path }}/files/values.yaml --namespace falco
-
+  kubernetes.core.helm:
+    name: falco
+    chart_ref: falcosecurity/falco
+    release_namespace: "falco"
+    create_namespace: true
+    values_files:
+      - "{{ role_path }}/files/values.yaml"
+    wait: true
+    wait_timeout: 10m
