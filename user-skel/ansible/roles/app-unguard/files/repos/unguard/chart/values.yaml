@@ -113,7 +113,7 @@ userSimulator:
 
         env:
           FRONTEND_ADDR: unguard-envoy-proxy:8080/ui
-          SIMULATE_PRIVATE_RANGES: false
+          SIMULATE_PRIVATE_RANGES: "{{unguard_simulate_private_ranges}}"
 
         resources:
           requests:
