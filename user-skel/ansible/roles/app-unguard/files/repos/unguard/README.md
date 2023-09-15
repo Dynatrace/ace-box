@@ -1,18 +1,15 @@
-# ![Unguard Logo](docs/images/unguard-logo.png) Unguard
-
-___
+# ![Unguard Logo](docs/images/logo/unguard-logo-red-small.png) Unguard
 
 **Unguard** (🇦🇹 [ˈʊnˌɡuːat] like disquieting, 🇫🇷 [ãˈɡard] like the fencing command) is an **insecure** cloud-native
-microservices demo application. It consists of seven app services, a load generator, and two databases. Unguard
-encompasses vulnerabilities like SSRF, Command/SQL injection and comes with built-in Jaeger traces. The application is
-a web-based Twitter clone where users can:
+microservices demo application. It consists of eight app services, a load generator, and two databases. Unguard
+encompasses vulnerabilities like server-side request forgery (SSRF), Command/SQL injection, JWT key confusion,
+remote code execution and many more.
 
-* register/login
-* post text, URLs and images
-* view global or personalized timelines
-* see ads on the timeline
-* view/follow users
-* edit your user biography
+The application is a web-based Twitter clone where users can register/login, post text, URLs and images and follow users.
+Unguard also features fake ads, a possibility to edit your biography and manage your membership.
+
+> **Note**
+> This product is not officially supported by Dynatrace
 
 ## 🖼️ Screenshots
 
@@ -22,9 +19,9 @@ a web-based Twitter clone where users can:
 
 ## 🏗️ Architecture
 
-Unguard is composed of seven microservices written in different languages that talk to each other over REST.
+Unguard is composed of eight microservices written in different languages that talk to each other over REST.
 
-![Unguard Architecture](docs/images/unguard-architecture.png)
+![Unguard Architecture](docs/images/unguard-architecture.svg)
 
 | Service                                                    | Language        | Service Account | Description                                                                                                                                 |
 |------------------------------------------------------------|-----------------|-----------------|---------------------------------------------------------------------------------------------------------------------------------------------|
@@ -33,28 +30,51 @@ Unguard is composed of seven microservices written in different languages that t
 | [ad-service](./src/ad-service)                             | .NET 5          | default         | Provide CRUD operation for images and serves a HTML page which displays an image like an ad.                                                |
 | [microblog-service](./src/microblog-service)               | Java Spring     | default         | Serves a REST API for the frontend and saves data into redis (explicitly calls vulnerable functions of the jackson-databind library 2.9.9). |
 | [proxy-service](./src/proxy-service)                       | Java Spring     | unguard-proxy   | Serves REST API for proxying requests from frontend (vulnerable to SSRF; no sanitization on the entered URL).                               |
-| [user-profile-service](./src/profile-service)              | Java Spring     | default         | Serves REST API for updating biography information in a H2 database; vulnerable to SQL injection attacks                                    |
+| [profile-service](./src/profile-service)                   | Java Spring     | default         | Serves REST API for updating biography information in a H2 database; vulnerable to SQL injection attacks                                    |
+| [membership-service](./src/membership-service)             | .NET 7          | default         | Serves REST API for updating user memberships in a MariaDB; vulnerable to SQL injection attacks                                             |
 | [user-auth-service](./src/user-auth-service)               | Node.js Express | default         | Serves REST API for authenticating users with JWT tokens (vulnerable to JWT key confusion).                                                 |
-| [status-service](./src/malicious-load-generator)           | Go              | default         | Vulnerable server that uses the Kubernetes API from within a pod to get current deployment information                                      |
+| [status-service](./src/status-service)                     | Go              | unguard-status  | Vulnerable server that uses the Kubernetes API from within a pod to get current deployment information                                      |
 | jaeger                                                     |                 | default         | The [Jaeger](https://www.jaegertracing.io/) stack for distributed tracing.                                                                  |
 | mariadb                                                    |                 | unguard-mariadb | Relational database that holds user and token data.                                                                                         |
 | redis                                                      |                 | default         | Key-value store that holds all user data (except authentication-related stuff).                                                             |
 | [user-simulator](./src/user-simulator)                     | Node.js Element | default         | Creates synthetic user traffic by simulating an Unguard user using a real browser. Acts as a load generator.                                |
 | [malicious-load-generator](./src/malicious-load-generator) |                 | default         | Malicious load generator that makes CMD, JNDI, and SQL injections.                                                                          |
 
-| Service Account | Permissions                               |
-|-----------------|-------------------------------------------|
-| default         | None                                      |
-| unguard-proxy   | List, get & create pods, create pods/exec |
+## Quickstart
 
-## 🖥️ Local Deployment
+To quickly get started with Unguard, install the Unguard Helm chart using the [Helm package manager](https://helm.sh/)
 
-See the [Development Guide](./docs/DEV-GUIDE.md) on how to develop Unguard on a local K8S cluster.
+> **Warning** \
+> Unguard is **insecure** by design and a careless installation will leave you exposed to severe security vulnerabilities. Make sure to restrict access and/or run it in a sandboxed environment.
 
-## ☁️ Cloud Deployment
+1. Add the bitnami repository for the MariaDB dependency
 
-See the [Deployment Guide](./docs/DEPLOYMENT.md) on how to deploy Unguard to your cloud. Currently, the documentation
-only covers AWS.
+   ```sh
+    helm repo add bitnami https://charts.bitnami.com/bitnami
+   ```
+
+2. Install MariaDB
+
+   ```sh
+   helm install unguard-mariadb bitnami/mariadb --set primary.persistence.enabled=false --wait --namespace unguard --create-namespace
+   ```
+
+3. Install Unguard
+
+   ```sh
+   helm install unguard  oci://ghcr.io/dynatrace-oss/unguard/chart/unguard --wait --namespace unguard --create-namespace
+   ```
+
+To customize your Unguard chart installation, see the [chart README](chart/README.md)
+
+
+## 🖥️ Local Development
+
+See the [Development Guide](docs/DEV-GUIDE.md) on how to set up and develop Unguard on a local Kubernetes cluster.
+
+## ☁️ Kubernetes Deployment
+
+See the Unguard Chart [README](chart/README.md) on how to install Unguard in your Kubernetes cluster using the Helm package manager.
 
 ## ✨ Features
 
@@ -66,13 +86,12 @@ only covers AWS.
   the [Element](https://element.flood.io/) browser-based load generation library.
 * **[Exploits](./exploit-toolkit/exploits/README.md)**: Different automated attack scenarios like JWT key confusion
   attacks or remote code execution.
-* **[Monitoring](./docs/MONACO.md)**: Dynatrace monitoring by
+* **[Monitoring](docs/MONACO.md)**: Dynatrace monitoring by
   utilizing [MONACO](https://github.com/dynatrace-oss/dynatrace-monitoring-as-code).
 
 ## ➕ Additional Deployment Options
 
-* **Falco**: [See these instructions](./docs/FALCO.md)
-* **Tracing**: [See these instructions](./docs/TRACING.md)
+* **Tracing and Jaeger**: [See these instructions](docs/TRACING.md)
 * **Malicious Load Generator**: [See these instructions](src/malicious-load-generator/README.md)
 
 ---

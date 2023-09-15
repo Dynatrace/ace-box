@@ -1,7 +1,23 @@
-const {handleError, statusCodeForError} = require("./controller/errorHandler");
-const {getJwtUser, hasJwtRole} = require('./controller/cookie');
-const {roles} = require('./model/role');
-const {extendURL, extendRenderData} = require("./controller/utilities.js");
+/*
+Copyright 2023 Dynatrace LLC
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+const { handleError, statusCodeForError } = require("./controller/errorHandler");
+const { getJwtUser, hasJwtRole, getJwtUserId } = require('./controller/cookie');
+const { roles } = require('./model/role');
+const { extendURL, extendRenderData } = require("./controller/utilities.js");
 
 const adManagerRouter = require('./controller/adManager');
 
@@ -29,18 +45,27 @@ router.post('/login', doLogin);
 // Register
 router.post('/register', registerUser);
 router.post('/bio/:username', postBio);
+//Membership
+router.get('/membership', showMembership);
+router.post('/membership/:username', postMembership);
 
 router.use('/ad-manager', adManagerRouter);
 
 function showGlobalTimeline(req, res) {
-    fetchUsingDeploymentBase(req, () => req.MICROBLOG_API.get('/timeline'))
-        .then((timeline) => {
+    fetchUsingDeploymentBase(req, () =>
+        Promise.all([
+            req.MICROBLOG_API.get('/timeline'),
+            getMembershipOfLoggedInUser(req)
+        ]))
+        .then(([timeline, membership]) => {
             let data = extendRenderData({
                 data: timeline.data,
                 title: 'Timeline',
                 username: getJwtUser(req.cookies),
                 isAdManager: hasJwtRole(req.cookies, roles.AD_MANAGER),
-                baseData: baseRequestFactory.baseData
+                baseData: baseRequestFactory.baseData,
+                membership: membership.data.membership
+
             }, req);
 
             res.render('index.njk', data)
@@ -48,14 +73,19 @@ function showGlobalTimeline(req, res) {
 }
 
 function showPersonalTimeline(req, res) {
-    fetchUsingDeploymentBase(req, () => req.MICROBLOG_API.get('/mytimeline'))
-        .then((myTimeline) => {
+    fetchUsingDeploymentBase(req, () =>
+        Promise.all([
+            req.MICROBLOG_API.get('/mytimeline'),
+            getMembershipOfLoggedInUser(req)
+        ]))
+        .then(([myTimeline, membership]) => {
             let data = extendRenderData({
                 data: myTimeline.data,
                 title: 'My Timeline',
                 username: getJwtUser(req.cookies),
                 isAdManager: hasJwtRole(req.cookies, roles.AD_MANAGER),
-                baseData: baseRequestFactory.baseData
+                baseData: baseRequestFactory.baseData,
+                membership: membership.data.membership
             }, req);
 
             res.render('index.njk', data);
@@ -63,45 +93,82 @@ function showPersonalTimeline(req, res) {
 }
 
 function showUserProfile(req, res) {
-    const usernameProfile = req.params.username;
-
+    const username = req.params.username;
     fetchUsingDeploymentBase(req, () =>
         Promise.all([
-            getBioText(req, res, usernameProfile),
-            req.MICROBLOG_API.get(`/users/${usernameProfile}/posts`)
+            getBioText(req, username),
+            req.MICROBLOG_API.get(`/users/${username}/posts`),
+            getMembership(req, username)
         ])
-    ).then(([bioText, microblogServiceResponse]) => {
+    ).then(([bioText, microblogServiceResponse, membership]) => {
         let data = extendRenderData({
             data: microblogServiceResponse.data,
-            profileName: usernameProfile,
+            profileName: username,
             username: getJwtUser(req.cookies),
             isAdManager: hasJwtRole(req.cookies, roles.AD_MANAGER),
             bio: bioText,
-            baseData: baseRequestFactory.baseData
+            baseData: baseRequestFactory.baseData,
+            membership: membership.data.membership
         }, req);
 
         res.render('profile.njk', data);
     }, (err) => displayError(err, res));
 }
 
-function getBioText(req, res, username) {
-    return new Promise((resolve, reject) => {
-        req.USER_AUTH_API.post('/user/useridForName', {
-            "jwt": req.cookies.jwt, "username": username
-        }).then((response) => {
-            const {userId} = response.data;
-            return req.PROFILE_SERVICE_API.get(`/user/${userId}/bio`);
-        }).then((response) => {
-            resolve(response.data.bioText);
-        }).catch(reason => {
-            // If a bio for the userId doesn't exist yet and a status code 404 is returned, this catch block will set
-            // the bioText to an empty string which allows for the profile page to be displayed rather than the error page
-            if (statusCodeForError(reason) === 404) {
-                resolve("");
-            } else {
-                reject(reason)
-            }
-        })
+function getBioText(req, username) {
+    return getUserIdForName(req, username).then((userId) => {
+        return new Promise((resolve, reject) => {
+            req.PROFILE_SERVICE_API.get(`/user/${userId}/bio`)
+                .then((response) => {
+                    resolve(response.data.bioText);
+                }).catch(reason => {
+                    // If a bio for the userId doesn't exist yet and a status code 404 is returned, this catch block will set
+                    // the bioText to an empty string which allows for the profile page to be displayed rather than the error page
+                    if (statusCodeForError(reason) === 404) {
+                        resolve("");
+                    } else {
+                        reject(reason)
+                    }
+                })
+        });
+    });
+}
+
+function showMembership(req, res) {
+    fetchUsingDeploymentBase(req, () => getMembershipOfLoggedInUser(req))
+        .then((membership) => {
+            let data = extendRenderData({
+                title: 'Membership',
+                username: getJwtUser(req.cookies),
+                isAdManager: hasJwtRole(req.cookies, roles.AD_MANAGER),
+                baseData: baseRequestFactory.baseData,
+                membership: membership.data.membership
+            }, req);
+
+            res.render('membership.njk', data);
+        }, (err) => displayError(err, res));
+}
+
+function getMembershipOfLoggedInUser(req) {
+    let jwtUserId = getJwtUserId(req.cookies);
+    if (!jwtUserId) {
+        return Promise.resolve();
+    }
+
+    return req.MEMBERSHIP_SERVICE_API.get(`/${jwtUserId}`);
+}
+
+function getMembership(req, username) {
+    return getUserIdForName(req, username).then((userId) => {
+        return req.MEMBERSHIP_SERVICE_API.get(`/${userId}`)
+    });
+}
+
+function getUserIdForName(req, username) {
+    return req.USER_AUTH_API.post('/user/useridForName', {
+        "jwt": req.cookies.jwt, "username": username
+    }).then((response) => {
+        return response.data.userId;
     });
 }
 
@@ -122,7 +189,7 @@ function doLogin(req, res) {
     const usernameToLogin = req.body.username;
     const passwordToLogin = req.body.password;
     if (!usernameToLogin || !passwordToLogin) {
-        res.render('error.njk', {error: "Username and password must be supplied to login"});
+        res.render('error.njk', { error: "Username and password must be supplied to login" });
         return;
     }
 
@@ -145,7 +212,7 @@ function registerUser(req, res) {
     const usernameToLogin = req.body.username;
     const passwordToLogin = req.body.password;
     if (!usernameToLogin || !passwordToLogin) {
-        res.render('error.njk', {error: "Username and password must be supplied to register"});
+        res.render('error.njk', { error: "Username and password must be supplied to register" });
         return;
     }
 
@@ -158,10 +225,10 @@ function registerUser(req, res) {
 }
 
 function followUser(req, res) {
-    const usernameProfile = req.params.username;
-    fetchUsingDeploymentBase(req, () => req.MICROBLOG_API.post(`/users/${usernameProfile}/follow`))
+    const username = req.params.username;
+    fetchUsingDeploymentBase(req, () => req.MICROBLOG_API.post(`/users/${username}/follow`))
         .then(_ => {
-            res.redirect(extendURL(`/user/${usernameProfile}`));
+            res.redirect(extendURL(`/user/${username}`));
         }, (err) => displayError(err, res));
 }
 
@@ -242,25 +309,27 @@ function getPost(req, res) {
     }, (err) => displayError(err, res));
 }
 
-function postBio(req, res) {
-    const usernameProfile = req.params.username;
+function postMembership(req, res) {
+    const membership = { userid: getJwtUserId(req.cookies), membership: req.body.membershipText };
+    fetchUsingDeploymentBase(req, () => req.MEMBERSHIP_SERVICE_API.post('/', membership)).then((response) => {
+        res.redirect(extendURL(`/user/${getJwtUser(req.cookies)}`));
+    }, (error) => res.status(statusCodeForError(error)).render('error.njk', handleError(error)));
 
-    req.USER_AUTH_API.post('/user/useridForName', {
-        "jwt": req.cookies.jwt, "username": usernameProfile
-    }).then((response) => {
-        const {userId} = response.data;
-        return req.PROFILE_SERVICE_API.post(`/user/${userId}/bio`, {},
-            {
-                params: {
-                    bioText: req.body.bioText,
-                    enableMarkdown: Boolean(req.body.enableMarkdown)
-                }
-            });
-    }).then((_) => {
-        res.redirect(extendURL(`/user/${usernameProfile}`));
-    }).catch(error => {
-        res.status(statusCodeForError(error)).render('error.njk', handleError(error));
-    });
+}
+
+function postBio(req, res) {
+    req.PROFILE_SERVICE_API.post(`/user/${getJwtUserId(req.cookies)}/bio`, {},
+        {
+            params: {
+                bioText: req.body.bioText,
+                enableMarkdown: Boolean(req.body.enableMarkdown)
+            }
+        })
+        .then((_) => {
+            res.redirect(extendURL(`/user/${getJwtUser(req.cookies)}`));
+        }).catch(error => {
+            res.status(statusCodeForError(error)).render('error.njk', handleError(error));
+        });
 }
 
 /**

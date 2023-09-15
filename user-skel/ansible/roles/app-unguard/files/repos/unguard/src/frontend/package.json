@@ -2,7 +2,6 @@
   "name": "frontend",
   "version": "1.0.1",
   "main": "app.js",
-  "author": "Christoph Wedenig",
   "license": "MIT",
   "dependencies": {
     "@w3d3/axios-opentracing": "^0.1.5",

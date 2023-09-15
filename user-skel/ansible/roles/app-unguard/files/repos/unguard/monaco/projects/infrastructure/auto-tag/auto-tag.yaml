@@ -1,8 +1,0 @@
-config:
-- app: app.json
-- environment: environment.json
-app:
-- name: app
-environment:
-- name: environment
-

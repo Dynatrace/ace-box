@@ -19,7 +19,7 @@
 - name: Deploy Unguard
   kubernetes.core.helm:
     name: unguard
-    chart_ref: "{{ role_path }}/files/repos/unguard/helm/unguard"
+    chart_ref: "{{ role_path }}/files/repos/unguard/chart"
     release_namespace: "{{ unguard_namespace }}"
     create_namespace: true
     wait: true
@@ -29,25 +29,3 @@
       ingress:
         domain: "{{ ingress_domain }}"
         class: "{{ ingress_class }}"
-      unguard:
-        profileService:
-          tag: "{{ unguard_image_tag }}"
-        statusService:
-          tag: "{{ unguard_image_tag }}"
-        maliciousLoadGenerator: 
-          tag: "{{ unguard_image_tag }}"
-        adService:
-          tag: "{{ unguard_image_tag }}"
-        frontend: 
-          tag: "{{ unguard_image_tag }}"
-        microblogService: 
-          tag: "{{ unguard_image_tag }}"
-        proxyService: 
-          tag: "{{ unguard_image_tag }}"
-        userAuthService: 
-          tag: "{{ unguard_image_tag }}"
-        userSimulator:
-          tag: "{{ unguard_image_tag }}"
-          simulatePrivateRanges: "{{ unguard_simulate_private_ranges }}"
-        userSimulatorCronJob:
-          deploy: "{{ unguard_deploy_user_simulator_cronjob }}"

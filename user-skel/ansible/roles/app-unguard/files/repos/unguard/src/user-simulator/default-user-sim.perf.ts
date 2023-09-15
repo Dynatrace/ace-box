@@ -12,7 +12,7 @@ import {
     User,
 } from './types'
 
-const random_ips = ['177.236.37.155',
+const random_ips_pub = ['177.236.37.155',
     '49.210.236.225',
     '66.96.37.30',
     '19.21.221.83',
@@ -71,14 +71,20 @@ const random_ips = ['177.236.37.155',
     '62.179.239.135',
     '113.167.100.35']
 
-const ip = random_ips[getRandomInt(random_ips.length)]
+const random_ips_priv = ['10.0.1.2',
+    '192.168.10.1',
+    '192.168.10.5',
+    '192.168.10.10',
+    '172.16.10.10']
+
+const privateRanges = process.env.SIMULATE_PRIVATE_RANGES === 'true'
+
+const ip = privateRanges ? random_ips_priv[getRandomInt(random_ips_priv.length)] : random_ips_pub[getRandomInt(random_ips_pub.length)]
 
 // noinspection JSUnusedGlobalSymbols
 export const settings: TestSettings = {
     userAgent: 'simulated-browser-user',
-    // Currently only 10 loops instead of Infinite, as the 11th run stalls forever
-    // But as K8s will restart the pod, this will still run indefinitely
-    loopCount: 10,
+    loopCount: 1,
     screenshotOnFailure: false,
     // Automatically wait for elements before trying to interact with them
     waitUntil: 'visible',
@@ -209,6 +215,17 @@ export default () => {
         await postButton.click()
 
         console.log(`${user.username} updated bio: '${bio.text}'`)
+    })
+
+    step('Upgrade to PRO membership', async (browser, _) => {
+        await browser.visit(`${config.frontendUrl}/membership`)
+
+        await browser.type(By.css('input[id=membershipInputList]'), "PRO")
+
+        const postButton = await browser.findElement(By.css('button[name=postMembership]'))
+        await postButton.click()
+
+        console.log(`${user.username} upgraded to PRO membership'`)
     })
 
     step('Log out', async browser => {

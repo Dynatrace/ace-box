@@ -1,7 +1,7 @@
 {
   "posts": [
     {
-      "url": "https://google.com",
+      "url": "https://scholar.google.com/",
       "language": "en_US"
     },
     {
@@ -21,11 +21,7 @@
       "language": "en_CA"
     },
     {
-      "url": "https://twitter.com/elonmusk/status/980566116614291456?s=20",
-      "language": "en_US"
-    },
-    {
-      "url": "https://issues.apache.org/jira/browse/HTTPCLIENT-1974",
+      "url": "https://stackoverflow.com/questions/11227809/why-is-processing-a-sorted-array-faster-than-processing-an-unsorted-array",
       "language": "en_US"
     },
     {
@@ -33,19 +29,15 @@
       "language": "en_US"
     },
     {
-      "url": "https://www.reddit.com/r/Austria/comments/jp11ys/donald_likes/",
+      "url": "https://realpython.com/python-requests",
       "language": "en_US"
     },
     {
-      "url": "https://realpython.com/python-requests/",
+      "url": "https://github.com/JStumpp/awesome-cloud",
       "language": "en_US"
     },
     {
-      "url": "https://www.imdb.com/title/tt1375666/",
-      "language": "en_US"
-    },
-    {
-      "url": "https://www.imdb.com/name/nm0000138/",
+      "url": "https://github.com/rootsongjc/awesome-cloud-native",
       "language": "en_US"
     },
     {
@@ -57,8 +49,8 @@
       "language": "en_US"
     },
     {
-      "url": "https://dynatrace.com/",
-      "language": "de_AT"
+      "url": "https://www.connectedpapers.com/",
+      "language": "en_US"
     }
   ]
 }
