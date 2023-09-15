@@ -25,8 +25,6 @@ Variables that can be set are as follows:
 # application deployment parameters
 unguard_namespace: "unguard" # namespace that Unguard will be deployed in
 unguard_simulate_private_ranges: "true" # enable/disable simulating private ranges on user simulator service
-unguard_deploy_user_simulator_cronjob: "false" # enable/disable user simulator cronjob
-
 ```
 ### (Optional) To enable observability with Dynatrace OneAgent
 
