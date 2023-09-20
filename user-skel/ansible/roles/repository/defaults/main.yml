@@ -4,3 +4,4 @@ gitea_domain: "gitea.{{ ingress_domain }}"
 feature_gitea: true
 feature_gitlab: false
 track_upstream: false
+git_remote: origin
