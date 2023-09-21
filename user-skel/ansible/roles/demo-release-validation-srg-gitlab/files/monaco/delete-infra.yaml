@@ -16,6 +16,3 @@ delete:
   - project: infrastructure
     type: request-attributes
     name: LSN-$DEMO_IDENTIFIER
-  - project: infrastructure
-    type: synthetic-location
-    name: synth-location-$DEMO_IDENTIFIER

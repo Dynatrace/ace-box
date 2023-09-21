@@ -20,6 +20,9 @@
 - include_role:
     name: dt-operator
 
+- include_role:
+    name: otel-collector
+
 #
 # Monaco
 #
