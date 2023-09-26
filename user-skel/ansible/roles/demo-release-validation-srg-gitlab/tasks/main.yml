@@ -114,14 +114,6 @@
       # Overwrites files in the repo:
       - dest: .gitlab-ci.yml
         src: '{{ playbook_dir }}/roles/demo-release-validation-srg-gitlab/files/.gitlab-ci.yml'
-      - dest: app.js
-        src: '{{ playbook_dir }}/roles/demo-release-validation-srg-gitlab/files/simplenode/app.js'
-      - dest: logger.js
-        src: '{{ playbook_dir }}/roles/demo-release-validation-srg-gitlab/files/simplenode/logger.js'
-      - dest: package.json
-        src: '{{ playbook_dir }}/roles/demo-release-validation-srg-gitlab/files/simplenode/package.json'
-      - dest: logger.js
-        src: '{{ playbook_dir }}/roles/demo-release-validation-srg-gitlab/files/simplenode/logger.js'
       - dest: dynatrace/dynatrace.attachrules.yaml
         src: '{{ playbook_dir }}/roles/demo-release-validation-srg-gitlab/files/dynatrace.attachrules.yaml'
 
