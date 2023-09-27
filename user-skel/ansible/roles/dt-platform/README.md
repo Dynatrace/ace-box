@@ -1,6 +1,8 @@
-# role to manage DT Platform
+# Role to manage DT Platform
 
-## ensure-app
+## install-app-artifact
+
+Installs an App from the provided artifact (zip file).
 
 Requires vars:
 
