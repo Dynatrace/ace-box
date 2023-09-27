@@ -1,0 +1,33 @@
+---
+- block:
+  - name: Request a DT access token
+    ansible.builtin.uri:
+      url: "{{ dt_oauth_sso_endpoint }}"
+      method: POST
+      status_code: 200
+      headers:
+        Content-Type: "application/x-www-form-urlencoded"
+      body_format: form-urlencoded
+      body:
+        grant_type: "client_credentials"
+        client_id: "{{ dt_oauth_client_id }}"
+        client_secret: "{{ dt_oauth_client_secret }}"
+        scope: "app-engine:apps:install"
+        resource: "{{ dt_oauth_account_urn }}"
+    register: auth_response_raw
+  - set_fact:
+      dt_oauth_access_token: "{{ auth_response_raw.json.access_token }}"
+
+- name: "Install or update app {{ dt_app_artifact_path | basename }}"
+  ansible.builtin.uri:
+    url: "{{ dt_environment_url_gen3.rstrip('/') }}/platform/app-engine/registry/v1/apps"
+    method: POST
+    status_code: 202
+    headers:
+      Content-Type: "application/zip"
+      Authorization: "Bearer {{ dt_oauth_access_token }}"
+    src: "{{ dt_app_artifact_path }}"
+  register: post_apps_response_raw
+
+- set_fact:
+    dt_app_id: "{{ post_apps_response_raw.json.id }}"
