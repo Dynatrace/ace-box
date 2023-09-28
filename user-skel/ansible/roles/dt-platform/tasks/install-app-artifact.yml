@@ -1,6 +1,6 @@
 ---
 - block:
-  - name: Request a DT access token
+  - name: Request a DT OAuth access token
     ansible.builtin.uri:
       url: "{{ dt_oauth_sso_endpoint }}"
       method: POST
