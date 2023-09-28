@@ -3,8 +3,6 @@
   connection: local
   become: true
   become_user: "{{ ace_box_user | default(lookup('env','USER')) }}"
-  vars:
-    ace_config_file_path: "./ace.config.yml"
   roles:
     # Role "config-v2" is always executed
     # and makes sure that all previous settings

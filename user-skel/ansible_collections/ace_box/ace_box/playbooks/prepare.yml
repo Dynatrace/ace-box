@@ -1,0 +1,14 @@
+---
+- name: Prepare
+  hosts: localhost
+  connection: local
+  become: true
+  become_user: "{{ ace_box_user | default(lookup('env','USER')) }}"
+  tasks:
+    - name: Prepare config
+      ansible.builtin.include_role:
+        name: config-v2
+        tasks_from: prepare
+    - name: Install common
+      ansible.builtin.include_role:
+        name: init

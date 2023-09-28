@@ -24,23 +24,23 @@
 - name: Synchronize Use Case role
   synchronize:
     src: "{{ use_case_repo_path }}/roles/{{ use_case_ext_default_name }}/"
-    dest: "/home/{{ ace_box_user }}/ansible/roles/{{ use_case_ext_name }}/"
+    dest: "/home/{{ ace_box_user }}/.ansible/collections/ansible_collections/ace_box/ace_box/roles/{{ use_case_ext_name }}/"
 
 - name: Synchronize roles
   synchronize:
     src: "{{ use_case_repo_path }}/roles/"
-    dest: "/home/{{ ace_box_user }}/ansible/roles/"
+    dest: "/home/{{ ace_box_user }}/.ansible/collections/ansible_collections/ace_box/ace_box/roles/"
     rsync_opts:
       - "--exclude={{ use_case_ext_default_name }}"
 
 - name: Synchronize var override
   synchronize:
     src: "{{ use_case_repo_path }}/ace-ext.config.yml"
-    dest: "/home/{{ ace_box_user }}/ansible/{{ use_case_ext_name }}.config.yml"
+    dest: "/home/{{ ace_box_user }}/.ace/{{ use_case_ext_name }}.config.yml"
   ignore_errors: True
 
 - name: Source var override
-  include_vars: "/home/{{ ace_box_user }}/ansible/{{ use_case_ext_name }}.config.yml"
+  include_vars: "/home/{{ ace_box_user }}/.ace/{{ use_case_ext_name }}.config.yml"
   ignore_errors: True
 
 - include_role:
