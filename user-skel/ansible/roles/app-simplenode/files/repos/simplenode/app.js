@@ -4,6 +4,7 @@ var port = process.env.PORT || 8080,
 	fs = require('fs'),
 	os = require('os'),
 	sem = require('semver'),
+	morgan = require("morgan"),
 	dttags = process.env.DT_TAGS || EMPTY,
 	dtcustprops = process.env.DT_CUSTOM_PROP || EMPTY,
 	dtclusterid = process.env.DT_CLUSTER_ID || EMPTY,
@@ -11,11 +12,16 @@ var port = process.env.PORT || 8080,
 	pod_name = process.env.POD_NAME || EMPTY,
 	deployment_name = process.env.DEPLOYMENT_NAME || EMPTY,
 	container_image = process.env.CONTAINER_IMAGE || EMPTY,
-	cloud_automation_project = process.env.CLOUD_AUTOMATION_PROJECT || EMPTY,
-	cloud_automation_stage = process.env.CLOUD_AUTOMATION_STAGE || EMPTY,
-	cloud_automation_service = process.env.CLOUD_AUTOMATION_SERVICE || EMPTY,
-  html = fs.readFileSync('index.html').toString().replace("HOSTNAME", os.hostname()); //  + " with DT_TAGS=" + dttags + "\nDT_CUSTOM_PROP=" + dtcustprops + "\nDT_CLUSTER_ID=" + dtclusterid);
-	sver = sem.valid('1.2.3') // semver is loaded for a medium level appsec vulneraility
+	dtReleaseProduct = process.env.DT_RELEASE_PRODUCT || EMPTY,
+	dtReleaseStage = process.env.DT_RELEASE_STAGE || EMPTY,
+	dtReleaseVersion = process.env.DT_RELEASE_VERSION || EMPTY,
+	dtReleaseBuildVersion = process.env.DT_RELEASE_BUILD_VERSION || EMPTY,
+  html = fs.readFileSync('index.html').toString().replace("HOSTNAME", os.hostname());
+
+var sver = sem.valid('1.2.3'); // semver is loaded for a medium level appsec vulnerability
+var logger = morgan(
+  ":method :url status: :status :res[content-length] - rt: :response-time ms"
+)
 
 // ======================================================================
 // Here are some global config entries that change the behavior of the app
@@ -33,18 +39,17 @@ var requests = [];
 var requestTrimThreshold = 5000;
 var requestTrimSize = 4000;
 
-
 // ======================================================================
 // does some init checks and sets variables!
 // ======================================================================
 var init = function(newBuildNumber) {
 	// MAKE SURE we have a good NAMESPACE
 	if(!namespace || (namespace.length == 0) || (namespace == EMPTY)) {
-		if(cloud_automation_stage && cloud_automation_stage.length)
-			namespace = cloud_automation_stage;	
+		if(dtReleaseStage && dtReleaseStage.length)
+			namespace = dtReleaseStage;	
 		else if(deployment_name && deployment_name.length)
 			namespace = deployment_name;	
-		else if(cloud_automation_stage && pod_name.length)
+		else if(dtReleaseStage && pod_name.length)
 			namespace = pod_name;	
 	}
 
@@ -74,10 +79,9 @@ var init = function(newBuildNumber) {
 	// X | any other build number will run like 1 & 3
 	if(newBuildNumber != null) {
 		buildNumber = parseInt(newBuildNumber);
-	}
-	else if(process.env.BUILD_NUMBER && process.env.BUILD_NUMBER != null) {
+	} else if(process.env.BUILD_NUMBER && process.env.BUILD_NUMBER != null) {
 		buildNumber = parseInt(process.env.BUILD_NUMBER);
-    }
+  }
 
 	switch(buildNumber) {
 		case 2:
@@ -110,10 +114,11 @@ var init = function(newBuildNumber) {
 // ======================================================================
 // Background colors for our app depending on the build
 // ======================================================================
-var backgroundColors = ["#D6D4D2", "#73A53E", "#FF7C00", "#D3D309", "#4AB9D9"]
+var backgroundColors = ["#D6D4D2", "#73A53E", "#FF7C00", "#D3D309", "#4AB9D9", "#D6D4D2"]
 var getBackgroundColor = function() {
 	var buildNumberForBackgroundColor = buildNumber;
-	if(buildNumber == 0 || buildNumber > 4) buildNumberForBackgroundColor = 1;
+	
+	if(buildNumber == 0 || buildNumber > 5) buildNumberForBackgroundColor = 1;
 	
 	return backgroundColors[buildNumberForBackgroundColor];
 }
@@ -170,178 +175,183 @@ function getRequestsPerMinute() {
 // This is our main HttpServer Handler
 // ======================================================================
 var server = http.createServer(async function (req, res) {
+	logger(req, res, function (err) {
+    if (err) {
+      return res.end("Error logging");
+    }
 
-	requests.push(Date.now());
+		requests.push(Date.now());
 
-	// now keep requests array from growing forever
-	if (requests.length > requestTrimThreshold) {
-		requests = requests.slice(0, requests.length - requestTrimSize);
-	}
-	log(SEVERITY_INFO, req.method + ' - ' + req.url);
-
-    if (req.method === 'POST') {
-        var body = '';
-
-        req.on('data', function(chunk) {
-            body += chunk;
-        });
-
-        req.on('end', function() {
-            if (req.url === '/') {
-                log(SEVERITY_DEBUG, 'Received message: ' + body);
-            } else if (req.url = '/scheduled') {
-                log(SEVERITY_DEBUG, 'Received task ' + req.headers['x-aws-sqsd-taskname'] + ' scheduled at ' + req.headers['x-aws-sqsd-scheduled-at']);
-            }
-
-            res.writeHead(200, 'OK', {'Content-Type': 'text/plain'});
-            res.end();
-        });
-    } else if (req.url.startsWith("/api")) {
-		var url = require('url').parse(req.url, true);
-		var closeResponse = true;
-
-        // sleep a bit :-)
-		var sleeptime = parseInt(url.query["sleep"]);
-		if(sleeptime === 0 || isNaN(sleeptime) ) sleeptime = minSleep;
-		log(SEVERITY_INFO, "Sleeptime: " + sleeptime);
-		sleep(sleeptime);
-
-		// figure out which API call they want to execute
-        var status = "Unkown API Call";
-		if(url.pathname === "/api/sleeptime") {
-			// Usage: /api/sleeptime?min=1234 
-			var sleepValue = parseInt(url.query["min"]);
-			if(sleepValue >= 0 && sleepValue <= 10000) minSleep = sleepValue;
-			status = "Minimum Sleep Time set to " + minSleep;
+		// now keep requests array from growing forever
+		if (requests.length > requestTrimThreshold) {
+			requests = requests.slice(0, requests.length - requestTrimSize);
 		}
-		if(url.pathname === "/api/echo") {
-			// Usage: /api/echo?text=your text to be echoed!
-			status = "Thanks for saying: " + url.query["text"];
-		}
-		if(url.pathname === "/api/login") {
-			// Usage: /api/login?username=your user name 
-			status = "Welcome " + url.query["username"];
-		}
-		if(url.pathname === "/api/invoke") {
-			// count the invokes for failed requests
-			var returnStatusCode = 200;
-			if(failInvokeRequestPercentage > 0) {
-				invokeRequestCount++;
-				var failRequest = (invokeRequestCount % (100 / failInvokeRequestPercentage));
-				console.log(invokeRequestCount + "%" + failInvokeRequestPercentage + "=" + failRequest);
-				if(failRequest == 0) {
-					returnStatusCode = 500;
-					invokeRequestCount = 0;
+		log(SEVERITY_INFO, req.method + ' - ' + req.url);
+
+		if (req.method === 'POST') {
+				var body = '';
+
+				req.on('data', function(chunk) {
+						body += chunk;
+				});
+
+				req.on('end', function() {
+						if (req.url === '/') {
+								log(SEVERITY_DEBUG, 'Received message: ' + body);
+						} else if (req.url = '/scheduled') {
+								log(SEVERITY_DEBUG, 'Received task ' + req.headers['x-aws-sqsd-taskname'] + ' scheduled at ' + req.headers['x-aws-sqsd-scheduled-at']);
+						}
+
+						res.writeHead(200, 'OK', {'Content-Type': 'text/plain'});
+						res.end();
+				});
+		} else if (req.url.startsWith("/api")) {
+			var url = require('url').parse(req.url, true);
+			var closeResponse = true;
+
+					// sleep a bit :-)
+			var sleeptime = parseInt(url.query["sleep"]);
+			if(sleeptime === 0 || isNaN(sleeptime) ) sleeptime = minSleep;
+			log(SEVERITY_INFO, "Sleeptime: " + sleeptime);
+			sleep(sleeptime);
+
+			// figure out which API call they want to execute
+			var status = "Unkown API Call";
+
+			if(url.pathname === "/api/sleeptime") {
+				// Usage: /api/sleeptime?min=1234 
+				var sleepValue = parseInt(url.query["min"]);
+				if(sleepValue >= 0 && sleepValue <= 10000) minSleep = sleepValue;
+				status = "Minimum Sleep Time set to " + minSleep;
+			}
+			if(url.pathname === "/api/echo") {
+				// Usage: /api/echo?text=your text to be echoed!
+				status = "Thanks for saying: " + url.query["text"];
+			}
+			if(url.pathname === "/api/login") {
+				// Usage: /api/login?username=your user name 
+				status = "Welcome " + url.query["username"];
+			}
+			if(url.pathname === "/api/invoke") {
+				// count the invokes for failed requests
+				var returnStatusCode = 200;
+				if(failInvokeRequestPercentage > 0) {
+					invokeRequestCount++;
+					var failRequest = (invokeRequestCount % (100 / failInvokeRequestPercentage));
+					console.log(invokeRequestCount + "%" + failInvokeRequestPercentage + "=" + failRequest);
+					if(failRequest == 0) {
+						returnStatusCode = 500;
+						invokeRequestCount = 0;
+					}
 				}
+
+				// Usage: /api/invoke?url=http://www.yourdomain.com 
+				var urlRequest = url.query["url"];
+				status = "Trying to invoke remote call to: " + urlRequest;
+				
+				var http = null;
+				if(urlRequest.startsWith("https")) http = require("https");
+				else http = require("http");
+				closeResponse = false;
+				var options = {
+					host: urlRequest,
+					path: '/'
+				};
+				var result = http.get(urlRequest, function(getResponse) {
+					log(SEVERITY_DEBUG, 'STATUS: ' + getResponse.statusCode);
+					log(SEVERITY_DEBUG, 'HEADERS: ' + JSON.stringify(getResponse.headers));
+
+					// Buffer the body entirely for processing as a whole.
+					var bodyChunks = [];
+					getResponse.on('data', function(chunk) {
+						bodyChunks.push(chunk);
+					}).on('end', function() {
+						var body = Buffer.concat(bodyChunks);
+						log(SEVERITY_DEBUG, 'BODY: ' + body);
+						status = "Request to '" + url.query["url"] + "' returned with HTTP Status: " + getResponse.statusCode + " and response body length: " + body.length;
+						res.writeHead(returnStatusCode, returnStatusCode == 200 ? 'OK' : 'ERROR', {'Content-Type': 'text/plain'});	
+						res.write(status);
+						res.end();
+					}).on('error', function(error) {
+						status = "Request to '" + url.query["url"] + "' returned in an error: " + error;
+						res.writeHead(returnStatusCode, returnStatusCode == 200 ? 'OK' : 'ERROR', {'Content-Type': 'text/plain'});	
+						res.write(status);
+						res.end();					
+						log(SEVERITY_INFO, status);
+					})
+				});
+			}
+			if(url.pathname === "/api/version") {
+				if (url.query["newBuildNumber"] && url.query["newBuildNumber"] != null) {
+					var newBuildNumber = url.query["newBuildNumber"];
+					log(SEVERITY_WARNING, "Somebody is changing! buildNumber from " + buildNumber + " to " + newBuildNumber);
+
+					init(newBuildNumber);
+				}
+
+				// usage: /api/version
+				status = "Running build number: " + buildNumber + "\nProduction mode: " + inProduction;
+				status += "\n\nHere some additional environment variables:";
+				status += "\n- DT_RELEASE_PRODUCT: " + dtReleaseProduct;
+				status += "\n- DT_RELEASE_STAGE: " + dtReleaseStage;
+				status += "\n- DT_RELEASE_VERSION: " + dtReleaseVersion;
+				status += "\n- DT_RELEASE_BUILD_VERSION: " + dtReleaseBuildVersion;
+				status += "\n- DT_TAGS: " + dttags;
+				status += "\n- DT_CUSTOM_PROP: " + dtcustprops;
+				status += "\n- DT_CLUSTER_ID: " + dtclusterid;
+				status += "\n- DEPLOYMENT_NAME: " + deployment_name;
+				status += "\n- CONTAINER_IMAGE: " + container_image;
+				status += "\n- POD_NAME: " + pod_name;
+				status += "\n- NAMESPACE: " + namespace;
+			}
+			if(url.pathname === "/api/causeerror") {
+				log(SEVERITY_ERROR, "somebody called /api/causeerror");
+				status = "We just caused an error log entry"
+			}
+			if (url.pathname === "/api/cpuload") {
+				const reqPerMin = getRequestsPerMinute();
+				let sleepTime = 1200;
+
+				if (reqPerMin <= 70) {
+					sleepTime = Math.pow(reqPerMin, 2) - Math.pow(reqPerMin, 3) / 100;
+				}
+
+				if (reqPerMin <= 45) {
+					sleepTime = (Math.pow(reqPerMin, 2) - Math.pow(reqPerMin, 3) / 100) / 2;
+				}
+
+				console.log("Sleeping for " + sleepTime + "ms");
+				sleep(sleepTime);
+
+				status = "Request finished";
+			}
+			if(url.pathname === "/healthz") {
+				// Usage: /api/login?username=your user name 
+				status = "OK";
 			}
 
-			// Usage: /api/invoke?url=http://www.yourdomain.com 
-			var urlRequest = url.query["url"];
-			status = "Trying to invoke remote call to: " + urlRequest;
-			
-			var http = null;
-			if(urlRequest.startsWith("https")) http = require("https");
-			else http = require("http");
-			closeResponse = false;
-			var options = {
-              	host: urlRequest,
-              	path: '/'
-            };
-			var result = http.get(urlRequest, function(getResponse) {
-				log(SEVERITY_DEBUG, 'STATUS: ' + getResponse.statusCode);
-				log(SEVERITY_DEBUG, 'HEADERS: ' + JSON.stringify(getResponse.headers));
-
-				// Buffer the body entirely for processing as a whole.
-				var bodyChunks = [];
-				getResponse.on('data', function(chunk) {
-					bodyChunks.push(chunk);
-				}).on('end', function() {
-					var body = Buffer.concat(bodyChunks);
-				  	log(SEVERITY_DEBUG, 'BODY: ' + body);
-				  	status = "Request to '" + url.query["url"] + "' returned with HTTP Status: " + getResponse.statusCode + " and response body length: " + body.length;
-				  	res.writeHead(returnStatusCode, returnStatusCode == 200 ? 'OK' : 'ERROR', {'Content-Type': 'text/plain'});	
-				  	res.write(status);
-				  	res.end();
-				}).on('error', function(error) {
-				  	status = "Request to '" + url.query["url"] + "' returned in an error: " + error;
-				  	res.writeHead(returnStatusCode, returnStatusCode == 200 ? 'OK' : 'ERROR', {'Content-Type': 'text/plain'});	
-				  	res.write(status);
-				  	res.end();					
-				  	log(SEVERITY_INFO, status);
-				})
-			});
-		}
-		if(url.pathname === "/api/version") {
-			if (url.query["newBuildNumber"] && url.query["newBuildNumber"] != null) {
-				var newBuildNumber = url.query["newBuildNumber"];
-				log(SEVERITY_WARNING, "Somebody is changing! buildNumber from " + buildNumber + " to " + newBuildNumber);
-
-				init(newBuildNumber);
+			// only close response handler if we are done with work!
+			if(closeResponse) {
+				res.writeHead(200, 'OK', {'Content-Type': 'text/plain'});	
+				res.write(status);
+				res.end();
 			}
+		} else {
+			res.writeHead(200, 'OK', {'Content-Type': 'text/html'});
 
-			// usage: /api/version
-			// simply returns the build number as defined in BUILD_NUMBER env-variable which is specified
-			status = "Running build number: " + buildNumber + " Production-Mode: " + inProduction;
-			status += "\n\nHere some additional environment variables:";
-			status += "\nCLOUD_AUTOMATION_PROJECT: " + cloud_automation_project;
-			status += "\nCLOUD_AUTOMATION_STAGE: " + cloud_automation_stage;
-			status += "\nCLOUD_AUTOMATION_SERVICE: " + cloud_automation_service;
-			status += "\nDT_TAGS: " + dttags;
-			status += "\nDT_CUSTOM_PROP: " + dtcustprops;
-			status += "\nDT_CLUSTER_ID: " + dtclusterid;
-			status += "\nDEPLOYMENT_NAME: " + deployment_name;
-			status += "\nCONTAINER_IMAGE: " + container_image;
-			status += "\nPOD_NAME: " + pod_name;
-			status += "\nNAMESPACE: " + namespace;
+			// replace buildnumber and background color
+			var finalHtml = html.replace("BACKGROUND-COLOR", getBackgroundColor()).replace("BUILD_NUMBER", buildNumber).replace("NAMESPACE", namespace);
+
+			res.write(finalHtml);
+			res.end();
 		}
-		if(url.pathname === "/api/causeerror") {
-			log(SEVERITY_ERROR, "somebody called /api/causeerror");
-			status = "We just caused an error log entry"
+		
+		requestCount++;
+		if(requestCount >= 100) {
+			log(SEVERITY_INFO, "Just served another 100 requests!");
+			requestCount = 0;
 		}
-		if (url.pathname === "/api/cpuload") {
-			const reqPerMin = getRequestsPerMinute();
-			let sleepTime = 1200;
-
-			if (reqPerMin <= 70) {
-				sleepTime = Math.pow(reqPerMin, 2) - Math.pow(reqPerMin, 3) / 100;
-			}
-
-			if (reqPerMin <= 45) {
-				sleepTime = (Math.pow(reqPerMin, 2) - Math.pow(reqPerMin, 3) / 100) / 2;
-			}
-
-			console.log("Sleeping for " + sleepTime + "ms");
-			sleep(sleepTime);
-
-			status = "Request finished";
-		}
-		if(url.pathname === "/healthz") {
-			// Usage: /api/login?username=your user name 
-			status = "OK";
-		}
-
-		// only close response handler if we are done with work!
-		if(closeResponse) {
-		   res.writeHead(200, 'OK', {'Content-Type': 'text/plain'});	
-		   res.write(status);
-		   res.end();
-		}
-	}
-	else
-	{
-		res.writeHead(200, 'OK', {'Content-Type': 'text/html'});
-
-		// replace buildnumber and background color
-		var finalHtml = html.replace("BACKGROUND-COLOR", getBackgroundColor()).replace("BUILD_NUMBER", buildNumber).replace("NAMESPACE", namespace);
-        res.write(finalHtml);
-        res.end();
-	}
-	
-	requestCount++;
-	if(requestCount >= 100) {
-		log(SEVERITY_INFO, "Just served another 100 requests!");
-		requestCount = 0;
-	}
+	});
 });
 
 // first we initialize!
