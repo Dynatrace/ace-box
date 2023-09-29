@@ -1,11 +1,7 @@
 ---
-- name: Determine use_case_ext_name
-  ansible.builtin.set_fact:
-    use_case_ext_name: "{{ use_case_ext_src.split('/')[-1] | replace('.git', '') }}"
-
 - name: Determine use_case_repo_path
   ansible.builtin.set_fact:
-    use_case_repo_path: "/home/{{ ace_box_user }}/repos/{{ use_case_ext_name }}"
+    use_case_repo_path: "/home/{{ ace_box_user }}/repos/{{ use_case_ext_src | ace_box.ace_box.useCaseExtSrcToName }}"
 
 - block:
   - name: Create repos directory
@@ -24,7 +20,7 @@
 - name: Synchronize Use Case role
   synchronize:
     src: "{{ use_case_repo_path }}/roles/{{ use_case_ext_default_name }}/"
-    dest: "/home/{{ ace_box_user }}/.ansible/collections/ansible_collections/ace_box/ace_box/roles/{{ use_case_ext_name }}/"
+    dest: "/home/{{ ace_box_user }}/.ansible/collections/ansible_collections/ace_box/ace_box/roles/{{ use_case_ext_src | ace_box.ace_box.useCaseExtSrcToName }}/"
 
 - name: Synchronize roles
   synchronize:
@@ -36,12 +32,12 @@
 - name: Synchronize var override
   synchronize:
     src: "{{ use_case_repo_path }}/ace-ext.config.yml"
-    dest: "/home/{{ ace_box_user }}/.ace/{{ use_case_ext_name }}.config.yml"
+    dest: "{{ use_case_ext_src | ace_box.ace_box.useCaseExtSrcToConfigPath(ace_box_user) }}"
   ignore_errors: True
 
 - name: Source var override
-  include_vars: "/home/{{ ace_box_user }}/.ace/{{ use_case_ext_name }}.config.yml"
+  include_vars: "{{ use_case_ext_src | ace_box.ace_box.useCaseExtSrcToConfigPath(ace_box_user) }}"
   ignore_errors: True
 
 - include_role:
-    name: "{{ use_case_ext_name }}"
+    name: "{{ use_case_ext_src | ace_box.ace_box.useCaseExtSrcToName }}"
