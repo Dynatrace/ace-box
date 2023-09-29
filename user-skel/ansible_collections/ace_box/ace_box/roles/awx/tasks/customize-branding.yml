@@ -14,7 +14,7 @@
     pod: "{{ awx_pods.resources[0].metadata.name }}"
     container: awx-web
     remote_path: /var/lib/awx/public/static/media/logo-header.svg
-    local_path: "./roles/{{ role_name }}/{{ awx_logo_header_replace }}"
+    local_path: "{{ role_path }}/{{ awx_logo_header_replace }}"
     no_preserve: True
     state: to_pod
   when: (awx_logo_header_replace is defined) and (awx_logo_header_replace|length > 0)
@@ -25,7 +25,7 @@
     pod: "{{ awx_pods.resources[0].metadata.name }}"
     container: awx-web
     remote_path: /var/lib/awx/public/static/media/logo-login.svg
-    local_path: "./roles/{{ role_name }}/{{ awx_logo_login_replace }}"
+    local_path: "{{ role_path }}/{{ awx_logo_login_replace }}"
     no_preserve: True
     state: to_pod
   when: (awx_logo_login_replace is defined) and (awx_logo_login_replace|length > 0)
@@ -36,7 +36,7 @@
     pod: "{{ awx_pods.resources[0].metadata.name }}"
     container: awx-web
     remote_path: /var/lib/awx/public/static/media/favicon.svg
-    local_path: "./roles/{{ role_name }}/{{ awx_icon_replace }}"
+    local_path: "{{ role_path }}/{{ awx_icon_replace }}"
     no_preserve: True
     state: to_pod
   when: (awx_icon_replace is defined) and (awx_icon_replace|length > 0)
@@ -47,7 +47,7 @@
     pod: "{{ awx_pods.resources[0].metadata.name }}"
     container: awx-web
     remote_path: /var/lib/awx/public/static/media/favicon.ico
-    local_path: "./roles/{{ role_name }}/{{ awx_favicon_replace }}"
+    local_path: "{{ role_path }}/{{ awx_favicon_replace }}"
     no_preserve: True
     state: to_pod
   when: (awx_favicon_replace is defined) and (awx_favicon_replace|length > 0)

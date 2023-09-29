@@ -17,7 +17,7 @@
     name: jenkins
     repo_url: "https://charts.jenkins.io"
 
-- include_tasks: roles/jenkins/tasks/create-secret.yml
+- include_tasks: create-secret.yml
 
 - block:
   - name: Source Gitea secrets
@@ -87,7 +87,7 @@
     values_files: "{{ jenkins_helm_value_files | json_query('files[*].path') }}"
   when: not jenkins_skip_install
 
-- include_tasks: roles/jenkins/tasks/create-token.yml
+- include_tasks: create-token.yml
   when: not jenkins_skip_install
 
 # Include Dashboard values

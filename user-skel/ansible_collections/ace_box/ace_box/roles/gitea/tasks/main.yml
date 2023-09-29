@@ -13,7 +13,7 @@
     name: gitea-charts
     repo_url: "https://dl.gitea.io/charts/"
 
-- include_tasks: roles/gitea/tasks/create-secret.yml
+- include_tasks: create-secret.yml
 
 - name: Template values file
   ansible.builtin.template:
@@ -59,7 +59,7 @@
   when: ingress_class == "istio"
 
 - name: Source endpoints
-  include: roles/gitea/tasks/source-endpoints.yml
+  ansible.builtin.include_tasks: source-endpoints.yml
 
 - block:
   - name: Wait for API to be up
@@ -91,7 +91,7 @@
   - set_fact:
       gitea_access_token: "{{ post_token_result.json.sha1 }}"
   # Update gitea_access_token in Gitea secret
-  - include_tasks: roles/gitea/tasks/create-secret.yml
+  - include_tasks: create-secret.yml
   when: gitea.changed
 
 # Include Dashboard values

@@ -7,7 +7,7 @@
 - name: Template Helm values file
   ansible.builtin.template:
     src: gitlab-gcpe-values.yml.j2
-    dest: "./roles/{{ role_name }}/files/gitlab-gcpe-values.yml"
+    dest: "{{ role_path }}/files/gitlab-gcpe-values.yml"
     owner: "{{ ace_box_user }}"
     group: "{{ ace_box_user }}"
     mode: '0644'
@@ -21,4 +21,4 @@
     wait: true
     wait_timeout: 15m
     values_files:
-      - "./roles/{{ role_name }}/files/gitlab-gcpe-values.yml"
+      - "{{ role_path }}/files/gitlab-gcpe-values.yml"

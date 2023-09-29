@@ -5,9 +5,9 @@
     access_token_var_name: "{{ gitlab_dt_access_token_name }}"
     access_token_scope: ["slo.read","slo.write","CaptureRequestData","credentialVault.read","credentialVault.write","DataExport","DataPrivacy","ExternalSyntheticIntegration","ReadConfig","WriteConfig","events.ingest","settings.read","settings.write"]
 
-- include_tasks: roles/gitlab/tasks/source-secret.yml
+- include_tasks: source-secret.yml
 
-- include_tasks: roles/gitlab/tasks/ensure-group.yml
+- include_tasks: ensure-group.yml
 
 - block:
   - name: Source Keptn secrets

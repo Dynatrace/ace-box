@@ -70,7 +70,7 @@
 - block:
   - name: Copy app-simplenode repo content
     ansible.posix.synchronize:
-      src: "{{ playbook_dir }}/roles/app-simplenode/files/repos/simplenode/"
+      src: "{{ role_path }}/files/repos/simplenode/"
       dest: "{{ repo_src }}"
       delete: true
       rsync_opts: "{{ rsync_opts }}"

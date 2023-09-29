@@ -17,7 +17,7 @@
 - name: AWX - Template values file
   ansible.builtin.template:
     src: awx-operator-values.yml.j2
-    dest: "./roles/{{ role_name }}/files/awx-operator-values.yml"
+    dest: "{{ role_path }}/files/awx-operator-values.yml"
     owner: "{{ ace_box_user }}"
     group: "{{ ace_box_user }}"
     mode: '0644'
@@ -33,7 +33,7 @@
     wait: true
     wait_timeout: 15m
     values_files:
-      - "./roles/{{ role_name }}/files/awx-operator-values.yml"
+      - "{{ role_path }}/files/awx-operator-values.yml"
   register: awx_helm
 
 - name: Wait for AWX to be ready

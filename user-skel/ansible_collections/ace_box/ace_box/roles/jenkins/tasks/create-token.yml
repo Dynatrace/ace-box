@@ -3,7 +3,7 @@
   block:
   - set_fact:
       retry_count: "{{ 0 if retry_count is undefined else retry_count | int + 1 }}"
-  - include_tasks: roles/jenkins/tasks/source-endpoints.yml
+  - include_tasks: source-endpoints.yml
   - name: Retrieve Jenkins Crumb
     uri:
       url: "{{ jenkins_internal_endpoint }}/crumbIssuer/api/json"
@@ -55,4 +55,4 @@
         msg: "Token creation failed. Next attempt will be started after a short wait."
     - pause:
         seconds: 10
-    - include_tasks: roles/jenkins/tasks/create-token.yml
+    - include_tasks: create-token.yml

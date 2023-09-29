@@ -14,11 +14,17 @@
       Authorization: "Api-Token {{ vars[dt_ar_monaco_dt_access_token_name] }}"
   register: host_group_response_raw
 
+- set_fact:
+    role_path_abs: "{{ role_path }}"
+
 - name: Monaco - Deploy configuration
   include_role:
     name: monaco-v2
     tasks_from: apply-monaco
   vars:
-    monaco_manifest_path: "{{ playbook_dir }}/roles/demo-ar-workflows-ansible/files/monaco-host/manifest.yaml"
+    monaco_manifest_path: "{{ role_path_abs }}/files/monaco-host/manifest.yaml"
     monaco_environment:
       ACE_BOX_HOST_GROUP: "{{ host_group_response_raw.json.entities[0].entityId }}"
+
+- set_fact:
+    role_path_abs:

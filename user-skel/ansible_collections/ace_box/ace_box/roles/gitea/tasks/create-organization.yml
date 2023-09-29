@@ -1,9 +1,9 @@
 ---
-- include_tasks: roles/gitea/tasks/source-secret.yml
+- ansible.builtin.include_tasks: source-secret.yml
   when: gitea_access_token is not defined
 
 - name: Source endpoints
-  include: roles/gitea/tasks/source-endpoints.yml
+  ansible.builtin.include_tasks: source-endpoints.yml
   when: gitea_internal_endpoint is not defined
 
 - name: "Check if org {{ gitea_org }} exists"

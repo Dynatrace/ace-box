@@ -4,17 +4,23 @@
     tasks_from: source-secret
   when: gitea_access_token is not defined or gitea_username is not defined or gitea_password is not defined
 
+- set_fact:
+    role_path_abs: "{{ role_path }}"
+
 - include_role:
     name: jenkins
     tasks_from: template-values-file
   vars:
-    include_jenkins_value_file: "{{ playbook_dir }}/roles/demo-ar-workflows-ansible/templates/demo-ar-workflows-ansible-jenkins.yml.j2"
+    include_jenkins_value_file: "{{ role_path_abs }}/templates/demo-ar-workflows-ansible-jenkins.yml.j2"
     git_username: "{{ gitea_username }}"
     git_token: "{{ gitea_access_token }}"
     demo_org: "{{ demo_ar_workflows_ansible_org }}"
     demo_repo: "{{ demo_ar_workflows_ansible_repo_name }}"
     demo_jenkins_folder: "{{ demo_ar_workflows_ansible_repo_name }}"
     git_domain: "gitea.{{ ingress_domain }}"
+
+- set_fact:
+    role_path_abs:
 
 - include_role:
     name: jenkins

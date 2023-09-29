@@ -1,9 +1,9 @@
 ---
 - name: Source endpoints
-  include: roles/gitlab/tasks/source-endpoints.yml
+  ansible.builtin.include_tasks: source-endpoints.yml
   when: gitlab_internal_endpoint is not defined
 
-- include_tasks: roles/gitlab/tasks/source-secret.yml
+- ansible.builtin.include_tasks: source-secret.yml
   when: gitlab_oauth_token is not defined
 
 - block:

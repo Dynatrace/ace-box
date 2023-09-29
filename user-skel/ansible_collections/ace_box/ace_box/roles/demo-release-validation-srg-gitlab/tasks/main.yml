@@ -88,6 +88,9 @@
     name: gitlab
     tasks_from: source-endpoints
 
+- set_fact:
+    role_path_abs: "{{ role_path }}"
+
 - include_role:
     name: app-simplenode
   vars:
@@ -106,18 +109,21 @@
       - dest: cloudautomation/
       # Overwrites folders in the repo:
       - dest: monaco/
-        src: '{{ playbook_dir }}/roles/demo-release-validation-srg-gitlab/files/monaco/'
+        src: '{{ role_path_abs }}/files/monaco/'
       - dest: locust/
-        src: '{{ playbook_dir }}/roles/demo-release-validation-srg-gitlab/files/locust/'
+        src: '{{ role_path_abs }}/files/locust/'
       - dest: docs/
-        src: '{{ playbook_dir }}/roles/demo-release-validation-srg-gitlab/files/docs/'
+        src: '{{ role_path_abs }}/files/docs/'
       # Overwrites files in the repo:
       - dest: .gitlab-ci.yml
-        src: '{{ playbook_dir }}/roles/demo-release-validation-srg-gitlab/files/.gitlab-ci.yml'
+        src: '{{ role_path_abs }}/files/.gitlab-ci.yml'
       - dest: dynatrace/dynatrace.attachrules.yaml
-        src: '{{ playbook_dir }}/roles/demo-release-validation-srg-gitlab/files/dynatrace.attachrules.yaml'
+        src: '{{ role_path_abs }}/files/dynatrace.attachrules.yaml'
 
 - include_role:
     name: dashboard
   vars:
-    include_dashboard_value_file: "{{ playbook_dir }}/roles/demo-release-validation-srg-gitlab/templates/demo-release-validation-srg-gitlab-dashboard.yml.j2"
+    include_dashboard_value_file: "{{ role_path_abs }}/templates/demo-release-validation-srg-gitlab-dashboard.yml.j2"
+
+- set_fact:
+    role_path_abs:

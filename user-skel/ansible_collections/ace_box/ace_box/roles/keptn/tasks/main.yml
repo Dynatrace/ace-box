@@ -15,7 +15,7 @@
     tasks_from: source-secret.yml
 
 - name: Keptn - Install Gitea Provisioner service
-  include: roles/keptn/tasks/gitea-provisioner-service.yml
+  ansible.builtin.include_tasks: gitea-provisioner-service.yml
 
 - name: Install Keptn CLI
   include_role:
@@ -97,36 +97,36 @@
   when: ingress_class == "istio"
 
 - name: Keptn - Source Keptn secrets
-  include: roles/keptn/tasks/source-secret.yml
+  ansible.builtin.include_tasks: source-secret.yml
 
 - name: Keptn - Source Keptn endpoints
-  include: roles/keptn/tasks/source-endpoints.yml
+  ansible.builtin.include_tasks: source-endpoints.yml
       
 - name: Keptn - Authenticate CLI
   shell: "/usr/local/bin/keptn auth --api-token {{ keptn_api_token }} --endpoint {{ keptn_internal_endpoint }}"
   when: keptn_helm_chart.changed or keptn_ingress.changed
 
 - name: Keptn - Install JMeter service
-  include: roles/keptn/tasks/jmeter-service.yml
+  ansible.builtin.include_tasks: jmeter-service.yml
   when: keptn_jmeter_service_enabled
 
 - name: Keptn - Install Dynatrace service
-  include: roles/keptn/tasks/dynatrace-service.yml
+  ansible.builtin.include_tasks: dynatrace-service.yml
 
 - name: Keptn - Install Helm service
-  include: roles/keptn/tasks/helm-service.yml
+  ansible.builtin.include_tasks: helm-service.yml
   when: keptn_helm_service_enabled
 
 - name: Keptn - Install Synthetic service
-  include: roles/keptn/tasks/synthetic-service.yml
+  ansible.builtin.include_tasks: synthetic-service.yml
   when: keptn_synthetic_service_enabled
 
 - name: Keptn - Install Collector service
-  include: roles/keptn/tasks/collector-service.yml
+  ansible.builtin.include_tasks: collector-service.yml
   when: keptn_test_collector_service_enabled
 
 - name: Keptn - Install Job Executor service
-  include: roles/keptn/tasks/job-executor-service.yml
+  ansible.builtin.include_tasks: job-executor-service.yml
   when: keptn_job_executor_service_enabled
 
 # Include Dashboard values

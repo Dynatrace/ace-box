@@ -18,7 +18,7 @@
 - name: Gitlab - Template values file
   ansible.builtin.template:
     src: gitlab-values.yml.j2
-    dest: "./roles/{{ role_name }}/files/gitlab-values.yml"
+    dest: "{{ role_path }}/files/gitlab-values.yml"
     owner: "{{ ace_box_user }}"
     group: "{{ ace_box_user }}"
     mode: '0644'
@@ -33,10 +33,10 @@
     wait: true
     wait_timeout: 15m
     values_files:
-      - "./roles/{{ role_name }}/files/gitlab-values.yml"
+      - "{{ role_path }}/files/gitlab-values.yml"
   register: gitlab_helm
 
-- include: roles/gitlab/tasks/source-endpoints.yml
+- ansible.builtin.include_tasks: source-endpoints.yml
 
 - name: Gitlab - Wait for API to be up
   uri:
@@ -49,9 +49,9 @@
   delay: 1
   when: gitlab_helm.changed
 
-- include: roles/gitlab/tasks/configure.yml
+- ansible.builtin.include_tasks: configure.yml
 
-- include: roles/gitlab/tasks/deploy-gcpe.yml
+- ansible.builtin.include_tasks: deploy-gcpe.yml
 
 # Include Dashboard values
 - set_fact:
