@@ -1,0 +1,40 @@
+---
+- include_tasks: source-endpoints.yml
+  when: gitlab_internal_endpoint is not defined
+
+- include_tasks: source-secret.yml
+  when: gitlab_oauth_token is not defined
+
+- name: Ensure namespace
+  kubernetes.core.k8s:
+    name: "{{ gitlab_namespace }}"
+    api_version: v1
+    kind: Namespace
+    state: present
+
+- name: Gitlab - Create a Personal Access Token
+  uri:
+    url: "{{ gitlab_internal_endpoint }}/api/v4/users/1/personal_access_tokens"
+    validate_certs: false
+    method: POST
+    status_code: [200, 201]
+    headers:
+      Content-Type: "application/json"
+      Authorization: "Bearer {{ gitlab_oauth_token }}"
+    body:
+      name: "ace-box-pat"
+      scopes: ["api"]
+    body_format: json
+  register: gitlab_personal_access_token_result
+
+- name: Persist Gitlab root PAT
+  kubernetes.core.k8s:
+    name: "{{ gitlab_root_pat_secret_name }}"
+    api_version: v1
+    kind: Secret
+    state: present
+    namespace: "{{ gitlab_namespace }}"
+    resource_definition:
+      type: Opaque
+      data:
+        personalAccessToken: "{{ gitlab_personal_access_token_result.json.token | b64encode }}"
