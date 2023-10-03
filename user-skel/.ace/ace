@@ -116,10 +116,7 @@ def ace(
 @click.command()
 @click.option(
     '--ansible-workdir',
-    help=(
-        'Please enter the directory of ACE-Box\'s main.yml.'
-        'If not set you\'ll be prompted during "prepare".'
-    ),
+    help=('DEPRECATED'),
     envvar='ACE_ANSIBLE_WORKDIR',
 )
 @click.option(
@@ -226,17 +223,10 @@ def prepare(
     if not dashboard_password:
         dashboard_password = click.prompt('Please enter your ACE-Box dashboard password')
 
-    if not ansible_workdir:
-        ansible_workdir = click.prompt(
-            'Please enter Ansible work dir',
-            default=default_ansible_workdir,
-        )
+    if ansible_workdir:
+        logging.warning('Warning: --ansible-workdir is deprecated and will be removed in a future version.')
 
-    if not os.path.exists(ansible_workdir):
-        click.echo(f'Path {ansible_workdir} doesn\'t exists!')
-        return
-
-    ace_config_file_path = os.path.join(os.path.expanduser(ansible_workdir), 'ace.config.yml')
+    ace_config_file_path = f'/home/{user}/.ace/ace.config.yml'
 
     if os.path.exists(ace_config_file_path):
         if force:
@@ -250,7 +240,7 @@ def prepare(
             click.echo('Chose not to overwrite hosts file. Exiting...')
             return
 
-    prepare_extra_vars = {
+    ansible_extra_vars = {
         'ace_box_user': user,
         'ingress_domain': ingress_domain,
         'ingress_protocol': ingress_protocol,
@@ -258,20 +248,21 @@ def prepare(
         'dynatrace_api_token': dt_api_token,
         'dashboard_user': dashboard_user,
         'dashboard_password': dashboard_password,
+        'ace_config_file_path': f'/home/{user}/.ace/ace.config.yml',
         'extra_vars': {}
     }
     
     if host_group:
-        prepare_extra_vars['host_group'] = host_group
+        ansible_extra_vars['host_group'] = host_group
 
     for var in extra_var:
         extra_var_parts = var.split('=')
-        prepare_extra_vars['extra_vars'][extra_var_parts[0]] = "=".join(extra_var_parts[1:])
+        ansible_extra_vars['extra_vars'][extra_var_parts[0]] = "=".join(extra_var_parts[1:])
 
     subprocess.run((
-            f'ansible-playbook -vv prepare.yml --extra-vars \'{json.dumps(prepare_extra_vars)}\''
+            f'ANSIBLE_COLLECTIONS_PATH=/home/{user}/.ansible/collections ansible-playbook -vv ace_box.ace_box.prepare '
+            f'--extra-vars \'{json.dumps(ansible_extra_vars)}\''
         ),
-        cwd=ansible_workdir,
         shell=True,
         check=True,
     )
@@ -281,10 +272,7 @@ def prepare(
 @click.command()
 @click.option(
     '--ansible-workdir',
-    help=(
-        'Please enter the directory of ACE-Box\'s main.yml.'
-        'If not set you\'ll be prompted during "prepare".'
-    ),
+    help=('DEPRECATED'),
     envvar='ACE_ANSIBLE_WORKDIR',
 )
 @click.option(
@@ -312,19 +300,19 @@ def install(
     """Installing ACE-Box components"""
     logging.info('Installing ACE-Box ({%s})...', target)
 
-    if not ansible_workdir:
-        ansible_workdir = click.prompt(
-            'Please enter Ansible work dir',
-            default=default_ansible_workdir
-        )
+    if ansible_workdir:
+        logging.warning('Warning: --ansible-workdir is deprecated and will be removed in a future version.')
+
+    ansible_extra_vars = {
+        'ace_box_user': user,
+        'ace_config_file_path': f'/home/{user}/.ace/ace.config.yml'
+    }
 
     subprocess.run((
-            f'ansible-playbook -vv main.yml --extra-vars "'
-            f'ace_box_user={user}'
-            '" '
+            f'ANSIBLE_COLLECTIONS_PATH=/home/{user}/.ansible/collections ansible-playbook -vv ace_box.ace_box.main '
+            f'--extra-vars \'{json.dumps(ansible_extra_vars)}\' '
             f'--tags "{target}"'
         ),
-        cwd=ansible_workdir,
         shell=True,
         check=True,
     )
@@ -336,10 +324,7 @@ def install(
 @click.command()
 @click.option(
     '--ansible-workdir',
-    help=(
-        'Please enter the directory of ACE-Box\'s main.yml.'
-        'If not set you\'ll be prompted during "prepare".'
-    ),
+    help=('DEPRECATED'),
     envvar='ACE_ANSIBLE_WORKDIR',
 )
 @click.option(
@@ -367,20 +352,20 @@ def uninstall(
     """Uninstalling ACE-Box components"""
     logging.info('Uninstalling ACE-Box ({%s})...', target)
 
-    if not ansible_workdir:
-        ansible_workdir = click.prompt(
-            'Please enter Ansible work dir',
-            default=default_ansible_workdir,
-        )
+    if ansible_workdir:
+        logging.warning('Warning: --ansible-workdir is deprecated and will be removed in a future version.')
 
+    ansible_extra_vars = {
+        'ace_box_user': user,
+        'ace_config_file_path': f'/home/{user}/.ace/ace.config.yml'
+    }
     tag = f'{target}_uninstall'
+
     subprocess.run((
-            f'ansible-playbook -vv main.yml --extra-vars "'
-            f'ace_box_user={user}'
-            '" '
+            f'ANSIBLE_COLLECTIONS_PATH=/home/{user}/.ansible/collections ansible-playbook -vv ace_box.ace_box.main '
+            f'--extra-vars \'{json.dumps(ansible_extra_vars)}\' '
             f'--tags "{tag}"'
         ),
-        cwd=ansible_workdir,
         shell=True,
         check=True,
     )
@@ -391,10 +376,7 @@ def uninstall(
 @click.command()
 @click.option(
     '--ansible-workdir',
-    help=(
-        'Please enter the directory of ACE-Box\'s main.yml.'
-        'If not set you\'ll be prompted during "prepare".'
-    ),
+    help=('DEPRECATED'),
     envvar='ACE_ANSIBLE_WORKDIR',
 )
 @click.option(
@@ -420,20 +402,20 @@ def set(
 
     logging.info('Updating config for ({%s})...', ace_config_key)
 
-    if not ansible_workdir:
-        ansible_workdir = click.prompt(
-            'Please enter Ansible work dir',
-            default=default_ansible_workdir,
-        )
+    if ansible_workdir:
+        logging.warning('Warning: --ansible-workdir is deprecated and will be removed in a future version.')
+
+    ansible_extra_vars = {
+        'ace_box_user': user,
+        'ace_config_file_path': f'/home/{user}/.ace/ace.config.yml',
+        'ace_config_key': ace_config_key,
+        'ace_config_value': ace_config_value
+    }
 
     subprocess.run((
-            'ansible-playbook -vv config-update.yml --extra-vars "'
-            f'ace_config_key={ace_config_key} '
-            f'ace_config_value={ace_config_value} '
-            f'ace_box_user={user}'
-            '"'
+            'ANSIBLE_COLLECTIONS_PATH=/home/{user}/.ansible/collections ansible-playbook -vv ace_box.ace_box.config_update '
+            f'--extra-vars \'{json.dumps(ansible_extra_vars)}\''
         ),
-        cwd=ansible_workdir,
         shell=True,
         check=True,
     )
@@ -444,10 +426,7 @@ def set(
 @click.command()
 @click.option(
     '--ansible-workdir',
-    help=(
-        'Please enter the directory of ACE-Box\'s main.yml.'
-        'If not set you\'ll be prompted during "prepare".'
-    ),
+    help=('DEPRECATED'),
     envvar='ACE_ANSIBLE_WORKDIR',
 )
 @click.option(
@@ -482,38 +461,41 @@ def enable(
     """Enabling ACE-Box use case"""
     logging.info('Preparing ACE-Box for use case \"%s\"...', target)
 
-    if not ansible_workdir:
-        ansible_workdir = click.prompt(
-            'Please enter Ansible work dir',
-            default=default_ansible_workdir
-        )
+    if ansible_workdir:
+        logging.warning('Warning: --ansible-workdir is deprecated and will be removed in a future version.')
 
     if is_external_use_case(target):
         logging.info('Detected external use case')
 
         external_use_case_src, external_use_case_version = get_external_use_case_version(target)
 
+        ansible_extra_vars = {
+            'ace_box_user': user,
+            'ace_config_file_path': f'/home/{user}/.ace/ace.config.yml',
+            'use_case_ext_src': external_use_case_src,
+            'use_case_ext_version': external_use_case_version,
+            'local': local
+        }
+
         subprocess.run((
-                f'ansible-playbook main-v2.yml --extra-vars "'
-                f'ace_box_user={user} '
-                f'use_case_ext_src={external_use_case_src} '
-                f'use_case_ext_version={external_use_case_version} '
-                f'local={local}'
-                '" '
+                f'ANSIBLE_COLLECTIONS_PATH=/home/{user}/.ansible/collections ansible-playbook ace_box.ace_box.main_v2 '
+                f'--extra-vars \'{json.dumps(ansible_extra_vars)}\' '
                 f'--tags "use_case_ext"'
             ),
-            cwd=ansible_workdir,
             shell=True,
             check=True,
         )
     else:
+        ansible_extra_vars = {
+            'ace_box_user': user,
+            'ace_config_file_path': f'/home/{user}/.ace/ace.config.yml'
+        }
+        
         subprocess.run((
-                f'ansible-playbook main-v2.yml --extra-vars "'
-                f'ace_box_user={user}'
-                '" '
+                f'ANSIBLE_COLLECTIONS_PATH=/home/{user}/.ansible/collections ansible-playbook ace_box.ace_box.main_v2 '
+                f'--extra-vars \'{json.dumps(ansible_extra_vars)}\' '
                 f'--tags "{target}"'
             ),
-            cwd=ansible_workdir,
             shell=True,
             check=True,
         )
@@ -524,10 +506,7 @@ def enable(
 @click.command()
 @click.option(
     '--ansible-workdir',
-    help=(
-        'Please enter the directory of ACE-Box\'s main.yml.'
-        'If not set you\'ll be prompted during "prepare".'
-    ),
+    help=('DEPRECATED'),
     envvar='ACE_ANSIBLE_WORKDIR',
 )
 @click.option(
@@ -544,18 +523,20 @@ def destroy(
     user,
 ):
     """Destroying ACE-Box configurations"""
-    if not ansible_workdir:
-        ansible_workdir = click.prompt(
-            'Please enter Ansible work dir',
-            default=default_ansible_workdir,
-        )
+    if ansible_workdir:
+        logging.warning('Warning: --ansible-workdir is deprecated and will be removed in a future version.')
 
     logging.info('Destroying ACE-Box configurations')
 
+    ansible_extra_vars = {
+        'ace_box_user': user,
+        'ace_config_file_path': f'/home/{user}/.ace/ace.config.yml'
+    }
+
     subprocess.run((
-            f'ansible-playbook destroy.yml --extra-vars "ace_box_user={user}"'
+            f'ANSIBLE_COLLECTIONS_PATH=/home/{user}/.ansible/collections ansible-playbook ace_box.ace_box.destroy '
+            f'--extra-vars \'{json.dumps(ansible_extra_vars)}\''
         ),
-        cwd=ansible_workdir,
         shell=True,
         check=True,
     )

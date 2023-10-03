@@ -41,7 +41,11 @@ ln -s /home/$ACE_BOX_USER/.local/bin/ansible-galaxy /usr/bin/ansible-galaxy
 ln -s /home/$ACE_BOX_USER/.local/bin/ansible-playbook /usr/bin/ansible-playbook
 
 echo "INIT - Installing Ansible requirements..."
-sudo -u $ACE_BOX_USER ansible-galaxy install -r /home/$ACE_BOX_USER/ansible/requirements.yml
+sudo -u $ACE_BOX_USER ansible-galaxy install -r /home/$ACE_BOX_USER/.ace/ansible_requirements.yml
+
+# Install ACE-Box collections
+sudo -u $ACE_BOX_USER ansible-galaxy collection install /home/$ACE_BOX_USER/ansible_collections/ace_box/ace_box
+sudo rm -rf /home/$ACE_BOX_USER/ansible_collections
 
 # Setup ace-cli
 echo "INIT - Setting up ACE-CLI..."

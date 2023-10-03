@@ -1,0 +1,129 @@
+---
+
+- include_role:
+    name: microk8s
+
+- include_role:
+    name: dt-activegate-classic
+  vars:
+    activegate_install_synthetic: true
+
+- include_role:
+    name: dt-operator
+
+- include_role:
+    name: monaco-v2
+
+- include_role:
+    name: dt-access-token
+  vars:
+    access_token_var_name: "monaco_cleanup_api_token"
+    access_token_scope: ["slo.read","slo.write","CaptureRequestData","credentialVault.read","credentialVault.write","DataExport","DataPrivacy","ExternalSyntheticIntegration","ReadConfig","WriteConfig","events.ingest","settings.read","settings.write"]
+
+- name: Monaco - Cleanup potential conflicting Monaco resources
+  shell:      
+    cmd: |
+      sed -e "s/\$RELEASE_STAGE/$RELEASE_STAGE_STAGING/g" -e "s/\$DEMO_IDENTIFIER/$DEMO_IDENTIFIER/g" -e "s/\$RELEASE_PRODUCT/$RELEASE_PRODUCT/g" {{ role_path }}/files/monaco/delete-app.yaml > {{ role_path }}/files/monaco/delete-app-staging-optimized.yaml
+      sed -e "s/\$RELEASE_STAGE/$RELEASE_STAGE_PROD/g" -e "s/\$DEMO_IDENTIFIER/$DEMO_IDENTIFIER/g" -e "s/\$RELEASE_PRODUCT/$RELEASE_PRODUCT/g" {{ role_path }}/files/monaco/delete-app.yaml > {{ role_path }}/files/monaco/delete-app-prod-optimized.yaml
+      MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco delete --manifest {{ role_path }}/files/monaco/manifest.yaml --file {{ role_path }}/files/monaco/delete-app-prod-optimized.yaml --group production
+      MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco delete --manifest {{ role_path }}/files/monaco/manifest.yaml --file {{ role_path }}/files/monaco/delete-app-staging-optimized.yaml --group staging
+      sleep 15 # wait for the deletion to be completed before the dependent configs are deleted
+      sed -e "s/\$DEMO_IDENTIFIER/$DEMO_IDENTIFIER/g" {{ role_path }}/files/monaco/delete-infra.yaml > {{ role_path }}/files/monaco/delete-infra-optimized.yaml
+      MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco delete --manifest {{ role_path }}/files/monaco/manifest.yaml --file {{ role_path }}/files/monaco/delete-infra-optimized.yaml --group production
+      MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco delete --manifest {{ role_path }}/files/monaco/manifest.yaml --file {{ role_path }}/files/monaco/delete-infra-optimized.yaml --group staging
+  environment:
+      DT_PLATFORM_TENANT_URL: "{{ extra_vars.dt_environment_url_gen3.rstrip('/') }}"
+      DT_API_TOKEN: "{{ monaco_cleanup_api_token }}"
+      DT_OAUTH_CLIENT_ID: "{{ extra_vars.dt_oauth_client_id }}"
+      DT_OAUTH_CLIENT_SECRET: "{{ extra_vars.dt_oauth_client_secret }}"
+      DT_OAUTH_SSO_ENDPOINT: "{{ extra_vars.dt_oauth_sso_endpoint.rstrip('/') }}"
+      DEMO_IDENTIFIER: "{{ demo_identifier }}"
+      RELEASE_STAGE_STAGING: "simplenode-gitlab-staging"
+      RELEASE_STAGE_PROD: "simplenode-gitlab-prod"
+      RELEASE_PRODUCT: "simplenodeservice"
+
+- include_role:
+    name: gitlab
+
+- name: Gitlab - Ensure Group
+  include_role:
+    name: gitlab
+    tasks_from: ensure-group
+  vars:
+    gitlab_group_name: "{{ gitlab_demo_srg_group }}"
+
+- name: Gitlab - Ensure Project
+  include_role:
+    name: gitlab
+    tasks_from: ensure-project
+  vars:
+    gitlab_prj: "{{ gitlab_demo_srg_repo_name }}"
+    gitlab_prj_namespace_id: "{{ gitlab_group_id }}"
+
+- include_role:
+    name: gitlab
+    tasks_from: source-endpoints-external
+
+- name: Gitlab - Additional Environment Variables
+  include_role:
+    name: gitlab
+    tasks_from: ensure-group-var
+  vars:
+    gitlab_var_key: "{{ item.key }}"
+    gitlab_var_value: "{{ item.value }}"
+  loop:
+    - { key: "DT_PLATFORM_TENANT_URL", value: "{{ extra_vars.dt_environment_url_gen3.rstrip('/') }}" }
+    - { key: 'DT_OAUTH_CLIENT_ID', value: '{{ extra_vars.dt_oauth_client_id }}' }
+    - { key: 'DT_OAUTH_CLIENT_SECRET', value: '{{ extra_vars.dt_oauth_client_secret }}' }
+    - { key: "DT_OAUTH_SSO_ENDPOINT", value: "{{ extra_vars.dt_oauth_sso_endpoint.rstrip('/') }}" }
+    - { key: 'DT_OAUTH_ACCOUNT_URN', value: '{{ extra_vars.dt_oauth_account_urn }}' }
+    - { key: 'GITLAB_USERNAME', value: '{{ gitlab_username }}' }
+    - { key: 'GITLAB_PASSWORD', value: '{{ gitlab_password }}' }
+    - { key: 'GITLAB_PRIVATE_TOKEN', value: '{{ gitlab_oauth_token }}' }
+    - { key: 'GITLAB_EXTERNAL_ENDPOINT', value: '{{ gitlab_external_endpoint }}' }
+    - { key: 'DEMO_IDENTIFIER', value: '{{ demo_identifier }}' }
+
+- name: Source Gitlab endpoint
+  include_role:
+    name: gitlab
+    tasks_from: source-endpoints
+
+- set_fact:
+    role_path_abs: "{{ role_path }}"
+
+- include_role:
+    name: app-simplenode
+  vars:
+    git_username: "root"
+    git_password: "{{ gitlab_password }}"
+    git_domain: "{{ gitlab_domain }}"
+    git_endpoint: "{{ gitlab_internal_endpoint | regex_replace(\"http://\") }}"
+    git_org_name: "{{ gitlab_demo_srg_group }}"
+    repo_name: "{{ gitlab_demo_srg_repo_name }}"
+    app_simplenode_overwrites:
+      # Ignores folders from being copied to the repo:
+      - dest: demo/
+      - dest: jenkins/
+      - dest: jmeter/
+      - dest: load-gen/
+      - dest: cloudautomation/
+      # Overwrites folders in the repo:
+      - dest: monaco/
+        src: '{{ role_path_abs }}/files/monaco/'
+      - dest: locust/
+        src: '{{ role_path_abs }}/files/locust/'
+      - dest: docs/
+        src: '{{ role_path_abs }}/files/docs/'
+      # Overwrites files in the repo:
+      - dest: .gitlab-ci.yml
+        src: '{{ role_path_abs }}/files/.gitlab-ci.yml'
+      - dest: dynatrace/dynatrace.attachrules.yaml
+        src: '{{ role_path_abs }}/files/dynatrace.attachrules.yaml'
+
+- include_role:
+    name: dashboard
+  vars:
+    include_dashboard_value_file: "{{ role_path_abs }}/templates/demo-release-validation-srg-gitlab-dashboard.yml.j2"
+
+- set_fact:
+    role_path_abs:

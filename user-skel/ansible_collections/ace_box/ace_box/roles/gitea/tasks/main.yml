@@ -1,0 +1,103 @@
+---
+- name: Update git flavor
+  include_role:
+    name: config-v2
+    tasks_from: set-var
+  vars:
+    var_key_to_set: "git_flavor"
+    var_value_to_set: "GITEA"
+  when: git_flavor is not defined or git_flavor != "GITEA"
+
+- name: Add chart repo
+  kubernetes.core.helm_repository:
+    name: gitea-charts
+    repo_url: "https://dl.gitea.io/charts/"
+
+- include_tasks: create-secret.yml
+
+- name: Template values file
+  ansible.builtin.template:
+    src: gitea-values.yml.j2
+    dest: /tmp/gitea-values.yml
+    owner: "{{ ace_box_user }}"
+    group: "{{ ace_box_user }}"
+    mode: "0644"
+
+- name: Install
+  kubernetes.core.helm:
+    name: gitea
+    chart_ref: gitea-charts/gitea
+    chart_version: "{{ gitea_helm_chart_version }}"
+    release_namespace: "{{ gitea_namespace }}"
+    create_namespace: true
+    wait: true
+    wait_timeout: 15m
+    values_files:
+    - /tmp/gitea-values.yml
+  register: gitea
+
+- name: Create Gitea VirtualService
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: networking.istio.io/v1alpha3
+      kind: VirtualService
+      metadata:
+        name: gitea
+        namespace: gitea
+      spec:
+        hosts:
+        - "{{ gitea_domain }}"
+        gateways:
+        - "istio-ingress/default-gateway"
+        http:
+        - route:
+          - destination:
+              host: gitea-http
+              port:
+                number: 3000
+  when: ingress_class == "istio"
+
+- name: Source endpoints
+  ansible.builtin.include_tasks: source-endpoints.yml
+
+- block:
+  - name: Wait for API to be up
+    uri:
+      url: "{{ gitea_internal_endpoint }}/api/v1/version"
+      user: "{{ gitea_username }}"
+      password: "{{ gitea_password }}"
+      force_basic_auth: yes
+      validate_certs: no
+      status_code: 200
+    register: result
+    until: result.status == 200
+    retries: 300
+    delay: 1
+    no_log: true
+  - name: Create admin user access token
+    uri:
+      url: "{{ gitea_internal_endpoint }}/api/v1/users/{{ gitea_username }}/tokens"
+      user: "{{ gitea_username }}"
+      password: "{{ gitea_password }}"
+      method: POST
+      body_format: form-urlencoded
+      body:
+        name: "{{ gitea_username }}-{{ lookup('community.general.random_string') }}"
+      force_basic_auth: yes
+      validate_certs: no
+      status_code: 201
+    register: post_token_result
+  - set_fact:
+      gitea_access_token: "{{ post_token_result.json.sha1 }}"
+  # Update gitea_access_token in Gitea secret
+  - include_tasks: create-secret.yml
+  when: gitea.changed
+
+# Include Dashboard values
+- set_fact:
+    include_dashboard_value_file: "{{ role_path }}/templates/gitea-dashboard.yml.j2"
+
+- include_role:
+    name: dashboard
+    tasks_from: template-values-file

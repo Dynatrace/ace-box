@@ -1,0 +1,47 @@
+---
+- include_role:
+    name: dt-access-token
+  vars:
+    access_token_var_name: "{{ gitlab_dt_access_token_name }}"
+    access_token_scope: ["slo.read","slo.write","CaptureRequestData","credentialVault.read","credentialVault.write","DataExport","DataPrivacy","ExternalSyntheticIntegration","ReadConfig","WriteConfig","events.ingest","settings.read","settings.write"]
+
+- include_tasks: source-secret.yml
+
+- include_tasks: ensure-group.yml
+
+- block:
+  - name: Source Keptn secrets
+    include_role:
+      name: keptn
+      tasks_from: source-secret
+  - include_role:
+      name: keptn
+      tasks_from: source-endpoints
+
+- name: Source DT Synthetic node id
+  include_role:
+    name: dt-activegate-classic
+    tasks_from: source-node-id
+
+- include_role:
+    name: microk8s
+    tasks_from: source-registry-url
+  when: registry_url is not defined
+
+- name: Gitlab - Create variables
+  include_role:
+    name: gitlab
+    tasks_from: ensure-group-var
+  vars:
+    gitlab_var_key: "{{ item.key }}"
+    gitlab_var_value: "{{ item.value }}"
+  loop:
+    - { key: 'INGRESS_DOMAIN', value: '{{ ingress_domain }}' }
+    - { key: 'INGRESS_PROTOCOL', value: '{{ ingress_protocol }}' }
+    - { key: 'KEPTN_API_TOKEN', value: '{{ keptn_api_token | default(None) }}' }
+    - { key: 'KEPTN_ENDPOINT', value: '{{ keptn_endpoint | default(None) | replace("/api","") }}' }
+    - { key: 'DT_TENANT_URL', value: '{{ dynatrace_tenant_url }}' }
+    - { key: 'DT_API_TOKEN', value: '{{ vars[gitlab_dt_access_token_name] }}' }
+    - { key: 'SYNTH_NODE_ID', value: '{{ dt_synthetic_node_id | default(None) }}' }
+    - { key: 'HOST_GROUP', value: '{{ host_group | default(None) }}' }
+    - { key: 'DOCKER_REGISTRY_URL', value: '{{ registry_url | default(None) }}' }    
