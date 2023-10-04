@@ -1,5 +1,4 @@
 ---
-
 - include_role:
     name: microk8s
 
@@ -18,10 +17,25 @@
     name: dt-access-token
   vars:
     access_token_var_name: "monaco_cleanup_api_token"
-    access_token_scope: ["slo.read","slo.write","CaptureRequestData","credentialVault.read","credentialVault.write","DataExport","DataPrivacy","ExternalSyntheticIntegration","ReadConfig","WriteConfig","events.ingest","settings.read","settings.write"]
+    access_token_scope:
+      [
+        "slo.read",
+        "slo.write",
+        "CaptureRequestData",
+        "credentialVault.read",
+        "credentialVault.write",
+        "DataExport",
+        "DataPrivacy",
+        "ExternalSyntheticIntegration",
+        "ReadConfig",
+        "WriteConfig",
+        "events.ingest",
+        "settings.read",
+        "settings.write",
+      ]
 
 - name: Monaco - Cleanup potential conflicting Monaco resources
-  shell:      
+  shell:
     cmd: |
       sed -e "s/\$RELEASE_STAGE/$RELEASE_STAGE_STAGING/g" -e "s/\$DEMO_IDENTIFIER/$DEMO_IDENTIFIER/g" -e "s/\$RELEASE_PRODUCT/$RELEASE_PRODUCT/g" {{ role_path }}/files/monaco/delete-app.yaml > {{ role_path }}/files/monaco/delete-app-staging-optimized.yaml
       sed -e "s/\$RELEASE_STAGE/$RELEASE_STAGE_PROD/g" -e "s/\$DEMO_IDENTIFIER/$DEMO_IDENTIFIER/g" -e "s/\$RELEASE_PRODUCT/$RELEASE_PRODUCT/g" {{ role_path }}/files/monaco/delete-app.yaml > {{ role_path }}/files/monaco/delete-app-prod-optimized.yaml
@@ -32,15 +46,15 @@
       MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco delete --manifest {{ role_path }}/files/monaco/manifest.yaml --file {{ role_path }}/files/monaco/delete-infra-optimized.yaml --group production
       MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco delete --manifest {{ role_path }}/files/monaco/manifest.yaml --file {{ role_path }}/files/monaco/delete-infra-optimized.yaml --group staging
   environment:
-      DT_PLATFORM_TENANT_URL: "{{ extra_vars.dt_environment_url_gen3.rstrip('/') }}"
-      DT_API_TOKEN: "{{ monaco_cleanup_api_token }}"
-      DT_OAUTH_CLIENT_ID: "{{ extra_vars.dt_oauth_client_id }}"
-      DT_OAUTH_CLIENT_SECRET: "{{ extra_vars.dt_oauth_client_secret }}"
-      DT_OAUTH_SSO_ENDPOINT: "{{ extra_vars.dt_oauth_sso_endpoint.rstrip('/') }}"
-      DEMO_IDENTIFIER: "{{ demo_identifier }}"
-      RELEASE_STAGE_STAGING: "simplenode-gitlab-staging"
-      RELEASE_STAGE_PROD: "simplenode-gitlab-prod"
-      RELEASE_PRODUCT: "simplenodeservice"
+    DT_PLATFORM_TENANT_URL: "{{ extra_vars.dt_environment_url_gen3.rstrip('/') }}"
+    DT_API_TOKEN: "{{ monaco_cleanup_api_token }}"
+    DT_OAUTH_CLIENT_ID: "{{ extra_vars.dt_oauth_client_id }}"
+    DT_OAUTH_CLIENT_SECRET: "{{ extra_vars.dt_oauth_client_secret }}"
+    DT_OAUTH_SSO_ENDPOINT: "{{ extra_vars.dt_oauth_sso_endpoint.rstrip('/') }}"
+    DEMO_IDENTIFIER: "{{ demo_identifier }}"
+    RELEASE_STAGE_STAGING: "simplenode-gitlab-staging"
+    RELEASE_STAGE_PROD: "simplenode-gitlab-prod"
+    RELEASE_PRODUCT: "simplenodeservice"
 
 - include_role:
     name: gitlab
@@ -63,6 +77,12 @@
 - include_role:
     name: gitlab
     tasks_from: source-endpoints-external
+  when: gitlab_external_endpoint is not defined
+
+- include_role:
+    name: gitlab
+    tasks_from: source-secret
+  when: gitlab_personal_access_token is not defined
 
 - name: Gitlab - Additional Environment Variables
   include_role:
@@ -72,16 +92,37 @@
     gitlab_var_key: "{{ item.key }}"
     gitlab_var_value: "{{ item.value }}"
   loop:
-    - { key: "DT_PLATFORM_TENANT_URL", value: "{{ extra_vars.dt_environment_url_gen3.rstrip('/') }}" }
-    - { key: 'DT_OAUTH_CLIENT_ID', value: '{{ extra_vars.dt_oauth_client_id }}' }
-    - { key: 'DT_OAUTH_CLIENT_SECRET', value: '{{ extra_vars.dt_oauth_client_secret }}' }
-    - { key: "DT_OAUTH_SSO_ENDPOINT", value: "{{ extra_vars.dt_oauth_sso_endpoint.rstrip('/') }}" }
-    - { key: 'DT_OAUTH_ACCOUNT_URN', value: '{{ extra_vars.dt_oauth_account_urn }}' }
-    - { key: 'GITLAB_USERNAME', value: '{{ gitlab_username }}' }
-    - { key: 'GITLAB_PASSWORD', value: '{{ gitlab_password }}' }
-    - { key: 'GITLAB_PRIVATE_TOKEN', value: '{{ gitlab_oauth_token }}' }
-    - { key: 'GITLAB_EXTERNAL_ENDPOINT', value: '{{ gitlab_external_endpoint }}' }
-    - { key: 'DEMO_IDENTIFIER', value: '{{ demo_identifier }}' }
+    - {
+        key: "DT_PLATFORM_TENANT_URL",
+        value: "{{ extra_vars.dt_environment_url_gen3.rstrip('/') }}",
+      }
+    - {
+        key: "DT_OAUTH_CLIENT_ID",
+        value: "{{ extra_vars.dt_oauth_client_id }}",
+      }
+    - {
+        key: "DT_OAUTH_CLIENT_SECRET",
+        value: "{{ extra_vars.dt_oauth_client_secret }}",
+      }
+    - {
+        key: "DT_OAUTH_SSO_ENDPOINT",
+        value: "{{ extra_vars.dt_oauth_sso_endpoint.rstrip('/') }}",
+      }
+    - {
+        key: "DT_OAUTH_ACCOUNT_URN",
+        value: "{{ extra_vars.dt_oauth_account_urn }}",
+      }
+    - { key: "GITLAB_USERNAME", value: "{{ gitlab_username }}" }
+    - { key: "GITLAB_PASSWORD", value: "{{ gitlab_password }}" }
+    - {
+        key: "GITLAB_PRIVATE_TOKEN",
+        value: "{{ gitlab_personal_access_token }}",
+      }
+    - {
+        key: "GITLAB_EXTERNAL_ENDPOINT",
+        value: "{{ gitlab_external_endpoint }}",
+      }
+    - { key: "DEMO_IDENTIFIER", value: "{{ demo_identifier }}" }
 
 - name: Source Gitlab endpoint
   include_role:
@@ -97,7 +138,7 @@
     git_username: "root"
     git_password: "{{ gitlab_password }}"
     git_domain: "{{ gitlab_domain }}"
-    git_endpoint: "{{ gitlab_internal_endpoint | regex_replace(\"http://\") }}"
+    git_endpoint: '{{ gitlab_internal_endpoint | regex_replace("http://") }}'
     git_org_name: "{{ gitlab_demo_srg_group }}"
     repo_name: "{{ gitlab_demo_srg_repo_name }}"
     app_simplenode_overwrites:
@@ -109,16 +150,16 @@
       - dest: cloudautomation/
       # Overwrites folders in the repo:
       - dest: monaco/
-        src: '{{ role_path_abs }}/files/monaco/'
+        src: "{{ role_path_abs }}/files/monaco/"
       - dest: locust/
-        src: '{{ role_path_abs }}/files/locust/'
+        src: "{{ role_path_abs }}/files/locust/"
       - dest: docs/
-        src: '{{ role_path_abs }}/files/docs/'
+        src: "{{ role_path_abs }}/files/docs/"
       # Overwrites files in the repo:
       - dest: .gitlab-ci.yml
-        src: '{{ role_path_abs }}/files/.gitlab-ci.yml'
+        src: "{{ role_path_abs }}/files/.gitlab-ci.yml"
       - dest: dynatrace/dynatrace.attachrules.yaml
-        src: '{{ role_path_abs }}/files/dynatrace.attachrules.yaml'
+        src: "{{ role_path_abs }}/files/dynatrace.attachrules.yaml"
 
 - include_role:
     name: dashboard
