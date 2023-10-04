@@ -9,6 +9,6 @@ extRefs:
     - description: Password
       type: password
       value: "{{ gitlab_password }}"
-    - description: Token
+    - description: Personal Access Token
       type: password
-      value: "{{ gitlab_oauth_token | default(None) }}"
+      value: "{{ gitlab_personal_access_token | default(None) }}"
