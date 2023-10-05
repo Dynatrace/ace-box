@@ -16,7 +16,7 @@
         "type": "event",
         "value": {
           "eventType": "bizevents",
-          "query": "event.type == \"guardian.validation.triggered\" AND tag.service==\"{{ .tag_service }}\" AND tag.stage==\"{{ .tag_stage }}\""  
+          "query": "event.type == \"guardian.validation.triggered\" AND tag.service==\"{{ .tag_service }}\" AND tag.stage==\"{{ .tag_stage }}\""
         }
       },
       "uniqueExpression": null
@@ -41,12 +41,50 @@
       },
       "predecessors": []
     },
+    "query_service_entities": {
+      "name": "query_service_entities",
+      "input": {
+        "query": "{{ .dql_service_entities_query }}"
+      },
+      "action": "dynatrace.automations:execute-dql-query",
+      "position": {
+        "x": 0,
+        "y": 2
+      },
+      "conditions": {
+        "custom": "{{ `{{` }} result(\"evaluate_srg\").validation_status != \"pass\" {{ `}}` }}",
+        "states": {
+          "evaluate_srg": "OK"
+        }
+      },
+      "description": "Executes DQL query",
+      "predecessors": ["evaluate_srg"]
+    },
+    "identify_ownership": {
+      "name": "identify_ownership",
+      "input": {
+        "entityIds": "{{ `{{` }} result(\"query_service_entities\").records[0].id {{ `}}` }}",
+        "responsibilities": []
+      },
+      "action": "dynatrace.ownership:get-ownership-from-entity",
+      "position": {
+        "x": 0,
+        "y": 3
+      },
+      "conditions": {
+        "states": {
+          "query_service_entities": "SUCCESS"
+        }
+      },
+      "description": "Retrieves entity and extracts ownership data from it.",
+      "predecessors": ["query_service_entities"]
+    },
     "refresh_gitlab_token": {
       "action": "dynatrace.automations:http-function",
       "conditions": {
-        "custom": "{{`{{`}} result('evaluate_srg').validation_status == \"fail\" {{`}}`}}",
+        "custom": "{{`{{`}} (result('identify_ownership').owners | length > 0) {{`}}`}}",
         "states": {
-          "evaluate_srg": "OK"
+          "identify_ownership": "OK"
         }
       },
       "description": "refresh gitlab token",
@@ -60,40 +98,17 @@
       },
       "name": "refresh_gitlab_token",
       "position": {
-        "x": 1,
-        "y": 2
+        "x": 0,
+        "y": 4
       },
-      "predecessors": [
-        "evaluate_srg"
-      ]
-    },
-    "identify_ownership": {
-      "name": "identify_ownership",
-      "input": {
-        "entityIds": "{{ .owner_entity_id }}",
-        "responsibilities": []
-      },
-      "action": "dynatrace.ownership:get-ownership-from-entity",
-      "position": {
-        "x": 1,
-        "y": 3
-      },
-      "conditions": {
-        "states": {
-          "refresh_gitlab_token": "SUCCESS"
-        }
-      },
-      "description": "Retrieves entity and extracts ownership data from it.",
-      "predecessors": [
-        "refresh_gitlab_token"
-      ]
+      "predecessors": ["identify_ownership"]
     },
     "create_gitlab_issue": {
       "action": "dynatrace.automations:http-function",
       "conditions": {
         "custom": "{{`{{`}} (result('identify_ownership').owners | length > 0) {{`}}`}}",
         "states": {
-          "identify_ownership": "OK"
+          "refresh_gitlab_token": "OK"
         }
       },
       "description": "{{ .gitlab_task_description }}",
@@ -108,13 +123,10 @@
       },
       "name": "create_gitlab_issue",
       "position": {
-        "x": 1,
-        "y": 4
+        "x": 0,
+        "y": 5
       },
-      "predecessors": [
-        "identify_ownership"
-      ]
+      "predecessors": ["refresh_gitlab_token"]
     }
   }
-
 }
