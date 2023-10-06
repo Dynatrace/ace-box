@@ -16,7 +16,7 @@
         "type": "event",
         "value": {
           "eventType": "bizevents",
-          "query": "event.type == \"guardian.validation.triggered\" AND tag.service==\"{{ .tag_service }}\" AND tag.stage==\"{{ .tag_stage }}\""  
+          "query": "event.type == \"guardian.validation.triggered\" AND tag.service==\"{{ .tag_service }}\" AND tag.stage==\"{{ .tag_stage }}\""
         }
       },
       "uniqueExpression": null
@@ -41,52 +41,43 @@
       },
       "predecessors": []
     },
-    "refresh_gitlab_token": {
-      "action": "dynatrace.automations:http-function",
+    "query_service_entities": {
+      "name": "query_service_entities",
+      "input": {
+        "query": "{{ .dql_service_entities_query }}"
+      },
+      "action": "dynatrace.automations:execute-dql-query",
+      "position": {
+        "x": 0,
+        "y": 2
+      },
       "conditions": {
-        "custom": "{{`{{`}} result('evaluate_srg').validation_status == \"fail\" {{`}}`}}",
+        "custom": "{{ `{{` }} result(\"evaluate_srg\").validation_status != \"pass\" {{ `}}` }}",
         "states": {
           "evaluate_srg": "OK"
         }
       },
-      "description": "refresh gitlab token",
-      "input": {
-        "headers": {
-          "Content-Type": "application/json"
-        },
-        "method": "POST",
-        "url": "{{ .gitlab_url }}/oauth/token",
-        "payload": "{\"grant_type\": \"password\",\"username\": \"{{ .gitlab_username }}\",\"password\": \"{{ .gitlab_passwd }}\"}"
-      },
-      "name": "refresh_gitlab_token",
-      "position": {
-        "x": 1,
-        "y": 2
-      },
-      "predecessors": [
-        "evaluate_srg"
-      ]
+      "description": "Executes DQL query",
+      "predecessors": ["evaluate_srg"]
     },
     "identify_ownership": {
       "name": "identify_ownership",
       "input": {
-        "entityIds": "{{ .owner_entity_id }}",
+        "entityIds": "{{ `{{` }} result(\"query_service_entities\").records[0].id {{ `}}` }}",
         "responsibilities": []
       },
       "action": "dynatrace.ownership:get-ownership-from-entity",
       "position": {
-        "x": 1,
+        "x": 0,
         "y": 3
       },
       "conditions": {
         "states": {
-          "refresh_gitlab_token": "SUCCESS"
+          "query_service_entities": "SUCCESS"
         }
       },
       "description": "Retrieves entity and extracts ownership data from it.",
-      "predecessors": [
-        "refresh_gitlab_token"
-      ]
+      "predecessors": ["query_service_entities"]
     },
     "create_gitlab_issue": {
       "action": "dynatrace.automations:http-function",
@@ -100,21 +91,18 @@
       "input": {
         "headers": {
           "Content-Type": "application/json",
-          "PRIVATE-TOKEN": "{{`{{`}} result(\"refresh_gitlab_token\").json.access_token {{`}}`}}"
+          "PRIVATE-TOKEN": "{{ .gitlab_private_token }}"
         },
         "method": "POST",
         "url": "{{ .gitlab_url }}/api/v4/projects/{{`{{`}} result(\"identify_ownership\").owners[0].contactDetails | selectattr('integrationType', 'equalto', 'JIRA') | map(attribute='jira.project') | first() {{`}}`}}/issues",
-        "payload": "{\n  \"title\": \"Site Reliability Guardian validation failed\",\n  \"description\": \"For the SRG validation details, go to {{ .dt_url }}/ui/apps/dynatrace.site.reliability.guardian/analysis/{{`{{`}} result(\"evaluate_srg\").guardian_id {{`}}`}}?validationId={{`{{`}} result(\"evaluate_srg\").validation_id {{`}}`}}\"\n}"
+        "payload": "{\n  \"title\": \"Site Reliability Guardian validation failed\",\n  \"description\": \"For the SRG validation details, go to {{`{{`}} result(\"evaluate_srg\").validation_url {{`}}`}}\"\n}"
       },
       "name": "create_gitlab_issue",
       "position": {
-        "x": 1,
+        "x": 0,
         "y": 4
       },
-      "predecessors": [
-        "identify_ownership"
-      ]
+      "predecessors": ["identify_ownership"]
     }
   }
-
 }

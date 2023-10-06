@@ -6,17 +6,17 @@ variables:
   BUILD_ID:
     value: "1"
     description: "Build ID. Please set to 1, 2, 3 or 4."
-  
+
   RELEASE_VERSION: "$BUILD_ID.0.0"
   RELEASE_BUILD_VERSION: "$BUILD_ID.0.0-$CI_COMMIT_SHORT_SHA"
-  
+
   STAGE_NAME_STAGING: "staging"
   STAGE_NAME_PROD: "prod"
   STAGE_NAME: "$STAGE_NAME_STAGING" # default
 
   RELEASE_PRODUCT: "simplenodeservice"
   RELEASE_STAGE: "simplenode-gitlab-$STAGE_NAME"
-  
+
   IMAGE_NAME: "$DOCKER_REGISTRY_URL/$RELEASE_PRODUCT"
   IMAGE_TAG: "$RELEASE_BUILD_VERSION"
   #monaco
@@ -24,7 +24,7 @@ variables:
   MONACO_IMAGE_VERSION: 2.3.0
   #dta and srg
   DTA_IMAGE_VERSION: latest
-  SRG_EVALUATION_SERVICE: "$RELEASE_PRODUCT" 
+  SRG_EVALUATION_SERVICE: "$RELEASE_PRODUCT"
   SRG_EVALUATION_STAGE: "$STAGE_NAME_STAGING"
   TEST_TIMEFRAME: "5m"
 
@@ -55,11 +55,12 @@ workflow:
     - echo "BUILD_ID $BUILD_ID is being deployed to $RELEASE_STAGE namespace"
     - >
       helm upgrade --install $RELEASE_PRODUCT helm/simplenodeservice 
-      --set image="$IMAGE_NAME:$IMAGE_TAG"
+      --set image="$IMAGE_NAME:$IMAGE_TAG" 
       --set domain="$INGRESS_DOMAIN" 
-      --set version="$RELEASE_VERSION"
+      --set version="$RELEASE_VERSION" 
       --set build_version="$RELEASE_BUILD_VERSION" 
       --set environment="$RELEASE_STAGE" 
+      --set dt_owner="$RELEASE_PRODUCT-$DEMO_IDENTIFIER" 
       --namespace "$RELEASE_STAGE" --create-namespace 
       --wait
     - sleep 150
@@ -104,7 +105,7 @@ Build Image:
     DOCKER_DAEMON_OPTIONS: "--insecure-registry=$DOCKER_REGISTRY_URL"
   services:
     - name: docker:20.10.16-dind
-      entrypoint: [ "sh", "-c", "dockerd-entrypoint.sh $DOCKER_DAEMON_OPTIONS" ]
+      entrypoint: ["sh", "-c", "dockerd-entrypoint.sh $DOCKER_DAEMON_OPTIONS"]
   before_script:
     - until docker info; do sleep 1; done
   script:
@@ -138,17 +139,17 @@ Build Image:
   extends: .dt_config_event_common
   stage: Deploy Staging
   variables:
-    STAGE_NAME: "$STAGE_NAME_STAGING"  
+    STAGE_NAME: "$STAGE_NAME_STAGING"
   needs: ["1-Configure DT Staging - Monaco"]
 
 3-Deploy App Staging:
   variables:
-    STAGE_NAME: "$STAGE_NAME_STAGING" 
+    STAGE_NAME: "$STAGE_NAME_STAGING"
   stage: Deploy Staging
   needs: ["1-Configure DT Staging - Monaco"]
   extends:
     - .deployment_common
-  
+
 4-Send DT Deploy Event Staging:
   extends: .dt_deployment_event_common
   stage: Deploy Staging
@@ -191,7 +192,6 @@ Validate Release with SRG:
     - export LOG_LEVEL=verbose
     - dta srg evaluate --service $SRG_EVALUATION_SERVICE --stage $SRG_EVALUATION_STAGE --start-time=$eval_start --end-time=$eval_end --stop-on-failure
 
-
 1-Configure DT Production - Monaco:
   extends:
     - .monaco_common
@@ -212,7 +212,7 @@ Validate Release with SRG:
   extends: .dt_config_event_common
   stage: Deploy Production
   variables:
-    STAGE_NAME: "$STAGE_NAME_PROD"  
+    STAGE_NAME: "$STAGE_NAME_PROD"
   needs: ["1-Configure DT Production - Monaco"]
 
 3-Deploy App Production:
@@ -227,7 +227,7 @@ Validate Release with SRG:
   extends: .dt_deployment_event_common
   stage: Deploy Production
   variables:
-    STAGE_NAME: "$STAGE_NAME_PROD"  
+    STAGE_NAME: "$STAGE_NAME_PROD"
   needs: ["3-Deploy App Production"]
 
 Cleanup DT Configs - Monaco:
@@ -235,12 +235,12 @@ Cleanup DT Configs - Monaco:
   stage: Build and Initialize
   script:
     - RELEASE_STAGE="simplenode-gitlab-$STAGE_NAME_STAGING"
-    - sed -e "s/\$RELEASE_STAGE/$RELEASE_STAGE/g" -e "s/\$DEMO_IDENTIFIER/$DEMO_IDENTIFIER/g" -e "s/\$RELEASE_PRODUCT/$RELEASE_PRODUCT/g" ./monaco/delete-app.yaml > ./monaco/delete-app-staging-optimized.yaml 
+    - sed -e "s/\$RELEASE_STAGE/$RELEASE_STAGE/g" -e "s/\$DEMO_IDENTIFIER/$DEMO_IDENTIFIER/g" -e "s/\$RELEASE_PRODUCT/$RELEASE_PRODUCT/g" ./monaco/delete-app.yaml > ./monaco/delete-app-staging-optimized.yaml
     - RELEASE_STAGE="simplenode-gitlab-$STAGE_NAME_PROD"
-    - sed -e "s/\$RELEASE_STAGE/$RELEASE_STAGE/g" -e "s/\$DEMO_IDENTIFIER/$DEMO_IDENTIFIER/g" -e "s/\$RELEASE_PRODUCT/$RELEASE_PRODUCT/g" ./monaco/delete-app.yaml > ./monaco/delete-app-prod-optimized.yaml 
+    - sed -e "s/\$RELEASE_STAGE/$RELEASE_STAGE/g" -e "s/\$DEMO_IDENTIFIER/$DEMO_IDENTIFIER/g" -e "s/\$RELEASE_PRODUCT/$RELEASE_PRODUCT/g" ./monaco/delete-app.yaml > ./monaco/delete-app-prod-optimized.yaml
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco delete --manifest $MANIFEST_FILE --file ./monaco/delete-app-prod-optimized.yaml --group production
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco delete --manifest $MANIFEST_FILE --file ./monaco/delete-app-staging-optimized.yaml --group staging
-    
+
     - sleep 15 # wait for the deletion to be completed before the dependent configs are deleted
     - sed -e "s/\$DEMO_IDENTIFIER/$DEMO_IDENTIFIER/g" ./monaco/delete-infra.yaml > ./monaco/delete-infra-optimized.yaml
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco delete --manifest $MANIFEST_FILE --file ./monaco/delete-infra-optimized.yaml --group production
