@@ -2,7 +2,10 @@
 manifestVersion: "1.0"
 
 projects:
-- name: project
+  - name: app
+    path: app
+  - name: global
+    path: global
 
 environmentGroups:
   - name: default
@@ -10,7 +13,7 @@ environmentGroups:
       - name: project
         url:
           type: environment
-          value: DT_TENANT_URL
+          value: DT_PLATFORM_TENANT_URL
         auth:
           token:
             type: environment
