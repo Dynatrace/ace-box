@@ -79,7 +79,7 @@
       "description": "Retrieves entity and extracts ownership data from it.",
       "predecessors": ["query_service_entities"]
     },
-    "refresh_gitlab_token": {
+    "create_gitlab_issue": {
       "action": "dynatrace.automations:http-function",
       "conditions": {
         "custom": "{{`{{`}} (result('identify_ownership').owners | length > 0) {{`}}`}}",
@@ -87,35 +87,11 @@
           "identify_ownership": "OK"
         }
       },
-      "description": "refresh gitlab token",
-      "input": {
-        "headers": {
-          "Content-Type": "application/json"
-        },
-        "method": "POST",
-        "url": "{{ .gitlab_url }}/oauth/token",
-        "payload": "{\"grant_type\": \"password\",\"username\": \"{{ .gitlab_username }}\",\"password\": \"{{ .gitlab_passwd }}\"}"
-      },
-      "name": "refresh_gitlab_token",
-      "position": {
-        "x": 0,
-        "y": 4
-      },
-      "predecessors": ["identify_ownership"]
-    },
-    "create_gitlab_issue": {
-      "action": "dynatrace.automations:http-function",
-      "conditions": {
-        "custom": "{{`{{`}} (result('identify_ownership').owners | length > 0) {{`}}`}}",
-        "states": {
-          "refresh_gitlab_token": "OK"
-        }
-      },
       "description": "{{ .gitlab_task_description }}",
       "input": {
         "headers": {
           "Content-Type": "application/json",
-          "PRIVATE-TOKEN": "{{`{{`}} result(\"refresh_gitlab_token\").json.access_token {{`}}`}}"
+          "PRIVATE-TOKEN": "{{ .gitlab_private_token }}"
         },
         "method": "POST",
         "url": "{{ .gitlab_url }}/api/v4/projects/{{`{{`}} result(\"identify_ownership\").owners[0].contactDetails | selectattr('integrationType', 'equalto', 'JIRA') | map(attribute='jira.project') | first() {{`}}`}}/issues",
@@ -124,9 +100,9 @@
       "name": "create_gitlab_issue",
       "position": {
         "x": 0,
-        "y": 5
+        "y": 4
       },
-      "predecessors": ["refresh_gitlab_token"]
+      "predecessors": ["identify_ownership"]
     }
   }
 }
