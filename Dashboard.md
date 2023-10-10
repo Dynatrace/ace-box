@@ -23,4 +23,4 @@ The dashboard has a few sections at the top:
 - Links: shows all the deployed components and credentials for connecting to them
 
 ## Building ACE Dashboard
-The ACE Box Dashboard is built in React. In order to run it locally for development purposes a `$ npm install` and `$ npm run start` is required in `microk8s/docker/dashboard/`. This however will create artifacts that a) shouldn't be pushed to Git and b) seem to cause issues when provisioning the ACE Box. Therefore, please don't commit the `node_modules` folder and make sure to delete it locally before launching an ACE Box.
+The ACE Box Dashboard is built in React. In order to run it locally for development purposes a `$ npm install` and `$ npm run start` is required in `./dashboard/`. This however will create artifacts that a) shouldn't be pushed to Git and b) seem to cause issues when provisioning the ACE Box. Therefore, please don't commit the `node_modules` folder and make sure to delete it locally before launching an ACE Box.
