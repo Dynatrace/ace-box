@@ -72,7 +72,7 @@ This task templates the helm values file depending on your use case requirements
 
 "include_jenkins_value_file" variable specifies where the Jinja template can be found.
 
-A link to an example Jinja template: https://github.com/Dynatrace/ace-box/blob/dev/user-skel/ansible/roles/demo-quality-gates-jenkins/templates/demo-default-jobs.yml.j2
+A link to an example Jinja template: https://github.com/Dynatrace/ace-box/blob/dev/user-skel/ansible_collections/ace_box/ace_box/roles/demo-quality-gates-jenkins/templates/demo-default-jobs.yml.j2
 
 ```yaml
 - set_fact:

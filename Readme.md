@@ -48,20 +48,20 @@ The recommended way of installing any ACE box version, local or cloud, is via Te
         | dt_tenant | string | **yes** | Dynatrace environment URL |
         | dt_api_token | string | **yes** | Initial API token with scopes `apiTokens.read` and `apiTokens.write`. This token will be used by various roles to manage their own tokens. |
         | acebox_user | string | no | User, for which home directory will be provisioned (Default: "ace") |
-        | use_case | string | no | Use case, the ACE Box will be prepared for. Options are:<ul> <li>`demo_default` (Default)</li><li>`demo_all` (ATTENTION: Requires [extra vars](user-skel/ansible/roles/demo-all/README.md))</li><li>`demo_monaco_gitops`</li><li>`demo_ar_workflows_ansible` (ATTENTION: Requires [extra vars](user-skel/ansible/roles/demo-ar-workflows-ansible/README.md))</li><li>`demo_ar_workflows_gitlab` (ATTENTION: Requires [extra vars](user-skel/ansible/roles/demo-ar-workflows-gitlab/README.md))</li><li>`demo_release_validation_srg_gitlab` (ATTENTION: Requires [extra vars](user-skel/ansible/roles/demo-release-validation-srg-gitlab/README.md))</li><li>URL to an external repository (see below)</li><li> `demo_quality_gates_jenkins` (DEPRECATED)</li><li>`demo_security_gates_jenkins` (DEPRECATED)</li><li>`demo_quality_gates_gitlab` (DEPRECATED)</li><li>`demo_auto_remediation_ansible` (DEPRECATED)</li></ul>|
+        | use_case | string | no | Use case, the ACE Box will be prepared for. Options are:<ul> <li>`demo_default` (Default)</li><li>`demo_all` (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-all/README.md))</li><li>`demo_monaco_gitops`</li><li>`demo_ar_workflows_ansible` (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-ansible/README.md))</li><li>`demo_ar_workflows_gitlab` (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-gitlab/README.md))</li><li>`demo_release_validation_srg_gitlab` (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-release-validation-srg-gitlab/README.md))</li><li>URL to an external repository (see below)</li><li> `demo_quality_gates_jenkins` (DEPRECATED)</li><li>`demo_security_gates_jenkins` (DEPRECATED)</li><li>`demo_quality_gates_gitlab` (DEPRECATED)</li><li>`demo_auto_remediation_ansible` (DEPRECATED)</li></ul>|
         | extra_vars | map(string) | no | Additional variables that are passed and persisted on the VM. Variables can be sourced as `extra_vars.<variable key>` for e.g. external use cases |
         |dashboard_user|string|no|ACE-Box dashboard user (Default: "dynatrace")|
         |dashboard_password|string|no|ACE-Box dashboard password. If not set, a random password will be generated. The password can retrieved by running `terraform output dashboard_password`. **Note**: Output shows leading and trailing quotes that are not part of the password!|
 
         Please consult our dedicated readmes for [AWS](terraform/aws/Readme.md), [MS Azure](terraform/azure/Readme.md) and [Google Cloud](terraform/gcloud/Readme.md) specific variables.
 
-        > Note: `demo_all` requires extra variables. See [use case README](user-skel/ansible/roles/demo-all/README.md) for details.
+        > Note: `demo_all` requires extra variables. See [use case README](user-skel/ansible_collections/ace_box/ace_box/roles/demo-all/README.md) for details.
         
-        > Note: `demo_ar_workflows_ansible` requires extra variables. See [use case README](user-skel/ansible/roles/demo-ar-workflows-ansible/README.md) for details.
+        > Note: `demo_ar_workflows_ansible` requires extra variables. See [use case README](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-ansible/README.md) for details.
 
-        > Note: `demo_ar_workflows_gitlab` requires extra variables. See [use case README](user-skel/ansible/roles/demo-ar-workflows-gitlab/README.md) for details.
+        > Note: `demo_ar_workflows_gitlab` requires extra variables. See [use case README](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-gitlab/README.md) for details.
        
-        > Note: `demo_release_validation_srg_gitlab` requires extra variables. See [use case README](user-skel/ansible/roles/demo-release-validation-srg-gitlab/README.md) for details.
+        > Note: `demo_release_validation_srg_gitlab` requires extra variables. See [use case README](user-skel/ansible_collections/ace_box/ace_box/roles/demo-release-validation-srg-gitlab/README.md) for details.
 
         > Note: `demo_quality_gates_jenkins`,  `demo_security_gates_jenkins`, `demo_quality_gates_gitlab` and `demo_auto_remediation_ansible` are based on the previous Dynatrace. Although technically still working they are considered deprecated.
 
@@ -77,9 +77,9 @@ The recommended way of installing any ACE box version, local or cloud, is via Te
   `demo_quality_gates_jenkins` | x | x | x | x | x | x |  |  | x | x | Demo flow for Quality Gates using Jenkins/Gitea/Cloud Automation. `demo_default` and `demo_quality_gates_jenkins` can be used interchangeably. |
   `demo_security_gates_jenkins` | x | x | x | x | x | x |  |  | x |  x | Demo flow for Security Gates using Jenkins/Gitea/Cloud Automation |
   `demo_quality_gates_gitlab` | x | x | x |  |  |  | x |  | x |  x | Demo flow for Quality Gates using GitLab/Cloud Automation |
-  [`demo_release_validation_srg_gitlab`](user-skel/ansible/roles/demo-release-validation-srg-gitlab/README.md) | x | x | x |  |  |  | x |  | x |  x | Demo flow for Release Validation using GitLab/Site Reliability Guardian |
+  [`demo_release_validation_srg_gitlab`](user-skel/ansible_collections/ace_box/ace_box/roles/demo-release-validation-srg-gitlab/README.md) | x | x | x |  |  |  | x |  | x |  x | Demo flow for Release Validation using GitLab/Site Reliability Guardian |
   `demo_auto_remediation_ansible` | x | x | x | x | x | x |  | x |  | x | Demo flow for Quality Gates using Jenkins/Gitea/Cloud Automation |
-  [`demo_ar_workflows_gitlab`](user-skel/ansible/roles/demo-ar-workflows-gitlab/README.md) | x | x | x | x | x | x |  | x |  | x | Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows |
+  [`demo_ar_workflows_gitlab`](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-gitlab/README.md) | x | x | x | x | x | x |  | x |  | x | Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows |
   `demo_monaco_gitops` | x | x | x | x | x | x |  |  |  | x | Demo flow for Quality Gates using Jenkins/Gitea/Cloud Automation |
 
   > Note: When specifying Cloud Automation instance details, Keptn will not be deployed
