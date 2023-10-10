@@ -22,7 +22,7 @@ Build Image:
     DOCKER_DAEMON_OPTIONS: "--insecure-registry=$DOCKER_REGISTRY_URL"
   services:
     - name: docker:20.10.16-dind
-      entrypoint: [ "sh", "-c", "dockerd-entrypoint.sh $DOCKER_DAEMON_OPTIONS" ]
+      entrypoint: ["sh", "-c", "dockerd-entrypoint.sh $DOCKER_DAEMON_OPTIONS"]
   before_script:
     - until docker info; do sleep 1; done
   script:

@@ -1,5 +1,5 @@
 {
-  "title": "{{ workflow_name }}",
+  "title": "{{ .name }}",
   "taskDefaults": {},
   "usages": [],
   "description": "",
@@ -38,7 +38,7 @@
     "trigger_remediation": {
       "name": "trigger_remediation",
       "input": {
-        "script": "import { execution } from '@dynatrace-sdk/automation-utils';\nimport { workflowsClient } from '@dynatrace-sdk/client-automation';\n\nexport default async function ({ execution_id }) {\n  // Get details of current workflow\n  const ex = await execution(execution_id);\n  const params = ex?.params || {};\n\n  const runWorkflowConfig = {\n    id: '{{ auto_remediation_workflow_id }}',\n    body: {\n      params\n    }\n  };\n  const result = await workflowsClient.runWorkflow(runWorkflowConfig);\n  \n  return result;\n}"
+        "script": "import { execution } from '@dynatrace-sdk/automation-utils';\nimport { workflowsClient } from '@dynatrace-sdk/client-automation';\n\nexport default async function ({ execution_id }) {\n  // Get details of current workflow\n  const ex = await execution(execution_id);\n  const params = ex?.params || {};\n\n  const runWorkflowConfig = {\n    id: '{{ .auto_remediation_workflow_id }}',\n    body: {\n      params\n    }\n  };\n  const result = await workflowsClient.runWorkflow(runWorkflowConfig);\n  \n  return result;\n}"
       },
       "action": "dynatrace.automations:run-javascript",
       "position": {
@@ -46,15 +46,13 @@
         "y": 2
       },
       "conditions": {
-        "custom": "{% raw %}{{ result('debounce_event_trigger').isUnique }}{% endraw %}",
+        "custom": "{{`{{ result('debounce_event_trigger').isUnique }}`}}",
         "states": {
           "debounce_event_trigger": "OK"
         }
       },
       "description": "Build a custom task running js Code",
-      "predecessors": [
-        "debounce_event_trigger"
-      ]
+      "predecessors": ["debounce_event_trigger"]
     },
     "discard": {
       "name": "discard",
@@ -67,15 +65,13 @@
         "y": 2
       },
       "conditions": {
-        "custom": "{% raw %}{{ not result('debounce_event_trigger').isUnique }}{% endraw %}",
+        "custom": "{{`{{ not result('debounce_event_trigger').isUnique }}`}}",
         "states": {
           "debounce_event_trigger": "OK"
         }
       },
       "description": "Executes DQL query",
-      "predecessors": [
-        "debounce_event_trigger"
-      ]
+      "predecessors": ["debounce_event_trigger"]
     }
   }
 }

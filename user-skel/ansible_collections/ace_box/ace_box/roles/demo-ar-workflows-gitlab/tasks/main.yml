@@ -18,14 +18,14 @@
     dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/dynatrace/dynatrace.attachrules.yaml"
 
 - block:
-  - name: Delete existing Monaco configurations
-    ansible.builtin.file:
-      state: absent
-      path: "{{ role_path }}/../app-simplenode/files/repos/simplenode/monaco/"
-  - name: Overwrite Monaco configurations
-    ansible.builtin.copy:
-      src: "{{ role_path }}/files/monaco"
-      dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/"
+    - name: Delete existing Monaco configurations
+      ansible.builtin.file:
+        state: absent
+        path: "{{ role_path }}/../app-simplenode/files/repos/simplenode/monaco/"
+    - name: Overwrite Monaco configurations
+      ansible.builtin.copy:
+        src: "{{ role_path }}/files/monaco"
+        dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/"
 
 #
 # k8s
@@ -62,7 +62,7 @@
     git_username: "root"
     git_password: "{{ gitlab_password }}"
     git_domain: "{{ gitlab_domain }}"
-    git_endpoint: "{{ gitlab_internal_endpoint | regex_replace(\"http://\") }}"
+    git_endpoint: '{{ gitlab_internal_endpoint | regex_replace("http://") }}'
     git_org_name: "{{ dt_ar_gitlab_group }}"
     repo_name: "{{ dt_ar_gitlab_repo_name }}"
 
@@ -95,38 +95,6 @@
     track_upstream: true
 
 #
-# AR workflows
-#
-- block:
-  - set_fact:
-      workflow_name: "{{ auto_remediation_workflow_name }}"
-      workflow_json_path: "{{ auto_remediation_workflow_json_path }}"
-  - name: Template workflow
-    ansible.builtin.template:
-      src: auto-remediation-workflow.json.j2
-      dest: "{{ workflow_json_path }}"
-      owner: "{{ ace_box_user }}"
-      group: "{{ ace_box_user }}"
-      mode: '0644'
-  - include_tasks:
-      file: ensure-workflow.yml
-
-- block:
-  - set_fact:
-      workflow_name: "{{ auto_remediation_debounce_workflow_name }}"
-      workflow_json_path: "{{ auto_remediation_debounce_workflow_json_path }}"
-      auto_remediation_workflow_id: "{{ workflow_id }}"
-  - name: Template workflow
-    ansible.builtin.template:
-      src: auto-remediation-debounce-workflow.json.j2
-      dest: "{{ workflow_json_path }}"
-      owner: "{{ ace_box_user }}"
-      group: "{{ ace_box_user }}"
-      mode: '0644'
-  - include_tasks:
-      file: ensure-workflow.yml
-
-#
 # Dasboard
 #
 - set_fact:
@@ -141,7 +109,7 @@
     role_path_abs: "{{ role_path }}"
 
 #
-# Deploy Monaco at the very end, as the chances are the highest that 
+# Deploy Monaco at the very end, as the chances are the highest that
 # the ACE-Box host group is available by then.
 #
 - include_tasks:

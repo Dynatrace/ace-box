@@ -1,0 +1,37 @@
+---
+configs:
+  - id: demoArWorkflowsGitLabDebounce
+    config:
+      name: "ACE-Box - Demo AR Workflows GitLab - Debounce"
+      template: debounce-workflow.json
+      skip: false
+      parameters:
+        auto_remediation_workflow_id:
+          ["global", "workflow", "demoArWorkflowsGitLabRemediation", "id"]
+    type:
+      automation:
+        resource: workflow
+  - id: demoArWorkflowsGitLabRemediation
+    config:
+      name: "ACE-Box - Demo AR Workflows GitLab - Remediation"
+      template: remediation-workflow.json
+      skip: false
+      parameters:
+        ingress_protocol:
+          type: environment
+          name: INGRESS_PROTOCOL
+        ingress_domain:
+          type: environment
+          name: INGRESS_DOMAIN
+        gitlab_username:
+          type: environment
+          name: GITLAB_USERNAME
+        gitlab_password:
+          type: environment
+          name: GITLAB_PASSWORD
+        dt_platform_tenant_url:
+          type: environment
+          name: DT_PLATFORM_TENANT_URL
+    type:
+      automation:
+        resource: workflow

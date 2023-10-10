@@ -20,37 +20,37 @@ Canary Shift:
     - export CURRENT_CANARY_WEIGHT=$(kubectl -n $RELEASE_STAGE get ingress -o=jsonpath='{.items[?(@.metadata.annotations.nginx\.ingress\.kubernetes\.io/canary=="true")].metadata.annotations.nginx\.ingress\.kubernetes\.io/canary-weight}')
   script:
     - |
-        CANARY_WEIGHT_INCREMENT="$((($CANARY_WEIGHT-$CURRENT_CANARY_WEIGHT)/$CANARY_STEPS))"
+      CANARY_WEIGHT_INCREMENT="$((($CANARY_WEIGHT-$CURRENT_CANARY_WEIGHT)/$CANARY_STEPS))"
 
-        set_canary_weight () {
-          kubectl -n $RELEASE_STAGE annotate ingress $CANARY_NAME nginx.ingress.kubernetes.io/canary-weight="$1" --overwrite
-          echo "Canary weighting of $CANARY_NAME set to $1"
-        }
+      set_canary_weight () {
+        kubectl -n $RELEASE_STAGE annotate ingress $CANARY_NAME nginx.ingress.kubernetes.io/canary-weight="$1" --overwrite
+        echo "Canary weighting of $CANARY_NAME set to $1"
+      }
 
-        send_configuration_change_event () {
-          echo "Sending configuration change event..."
-          
-          echo $(curl -s -X POST $DT_TENANT_URL/api/v2/events/ingest \
-            -H "accept: application/json; charset=utf-8" \
-            -H "Authorization: Api-Token $DT_API_TOKEN" \
-            -H "Content-Type: application/json; charset=utf-8" \
-            -d "{\"eventType\":\"CUSTOM_CONFIGURATION\",\"title\": \"Canary weight set to $1\",\"entitySelector\":\"type(SERVICE),tag([Environment]DT_RELEASE_PRODUCT:$RELEASE_PRODUCT),tag([Environment]DT_RELEASE_STAGE:$RELEASE_STAGE)\",\"properties\":{\"remediationType\":\"$REMEDIATION_TYPE\",\"remediationAction\":\"$REMEDIATION_ACTION\"}}")
-        }
+      send_configuration_change_event () {
+        echo "Sending configuration change event..."
+        
+        echo $(curl -s -X POST $DT_TENANT_URL/api/v2/events/ingest \
+          -H "accept: application/json; charset=utf-8" \
+          -H "Authorization: Api-Token $DT_API_TOKEN" \
+          -H "Content-Type: application/json; charset=utf-8" \
+          -d "{\"eventType\":\"CUSTOM_CONFIGURATION\",\"title\": \"Canary weight set to $1\",\"entitySelector\":\"type(SERVICE),tag([Environment]DT_RELEASE_PRODUCT:$RELEASE_PRODUCT),tag([Environment]DT_RELEASE_STAGE:$RELEASE_STAGE)\",\"properties\":{\"remediationType\":\"$REMEDIATION_TYPE\",\"remediationAction\":\"$REMEDIATION_ACTION\"}}")
+      }
 
-        for i in $(seq 1 $CANARY_STEPS)
-        do
-          if [ "$i" -eq "$CANARY_STEPS" ]
-          then
-            set_canary_weight $CANARY_WEIGHT
-            send_configuration_change_event $CANARY_WEIGHT
-            break
-          fi
+      for i in $(seq 1 $CANARY_STEPS)
+      do
+        if [ "$i" -eq "$CANARY_STEPS" ]
+        then
+          set_canary_weight $CANARY_WEIGHT
+          send_configuration_change_event $CANARY_WEIGHT
+          break
+        fi
 
-          NEW_CANARY_WEIGHT="$(($CURRENT_CANARY_WEIGHT+($i*$CANARY_WEIGHT_INCREMENT)))"
+        NEW_CANARY_WEIGHT="$(($CURRENT_CANARY_WEIGHT+($i*$CANARY_WEIGHT_INCREMENT)))"
 
-          set_canary_weight "$NEW_CANARY_WEIGHT"
-          send_configuration_change_event "$NEW_CANARY_WEIGHT"
-          
-          echo "Sleeping $CANARY_STEPS_DELAY seconds..."
-          sleep $CANARY_STEPS_DELAY
-        done
+        set_canary_weight "$NEW_CANARY_WEIGHT"
+        send_configuration_change_event "$NEW_CANARY_WEIGHT"
+        
+        echo "Sleeping $CANARY_STEPS_DELAY seconds..."
+        sleep $CANARY_STEPS_DELAY
+      done

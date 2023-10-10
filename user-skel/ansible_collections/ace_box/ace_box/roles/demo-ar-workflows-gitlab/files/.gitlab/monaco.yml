@@ -13,12 +13,13 @@ Deploy Monaco:
     GITLAB_PROJECT_ID: "$CI_PROJECT_ID"
     GITLAB_DEFAULT_ASSIGNEE_ID: "$GITLAB_USER_ID"
     DT_OWNER_IDENTIFIER: "$DT_OWNER_IDENTIFIER"
+    MONACO_FEAT_AUTOMATION_RESOURCES: "1"
   script:
-      - monaco deploy monaco/manifest.yaml --dry-run
-      - monaco deploy monaco/manifest.yaml
-      # Sleep an additional 120 seconds to give Dynatrace some time
-      # to tag host according to current config before sending config events
-      - sleep 120
+    - monaco deploy monaco/manifest.yaml --dry-run
+    - monaco deploy monaco/manifest.yaml
+    # Sleep an additional 120 seconds to give Dynatrace some time
+    # to tag host according to current config before sending config events
+    - sleep 120
 
 Publish Monaco Configuration Event:
   extends: .dynatrace_event
