@@ -8,8 +8,6 @@
 
 ## Instructions for Azure
 
-1. Create a `config.yml` file as per usual (see repo main help for details)
-
 1. Sign in to the correct subscription using the az cli
 
     ```bash
@@ -18,19 +16,19 @@
 
     > Note: if you have multiple subscriptions, you will have to set the default one using `az account set --subscription YOURSUBSCRIPTION`
 
-1. Navigate to the `terraform` azure folder
+2. Navigate to the `terraform` azure folder
 
     ```bash
     $ cd terraform/azure
     ```
 
-1. Initialize terraform
+3. Initialize terraform
 
     ```bash
     $ terraform init
     ```
 
-1. Create a `terraform.tfvars` file inside the *terraform* folder
+4. Create a `terraform.tfvars` file inside the *terraform* folder
    It needs to contain the following as a minimum:
 
     ```hcl
@@ -39,13 +37,13 @@
 
     Check out `variables.tf` for a complete list of variables
 
-1. Verify the configuration and execution plan by running `terraform plan`
+5. Verify the configuration and execution plan by running `terraform plan`
 
     ```bash
     $ terraform plan
     ```
 
-1. Apply the configuration
+6. Apply the configuration
 
     ```bash
     $ terraform apply
