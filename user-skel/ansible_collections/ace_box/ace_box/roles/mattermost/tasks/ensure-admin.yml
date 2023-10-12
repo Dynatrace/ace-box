@@ -1,0 +1,16 @@
+---
+- name: Search for Mattermost pod
+  kubernetes.core.k8s_info:
+    kind: Pod
+    namespace: "{{ mattermost_namespace }}"
+    label_selectors:
+      - app = mattermost
+      - installation.mattermost.com/resource = mattermost
+  register: mm_pod
+
+- name: Create User
+  kubernetes.core.k8s_exec:
+    namespace: "{{ mattermost_namespace }}"
+    pod: "{{ mm_pod.resources[0].metadata.name }}"
+    command: mmctl user create --email "{{ mm_admin_email }}" --username "{{ mm_admin_name }}" --password "{{ mm_admin_password }}" --system-admin --local
+  ignore_errors: true

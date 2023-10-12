@@ -1,0 +1,16 @@
+---
+- name: Search for Mattermost pod
+  kubernetes.core.k8s_info:
+    kind: Pod
+    namespace: "{{ mattermost_namespace }}"
+    label_selectors:
+      - app = mattermost
+      - installation.mattermost.com/resource = mattermost
+  register: mm_pod
+
+- name: Create Channel
+  kubernetes.core.k8s_exec:
+    namespace: "{{ mattermost_namespace }}"
+    pod: "{{ mm_pod.resources[0].metadata.name }}"
+    command: mmctl channel create --team "{{ mm_team_name }}" --name "{{ mm_channel_name }}" --display-name "{{ mm_channel_display_name | default(mm_channel_name) }}" --local
+  ignore_errors: true
