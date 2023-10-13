@@ -12,8 +12,12 @@ Requires vars:
 
 |Variable name|Description|
 |---|---|
+|mm_admin_token|Admin token, needs permissions to manage teams|
 |mm_team_name|Name of team|
 |mm_team_display_name|(Optional) display name of team|
+
+Sets facts:
+- mm_team_id
 
 ## ensure-channel
 
@@ -23,9 +27,27 @@ Requires vars:
 
 |Variable name|Description|
 |---|---|
+|mm_admin_token|Admin token, needs permissions to manage channels|
+|mm_team_id|Id of team the channel will be created in|
 |mm_channel_name|Name of channel|
 |mm_channel_display_name|(Optional) display name of channel|
-|mm_team_name|Name of team the channel will be created in|
+
+Sets facts:
+- mm_channel_id
+
+## ensure-webhook
+
+Creates a Mattermost webhook.
+
+Requires vars:
+
+|Variable name|Description|
+|---|---|
+|mm_admin_token|Admin token, needs permissions to manage webhooks|
+|mm_channel_id|Id of channel the webhook will post in|
+
+Sets facts:
+- mm_webhook_id
 
 ## ensure-admin
 
