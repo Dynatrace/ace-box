@@ -35,7 +35,13 @@ Variables that can be set are as follows:
 dt_operator_release: "v0.9.1" # the latest supported dynatrace operator release
 dt_operator_namespace: "dynatrace"
 host_group: "ace-box"
+operator_mode: "classicFullStack"
 ```
+
+Possible values for operator_mode:
+- applicationMonitoring
+- classicFullStack
+- cloudNativeFullStack
 
 This role creates a namespace in the Kubernetes cluster and deploys the Dynatrace operator along with the Dynakube custom resource.
 
