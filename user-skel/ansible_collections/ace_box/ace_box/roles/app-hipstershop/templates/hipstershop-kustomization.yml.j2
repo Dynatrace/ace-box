@@ -18,13 +18,13 @@ resources:
 - resources/redis-pvc.yaml
 - resources/hipstershop-ingress.yaml # this file is created at run-time to set the dynamic ingress details
 
-patchesStrategicMerge:
-- patches/checkoutservice.yaml
-- patches/currencyservice.yaml
-- patches/paymentservice.yaml
-- patches/frontend-external.yaml
-- patches/redis.yaml
-- patches/loadgenerator.yaml
+patches:
+- path: patches/checkoutservice.yaml
+- path: patches/currencyservice.yaml
+- path: patches/paymentservice.yaml
+- path: patches/frontend-external.yaml
+- path: patches/redis.yaml
+- path: patches/loadgenerator.yaml
 
 images:
 - name: ghcr.io/mreider/adservice
