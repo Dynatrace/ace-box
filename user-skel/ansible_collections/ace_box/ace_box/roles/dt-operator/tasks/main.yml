@@ -40,15 +40,15 @@
 - block:
   - name: Template Dynakube manifest
     ansible.builtin.template:
-      src: dynakube.yaml.j2
-      dest: "{{ role_path }}/files/dynakube.yaml"
+      src: "{{ operator_mode }}.yaml.j2"
+      dest: "{{ role_path }}/files/{{ operator_mode }}.yaml"
       owner: "{{ ace_box_user }}"
       group: "{{ ace_box_user }}"
       mode: "0644"
   - name: Apply Dynakube manifest
     kubernetes.core.k8s:
       state: present
-      src: "{{ role_path }}/files/dynakube.yaml"
+      src: "{{ role_path }}/files/{{ operator_mode }}.yaml"
     register: dynakube
     retries: 10
     delay: 10
