@@ -408,7 +408,10 @@ gitea:
   #   - configMap:
   #       name: gitea-app-ini-plaintext
 
-
+  ## @param gitea.additionalConfigFromEnvs Additional configuration sources from environment variables
+  additionalConfigFromEnvs:
+    - name: GITEA__SERVICE__DISABLE_REGISTRATION
+      value: "true"
 
   ## @param gitea.podAnnotations Annotations for the Gitea pod
   podAnnotations: {}
