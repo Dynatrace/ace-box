@@ -30,20 +30,20 @@ The following curated roles can be added to your external use case. See [templat
 
 |Role|Description|
 |---|---|
-|[awx](../user-skel/ansible/roles/awx/Readme.MD)|Installs AWX|
-|[cloudautomation](../user-skel/ansible/roles/cloudautomation/Readme.md)|Links an existing Cloud Automation instance|
-|[dashboard](../user-skel/ansible/roles/dashboard/Readme.md)|Installs the ACE-Box dashboard|
-|[dt-oneagent-classic](../user-skel/ansible/roles/dt-oneagent-classic/Readme.md)|Installs the OneAgent on the host|
-|[dt-activegate-private-synth-classic](../user-skel/ansible/roles/dt-activegate-private-synth-classic/Readme.md)|Installs a Synthetic enabled ActiveGate|
-|[dt-operator](../user-skel/ansible/roles/dt-operator/Readme.md)|Installs the [Dynatrace Operator](https://github.com/Dynatrace/dynatrace-operator)|
-|[gitea](../user-skel/ansible/roles/gitea/Readme.md)|Installs Gitea|
-|[gitlab](../user-skel/ansible/roles/gitlab/Readme.md)|Installs Gitlab|
-|[jenkins](../user-skel/ansible/roles/jenkins/Readme.md)|Installs Jenkins|
+|[awx](../user-skel/ansible_collections/ace_box/ace_box/roles/awx/Readme.MD)|Installs AWX|
+|[cloudautomation](../user-skel/ansible_collections/ace_box/ace_box/roles/cloudautomation/Readme.md)|Links an existing Cloud Automation instance|
+|[dashboard](../user-skel/ansible_collections/ace_box/ace_box/roles/dashboard/Readme.md)|Installs the ACE-Box dashboard|
+|[dt-oneagent-classic](../user-skel/ansible_collections/ace_box/ace_box/roles/dt-oneagent-classic/Readme.md)|Installs the OneAgent on the host|
+|[dt-activegate-private-synth-classic](../user-skel/ansible_collections/ace_box/ace_box/roles/dt-activegate-private-synth-classic/Readme.md)|Installs a Synthetic enabled ActiveGate|
+|[dt-operator](../user-skel/ansible_collections/ace_box/ace_box/roles/dt-operator/Readme.md)|Installs the [Dynatrace Operator](https://github.com/Dynatrace/dynatrace-operator)|
+|[gitea](../user-skel/ansible_collections/ace_box/ace_box/roles/gitea/Readme.md)|Installs Gitea|
+|[gitlab](../user-skel/ansible_collections/ace_box/ace_box/roles/gitlab/Readme.md)|Installs Gitlab|
+|[jenkins](../user-skel/ansible_collections/ace_box/ace_box/roles/jenkins/Readme.md)|Installs Jenkins|
 |keptn|Installs Keptn|
-|[microk8s](../user-skel/ansible/roles/microk8s/Readme.md)|Installs Microk8s|
-|[monaco](../user-skel/ansible/roles/monaco/Readme.md)|Installs Monaco|
+|[microk8s](../user-skel/ansible_collections/ace_box/ace_box/roles/microk8s/Readme.md)|Installs Microk8s|
+|[monaco](../user-skel/ansible_collections/ace_box/ace_box/roles/monaco/Readme.md)|Installs Monaco|
 |otel-collector|Installs an OpenTelemetry collector|
-|[repository](../user-skel/ansible/roles/repository/Readme.md)|Initializes and publishes a local repository to Gitea or Gitlab|
+|[repository](../user-skel/ansible_collections/ace_box/ace_box/roles/repository/Readme.md)|Initializes and publishes a local repository to Gitea or Gitlab|
 
 ## Example external use cases
 
