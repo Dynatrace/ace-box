@@ -7,17 +7,24 @@
   when: gitea_internal_endpoint is not defined
 
 - name: "Check if org {{ gitea_org }} exists"
-  uri:
-    url: "{{ gitea_internal_endpoint }}/api/v1/orgs/{{ gitea_org }}?access_token={{ gitea_access_token }}"
+  ansible.builtin.uri:
+    url: "{{ gitea_internal_endpoint }}/api/v1/orgs/{{ gitea_org }}"
     validate_certs: no
     status_code: [200, 201, 404]
+    headers:
+      Authorization: "token {{ gitea_access_token }}"
   register: org_result
 
-- name:  "Create org {{ gitea_org }}"
-  uri:
-    url: "{{ gitea_internal_endpoint }}/api/v1/orgs?access_token={{ gitea_access_token }}"
+- name: "Create org {{ gitea_org }}"
+  ansible.builtin.uri:
+    url: "{{ gitea_internal_endpoint }}/api/v1/orgs"
     method: POST
-    body: "{\"full_name\":\"{{ gitea_org }}\", \"visibility\":\"public\", \"username\":\"{{ gitea_org }}\"}"
+    body:
+      full_name: "{{ gitea_org }}"
+      visibility: public
+      username: "{{ gitea_org }}"
     status_code: 201
     body_format: json
+    headers:
+      Authorization: "token {{ gitea_access_token }}"
   when: org_result.status != 200

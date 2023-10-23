@@ -63,7 +63,7 @@
 
 - block:
     - name: Wait for API to be up
-      uri:
+      ansible.builtin.uri:
         url: "{{ gitea_internal_endpoint }}/api/v1/version"
         user: "{{ gitea_username }}"
         password: "{{ gitea_password }}"
@@ -76,7 +76,7 @@
       delay: 1
       no_log: true
     - name: Create admin user access token
-      uri:
+      ansible.builtin.uri:
         url: "{{ gitea_internal_endpoint }}/api/v1/users/{{ gitea_username }}/tokens"
         user: "{{ gitea_username }}"
         password: "{{ gitea_password }}"
