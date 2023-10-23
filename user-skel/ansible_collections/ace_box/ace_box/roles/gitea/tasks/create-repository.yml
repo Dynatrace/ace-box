@@ -10,21 +10,27 @@
     new_repo_created: false
 
 - name: "Check if repo {{ gitea_repo }} exists"
-  uri:
-    url: "{{ gitea_internal_endpoint }}/api/v1/repos/{{ gitea_org }}/{{ gitea_repo }}?access_token={{ gitea_access_token }}"
+  ansible.builtin.uri:
+    url: "{{ gitea_internal_endpoint }}/api/v1/repos/{{ gitea_org }}/{{ gitea_repo }}"
     validate_certs: no
     status_code: [200, 201, 404]
+    headers:
+      Authorization: "token {{ gitea_access_token }}"
   register: get_repo_result
 
 - block:
-  - name:  "Create repo {{ gitea_org }}"
-    uri:
-      url: "{{ gitea_internal_endpoint }}/api/v1/orgs/{{ gitea_org }}/repos?access_token={{ gitea_access_token }}"
-      method: POST
-      body: "{\"name\":\"{{ gitea_repo }}\",\"private\":true}"
-      status_code: 201
-      body_format: json
-    register: post_repo_result
-  - set_fact:
-      new_repo_created: "{{ post_repo_result.status is defined and post_repo_result.status == 201 }}"
+    - name: "Create repo {{ gitea_org }}"
+      ansible.builtin.uri:
+        url: "{{ gitea_internal_endpoint }}/api/v1/orgs/{{ gitea_org }}/repos"
+        method: POST
+        body:
+          name: "{{ gitea_repo }}"
+          private: true
+        status_code: 201
+        body_format: json
+        headers:
+          Authorization: "token {{ gitea_access_token }}"
+      register: post_repo_result
+    - set_fact:
+        new_repo_created: "{{ post_repo_result.status is defined and post_repo_result.status == 201 }}"
   when: get_repo_result.status != 200

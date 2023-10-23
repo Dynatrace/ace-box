@@ -1,7 +1,7 @@
 ---
-gitea_version: "1.17.2"
+gitea_version: "1.20.5"
 gitea_domain: "gitea.{{ ingress_domain }}"
 gitea_username: "dynatrace"
 gitea_email: "ace@dynatrace.com"
 gitea_namespace: "gitea"
-gitea_helm_chart_version: "4.1.1"
+gitea_helm_chart_version: "9.5.1"
