@@ -33,6 +33,13 @@
   vars:
     gitlab_group_name: "{{ gitlab_demo_default_group }}"
 
+- name: Gitlab - Ensure Default Group Vars
+  include_role:
+    name: gitlab
+    tasks_from: ensure-default-group-vars
+  vars:
+    gitlab_group_name: "{{ gitlab_demo_default_group }}"
+
 - name: Gitlab - Ensure Project
   include_role:
     name: gitlab
@@ -52,7 +59,7 @@
     git_username: "root"
     git_password: "{{ gitlab_password }}"
     git_domain: "{{ gitlab_domain }}"
-    git_endpoint: "{{ gitlab_internal_endpoint | regex_replace(\"http://\") }}"
+    git_endpoint: '{{ gitlab_internal_endpoint | regex_replace("http://") }}'
     git_org_name: "{{ gitlab_demo_default_group }}"
     repo_name: "{{ gitlab_demo_default_repo_name }}"
   when: new_gitlab_group_created is defined and new_gitlab_group_created == true

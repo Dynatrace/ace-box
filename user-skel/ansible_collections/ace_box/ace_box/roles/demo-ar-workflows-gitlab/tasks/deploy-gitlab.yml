@@ -9,6 +9,13 @@
   vars:
     gitlab_group_name: "{{ dt_ar_gitlab_group }}"
 
+- name: Gitlab - Ensure Default Group Vars
+  include_role:
+    name: gitlab
+    tasks_from: ensure-default-group-vars
+  vars:
+    gitlab_group_name: "{{ dt_ar_gitlab_group }}"
+
 - name: Gitlab - Ensure Project Simplenodeservice
   include_role:
     name: gitlab

@@ -64,8 +64,6 @@
 # First time sourcing PAT will issue and persist token
 - ansible.builtin.include_tasks: source-personal-access-token.yml
 
-- ansible.builtin.include_tasks: configure.yml
-
 - ansible.builtin.include_tasks: deploy-gcpe.yml
 
 # Include Dashboard values
