@@ -130,7 +130,7 @@ config:
   # # https://github.com/mvisonneau/gitlab-ci-pipelines-exporter/blob/master/docs/configuration_syntax.md
   gitlab:
     url: {{ gitlab_internal_endpoint }}
-    token: {{ gitlab_oauth_token }}
+    token: {{ gitlab_personal_access_token }}
     enable_tls_verify: false
     maximum_requests_per_second: 5
   pull:
