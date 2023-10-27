@@ -89,6 +89,9 @@
     tasks_from: source-endpoints
 
 - include_role:
+    name: otel-collector
+
+- include_role:
     name: app-simplenode
   vars:
     git_username: "root"
