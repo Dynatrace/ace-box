@@ -133,6 +133,9 @@
     role_path_abs: "{{ role_path }}"
 
 - include_role:
+    name: otel-collector
+
+- include_role:
     name: app-simplenode
   vars:
     git_username: "root"

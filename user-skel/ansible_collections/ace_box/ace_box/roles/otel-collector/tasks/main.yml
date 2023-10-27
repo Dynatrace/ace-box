@@ -3,7 +3,7 @@
     name: dt-access-token
   vars:
     access_token_var_name: "{{ otelcol_dt_access_token_name }}"
-    access_token_scope: ["openTelemetryTrace.ingest"]
+    access_token_scope: ["openTelemetryTrace.ingest", "logs.ingest"]
 
 - name: Add open-telemetry chart repo
   kubernetes.core.helm_repository:
