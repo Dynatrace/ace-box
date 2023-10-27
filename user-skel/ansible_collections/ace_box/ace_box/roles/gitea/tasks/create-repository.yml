@@ -1,0 +1,36 @@
+---
+- ansible.builtin.include_tasks: source-secret.yml
+  when: gitea_access_token is not defined
+
+- name: Source endpoints
+  ansible.builtin.include_tasks: source-endpoints.yml
+  when: gitea_internal_endpoint is not defined
+
+- set_fact:
+    new_repo_created: false
+
+- name: "Check if repo {{ gitea_repo }} exists"
+  ansible.builtin.uri:
+    url: "{{ gitea_internal_endpoint }}/api/v1/repos/{{ gitea_org }}/{{ gitea_repo }}"
+    validate_certs: no
+    status_code: [200, 201, 404]
+    headers:
+      Authorization: "token {{ gitea_access_token }}"
+  register: get_repo_result
+
+- block:
+    - name: "Create repo {{ gitea_org }}"
+      ansible.builtin.uri:
+        url: "{{ gitea_internal_endpoint }}/api/v1/orgs/{{ gitea_org }}/repos"
+        method: POST
+        body:
+          name: "{{ gitea_repo }}"
+          private: true
+        status_code: 201
+        body_format: json
+        headers:
+          Authorization: "token {{ gitea_access_token }}"
+      register: post_repo_result
+    - set_fact:
+        new_repo_created: "{{ post_repo_result.status is defined and post_repo_result.status == 201 }}"
+  when: get_repo_result.status != 200

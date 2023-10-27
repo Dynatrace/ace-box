@@ -1,0 +1,28 @@
+---
+manifestVersion: "1.0"
+
+projects:
+  - name: app
+    path: app
+  - name: global
+    path: global
+
+environmentGroups:
+  - name: default
+    environments:
+      - name: project
+        url:
+          type: environment
+          value: DT_PLATFORM_TENANT_URL
+        auth:
+          token:
+            type: environment
+            name: DT_API_TOKEN
+          oAuth:
+            clientId:
+              name: DT_OAUTH_CLIENT_ID
+            clientSecret:
+              name: DT_OAUTH_CLIENT_SECRET
+            tokenEndpoint:
+              type: environment
+              value: DT_OAUTH_SSO_ENDPOINT

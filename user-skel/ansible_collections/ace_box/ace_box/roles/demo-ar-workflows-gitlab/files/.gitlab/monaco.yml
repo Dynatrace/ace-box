@@ -1,0 +1,36 @@
+---
+include:
+  - remote: "https://gitlab.com/dynatrace-ace/dynatrace-gitlab-library/-/raw/master/dynatrace_event.yaml"
+
+stages:
+  - monaco
+  - publish-configuration-event
+
+Deploy Monaco:
+  image: dynatrace/dynatrace-configuration-as-code:2.0.3
+  stage: monaco
+  variables:
+    GITLAB_PROJECT_ID: "$CI_PROJECT_ID"
+    GITLAB_DEFAULT_ASSIGNEE_ID: "$GITLAB_USER_ID"
+    DT_OWNER_IDENTIFIER: "$DT_OWNER_IDENTIFIER"
+    MONACO_FEAT_AUTOMATION_RESOURCES: "1"
+  script:
+    - monaco deploy monaco/manifest.yaml --dry-run
+    - monaco deploy monaco/manifest.yaml
+    # Sleep an additional 120 seconds to give Dynatrace some time
+    # to tag host according to current config before sending config events
+    - sleep 120
+
+Publish Monaco Configuration Event:
+  extends: .dynatrace_event
+  stage: publish-configuration-event
+  needs: ["Deploy Monaco"]
+  variables:
+    DYNATRACE_ENV_URL: "$DT_TENANT_URL"
+    DYNATRACE_API_TOKEN: "$DT_API_TOKEN"
+    EVENT_TYPE: "CUSTOM_CONFIGURATION"
+    ATTACH_RULES_FILE: "dynatrace/dynatrace.host-attachrules.yaml"
+    DT_HOST_TAG: "$RELEASE_PRODUCT-$RELEASE_STAGE"
+    DESCRIPTION: "Monaco deployment successful: $RELEASE_PRODUCT-$RELEASE_STAGE"
+    CONFIGURATION: "$RELEASE_PRODUCT-$RELEASE_STAGE"
+    CUSTOM_PROPERTIES: '{"Approved by": "ACE"}'

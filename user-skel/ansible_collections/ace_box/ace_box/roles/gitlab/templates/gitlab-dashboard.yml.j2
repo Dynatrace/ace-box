@@ -1,0 +1,14 @@
+---
+extRefs:
+  Gitlab:
+    url: "{{ ingress_protocol }}://gitlab.{{ ingress_domain }}"
+    creds:
+    - description: Username
+      type: text
+      value: "{{ gitlab_username }}"
+    - description: Password
+      type: password
+      value: "{{ gitlab_password }}"
+    - description: Personal Access Token
+      type: password
+      value: "{{ gitlab_personal_access_token | default(None) }}"

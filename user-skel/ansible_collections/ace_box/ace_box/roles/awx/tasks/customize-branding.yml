@@ -1,0 +1,53 @@
+- name: Search for all Pods labelled app=web
+  kubernetes.core.k8s_info:
+    kind: Pod
+    namespace: "{{ awx_namespace }}"
+    label_selectors:
+      - app.kubernetes.io/component = awx
+      - app.kubernetes.io/part-of = awx
+      - app.kubernetes.io/name = awx
+  register: awx_pods
+
+- name: Overwrite AWX logo - Header - SVG
+  kubernetes.core.k8s_cp:
+    namespace: "{{ awx_namespace }}"
+    pod: "{{ awx_pods.resources[0].metadata.name }}"
+    container: awx-web
+    remote_path: /var/lib/awx/public/static/media/logo-header.svg
+    local_path: "{{ role_path }}/{{ awx_logo_header_replace }}"
+    no_preserve: True
+    state: to_pod
+  when: (awx_logo_header_replace is defined) and (awx_logo_header_replace|length > 0)
+
+- name: Overwrite AWX logo - Login - SVG
+  kubernetes.core.k8s_cp:
+    namespace: "{{ awx_namespace }}"
+    pod: "{{ awx_pods.resources[0].metadata.name }}"
+    container: awx-web
+    remote_path: /var/lib/awx/public/static/media/logo-login.svg
+    local_path: "{{ role_path }}/{{ awx_logo_login_replace }}"
+    no_preserve: True
+    state: to_pod
+  when: (awx_logo_login_replace is defined) and (awx_logo_login_replace|length > 0)
+
+- name: Overwrite AWX logo - Favicon - SVG
+  kubernetes.core.k8s_cp:
+    namespace: "{{ awx_namespace }}"
+    pod: "{{ awx_pods.resources[0].metadata.name }}"
+    container: awx-web
+    remote_path: /var/lib/awx/public/static/media/favicon.svg
+    local_path: "{{ role_path }}/{{ awx_icon_replace }}"
+    no_preserve: True
+    state: to_pod
+  when: (awx_icon_replace is defined) and (awx_icon_replace|length > 0)
+
+- name: Overwrite AWX logo - Favicon - ICO
+  kubernetes.core.k8s_cp:
+    namespace: "{{ awx_namespace }}"
+    pod: "{{ awx_pods.resources[0].metadata.name }}"
+    container: awx-web
+    remote_path: /var/lib/awx/public/static/media/favicon.ico
+    local_path: "{{ role_path }}/{{ awx_favicon_replace }}"
+    no_preserve: True
+    state: to_pod
+  when: (awx_favicon_replace is defined) and (awx_favicon_replace|length > 0)

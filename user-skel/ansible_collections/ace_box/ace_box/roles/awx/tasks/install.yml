@@ -1,0 +1,64 @@
+---
+- name: Create namespace for AWX
+  kubernetes.core.k8s:
+    name: "{{ awx_namespace }}"
+    api_version: v1
+    kind: Namespace
+    state: present
+
+- name: Add chart repo
+  kubernetes.core.helm_repository:
+    name: awx-operator
+    repo_url: "https://ansible.github.io/awx-operator/"
+
+- include_tasks:
+    file: create-secrets.yml
+
+- name: AWX - Template values file
+  ansible.builtin.template:
+    src: awx-operator-values.yml.j2
+    dest: "{{ role_path }}/files/awx-operator-values.yml"
+    owner: "{{ ace_box_user }}"
+    group: "{{ ace_box_user }}"
+    mode: '0644'
+
+- name: Install
+  kubernetes.core.helm:
+    name: awx
+    chart_ref: "{{ role_path }}/files/awx-operator"
+    # chart_ref: awx-operator/awx-operator
+    # chart_version: "{{ awx_helm_chart_version }}"
+    release_namespace: "{{ awx_namespace }}"
+    create_namespace: true
+    wait: true
+    wait_timeout: 15m
+    values_files:
+      - "{{ role_path }}/files/awx-operator-values.yml"
+  register: awx_helm
+
+- name: Wait for AWX to be ready
+  kubernetes.core.k8s_info:
+    api_version: awx.ansible.com/v1beta1
+    kind: AWX
+    wait: yes
+    name: awx
+    namespace: "{{ awx_namespace }}"
+    wait_sleep: 10
+    wait_timeout: 900
+    wait_condition:
+      reason: Successful
+      status: "True"
+      type: Successful
+
+- include_tasks:
+    file: source-configuration.yml
+
+- name: AWX - Wait for API to be up
+  uri:
+    url: "{{ awx_internal_endpoint }}/api/v2/ping/"
+    status_code: 200
+    validate_certs: no
+  register: result
+  retries: 30
+  delay: 5
+  until: result.status == 200

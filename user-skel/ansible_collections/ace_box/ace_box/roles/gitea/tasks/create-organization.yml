@@ -1,0 +1,30 @@
+---
+- ansible.builtin.include_tasks: source-secret.yml
+  when: gitea_access_token is not defined
+
+- name: Source endpoints
+  ansible.builtin.include_tasks: source-endpoints.yml
+  when: gitea_internal_endpoint is not defined
+
+- name: "Check if org {{ gitea_org }} exists"
+  ansible.builtin.uri:
+    url: "{{ gitea_internal_endpoint }}/api/v1/orgs/{{ gitea_org }}"
+    validate_certs: no
+    status_code: [200, 201, 404]
+    headers:
+      Authorization: "token {{ gitea_access_token }}"
+  register: org_result
+
+- name: "Create org {{ gitea_org }}"
+  ansible.builtin.uri:
+    url: "{{ gitea_internal_endpoint }}/api/v1/orgs"
+    method: POST
+    body:
+      full_name: "{{ gitea_org }}"
+      visibility: public
+      username: "{{ gitea_org }}"
+    status_code: 201
+    body_format: json
+    headers:
+      Authorization: "token {{ gitea_access_token }}"
+  when: org_result.status != 200

@@ -1,0 +1,13 @@
+---
+extRefs:
+  Dynatrace:
+    url: "{{ extra_vars.dt_environment_url_gen3 }}"
+useCases:
+  demo-ar-workflows-ansible:
+    previews:
+    - section: demo-ar-workflows-ansible
+      description: Canary
+      url: "{{ ingress_protocol }}://simplenodeservice-canary-jenkins.{{ ingress_domain }}"
+    guides:
+    - description: "DT AutomationEngine Auto Remediation - Demo using Workflows, Jenkins, Gitea and Ansible (AWX)"
+      url: "{{ ingress_protocol }}://gitea.{{ ingress_domain }}/{{ demo_ar_workflows_ansible_org }}/{{ demo_ar_workflows_ansible_repo_name }}"

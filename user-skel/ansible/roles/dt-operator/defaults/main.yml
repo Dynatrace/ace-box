@@ -1,6 +1,0 @@
----
-dt_operator_release: "v0.10.4"
-dt_operator_namespace: "dynatrace"
-host_group: "ace-box"
-dt_operator_dt_access_token_name: "ace_box_dt_operator_api_token"
-dt_operator_dt_data_ingest_token_name: "ace_box_dt_operator_ingest_token"

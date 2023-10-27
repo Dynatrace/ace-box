@@ -1,0 +1,45 @@
+---
+- name: Destroy
+  hosts: localhost
+  connection: local
+  become: true
+  become_user: "{{ ace_box_user | default(lookup('env','USER')) }}"
+  tasks:
+    - name: Include vars
+      ansible.builtin.include_vars: "{{ ace_config_file_path }}"
+    - name: Destroy demo-auto-remediation-ansible
+      ansible.builtin.include_role:
+        name: demo-auto-remediation-ansible
+        tasks_from: destroy
+    - name: Destroy dt-activegate-classic
+      ansible.builtin.include_role:
+        name: dt-activegate-classic
+        tasks_from: destroy
+    - name: Destroy dt-oneagent-classic
+      ansible.builtin.include_role:
+        name: dt-oneagent-classic
+        tasks_from: destroy
+    - name: Destroy dt-operator
+      ansible.builtin.include_role:
+        name: dt-operator
+        tasks_from: destroy
+    - name: Destroy gitlab
+      ansible.builtin.include_role:
+        name: gitlab
+        tasks_from: destroy
+    - name: Destroy jenkins
+      ansible.builtin.include_role:
+        name: jenkins
+        tasks_from: destroy
+    - name: Destroy keptn
+      ansible.builtin.include_role:
+        name: keptn
+        tasks_from: destroy
+    - name: Destroy monaco
+      ansible.builtin.include_role:
+        name: monaco
+        tasks_from: destroy
+    - name: Destroy otel-collector
+      ansible.builtin.include_role:
+        name: otel-collector
+        tasks_from: destroy

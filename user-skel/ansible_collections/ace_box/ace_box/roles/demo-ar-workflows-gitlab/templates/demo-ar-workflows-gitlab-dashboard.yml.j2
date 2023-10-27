@@ -1,0 +1,13 @@
+---
+extRefs:
+  Dynatrace:
+    url: "{{ extra_vars.dt_environment_url_gen3 }}"
+useCases:
+  demo-ar-workflows-gitlab:
+    previews:
+    - section: demo-ar-workflows-gitlab
+      description: Canary
+      url: "{{ ingress_protocol }}://simplenodeservice-canary-gitlab.{{ ingress_domain }}"
+    guides:
+    - description: "Canary deployment and auto remediation - Demo using Gitlab and native Dynatrace capabilites"
+      url: "{{ ingress_protocol }}://gitlab.{{ ingress_domain }}/{{ dt_ar_gitlab_group }}/{{ dt_ar_gitlab_docs_repo_name }}"

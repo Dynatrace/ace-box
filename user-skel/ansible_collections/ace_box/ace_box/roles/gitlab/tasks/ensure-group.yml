@@ -1,0 +1,39 @@
+---
+- name: Source endpoints
+  ansible.builtin.include_tasks: source-endpoints.yml
+  when: gitlab_internal_endpoint is not defined
+
+- ansible.builtin.include_tasks: source-secret.yml
+  when: gitlab_oauth_token is not defined
+
+- block:
+  - name: Lookup group "{{ gitlab_group_name }}"
+    uri:
+      url: "{{ gitlab_internal_endpoint }}/api/v4/groups?search={{ gitlab_group_name | urlencode }}"
+      validate_certs: false
+      method: GET
+      status_code: [200, 201]
+      headers:
+        Content-Type: "application/json"
+        Authorization: "Bearer {{ gitlab_oauth_token }}"
+    register: gitlab_get_groups_result
+  - set_fact:
+      gitlab_group_id: "{{ gitlab_get_groups_result.json | selectattr('name', 'equalto', gitlab_group_name) | map(attribute='id') | first() }}"
+  rescue:
+  - name: Gitlab - Create group"
+    uri:
+      url: "{{ gitlab_internal_endpoint }}/api/v4/groups"
+      validate_certs: false
+      method: POST
+      status_code: [200, 201]
+      headers:
+        Content-Type: "application/json"
+        Authorization: "Bearer {{ gitlab_oauth_token }}"
+      body:
+        path: "{{ gitlab_group_name }}"
+        name: "{{ gitlab_group_name }}"
+      body_format: json
+    register: gitlab_post_groups_result
+  - set_fact:
+      gitlab_group_id: "{{ gitlab_post_groups_result.json.id }}"
+      new_gitlab_group_created: "{{ gitlab_post_groups_result.status is defined and gitlab_post_groups_result.status == 201 }}"
