@@ -1,0 +1,15 @@
+---
+- name: Create new webhook
+  ansible.builtin.uri:
+    url: "{{ ingress_protocol }}://mattermost.{{ ingress_domain }}/api/v4/hooks/incoming"
+    method: POST
+    body:
+      channel_id: "{{ mm_channel_id }}"
+    status_code: 201
+    body_format: json
+    headers:
+      Authorization: "Bearer {{ mm_admin_token }}"
+  register: mm_webhook_post_raw
+
+- set_fact:
+    mm_webhook_id: "{{ mm_webhook_post_raw.json.id }}"

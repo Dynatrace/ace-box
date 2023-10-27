@@ -1,0 +1,34 @@
+---
+- name: Get existing channel
+  ansible.builtin.uri:
+    url: "{{ ingress_protocol }}://mattermost.{{ ingress_domain }}/api/v4/teams/{{ mm_team_id }}/channels/name/{{ mm_channel_name }}"
+    method: GET
+    status_code: [200, 404]
+    body_format: json
+    headers:
+      Authorization: "Bearer {{ mm_admin_token }}"
+  register: mm_channel_get_raw
+
+- block:
+    - name: Create new channel
+      ansible.builtin.uri:
+        url: "{{ ingress_protocol }}://mattermost.{{ ingress_domain }}/api/v4/channels"
+        method: POST
+        body:
+          team_id: "{{ mm_team_id }}"
+          name: "{{ mm_channel_name }}"
+          display_name: "{{ mm_channel_display_name | default(mm_channel_name) }}"
+          type: "O" # "O" = Open, "P" = Private
+        status_code: 201
+        body_format: json
+        headers:
+          Authorization: "Bearer {{ mm_admin_token }}"
+      register: mm_channel_post_raw
+    - set_fact:
+        mm_channel_id: "{{ mm_channel_post_raw.json.id }}"
+  when: mm_channel_get_raw.status == 404
+
+- block:
+    - ansible.builtin.set_fact:
+        mm_channel_id: "{{ mm_channel_get_raw.json.id }}"
+  when: mm_channel_get_raw.status == 200

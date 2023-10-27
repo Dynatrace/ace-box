@@ -1,0 +1,20 @@
+---
+- name: Search for Mattermost pod
+  kubernetes.core.k8s_info:
+    kind: Pod
+    namespace: "{{ mattermost_namespace }}"
+    label_selectors:
+      - app = mattermost
+      - installation.mattermost.com/resource = mattermost
+  register: mm_pod
+
+- name: Create Token
+  kubernetes.core.k8s_exec:
+    namespace: "{{ mattermost_namespace }}"
+    pod: "{{ mm_pod.resources[0].metadata.name }}"
+    command: mmctl token generate "{{ mm_user_name }}" "{{ mm_token_name }}" --json --local
+  ignore_errors: true
+  register: mm_token
+
+- set_fact:
+    mm_token: "{{ mm_token.stdout | from_json | community.general.json_query('[0].token') }}"

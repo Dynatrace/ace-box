@@ -1,0 +1,42 @@
+---
+- name: Add Mattermost chart repo
+  kubernetes.core.helm_repository:
+    name: mattermost
+    repo_url: "https://helm.mattermost.com"
+
+- name: Deploy Mattermost Operator
+  kubernetes.core.helm:
+    name: mattermost
+    chart_ref: mattermost/mattermost-operator
+    release_namespace: "{{ mattermost_namespace }}"
+    create_namespace: true
+    wait: true
+    wait_timeout: 10m
+    values:
+      minioOperator:
+        enabled: true
+      mysqlOperator:
+        enabled: true
+
+- name: Template Mattermost manifest
+  ansible.builtin.template:
+    src: mattermost-installation.yaml.j2
+    dest: "{{ role_path }}/files/mattermost-installation.yaml"
+    owner: "{{ ace_box_user }}"
+    group: "{{ ace_box_user }}"
+    mode: "0644"
+
+- name: Apply Mattermost manifest
+  kubernetes.core.k8s:
+    namespace: "{{ mattermost_namespace }}"
+    state: present
+    src: "{{ role_path }}/files/mattermost-installation.yaml"
+
+- name: Wait for Deployment ready state
+  kubernetes.core.k8s_info:
+    kind: Deployment
+    wait: yes
+    name: mattermost
+    namespace: "{{ mattermost_namespace }}"
+    wait_sleep: 10
+    wait_timeout: 300

@@ -1,0 +1,33 @@
+---
+- name: Get existing team
+  ansible.builtin.uri:
+    url: "{{ ingress_protocol }}://mattermost.{{ ingress_domain }}/api/v4/teams/name/{{ mm_team_name }}"
+    method: GET
+    status_code: [200, 404]
+    body_format: json
+    headers:
+      Authorization: "Bearer {{ mm_admin_token }}"
+  register: mm_team_get_raw
+
+- block:
+    - name: Create new team
+      ansible.builtin.uri:
+        url: "{{ ingress_protocol }}://mattermost.{{ ingress_domain }}/api/v4/teams"
+        method: POST
+        body:
+          name: "{{ mm_team_name }}"
+          display_name: "{{ mm_team_display_name | default(mm_team_name) }}"
+          type: "O" # "O" = Open, "I" = Invite only
+        status_code: 201
+        body_format: json
+        headers:
+          Authorization: "Bearer {{ mm_admin_token }}"
+      register: mm_team_post_raw
+    - set_fact:
+        mm_team_id: "{{ mm_team_post_raw.json.id }}"
+  when: mm_team_get_raw.status == 404
+
+- block:
+    - ansible.builtin.set_fact:
+        mm_team_id: "{{ mm_team_get_raw.json.id }}"
+  when: mm_team_get_raw.status == 200
