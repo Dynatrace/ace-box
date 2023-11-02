@@ -74,14 +74,16 @@ This task fetches the external endpoint and sources the following variables:
     tasks_from: source-endpoints-external
 ```
 
-#### "configure" 
-This task sources Keptn, Cloud Automation secrets and Dynatrace Synthetic node ID (if they exists) to set Gitlab variables to be used for the relevant pipelines.
+#### "configure-demo-group" 
+This task creates a default demo group and adds relevant ACE-Box secrets such as Dynatrace environment URL, Dynatrace Synthetic node ID to be used in GitLab pipelines.
 
 ```yaml
 - include_role:
     name: gitlab
     tasks_from: configure
 ```
+
+Attention: For ACE-Box versions > 
 
 #### "deploy-gcpe" 
 This task deploys gcpe (gitlab-ci-pipelines-exporter) under the gitlab namespace.

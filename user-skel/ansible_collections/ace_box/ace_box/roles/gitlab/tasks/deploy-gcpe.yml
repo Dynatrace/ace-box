@@ -1,4 +1,11 @@
 ---
+- name: Source endpoints
+  ansible.builtin.include_tasks: source-endpoints.yml
+  when: gitlab_internal_endpoint is not defined
+
+- ansible.builtin.include_tasks: source-personal-access-token.yml
+  when: gitlab_personal_access_token is not defined
+
 - name: Add mvisonneau chart repo
   kubernetes.core.helm_repository:
     name: mvisonneau
@@ -10,7 +17,7 @@
     dest: "{{ role_path }}/files/gitlab-gcpe-values.yml"
     owner: "{{ ace_box_user }}"
     group: "{{ ace_box_user }}"
-    mode: '0644'
+    mode: "0644"
 
 - name: Install
   kubernetes.core.helm:
