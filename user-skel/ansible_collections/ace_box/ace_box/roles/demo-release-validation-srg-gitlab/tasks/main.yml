@@ -32,6 +32,9 @@
         "events.ingest",
         "settings.read",
         "settings.write",
+        "metrics.ingest",
+        "openTelemetryTrace.ingest",
+        "logs.ingest"
       ]
 
 - name: Monaco - Cleanup potential conflicting Monaco resources
@@ -55,6 +58,14 @@
     RELEASE_STAGE_STAGING: "simplenode-gitlab-staging"
     RELEASE_STAGE_PROD: "simplenode-gitlab-prod"
     RELEASE_PRODUCT: "simplenodeservice"
+
+- include_role:
+    name: otel-collector
+
+- name: Source Otel Collector endpoint
+  include_role:
+    name: otel-collector
+    tasks_from: source-endpoints
 
 - include_role:
     name: gitlab
@@ -130,6 +141,10 @@
         value: "{{ gitlab_external_endpoint }}",
       }
     - { key: "DEMO_IDENTIFIER", value: "{{ demo_identifier }}" }
+    - {
+        key: "OTEL_EXPORTER_OTEL_ENDPOINT",
+        value: "{{ otel_internal_endpoint }}",
+      }
 
 - name: Source Gitlab endpoint
   include_role:
@@ -138,9 +153,6 @@
 
 - set_fact:
     role_path_abs: "{{ role_path }}"
-
-- include_role:
-    name: otel-collector
 
 - include_role:
     name: app-simplenode
@@ -170,6 +182,32 @@
         src: "{{ role_path_abs }}/files/.gitlab-ci.yml"
       - dest: dynatrace/dynatrace.attachrules.yaml
         src: "{{ role_path_abs }}/files/dynatrace.attachrules.yaml"
+      - dest: otel-exporter.yml
+        src: "{{ role_path_abs }}/files/otel-exporter.yml"
+
+- name: Gitlab - Ensure Project for OpenTelemetry Metrics
+  include_role:
+    name: gitlab
+    tasks_from: ensure-project
+  vars:
+    gitlab_prj: "{{ gitlab_demo_metrics_exporter_repo_name }}"
+    gitlab_prj_namespace_id: "{{ gitlab_group_id }}"
+
+- set_fact:
+    dt_metrics_exporter_repo_src: "{{ role_path }}/files/metrics-exporter"
+
+- name: Publish docs
+  include_role:
+    name: repository
+  vars:
+    git_username: "root"
+    git_password: "{{ gitlab_password }}"
+    git_domain: "{{ gitlab_domain }}"
+    git_remote: "gitlab"
+    git_org: "{{ gitlab_demo_srg_group }}"
+    git_repo: "{{ gitlab_demo_metrics_exporter_repo_name }}"
+    repo_src: "{{ dt_metrics_exporter_repo_src }}"
+    track_upstream: true
 
 - include_role:
     name: dashboard
