@@ -1,0 +1,15 @@
+stages:
+- dynatrace-metrics-exporter
+
+dynatrace-metrics-exporter:
+ rules:
+   - when: always
+ image:
+   name: dynatraceace/dynatrace-gitlab-exporter-otel:0.0.1
+ stage: dynatrace-metrics-exporter
+ variables:
+   GLAB_ENDPOINT: "$GITLAB_EXTERNAL_ENDPOINT"
+   GLAB_TOKEN: "$GITLAB_PRIVATE_TOKEN"
+   GLAB_EXPORT_LAST_MINUTES: 60
+ script:
+   - python3 -u /app/export_gitlab_metrics.py

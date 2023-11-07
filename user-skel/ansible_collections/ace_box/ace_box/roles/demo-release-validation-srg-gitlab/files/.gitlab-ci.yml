@@ -35,6 +35,7 @@ stages:
   - Validate Release
   - Deploy Production
   - Cleanup
+  - otel-exporter
 
 workflow:
   rules:
@@ -246,3 +247,15 @@ Cleanup DT Configs - Monaco:
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco delete --manifest $MANIFEST_FILE --file ./monaco/delete-infra-optimized.yaml --group production
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco delete --manifest $MANIFEST_FILE --file ./monaco/delete-infra-optimized.yaml --group staging
   when: manual
+
+otel-exporter:
+ rules:
+  - when: always
+ stage: otel-exporter
+ inherit:
+   variables: true
+ variables:
+   CI_PARENT_PIPELINE: $CI_PIPELINE_ID
+ trigger:
+   include:
+     - local: otel-exporter.yml
