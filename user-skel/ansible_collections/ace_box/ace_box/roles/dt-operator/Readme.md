@@ -1,6 +1,6 @@
 # dt-operator
 
-This currated role can be used to deploy Dynatrace k8s operator (Dynakube) with a Classic full-stack injection deployment strategy. 
+This currated role can be used to deploy Dynatrace k8s operator (Dynakube) with a classic full-stack, cloud native full-stack or app-only injection deployment strategy. 
 
 Dynatrace Operator manages classic full-stack injection after the following resources are deployed.
 
