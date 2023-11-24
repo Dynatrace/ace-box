@@ -1,7 +1,7 @@
 ---
 # BEGIN ANSIBLE MANAGED BLOCK - host
 host_group: "{{ host_group | default('ace-box') }}"
-ingress_class: "{{ ingress_class | default('public') }}"
+ingress_class: "{{ ingress_class | default('traefik') }}"
 ingress_domain: "{{ ingress_domain | default(None) }}"
 ingress_protocol: "{{ ingress_protocol | default(None) }}"
 # END ANSIBLE MANAGED BLOCK - host
