@@ -8,9 +8,9 @@ spec:
   size: 100users # The size of your installation. This can be '100users', '1000users, '5000users', '10000users', or '25000users'.
   ingress:
     enabled: true
-    host: mattermost.{{ ingress_domain }}
+    host: "mattermost.{{ ingress_domain }}"
     annotations:
-      kubernetes.io/ingress.class: public
+      kubernetes.io/ingress.class: "{{ ingress_class }}"
   mattermostEnv:
     - name: MM_SERVICESETTINGS_ENABLELOCALMODE
       value: "true"
