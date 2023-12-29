@@ -1,0 +1,8 @@
+#
+# k3s restart
+#
+- name: k3s restart
+  become: true
+  become_user: root
+  shell:
+    cmd: "systemctl restart k3s"

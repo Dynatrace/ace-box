@@ -1,0 +1,14 @@
+- name: Private registry configuration
+  ansible.builtin.template:
+    src: registry.yaml.j2
+    dest: "/home/{{ ace_box_user }}/registry-resources.yaml"
+    mode: 0600
+
+- name: Install resources private
+  become: true
+  become_user: root
+  shell:
+    cmd: "kubectl apply -f /home/{{ ace_box_user }}/registry-resources.yaml"
+
+- include_tasks:
+      file: configure-registry.yml # Includes k3s restart
