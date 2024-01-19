@@ -62,7 +62,7 @@ configs:
         #trigger related
         tag_service:
           type: environment
-          name: SRG_EVALUATION_SERVICE
+          name: RELEASE_PRODUCT
         tag_stage:
           type: environment
           name: SRG_EVALUATION_STAGE
