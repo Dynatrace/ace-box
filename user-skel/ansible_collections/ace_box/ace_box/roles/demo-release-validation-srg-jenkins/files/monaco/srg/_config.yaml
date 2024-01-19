@@ -73,20 +73,12 @@ configs:
           property: id
           type: reference
           configId: simplenodeguardian
-        #gitlab related
-        gitlab_task_description: "Create a Gitlab Issue when SRG fails"
-        gitlab_url:
-          type: environment
-          name: GITLAB_EXTERNAL_ENDPOINT
-        gitlab_private_token:
-          type: environment
-          name: GITLAB_PRIVATE_TOKEN
-        gitlab_username:
-          type: environment
-          name: GITLAB_USERNAME
-        gitlab_passwd:
-          type: environment
-          name: GITLAB_PASSWORD
+        #gitea related
+        gitea_task_description: "Create a Git Issue when SRG fails"
+        gitea_url: "ED url"
+        gitea_private_token: "ED token"
+        gitea_username: "ED username"
+        gitea_passwd: "ED password"
         dt_url:
           type: environment
           name: DT_TENANT_URL

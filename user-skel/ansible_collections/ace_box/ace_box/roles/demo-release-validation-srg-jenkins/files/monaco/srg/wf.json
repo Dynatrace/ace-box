@@ -79,7 +79,7 @@
       "description": "Retrieves entity and extracts ownership data from it.",
       "predecessors": ["query_service_entities"]
     },
-    "create_gitlab_issue": {
+    "create_gitea_issue": {
       "action": "dynatrace.automations:http-function",
       "conditions": {
         "custom": "{{`{{`}} (result('identify_ownership').owners | length > 0) {{`}}`}}",
@@ -87,17 +87,17 @@
           "identify_ownership": "OK"
         }
       },
-      "description": "{{ .gitlab_task_description }}",
+      "description": "{{ .gitea_task_description }}",
       "input": {
         "headers": {
           "Content-Type": "application/json",
-          "PRIVATE-TOKEN": "{{ .gitlab_private_token }}"
+          "PRIVATE-TOKEN": "{{ .gitea_private_token }}"
         },
         "method": "POST",
-        "url": "{{ .gitlab_url }}/api/v4/projects/{{`{{`}} result(\"identify_ownership\").owners[0].contactDetails | selectattr('integrationType', 'equalto', 'JIRA') | map(attribute='jira.project') | first() {{`}}`}}/issues",
+        "url": "{{ .gitea_url }}/api/v4/projects/{{`{{`}} result(\"identify_ownership\").owners[0].contactDetails | selectattr('integrationType', 'equalto', 'JIRA') | map(attribute='jira.project') | first() {{`}}`}}/issues",
         "payload": "{\n  \"title\": \"Site Reliability Guardian validation failed\",\n  \"description\": \"For the SRG validation details, go to {{`{{`}} result(\"evaluate_srg\").validation_url {{`}}`}}\"\n}"
       },
-      "name": "create_gitlab_issue",
+      "name": "create_gitea_issue",
       "position": {
         "x": 0,
         "y": 4

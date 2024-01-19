@@ -16,8 +16,8 @@
     },
     {
       "jira": {
-        "project": "{{ .gitlabProjectId }}",
-        "defaultAssignee": "{{ .gitlabDefaultAssigneeId }}"
+        "project": "{{ .giteaProjectId }}",
+        "defaultAssignee": "{{ .giteaDefaultAssigneeId }}"
       },
       "integrationType": "JIRA"
     }
