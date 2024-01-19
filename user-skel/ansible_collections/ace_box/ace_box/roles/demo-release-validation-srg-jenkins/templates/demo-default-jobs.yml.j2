@@ -27,7 +27,7 @@ controller:
               }
               definition {
                 cpsScm {
-                  scriptPath('jenkins/build.Jenkinsfile')
+                  scriptPath('jenkins/01_build_images.Jenkinsfile')
                   scm {
                     git {
                         remote { 
@@ -42,7 +42,26 @@ controller:
               }
             }
         - script: >
-            pipelineJob('{{ demo_jenkins_folder }}/2. Deploy') {
+            pipelineJob('{{ demo_jenkins_folder }}/2. Monaco') {
+              definition {
+                cpsScm {
+                  scriptPath('jenkins/02_monaco.Jenkinsfile')
+                  scm {
+                    git {
+                        remote { 
+                          url('{{ ingress_protocol }}://{{ git_domain }}/{{ demo_org }}/{{ demo_repo }}')
+                          credentials('git-creds-ace')
+                        }
+                        branch('*/main')
+                    }
+                  }
+                  lightweight()
+                }
+              }
+            }
+
+        - script: >
+            pipelineJob('{{ demo_jenkins_folder }}/3. Deploy') {
               parameters {
                 stringParam('RELEASE_PRODUCT')
                 stringParam('IMAGE_NAME')
@@ -53,7 +72,7 @@ controller:
               }
               definition {
                 cpsScm {
-                  scriptPath('jenkins/deployStaging.Jenkinsfile')
+                  scriptPath('jenkins/03_deploy.Jenkinsfile')
                   scm {
                     git {
                         remote { 
@@ -68,7 +87,7 @@ controller:
               }
             }
         - script: >
-            pipelineJob('{{ demo_jenkins_folder }}/3. Test') {
+            pipelineJob('{{ demo_jenkins_folder }}/4. Test') {
               parameters {
                 stringParam('RELEASE_PRODUCT')
                 stringParam('IMAGE_NAME')
@@ -80,7 +99,7 @@ controller:
               }
               definition {
                 cpsScm {
-                  scriptPath('jenkins/test.Jenkinsfile')
+                  scriptPath('jenkins/04_test.Jenkinsfile')
                   scm {
                     git {
                         remote { 
