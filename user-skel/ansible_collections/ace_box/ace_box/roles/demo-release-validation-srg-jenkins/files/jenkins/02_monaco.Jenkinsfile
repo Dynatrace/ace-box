@@ -18,8 +18,8 @@ pipeline {
         RELEASE_PRODUCT = 'simplenodeservice'
         RELEASE_STAGE = 'staging'
         DEMO_IDENTIFIER = "srg-jenkins"
-        SRG_EVALUATION_STAGE: "staging"
-        TEST_TIMEFRAME: "5m"
+        SRG_EVALUATION_STAGE = "staging"
+        TEST_TIMEFRAME = "5m"
     }
     stages {
         stage('Workflow and SRG configurations - Validate') {
