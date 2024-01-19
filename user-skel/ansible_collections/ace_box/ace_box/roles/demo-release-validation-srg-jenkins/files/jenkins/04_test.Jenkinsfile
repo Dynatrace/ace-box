@@ -153,13 +153,8 @@ pipeline {
         stage('Promote to production') {
             // no agent, so executors are not used up when waiting for other job to complete
             agent none
-            when {
-                expression {
-                    return env.DPROD == 'true'
-                }
-            }
             steps {
-                build job: '4. Deploy production',
+                build job: '5. Deploy production',
                     wait: false,
                     parameters: [
                         string(name: 'RELEASE_PRODUCT', value: "${env.RELEASE_PRODUCT}"),
