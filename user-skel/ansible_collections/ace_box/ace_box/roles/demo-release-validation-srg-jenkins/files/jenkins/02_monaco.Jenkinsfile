@@ -17,7 +17,7 @@ pipeline {
         DT_OWNER_IDENTIFIER = 'release-validation-jenkins'
         RELEASE_PRODUCT = 'simplenodeservice'
         RELEASE_STAGE = 'staging'
-        DEMO_IDENTIFIER = "srg-jenkins"
+        DEMO_IDENTIFIER = "srgjenkins"
         SRG_EVALUATION_STAGE = "staging"
         TEST_TIMEFRAME = "5m"
     }
