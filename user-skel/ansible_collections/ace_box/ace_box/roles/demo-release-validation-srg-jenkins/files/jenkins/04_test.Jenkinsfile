@@ -135,9 +135,9 @@ pipeline {
                             export SRG_EVALUATION_SERVICE: "$RELEASE_PRODUCT"
                             export SRG_EVALUATION_STAGE: "staging"
 
-                            echo "BUILD_ID ${BUILD_ID} is being evaluated via Site Reliability Guardian"
-                            eval_start=$(cat srg.test.starttime)
-                            eval_end=$(cat srg.test.endtime)
+                            echo "BUILD_ID $BUILD_ID is being evaluated via Site Reliability Guardian"
+                            eval_start="${cat srg.test.starttime}"
+                            eval_end="${cat srg.test.endtime}"
                             export LOG_LEVEL=verbose
                             dta srg evaluate --service $SRG_EVALUATION_SERVICE --stage $SRG_EVALUATION_STAGE --start-time=$eval_start --end-time=$eval_end --stop-on-failure
                         """
