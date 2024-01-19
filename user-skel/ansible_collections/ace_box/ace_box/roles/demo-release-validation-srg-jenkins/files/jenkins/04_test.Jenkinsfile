@@ -43,35 +43,12 @@ pipeline {
         DT_API_TOKEN = credentials('DT_API_TOKEN')
         DT_TENANT_URL = credentials('DT_TENANT_URL')
 
-        // Keptn params
-        CLOUD_AUTOMATION_API_TOKEN = credentials('KEPTN_API_TOKEN')
-        CLOUD_AUTOMATION_ENDPOINT = "${env.KEPTN_ENDPOINT}"
-        CLOUD_AUTOMATION_PROJECT = "${env.RELEASE_PRODUCT}"
-        CLOUD_AUTOMATION_SERVICE = "${env.RELEASE_PRODUCT}"
-        CLOUD_AUTOMATION_STAGE = 'staging' // For the sake of this demo, "staging" is preferred over "${env.RELEASE_STAGE}".
-        CLOUD_AUTOMATION_SOURCE = 'jenkins'
-        CLOUD_AUTOMATION_MONITORING = 'dynatrace'
-        SHIPYARD_FILE = 'cloudautomation/shipyard.yaml'
-        SLO_FILE = 'cloudautomation/slo.yaml'
-        SLI_FILE = 'cloudautomation/sli.yaml'
-        DT_CONFIG_FILE = 'cloudautomation/dynatrace.conf.yaml'
     }
     agent {
         label 'kubegit'
     }
     stages {
-        stage('Quality Gate Init') {
-            agent {
-                    label 'cloud-automation-runner'
-            }
-            steps {
-                checkout scm
-                container('cloud-automation-runner') {
-                    sh '/cloud_automation/cloud_automation_init.sh'
-                }
-                stash includes: 'cloud_automation.init.json', name: 'cloud_automation-init'
-            }
-        }
+
         stage('DT Test Start') {
             steps {
                     script {
@@ -94,9 +71,9 @@ pipeline {
         stage('Run performance test') {
             steps {
                 container('jmeter') {
-                    sh 'echo $(date --utc +%FT%T.000Z) > cloud_automation.test.starttime'
+                    sh 'echo $(date --utc +%FT%T.000Z) > srg.test.starttime'
                 }
-                stash includes: 'cloud_automation.test.starttime', name: 'cloud_automation.test.starttime'
+                stash includes: 'srg.test.starttime', name: 'srg.test.starttime'
                 checkout scm
                 container('jmeter') {
                     script {
@@ -120,9 +97,9 @@ pipeline {
                 }
 
                 container('jmeter') {
-                    sh 'echo $(date --utc +%FT%T.000Z) > cloud_automation.test.endtime'
+                    sh 'echo $(date --utc +%FT%T.000Z) > srg.test.endtime'
                 }
-                stash includes: 'cloud_automation.test.endtime', name: 'cloud_automation.test.endtime'
+                stash includes: 'srg.test.endtime', name: 'srg.test.endtime'
             }
         }
         stage('DT Test Stop') {
@@ -145,69 +122,26 @@ pipeline {
             }
         }
 
-        stage('Quality Gate') {
+        stage('Release Validation with SRG') {
             agent {
-                    label 'cloud-automation-runner'
+                    label 'dta-runner'
             }
             steps {
-                    unstash 'cloud_automation-init'
-                    unstash 'cloud_automation.test.starttime'
-                    unstash 'cloud_automation.test.endtime'
+                    unstash 'srg.test.starttime'
+                    unstash 'srg.test.endtime'
 
-                    container('cloud-automation-runner') {
-                        sh """
-                            export CLOUD_AUTOMATION_LABELS='[{"DT_RELEASE_VERSION":"'${env.RELEASE_VERSION}'"},{"DT_RELEASE_BUILD_VERSION":"'${env.RELEASE_BUILD_VERSION}'"},{"DT_RELEASE_STAGE":"'${env.RELEASE_STAGE}'"},{"DT_RELEASE_PRODUCT":"'${env.RELEASE_PRODUCT}'"}]'
+                    container('dta-runner') {
+                        sh """                            
+                            export SRG_EVALUATION_SERVICE: "$RELEASE_PRODUCT"
+                            export SRG_EVALUATION_STAGE: "staging"
 
-                            export CI_PIPELINE_IID="${BUILD_ID}"
-                            export CI_JOB_NAME="${JOB_NAME}"
-                            export CI_JOB_URL="${JOB_URL}"
-                            export CI_PROJECT_NAME="${env.RELEASE_PRODUCT}"
-
-                            /cloud_automation/cloud_automation_eval.sh
+                            echo "BUILD_ID ${BUILD_ID} is being evaluated via Site Reliability Guardian"
+                            eval_start=$(cat srg.test.starttime)
+                            eval_end=$(cat srg.test.endtime)
+                            export LOG_LEVEL=verbose
+                            dta srg evaluate --service $SRG_EVALUATION_SERVICE --stage $SRG_EVALUATION_STAGE --start-time=$eval_start --end-time=$eval_end --stop-on-failure
                         """
                     }
-            }
-        }
-
-        stage('Release approval') {
-            // no agent, so executors are not used up when waiting for approvals
-            agent none
-            steps {
-                script {
-                    switch (currentBuild.result) {
-                        case 'SUCCESS':
-                            env.DPROD = true
-                            break
-                        case 'UNSTABLE':
-                            try {
-                                timeout(time:3, unit:'MINUTES') {
-                                    env.APPROVE_PROD = input message: 'Promote to Production', ok: 'Continue', parameters: [choice(name: 'APPROVE_PROD', choices: 'YES\nNO', description: 'Deploy from STAGING to PRODUCTION?')]
-                                    if (env.APPROVE_PROD == 'YES') {
-                                        env.DPROD = true
-                                    } else {
-                                        env.DPROD = false
-                                    }
-                                }
-                            } catch (error) {
-                                env.DPROD = false
-                                echo 'Timeout has been reached! Deploy to PRODUCTION automatically stopped'
-                            }
-                            break
-                        case 'FAILURE':
-                            env.DPROD = false
-
-                            event.pushDynatraceErrorEvent(
-                                tagRule: getTagRules(),
-                                title: "Quality Gate failed for ${env.RELEASE_PRODUCT} ${env.RELEASE_BUILD_VERSION}",
-                                description: "Quality Gate evaluation failed for ${env.RELEASE_PRODUCT} ${env.RELEASE_BUILD_VERSION}",
-                                source : 'jenkins',
-                                customProperties : [
-                                    'Jenkins Build Number': env.BUILD_ID
-                                ]
-                            )
-                            break
-                    }
-                }
             }
         }
 

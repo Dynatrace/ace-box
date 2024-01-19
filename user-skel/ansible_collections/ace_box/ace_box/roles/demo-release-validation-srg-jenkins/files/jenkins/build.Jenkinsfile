@@ -47,8 +47,26 @@ pipeline {
         stage('Monaco') {
             steps {
                 build job: '2. Monaco',
-                wait: false
+                wait: true
             }
         }
+
+        stage('Deploy to staging') {
+            steps {
+                build job: '3. Deploy',
+                parameters: [
+                    string(name: 'RELEASE_PRODUCT', value: "${env.RELEASE_PRODUCT}"),
+                    string(name: 'RELEASE_VERSION', value: "${env.RELEASE_VERSION}"),
+                    string(name: 'RELEASE_BUILD_VERSION', value: "${env.RELEASE_BUILD_VERSION}"),
+                    string(name: 'RELEASE_STAGE', value: 'staging-jenkins'),
+                    string(name: 'IMAGE_TAG', value: "${env.IMAGE_TAG}"),
+                    string(name: 'IMAGE_NAME', value: "${env.IMAGE_NAME}")
+                ],
+                wait: true
+            }
+        }
+
+
+
     }
 }

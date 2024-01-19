@@ -48,7 +48,7 @@ pipeline {
                         }
                         stage('Deploy good build') {
                             steps {
-                                build job: 'release-validation-jenkins/3. Deploy',
+                                build job: 'release-validation-jenkins/3. Deploy staging',
                                 wait: false,
                                 parameters: [
                                     string(name: 'RELEASE_PRODUCT', value: "${env.RELEASE_PRODUCT}"),
@@ -100,7 +100,7 @@ pipeline {
                         }
                         stage('Deploy faulty build') {
                             steps {
-                                build job: 'release-validation-jenkins/3. Deploy',
+                                build job: 'release-validation-jenkins/3. Deploy staging',
                                 wait: false,
                                 parameters: [
                                     string(name: 'RELEASE_PRODUCT', value: "${env.RELEASE_PRODUCT}"),

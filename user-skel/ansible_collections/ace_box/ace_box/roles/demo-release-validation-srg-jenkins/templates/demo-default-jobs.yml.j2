@@ -61,7 +61,7 @@ controller:
             }
 
         - script: >
-            pipelineJob('{{ demo_jenkins_folder }}/3. Deploy') {
+            pipelineJob('{{ demo_jenkins_folder }}/3. Deploy staging') {
               parameters {
                 stringParam('RELEASE_PRODUCT')
                 stringParam('IMAGE_NAME')
