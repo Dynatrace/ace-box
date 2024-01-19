@@ -1,0 +1,13 @@
+---
+useCases:
+  demo-release-validation-jenkins:
+    previews:
+    - section: demo-release-validation-jenkins
+      description: Staging
+      url: "{{ ingress_protocol }}://simplenodeservice-staging-jenkins.{{ ingress_domain }}"
+    - section: demo-release-validation-jenkins
+      description: Production
+      url: "{{ ingress_protocol }}://simplenodeservice-prod-jenkins.{{ ingress_domain }}"
+    guides:
+    - description: "Quality Gates, Monitoring as a Service and Monitoring as Code - Demo using Jenkins, Gitea and Cloud Automation"
+      url: "{{ ingress_protocol }}://gitea.{{ ingress_domain }}/demo/release-validation-jenkins/src/branch/main/demo"

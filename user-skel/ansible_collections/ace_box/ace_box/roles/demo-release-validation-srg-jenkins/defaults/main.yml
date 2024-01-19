@@ -1,0 +1,5 @@
+---
+demo_quality_gates_jenkins_org: "demo"
+demo_quality_gates_jenkins_repo_name: "release-validation-jenkins"
+demo_quality_gates_jenkins_folder: "demo-release-validation-jenkins"
+monacoVersion: "2.9.2"

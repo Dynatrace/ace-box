@@ -1,0 +1,140 @@
+controller:
+  JCasC:
+    configScripts:
+      demo-default-jobs-config: |
+        jobs:
+        - script: >
+            folder('{{ demo_jenkins_folder }}')
+        - script: >
+            multibranchPipelineJob('{{ demo_jenkins_folder }}/Detect SCM drift') {
+              branchSources {
+                git {
+                  id('B8BE0E28-4D53-46B2-BB1C-3BD25CA36EA8')
+                  remote('{{ ingress_protocol }}://{{ git_username }}:{{ git_token }}@{{ git_domain }}/{{ demo_org }}/{{ demo_repo }}.git')
+                  includes('main')
+                }
+              }
+              factory {
+                workflowBranchProjectFactory {
+                  scriptPath('jenkins/triggerBuild.Jenkinsfile')
+                }
+              }
+            }
+        - script: >
+            pipelineJob('{{ demo_jenkins_folder }}/1. Build') {
+              parameters {
+                choiceParam('BUILD', ['1','2','3','4'], 'Select the build you want to deploy (affects application behavior, github.com/grabnerandi/simplenodeservice for more details)')
+              }
+              definition {
+                cpsScm {
+                  scriptPath('jenkins/build.Jenkinsfile')
+                  scm {
+                    git {
+                        remote { 
+                          url('{{ ingress_protocol }}://{{ git_domain }}/{{ demo_org }}/{{ demo_repo }}')
+                          credentials('git-creds-ace')
+                        }
+                        branch('*/main')
+                    }
+                  }
+                  lightweight()
+                }
+              }
+            }
+        - script: >
+            pipelineJob('{{ demo_jenkins_folder }}/2. Deploy') {
+              parameters {
+                stringParam('RELEASE_PRODUCT')
+                stringParam('IMAGE_NAME')
+                stringParam('IMAGE_TAG')
+                stringParam('RELEASE_VERSION')
+                stringParam('RELEASE_BUILD_VERSION')
+                stringParam('RELEASE_STAGE')
+              }
+              definition {
+                cpsScm {
+                  scriptPath('jenkins/deployStaging.Jenkinsfile')
+                  scm {
+                    git {
+                        remote { 
+                          url('{{ ingress_protocol }}://{{ git_domain }}/{{ demo_org }}/{{ demo_repo }}')
+                          credentials('git-creds-ace')
+                        }
+                        branch('*/main')
+                    }
+                  }
+                  lightweight()
+                }
+              }
+            }
+        - script: >
+            pipelineJob('{{ demo_jenkins_folder }}/3. Test') {
+              parameters {
+                stringParam('RELEASE_PRODUCT')
+                stringParam('IMAGE_NAME')
+                stringParam('IMAGE_TAG')
+                stringParam('RELEASE_VERSION')
+                stringParam('RELEASE_BUILD_VERSION')
+                stringParam('RELEASE_STAGE')
+                choiceParam('QG_MODE', ['yaml','dashboard'], 'Use yaml or dashboard for QG')
+              }
+              definition {
+                cpsScm {
+                  scriptPath('jenkins/test.Jenkinsfile')
+                  scm {
+                    git {
+                        remote { 
+                          url('{{ ingress_protocol }}://{{ git_domain }}/{{ demo_org }}/{{ demo_repo }}')
+                          credentials('git-creds-ace')
+                        }
+                        branch('*/main')
+                    }
+                  }
+                  lightweight()
+                }
+              }
+            }
+        - script: >
+            pipelineJob('{{ demo_jenkins_folder }}/4. Deploy production') {
+              parameters {
+                stringParam('RELEASE_PRODUCT')
+                stringParam('IMAGE_NAME')
+                stringParam('IMAGE_TAG')
+                stringParam('RELEASE_VERSION')
+                stringParam('RELEASE_BUILD_VERSION')
+                stringParam('RELEASE_STAGE')
+              }
+              definition {
+                cpsScm {
+                  scriptPath('jenkins/deployProd.Jenkinsfile')
+                  scm {
+                    git {
+                        remote { 
+                          url('{{ ingress_protocol }}://{{ git_domain }}/{{ demo_org }}/{{ demo_repo }}')
+                          credentials('git-creds-ace')
+                        }
+                        branch('*/main')
+                    }
+                  }
+                  lightweight()
+                }
+              }
+            }
+        - script: >
+            pipelineJob('{{ demo_jenkins_folder }}/Monitoring as Code') {
+              definition {
+                cpsScm {
+                  scriptPath('jenkins/mac.Jenkinsfile')
+                  scm {
+                    git {
+                        remote { 
+                          url('{{ ingress_protocol }}://{{ git_domain }}/{{ demo_org }}/{{ demo_repo }}')
+                          credentials('git-creds-ace')
+                        }
+                        branch('*/main')
+                    }
+                  }
+                  lightweight()
+                }
+              }
+            }

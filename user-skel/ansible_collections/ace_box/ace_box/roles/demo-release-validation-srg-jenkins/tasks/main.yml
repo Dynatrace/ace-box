@@ -1,0 +1,77 @@
+---
+- include_role:
+    name: microk8s
+
+- include_role:
+    name: dt-activegate-classic
+  vars:
+    activegate_install_synthetic: true
+
+- include_role:
+    name: dt-operator
+
+- include_role:
+    name: otel-collector
+
+
+- include_role:
+    name: monaco-v2
+
+- include_role:
+    name: gitea
+
+
+- include_role:
+    name: gitea
+    tasks_from: source-secret
+  when: gitea_access_token is not defined or gitea_username is not defined or gitea_password is not defined
+
+- include_role:
+    name: gitea
+    tasks_from: create-organization
+  vars:
+    gitea_org: "{{ demo_quality_gates_jenkins_org }}"
+
+- include_role:
+    name: gitea
+    tasks_from: create-repository
+  vars:
+    gitea_org: "{{ demo_quality_gates_jenkins_org }}"
+    gitea_repo: "{{ demo_quality_gates_jenkins_repo_name }}"
+
+- name: Source Gitea endpoint
+  include_role:
+    name: gitea
+    tasks_from: source-endpoints
+
+- ansible.builtin.include_tasks: simplenode.yml
+- ansible.builtin.include_tasks: jenkins.yml
+
+# Include use case specific Jenkins values
+# - set_fact:
+#     include_jenkins_value_file: "{{ role_path }}/templates/demo-default-jobs.yml.j2"
+
+# - include_role:
+#     name: jenkins
+#     tasks_from: template-values-file
+#   vars:
+#     git_username: "{{ gitea_username }}"
+#     git_token: "{{ gitea_access_token }}"
+#     demo_repo: "{{ demo_quality_gates_jenkins_repo_name }}"
+#     demo_org: "{{ demo_quality_gates_jenkins_org }}"
+#     demo_jenkins_folder: "{{ demo_quality_gates_jenkins_folder }}"
+#     git_domain: "gitea.{{ ingress_domain }}"
+
+# - include_role:
+#     name: jenkins
+
+# Include use case specific Dashboard values
+- set_fact:
+    include_dashboard_value_file: "{{ role_path }}/templates/demo-release-validation-jenkins-dashboard.yml.j2"
+
+- include_role:
+    name: dashboard
+    tasks_from: template-values-file
+
+- include_role:
+    name: dashboard

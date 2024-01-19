@@ -1,0 +1,30 @@
+---
+
+- set_fact:
+    role_path_abs: "{{ role_path }}"
+
+- include_role:
+    name: app-simplenode
+  vars:
+    app_simplenode_overwrites:
+    - dest: demo/
+    - dest: README.md
+    - dest: docs/
+    - dest: cloudautomation/
+    - dest: jmeter/
+    - dest: locust/
+    - dest: monaco/
+      src: "{{ role_path_abs }}/files/monaco/"
+    - dest: jenkins/
+      src: "{{ role_path_abs }}/files/jenkins/"
+    - dest: load-gen/
+    - dest: build_number.txt
+    - dest: .gitlab-ci.yml
+    git_username: "{{ gitea_username }}"
+    git_password: "{{ gitea_password }}"
+    git_endpoint: "{{ gitea_internal_endpoint | regex_replace(\"http://\") }}"
+    git_org_name: "{{ demo_quality_gates_jenkins_org }}"
+    repo_name: "{{ demo_quality_gates_jenkins_repo_name }}"
+
+- set_fact:
+    role_path_abs:

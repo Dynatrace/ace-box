@@ -47,6 +47,12 @@
         - demo_release_validation_srg_gitlab
         - never
 
+    # Use case - Release Validation with Site Reliability Guardion via Jenkins
+    - role: demo-release-validation-srg-jenkins
+      tags:
+        - demo_release_validation_srg_jenkins
+        - never
+
     # Use case - Auto Remediation Workflows with Ansible
     - role: demo-ar-workflows-ansible
       tags:

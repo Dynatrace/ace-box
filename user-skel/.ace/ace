@@ -48,6 +48,7 @@ enable_targets = [
     'demo_monaco_gitops',
     'demo_ar_workflows_gitlab',
     'demo_release_validation_srg_gitlab',
+    'demo_release_validation_srg_jenkins',
     'demo_ar_workflows_ansible'
 ]
 
