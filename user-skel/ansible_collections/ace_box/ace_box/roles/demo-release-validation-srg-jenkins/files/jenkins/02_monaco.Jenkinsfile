@@ -27,9 +27,9 @@ pipeline {
                 container('monaco') {
                     script {
                         sh """
-                            MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy manifest.yaml --project infrastructure --group staging --dry-run
-                            MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy manifest.yaml --project app --group staging --dry-run
-                            MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy manifest.yaml --project srg --group staging --dry-run
+                            MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy monaco/manifest.yaml --project infrastructure --group staging --dry-run
+                            MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy monaco/manifest.yaml --project app --group staging --dry-run
+                            MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy monaco/manifest.yaml --project srg --group staging --dry-run
                         """
                     }
                 }
@@ -40,10 +40,10 @@ pipeline {
                 container('monaco') {
                     script {
                         sh """
-                            MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy manifest.yaml --project infrastructure --group staging
+                            MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy monaco/manifest.yaml --project infrastructure --group staging
                             sleep 20 # You can adjust the wait time if this is not enough
-                            MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy manifest.yaml --project app --group staging
-                            MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy manifest.yaml --project srg --group staging
+                            MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy monaco/manifest.yaml --project app --group staging
+                            MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy monaco/manifest.yaml --project srg --group staging
                             sleep 90
                         """
                     }
