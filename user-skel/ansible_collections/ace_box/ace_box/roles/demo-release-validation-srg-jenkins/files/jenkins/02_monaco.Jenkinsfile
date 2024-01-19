@@ -17,6 +17,9 @@ pipeline {
         DT_OWNER_IDENTIFIER = 'release-validation-jenkins'
         RELEASE_PRODUCT = 'simplenodeservice'
         RELEASE_STAGE = 'staging'
+        DEMO_IDENTIFIER = "srg-jenkins"
+        SRG_EVALUATION_STAGE: "staging"
+        TEST_TIMEFRAME: "5m"
     }
     stages {
         stage('Workflow and SRG configurations - Validate') {
@@ -24,9 +27,9 @@ pipeline {
                 container('monaco') {
                     script {
                         sh """
-                            MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project infrastructure --group staging --dry-run
-                            MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group staging --dry-run
-                            MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project srg --group staging --dry-run
+                            MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy manifest.yaml --project infrastructure --group staging --dry-run
+                            MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy manifest.yaml --project app --group staging --dry-run
+                            MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy manifest.yaml --project srg --group staging --dry-run
                         """
                     }
                 }
@@ -37,10 +40,10 @@ pipeline {
                 container('monaco') {
                     script {
                         sh """
-                            MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project infrastructure --group staging
+                            MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy manifest.yaml --project infrastructure --group staging
                             sleep 20 # You can adjust the wait time if this is not enough
-                            MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group staging
-                            MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project srg --group staging
+                            MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy manifest.yaml --project app --group staging
+                            MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy manifest.yaml --project srg --group staging
                             sleep 90
                         """
                     }

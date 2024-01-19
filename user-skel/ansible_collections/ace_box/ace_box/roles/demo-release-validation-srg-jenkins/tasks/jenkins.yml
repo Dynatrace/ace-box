@@ -25,7 +25,7 @@
 - include_role:
     name: jenkins
   vars:
-    jenkins_monaco_container_image: "dynatrace/dynatrace-configuration-as-code:{{ monacoVersion }}"
+    jenkins_monaco_v2_container_image: "dynatrace/dynatrace-configuration-as-code:{{ monacoVersion }}"
     dt_oauth_sso_endpoint: "{{ extra_vars.dt_oauth_sso_endpoint.rstrip('/') }}"
     dt_oauth_client_id: "{{ extra_vars.dt_oauth_client_id }}"
     dt_oauth_client_secret: "{{ extra_vars.dt_oauth_client_secret }}"
