@@ -42,6 +42,13 @@ pipeline {
         // DT params
         DT_API_TOKEN = credentials('DT_API_TOKEN')
         DT_TENANT_URL = credentials('DT_TENANT_URL')
+        DYNATRACE_URL_GEN3 = "${env.DYNATRACE_URL_GEN3}"
+        ACCOUNT_URN = credentials('ACCOUNT_URN')
+        DYNATRACE_CLIENT_ID = credentials('DYNATRACE_CLIENT_ID')
+        DYNATRACE_SECRET = credentials('DYNATRACE_SECRET')
+        DYNATRACE_SSO_URL = credentials('DYNATRACE_SSO_URL')
+        SRG_EVALUATION_SERVICE = 'simplenodeservice'
+        SRG_EVALUATION_STAGE = 'staging'        
 
     }
     agent {
@@ -126,21 +133,19 @@ pipeline {
             agent {
                     label 'dta-runner'
             }
+
             steps {
                     unstash 'srg.test.starttime'
                     unstash 'srg.test.endtime'
 
-                    container('dta-runner') {
-                        sh """                            
-                            export SRG_EVALUATION_SERVICE: "$RELEASE_PRODUCT"
-                            export SRG_EVALUATION_STAGE: "staging"
-
-                            echo "BUILD_ID $BUILD_ID is being evaluated via Site Reliability Guardian"
-                            eval_start="${cat srg.test.starttime}"
-                            eval_end="${cat srg.test.endtime}"
-                            export LOG_LEVEL=verbose
-                            dta srg evaluate --service $SRG_EVALUATION_SERVICE --stage $SRG_EVALUATION_STAGE --start-time=$eval_start --end-time=$eval_end --stop-on-failure
-                        """
+                    container('dta') {
+                        script {
+                         sh """                            
+                            eval_start=\$(cat srg.test.starttime)
+                            eval_end=\$(cat srg.test.endtime)
+                            dta srg evaluate --service $SRG_EVALUATION_SERVICE --stage $SRG_EVALUATION_STAGE --start-time=\$eval_start --end-time=\$eval_end --stop-on-failure
+                         """
+                        }
                     }
             }
         }
