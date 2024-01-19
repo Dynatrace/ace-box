@@ -11,7 +11,6 @@
     - dest: README.md
     - dest: docs/
     - dest: cloudautomation/
-    - dest: jmeter/
     - dest: locust/
     - dest: monaco/
       src: "{{ role_path_abs }}/files/monaco/"
