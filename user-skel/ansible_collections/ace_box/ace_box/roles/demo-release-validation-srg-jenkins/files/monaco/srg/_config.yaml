@@ -18,7 +18,7 @@ configs:
             - "app:simplenode"
         # objective - dql - response time
         objective_name_dql: "Response Time of API Method"
-        dqlQuery: "fetch logs\n| filter dt.process.name == \"simplenodeservice.simplenode-gitlab-staging\"\n| filter k8s.namespace.name == \"simplenode-gitlab-staging\"\n| filter matchesPhrase(content, \"/api/invoke\")\n| parse content, \"DATA '/api/' DATA 'rt:' SPACE? FLOAT:responsetime \" \n| filter isNotNull(responsetime) \n| summarize median(responsetime), alias:response_time "
+        dqlQuery: "fetch logs\n| filter dt.process.name == \"simplenodeservice.staging-jenkins\"\n| filter k8s.namespace.name == \"staging-jenkins\"\n| filter matchesPhrase(content, \"/api/invoke\")\n| parse content, \"DATA '/api/' DATA 'rt:' SPACE? FLOAT:responsetime \" \n| filter isNotNull(responsetime) \n| summarize median(responsetime), alias:response_time "
         comparisonOperator: "LESS_THAN_OR_EQUAL"
         failure_dql: 500
         warning_dql: 400
@@ -44,14 +44,14 @@ configs:
         warning_slo_availability: 99
         # objective - slo - process cpu usage
         objective_name_dql_cpu_usage: "Process Group Instance CPU Usage"
-        dqlQuery_cpu_usage: "timeseries cpu=avg(dt.process.cpu.usage), by:{dt.entity.process_group, host.name} \n| lookup [fetch dt.entity.process_group], sourceField:dt.entity.process_group, lookupField:id \n| filter matchesPhrase(lookup.entity.name,\"simplenode-gitlab-staging\") \n| fields usageCpuAvg = arrayAvg(cpu) \n| summarize cpuUsageAvg = max(usageCpuAvg)  "
+        dqlQuery_cpu_usage: "timeseries cpu=avg(dt.process.cpu.usage), by:{dt.entity.process_group, host.name} \n| lookup [fetch dt.entity.process_group], sourceField:dt.entity.process_group, lookupField:id \n| filter matchesPhrase(lookup.entity.name,\"simplenodeservice.staging-jenkins\") \n| fields usageCpuAvg = arrayAvg(cpu) \n| summarize cpuUsageAvg = max(usageCpuAvg)  "
         failure_dql_cpu_usage: 0.4
         warning_dql_cpu_usage: 0.3
       skip: false
   # workflow
   - id: simplenodeworkflow
     config:
-      name: Evaluate Simplenode with SRG
+      name: Simplenode SRG Evaluation
       template: wf.json
       skip: false
       parameters:
@@ -72,7 +72,6 @@ configs:
           property: id
           type: reference
           configId: simplenodeguardian
-        #gitea related
         gitea_task_description: "Create a Git Issue when SRG fails"
         gitea_url: "ED url"
         gitea_private_token: "ED token"
