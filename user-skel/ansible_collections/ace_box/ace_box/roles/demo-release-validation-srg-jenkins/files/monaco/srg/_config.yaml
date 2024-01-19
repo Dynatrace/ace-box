@@ -51,7 +51,7 @@ configs:
   # workflow
   - id: simplenodeworkflow
     config:
-      name: Simplenode SRG Evaluation
+      name: Evaluate Simplenode with SRG
       template: wf.json
       skip: false
       parameters:

@@ -27,7 +27,7 @@ controller:
               }
               definition {
                 cpsScm {
-                  scriptPath('jenkins/01_build_images.Jenkinsfile')
+                  scriptPath('jenkins/build.Jenkinsfile')
                   scm {
                     git {
                         remote { 
@@ -72,7 +72,7 @@ controller:
               }
               definition {
                 cpsScm {
-                  scriptPath('jenkins/03_deploy.Jenkinsfile')
+                  scriptPath('jenkins/deployStaging.Jenkinsfile')
                   scm {
                     git {
                         remote { 
@@ -114,7 +114,7 @@ controller:
               }
             }
         - script: >
-            pipelineJob('{{ demo_jenkins_folder }}/4. Deploy production') {
+            pipelineJob('{{ demo_jenkins_folder }}/5. Deploy production') {
               parameters {
                 stringParam('RELEASE_PRODUCT')
                 stringParam('IMAGE_NAME')
@@ -126,24 +126,6 @@ controller:
               definition {
                 cpsScm {
                   scriptPath('jenkins/deployProd.Jenkinsfile')
-                  scm {
-                    git {
-                        remote { 
-                          url('{{ ingress_protocol }}://{{ git_domain }}/{{ demo_org }}/{{ demo_repo }}')
-                          credentials('git-creds-ace')
-                        }
-                        branch('*/main')
-                    }
-                  }
-                  lightweight()
-                }
-              }
-            }
-        - script: >
-            pipelineJob('{{ demo_jenkins_folder }}/Monitoring as Code') {
-              definition {
-                cpsScm {
-                  scriptPath('jenkins/mac.Jenkinsfile')
                   scm {
                     git {
                         remote { 

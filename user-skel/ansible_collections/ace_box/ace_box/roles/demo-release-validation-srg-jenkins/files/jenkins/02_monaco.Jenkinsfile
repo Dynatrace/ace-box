@@ -35,7 +35,7 @@ pipeline {
                 }
             }
         }
-        stage('Dynatrace global project - Deploy') {
+        stage('Workflow and SRG configurations - Deploy') {
             steps {
                 container('monaco') {
                     script {
@@ -66,6 +66,13 @@ pipeline {
                         ]
                     )
                 }
+            }
+        }
+
+        stage('Deploy to Staging') {
+            steps {
+                build job: '3. Deploy',
+                wait: false
             }
         }
     }
