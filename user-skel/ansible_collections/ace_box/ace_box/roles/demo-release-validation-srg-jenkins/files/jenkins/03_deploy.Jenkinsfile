@@ -25,7 +25,7 @@ pipeline {
         )
         string(
             name: 'RELEASE_STAGE',
-            defaultValue: 'canary-jenkins',
+            defaultValue: 'staging',
             description: 'Namespace service will be deployed in.',
             trim: true
         )
@@ -66,7 +66,7 @@ pipeline {
                     --set ingress.isCanary=${env.IS_CANARY} \
                     --set ingress.canaryWeight=${env.CANARY_WEIGHT} \
                     --set dt_release_product=\"${env.RELEASE_PRODUCT}\" \
-                    --set dt_owner=\"demo-ar-workflows-ansible\" \
+                    --set dt_owner=\"release-validation-jenkins\" \
                     --set dt_tags=\"${env.DT_TAGS}\" \
                     --set dt_custom_prop=\"${env.DT_CUSTOM_PROP}\" \
                     --namespace ${env.RELEASE_STAGE} --create-namespace \

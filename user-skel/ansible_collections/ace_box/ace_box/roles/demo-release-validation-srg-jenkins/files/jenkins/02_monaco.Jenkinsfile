@@ -8,16 +8,15 @@ pipeline {
     environment {
         DT_API_TOKEN = credentials('DT_API_TOKEN')
         DT_TENANT_URL = "${env.DYNATRACE_URL_GEN3}"
-        DT_OAUTH_CLIENT_ID = credentials('DT_OAUTH_CLIENT_ID')
-        DT_OAUTH_CLIENT_SECRET = credentials('DT_OAUTH_CLIENT_SECRET')
-        DT_OAUTH_SSO_ENDPOINT = credentials('DT_OAUTH_SSO_ENDPOINT')
-        AWX_BASIC_AUTH = credentials('AWX_BASIC_AUTH')
+        DT_OAUTH_CLIENT_ID = credentials('DYNATRACE_CLIENT_ID')
+        DT_OAUTH_CLIENT_SECRET = credentials('DYNATRACE_SECRET')
+        DT_OAUTH_SSO_ENDPOINT = credentials('DYNATRACE_SSO_URL')
         // As of June 2023, MONACO_FEAT_AUTOMATION_RESOURCES flag required as feature is in preview
         MONACO_FEAT_AUTOMATION_RESOURCES = '1'
         // Monaco variables
-        DT_OWNER_IDENTIFIER = 'demo-ar-workflows-ansible'
+        DT_OWNER_IDENTIFIER = 'release-validation-jenkins'
         RELEASE_PRODUCT = 'simplenodeservice'
-        RELEASE_STAGE = 'canary-jenkins'
+        RELEASE_STAGE = 'staging'
     }
     stages {
         stage('Dynatrace global project - Validate') {

@@ -14,7 +14,7 @@ environmentGroups:
       - name: staging-environment
         url:
           type: environment
-          value: DT_PLATFORM_TENANT_URL
+          value: DT_TENANT_URL
         auth:
           token:
             name: DT_API_TOKEN
@@ -31,7 +31,7 @@ environmentGroups:
       - name: prod-environment
         url:
           type: environment
-          value: DT_PLATFORM_TENANT_URL
+          value: DT_TENANT_URL
         auth:
           token:
             name: DT_API_TOKEN

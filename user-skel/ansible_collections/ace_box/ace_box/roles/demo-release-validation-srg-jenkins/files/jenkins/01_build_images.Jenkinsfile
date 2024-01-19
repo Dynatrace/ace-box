@@ -48,13 +48,13 @@ pipeline {
                         }
                         stage('Deploy good build') {
                             steps {
-                                build job: 'demo-ar-workflows-ansible/3. Deploy',
+                                build job: 'release-validation-jenkins/3. Deploy',
                                 wait: false,
                                 parameters: [
                                     string(name: 'RELEASE_PRODUCT', value: "${env.RELEASE_PRODUCT}"),
                                     string(name: 'RELEASE_VERSION', value: "${env.RELEASE_VERSION}"),
                                     string(name: 'RELEASE_BUILD_VERSION', value: "${env.RELEASE_BUILD_VERSION}"),
-                                    string(name: 'RELEASE_STAGE', value: 'canary-jenkins'),
+                                    string(name: 'RELEASE_STAGE', value: 'staging'),
                                     string(name: 'IMAGE_TAG', value: "${env.IMAGE_TAG}"),
                                     string(name: 'IMAGE_NAME', value: "${env.IMAGE_NAME}"),
                                     booleanParam(name: 'IS_CANARY', value: "${env.IS_CANARY}"),
@@ -100,13 +100,13 @@ pipeline {
                         }
                         stage('Deploy faulty build') {
                             steps {
-                                build job: 'demo-ar-workflows-ansible/3. Deploy',
+                                build job: 'release-validation-jenkins/3. Deploy',
                                 wait: false,
                                 parameters: [
                                     string(name: 'RELEASE_PRODUCT', value: "${env.RELEASE_PRODUCT}"),
                                     string(name: 'RELEASE_VERSION', value: "${env.RELEASE_VERSION}"),
                                     string(name: 'RELEASE_BUILD_VERSION', value: "${env.RELEASE_BUILD_VERSION}"),
-                                    string(name: 'RELEASE_STAGE', value: 'canary-jenkins'),
+                                    string(name: 'RELEASE_STAGE', value: 'staging'),
                                     string(name: 'IMAGE_TAG', value: "${env.IMAGE_TAG}"),
                                     string(name: 'IMAGE_NAME', value: "${env.IMAGE_NAME}"),
                                     booleanParam(name: 'IS_CANARY', value: "${env.IS_CANARY}"),
@@ -121,7 +121,7 @@ pipeline {
         }
         stage('Monaco') {
             steps {
-                build job: 'demo-ar-workflows-ansible/2. Monaco',
+                build job: 'release-validation-jenkins/2. Monaco',
                 wait: false
             }
         }
