@@ -19,11 +19,15 @@ pipeline {
         RELEASE_STAGE = 'staging'
     }
     stages {
-        stage('Dynatrace global project - Validate') {
+        stage('Workflow and SRG configurations - Validate') {
             steps {
                 container('monaco') {
                     script {
-                        sh 'monaco deploy monaco/manifest.yaml -p global -d'
+                        sh """
+                            MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project infrastructure --group staging --dry-run
+                            MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group staging --dry-run
+                            MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project srg --group staging --dry-run
+                        """
                     }
                 }
             }
@@ -32,29 +36,18 @@ pipeline {
             steps {
                 container('monaco') {
                     script {
-                        sh 'monaco deploy monaco/manifest.yaml -p global'
+                        sh """
+                            MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project infrastructure --group staging
+                            sleep 20 # You can adjust the wait time if this is not enough
+                            MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group staging
+                            MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project srg --group staging
+                            sleep 90
+                        """
                     }
                 }
             }
         }
-        stage('Dynatrace app project - Validate') {
-            steps {
-                container('monaco') {
-                    script {
-                        sh 'monaco deploy monaco/manifest.yaml -p app -d'
-                    }
-                }
-            }
-        }
-        stage('Dynatrace app project - Deploy') {
-            steps {
-                container('monaco') {
-                    script {
-                        sh 'monaco deploy monaco/manifest.yaml -p app'
-                    }
-                }
-            }
-        }
+
         stage('Dynatrace configuration event') {
             steps {
                 script {
@@ -62,9 +55,9 @@ pipeline {
                     sleep(time:120, unit:'SECONDS')
 
                     event.pushDynatraceConfigurationEvent(
-                        tagRule: getTagRulesForHostEvent('ace-demo-canary'),
-                        description: 'Monaco deployment successful: ace-demo-canary',
-                        configuration: 'ace-demo-canary',
+                        tagRule: getTagRulesForHostEvent('ace-demo-staging'),
+                        description: 'Monaco deployment successful: ace-demo-staging',
+                        configuration: 'ace-demo-staging',
                         customProperties: [
                             'Approved by': 'ACE'
                         ]
