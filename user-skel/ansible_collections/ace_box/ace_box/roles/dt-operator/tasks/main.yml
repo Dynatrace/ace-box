@@ -38,6 +38,22 @@
     until: dt_operator is not failed
 
 - block:
+  - name: Download CSI manifest
+    ansible.builtin.get_url:
+      url: "https://github.com/Dynatrace/dynatrace-operator/releases/download/{{ dt_operator_release }}/kubernetes-csi.yaml"
+      dest: "{{ role_path }}/files/dt_operator-csi.yaml"
+      mode: '0664'
+  - name: Apply CSI manifest
+    kubernetes.core.k8s:
+      state: present
+      src: "{{ role_path }}/files/dt_operator-csi.yaml"
+    register: dt_operator_csi
+    retries: 10
+    delay: 5
+    until: dt_operator_csi is not failed
+    when: operator_mode != "classicFullStack"
+
+- block:
   - name: Template Dynakube manifest
     ansible.builtin.template:
       src: "{{ operator_mode }}.yaml.j2"
