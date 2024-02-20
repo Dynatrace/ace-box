@@ -119,7 +119,9 @@ spec:
       # For a list of available options, see https://www.dynatrace.com/support/help/shortlink/linux-custom-installation
       # For a list of the limitations for OneAgents in Docker, see https://www.dynatrace.com/support/help/shortlink/oneagent-docker#limitations
       #
-      # args: []
+      args:
+        - "--set-host-group={{ host_group }}"
+        - "--set-host-tag={{ host_group }}"
 
       # Optional: Adds custom environment variables to OneAgent pods
       #
