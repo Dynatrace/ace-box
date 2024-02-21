@@ -20,7 +20,7 @@
 
 - name: "Install app {{ dt_app_id }}"
   ansible.builtin.uri:
-    url: "{{ dt_environment_url_gen3.rstrip('/') }}/platform/app-engine/app-functions/v1/apps/dynatrace.hub/api/aggregated/install-catalog-app"
+    url: "{{ dt_environment_url_gen3.rstrip('/') }}/platform/app-engine/app-functions/v1/apps/dynatrace.hub/api/catalog/install-catalog-app"
     method: POST
     status_code: 200
     headers:

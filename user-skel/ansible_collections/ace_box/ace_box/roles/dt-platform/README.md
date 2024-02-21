@@ -2,6 +2,8 @@
 
 ## ensure-app
 
+> Attention: `ensure-app` uses a non-supported API. Use at your own risk, it might break at any point!
+
 Makes sure an App available in the Hub is installed.
 
 Requires vars:
