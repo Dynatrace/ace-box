@@ -11,6 +11,11 @@
     name: mvisonneau
     repo_url: "https://charts.visonneau.fr"
 
+- name: Ensure values file directory
+  file:
+    path: "{{ role_path }}/files"
+    state: directory
+
 - name: Template Helm values file
   ansible.builtin.template:
     src: gitlab-gcpe-values.yml.j2
