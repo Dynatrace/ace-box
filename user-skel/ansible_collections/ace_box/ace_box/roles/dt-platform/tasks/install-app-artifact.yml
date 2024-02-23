@@ -1,33 +1,51 @@
 ---
 - block:
-  - name: Request a DT OAuth access token
-    ansible.builtin.uri:
-      url: "{{ dt_oauth_sso_endpoint }}"
-      method: POST
-      status_code: 200
-      headers:
-        Content-Type: "application/x-www-form-urlencoded"
-      body_format: form-urlencoded
-      body:
-        grant_type: "client_credentials"
-        client_id: "{{ dt_oauth_client_id }}"
-        client_secret: "{{ dt_oauth_client_secret }}"
-        scope: "app-engine:apps:install"
-        resource: "{{ dt_oauth_account_urn }}"
-    register: auth_response_raw
-  - set_fact:
-      dt_oauth_access_token: "{{ auth_response_raw.json.access_token }}"
+    - name: Request a DT OAuth access token
+      ansible.builtin.uri:
+        url: "{{ dt_oauth_sso_endpoint }}"
+        method: POST
+        status_code: 200
+        headers:
+          Content-Type: "application/x-www-form-urlencoded"
+        body_format: form-urlencoded
+        body:
+          grant_type: "client_credentials"
+          client_id: "{{ dt_oauth_client_id }}"
+          client_secret: "{{ dt_oauth_client_secret }}"
+          scope: "app-engine:apps:install"
+          resource: "{{ dt_oauth_account_urn }}"
+      register: auth_response_raw
+    - set_fact:
+        dt_oauth_access_token: "{{ auth_response_raw.json.access_token }}"
 
-- name: "Install or update app {{ dt_app_artifact_path | basename }}"
-  ansible.builtin.uri:
-    url: "{{ dt_environment_url_gen3.rstrip('/') }}/platform/app-engine/registry/v1/apps"
-    method: POST
-    status_code: 202
-    headers:
-      Content-Type: "application/zip"
-      Authorization: "Bearer {{ dt_oauth_access_token }}"
-    src: "{{ dt_app_artifact_path }}"
-  register: post_apps_response_raw
+- include_role:
+    name: dt-platform
+    tasks_from: validate-app-version
+  vars:
+    dt_environment_url_gen3: "{{ extra_vars.dt_environment_url_gen3 }}"
+    dt_oauth_sso_endpoint: "{{ extra_vars.dt_oauth_sso_endpoint }}"
+    dt_oauth_client_id: "{{ extra_vars.dt_oauth_client_id }}"
+    dt_oauth_client_secret: "{{ extra_vars.dt_oauth_client_secret }}"
+    dt_oauth_account_urn: "{{ extra_vars.dt_oauth_account_urn }}"
 
-- set_fact:
-    dt_app_id: "{{ post_apps_response_raw.json.id }}"
+- block:
+    - debug:
+        msg: "{{ dt_app_version }} of {{ dt_app_id }} is installed in target environment already. Skipping installation."
+    - set_fact:
+        dt_app_id: "{{ dt_app_id }}"
+  when: dt_app_version is defined and dt_app_version is not none
+
+- block:
+    - name: "Install app {{ dt_app_id }}"
+      ansible.builtin.uri:
+        url: "{{ dt_environment_url_gen3.rstrip('/') }}/platform/app-engine/registry/v1/apps"
+        method: POST
+        status_code: 202
+        headers:
+          Content-Type: "application/zip"
+          Authorization: "Bearer {{ dt_oauth_access_token }}"
+        src: "{{ dt_app_artifact_path }}"
+      register: post_apps_response_raw
+    - set_fact:
+        dt_app_id: "{{ post_apps_response_raw.json.id }}"
+  when: dt_app_version is not defined or dt_app_version is none
