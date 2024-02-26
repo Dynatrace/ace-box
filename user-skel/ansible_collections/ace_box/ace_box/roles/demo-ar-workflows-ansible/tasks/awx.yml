@@ -6,7 +6,7 @@
     name: dt-access-token
   vars:
     access_token_var_name: "{{ awx_dt_access_token_name }}"
-    access_token_scope: ["problems.write","DataExport"]
+    access_token_scope: ["problems.write", "DataExport"]
 
 - name: AWX - Source secrets
   include_role:
@@ -65,6 +65,18 @@
   retries: 60
   delay: 5
   until: organization is not failed
+
+- name: Create a new AWX token
+  awx.awx.token:
+    description: "ACE-Box"
+    scope: "write"
+    state: present
+    controller_host: "{{ awx_internal_endpoint }}"
+    controller_password: "{{ awx_admin_password }}"
+    controller_username: "{{ awx_admin_username }}"
+
+- set_fact:
+    awx_controller_token: "{{ controller_token.token }}"
 
 - name: Create DT credential type
   awx.awx.credential_type:
