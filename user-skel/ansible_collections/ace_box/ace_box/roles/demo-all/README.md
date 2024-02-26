@@ -10,6 +10,13 @@
 |dt_oauth_client_secret|Dynatrace OAuth client secret|
 |dt_oauth_account_urn|Dynatrace OAuth account URN|
 
+### Optional extra vars
+
+|Variable name|Description|
+|---|---|
+|are_nightly_auto_runs_enabled|Optional: Enable automatic nightly use case runs; Default: false|
+
+
 Extra vars can be set e.g. as Terraform variables:
 
 ```

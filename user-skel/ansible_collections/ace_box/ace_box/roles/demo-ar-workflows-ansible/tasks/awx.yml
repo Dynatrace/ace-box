@@ -208,3 +208,7 @@
     controller_host: "{{ awx_internal_endpoint }}"
     controller_password: "{{ awx_admin_password }}"
     controller_username: "{{ awx_admin_username }}"
+  register: canary_template
+
+- set_fact:
+    demo_ar_workflows_ansible_template_id: "{{ canary_template.id }}"

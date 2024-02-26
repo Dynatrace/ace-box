@@ -1,0 +1,46 @@
+{
+  "title": "{{ .name }}",
+  "description": "",
+  "tasks": {
+    "trigger_bad_build": {
+      "name": "trigger_bad_build",
+      "description": "Trigger a GitLab pipeline",
+      "action": "my.dynatrace.gitlab.tobias.gremmer:gitlab-trigger-pipeline",
+      "input": {
+        "name": "",
+        "branchId": "main",
+        "projectId": "{{ .projectId }}",
+        "variables": [
+          {
+            "key": "BUILD_ID",
+            "value": "2"
+          }
+        ],
+        "connection": "{{ .connectionId }}",
+        "branchInputType": 0,
+        "projectInputType": 0
+      },
+      "position": {
+        "x": 0,
+        "y": 1
+      },
+      "predecessors": []
+    }
+  },
+  "isPrivate": false,
+  "trigger": {
+    "schedule": {
+      "rule": null,
+      "trigger": {
+        "type": "time",
+        "time": "04:00"
+      },
+      "timezone": "Europe/Amsterdam",
+      "isActive": true,
+      "isFaulty": false,
+      "filterParameters": {},
+      "inputs": {}
+    }
+  },
+  "schemaVersion": 3
+}

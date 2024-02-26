@@ -34,7 +34,7 @@
         "settings.write",
         "metrics.ingest",
         "openTelemetryTrace.ingest",
-        "logs.ingest"
+        "logs.ingest",
       ]
 
 - name: Monaco - Cleanup potential conflicting Monaco resources
@@ -91,6 +91,9 @@
   vars:
     gitlab_prj: "{{ gitlab_demo_srg_repo_name }}"
     gitlab_prj_namespace_id: "{{ gitlab_group_id }}"
+
+- set_fact:
+    demo_srg_gitlab_project_id: "{{ gitlab_project_id }}"
 
 - include_role:
     name: gitlab

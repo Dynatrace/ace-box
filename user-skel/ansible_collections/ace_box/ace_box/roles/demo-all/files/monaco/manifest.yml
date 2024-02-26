@@ -1,0 +1,26 @@
+---
+manifestVersion: "1.0"
+
+projects:
+  - name: connections
+  - name: workflows
+
+environmentGroups:
+  - name: default
+    environments:
+      - name: default
+        url:
+          type: environment
+          value: DT_PLATFORM_TENANT_URL
+        auth:
+          token:
+            type: environment
+            name: DT_API_TOKEN
+          oAuth:
+            clientId:
+              name: DT_OAUTH_CLIENT_ID
+            clientSecret:
+              name: DT_OAUTH_CLIENT_SECRET
+            tokenEndpoint:
+              type: environment
+              value: DT_OAUTH_SSO_ENDPOINT

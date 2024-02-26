@@ -1,0 +1,16 @@
+delete:
+  - project: workflows
+    type: workflow
+    id: demoArWorkflowsAnsible
+  - project: workflows
+    type: workflow
+    id: demoArWorkflowsGitlab
+  - project: workflows
+    type: workflow
+    id: demoReleaseValidationSrgGitlab1
+  - project: workflows
+    type: workflow
+    id: demoReleaseValidationSrgGitlab2
+  - project: workflows
+    type: workflow
+    id: demoReleaseValidationSrgGitlab3
