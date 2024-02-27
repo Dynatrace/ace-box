@@ -13,7 +13,7 @@
         "variables": [
           {
             "key": "BUILD_ID",
-            "value": "1"
+            "value": "3"
           }
         ],
         "connection": "{{ .connectionId }}",
