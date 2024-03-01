@@ -1,16 +1,5 @@
 ---
 configs:
-  - id: demoArWorkflowsGitLabDebounce
-    config:
-      name: "ACE-Box - Demo AR Workflows GitLab - Debounce"
-      template: debounce-workflow.json
-      skip: false
-      parameters:
-        auto_remediation_workflow_id:
-          ["global", "workflow", "demoArWorkflowsGitLabRemediation", "id"]
-    type:
-      automation:
-        resource: workflow
   - id: demoArWorkflowsGitLabRemediation
     config:
       name: "ACE-Box - Demo AR Workflows GitLab - Remediation"
