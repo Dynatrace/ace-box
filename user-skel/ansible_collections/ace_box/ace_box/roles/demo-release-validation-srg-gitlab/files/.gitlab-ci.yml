@@ -208,6 +208,9 @@ Validate Release with SRG:
     # App related configrations
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group production --dry-run
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group production
+    # Sleep an additional (90 + delay for the start of the next jobs) to give Dynatrace some time
+    # to tag host according to current config before sending config events
+    - sleep 90
 
 2-Send DT Config Event Production:
   extends: .dt_config_event_common
@@ -249,13 +252,13 @@ Cleanup DT Configs - Monaco:
   when: manual
 
 otel-exporter:
- rules:
-  - when: always
- stage: otel-exporter
- inherit:
-   variables: true
- variables:
-   CI_PARENT_PIPELINE: $CI_PIPELINE_ID
- trigger:
-   include:
-     - local: otel-exporter.yml
+  rules:
+    - when: always
+  stage: otel-exporter
+  inherit:
+    variables: true
+  variables:
+    CI_PARENT_PIPELINE: $CI_PIPELINE_ID
+  trigger:
+    include:
+      - local: otel-exporter.yml
