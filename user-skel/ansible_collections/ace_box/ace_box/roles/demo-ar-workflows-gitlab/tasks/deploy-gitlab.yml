@@ -24,6 +24,9 @@
     gitlab_prj: "{{ dt_ar_gitlab_repo_name }}"
     gitlab_prj_namespace_id: "{{ gitlab_group_id }}"
 
+- set_fact:
+    demo_ar_workflows_gitlab_project_id: "{{ gitlab_project_id }}"
+
 - name: Gitlab - Ensure Project docs
   include_role:
     name: gitlab

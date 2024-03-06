@@ -1,0 +1,36 @@
+{
+  "title": "{{ .name }}",
+  "description": "",
+  "tasks": {
+    "launch_canary": {
+      "name": "launch_canary",
+      "description": "Launch a job template in Red Hat Ansible Automation Controller",
+      "action": "dynatrace.redhat.ansible:launch-job-template",
+      "input": {
+        "templateId": "{{ .templateId }}",
+        "connectionId": "{{ .connectionId }}"
+      },
+      "position": {
+        "x": 0,
+        "y": 1
+      },
+      "predecessors": []
+    }
+  },
+  "isPrivate": false,
+  "trigger": {
+    "schedule": {
+      "rule": null,
+      "trigger": {
+        "type": "time",
+        "time": "03:00"
+      },
+      "timezone": "Europe/Amsterdam",
+      "isActive": true,
+      "isFaulty": false,
+      "filterParameters": {},
+      "inputs": {}
+    }
+  },
+  "schemaVersion": 3
+}
