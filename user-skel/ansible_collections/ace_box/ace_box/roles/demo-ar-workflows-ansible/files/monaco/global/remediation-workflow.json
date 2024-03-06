@@ -9,17 +9,21 @@
   "schemaVersion": 3,
   "trigger": {
     "eventTrigger": {
-      "isActive": false,
-      "filterQuery": "event.kind == \"DAVIS_PROBLEM\" AND (event.category == \"ERROR\") AND (isNotNull(root_cause_entity_id))",
-      "uniqueExpression": "{{`{{ event()[\"event.id\"] }}-{{ event()[\"event.category\"] }}-{{ event()[\"event.status\"] }}`}}",
+      "isActive": true,
+      "filterQuery": "event.kind == \"DAVIS_PROBLEM\" AND (event.category == \"ERROR\") AND (isNotNull(root_cause_entity_id)) AND (matchesValue(entity_tags, \"[Environment]DT_RELEASE_STAGE:canary-jenkins\"))",
+      "uniqueExpression": "{{`{{ event()[\"event.id\"] }}-{{ \"open\" if event()[\"event.status_transition\"] in (\"CREATED\", \"UPDATED\", \"REOPENED\", \"REFRESHED\") else \"resolved\" }}-{{ event()[\"dt.davis.last_reopen_timestamp\"] }}`}}",
       "triggerConfiguration": {
         "type": "davis-problem",
         "value": {
           "categories": {
             "error": true
           },
+          "entityTags": {
+            "[Environment]DT_RELEASE_STAGE": ["canary-jenkins"]
+          },
           "customFilter": "isNotNull(root_cause_entity_id)",
-          "onProblemClose": true
+          "onProblemClose": true,
+          "entityTagsMatch": "any"
         }
       }
     }
