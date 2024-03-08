@@ -45,8 +45,8 @@ configs:
         # objective - slo - process cpu usage
         objective_name_dql_cpu_usage: "Process Group Instance CPU Usage"
         dqlQuery_cpu_usage: "timeseries cpu=avg(dt.process.cpu.usage), by:{dt.entity.process_group, host.name} \n| lookup [fetch dt.entity.process_group], sourceField:dt.entity.process_group, lookupField:id \n| filter matchesPhrase(lookup.entity.name,\"simplenode-gitlab-staging\") \n| fields usageCpuAvg = arrayAvg(cpu) \n| summarize cpuUsageAvg = max(usageCpuAvg)  "
-        failure_dql_cpu_usage: 0.4
-        warning_dql_cpu_usage: 0.3
+        failure_dql_cpu_usage: 20
+        warning_dql_cpu_usage: 15
       skip: false
   # workflow
   - id: simplenodeworkflow
