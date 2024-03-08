@@ -7,7 +7,7 @@
   "metricNumerator": "{{ .metricNumerator }}",
   "metricDenominator": "{{ .metricDenominator }}",
   "evaluationType": "AGGREGATE",
-  "filter": "type(\"{{ .filterType }}\"),tag(\"[Environment]DT_RELEASE_PRODUCT:{{ .releaseProduct }}\",\"[Environment]DT_RELEASE_STAGE:{{ .releaseStage }}\")",
+  "filter": "type(\"{{ .filterType }}\"),tag(\"[Environment]DT_RELEASE_PRODUCT:{{ .releaseProduct }}\"),tag(\"[Environment]DT_RELEASE_STAGE:{{ .releaseStage }}\")",
   "target": "{{ .target }}",
   "warning": "{{ .warning }}",
   "timeframe": "{{ .sloTimeFrame }}"

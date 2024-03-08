@@ -7,7 +7,7 @@
   "metricNumerator": "builtin:service.errors.total.successCount:splitBy()",
   "metricDenominator": "builtin:service.requestCount.total:splitBy()",
   "evaluationType": "AGGREGATE",
-  "filter": "type(\"SERVICE\"),tag(\"[Environment]DT_RELEASE_PRODUCT:{{ .releaseProduct }}\",\"[Environment]DT_RELEASE_STAGE:{{ .releaseStage }}\")",
+  "filter": "type(\"SERVICE\"),tag(\"[Environment]DT_RELEASE_PRODUCT:{{ .releaseProduct }}\"),tag(\"[Environment]DT_RELEASE_STAGE:{{ .releaseStage }}\")",
   "target": 95,
   "warning": 99,
   "timeframe": "-1w"
