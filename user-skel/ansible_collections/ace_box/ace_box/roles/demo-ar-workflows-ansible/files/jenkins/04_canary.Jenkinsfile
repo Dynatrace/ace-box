@@ -13,7 +13,7 @@ pipeline {
             trim: true
         )
         string(
-            name: 'REMEDIATION_URL',
+            name: 'REMEDIATION_ACTION',
             defaultValue: '',
             description: 'Remediation script to call if canary release fails',
             trim: true
@@ -73,7 +73,7 @@ pipeline {
                         source : 'Jenkins',
                         configuration : 'Load Balancer',
                         customProperties : [
-                            'remediationAction': "${params.REMEDIATION_URL}",
+                            'remediationAction': "${params.REMEDIATION_ACTION}",
                             'remediationType': "${params.REMEDIATION_TYPE}"
                         ]
                     )

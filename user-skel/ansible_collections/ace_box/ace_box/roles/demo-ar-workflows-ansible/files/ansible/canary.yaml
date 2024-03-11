@@ -1,7 +1,7 @@
 ---
 - name: Canary
   hosts: localhost
-  gather_facts: true
+  gather_facts: false
   tasks:
     - name: Increment canary weight
       vars:
@@ -9,8 +9,8 @@
           parameter:
             - name: CANARY_WEIGHT
               value: "{{ item.canaryWeight }}"
-            - name: REMEDIATION_URL
-              value: "{{ remediation_url }}"
+            - name: REMEDIATION_ACTION
+              value: "{{ remediation_template_id }}"
             - name: REMEDIATION_TYPE
               value: "ansible"
       ansible.builtin.uri:
