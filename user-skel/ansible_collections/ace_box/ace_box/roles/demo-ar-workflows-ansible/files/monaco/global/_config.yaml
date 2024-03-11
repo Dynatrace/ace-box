@@ -2,13 +2,31 @@
 configs:
   - id: demoArWorkflowsAnsibleRemediation
     config:
-      name: "ACE-Box - Demo AR Workflows Ansible - Remediation"
+      name: "ACE-Box - Demo AR Workflows Ansible"
       template: remediation-workflow.json
       skip: false
       parameters:
-        awx_basic_auth:
-          type: environment
-          name: AWX_BASIC_AUTH
+        ansibleConnectionId:
+          [
+            "app:dynatrace.redhat.ansible:automation-controller.connection",
+            "demoArWorkflowsAnsibleConnection",
+            "id",
+          ]
     type:
       automation:
         resource: workflow
+  - id: demoArWorkflowsAnsibleConnection
+    config:
+      name: "ACE-Box - Demo AR Workflows Ansible"
+      template: ansible.json
+      parameters:
+        token:
+          type: environment
+          name: AWX_CONTROLLER_TOKEN
+        url:
+          type: environment
+          name: AWX_URL
+    type:
+      settings:
+        schema: app:dynatrace.redhat.ansible:automation-controller.connection
+        scope: environment

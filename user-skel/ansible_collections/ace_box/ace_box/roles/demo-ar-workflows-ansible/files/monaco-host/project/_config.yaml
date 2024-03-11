@@ -1,14 +1,14 @@
 ---
 configs:
-- id: anomaly-detection-services
-  config:
-    name: anomaly-detection-services
-    template: anomaly-detection-services.json
-    skip: false
-  type:
-    settings:
-      schema: builtin:anomaly-detection.services
-      schemaVersion: 0.0.17
-      scope:
-        type: environment
-        name: ACE_BOX_HOST_GROUP
+  - id: anomaly-detection-services
+    config:
+      name: anomaly-detection-services
+      template: anomaly-detection-services.json
+      skip: false
+    type:
+      settings:
+        schema: builtin:anomaly-detection.services
+        schemaVersion: 0.0.17
+        scope:
+          type: environment
+          name: ACE_BOX_HOST_GROUP
