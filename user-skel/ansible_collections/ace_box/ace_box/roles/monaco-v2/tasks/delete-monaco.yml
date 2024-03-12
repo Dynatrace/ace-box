@@ -10,14 +10,7 @@
 - set_fact:
     monaco_deploy_environment: "{{ monaco_environment | default({}) | combine(monaco_default_environment) }}"
 
-- set_fact:
-    monaco_projects_argument: ""
-
-- set_fact:
-    monaco_projects_argument: "-p {{ monaco_project }}"
-  when: monaco_project is defined and monaco_project | length > 0
-
-- name: Monaco - Apply Configuration for Project
+- name: Monaco - Delete Configuration
   shell:
-    cmd: /usr/local/bin/monaco deploy {{ monaco_manifest_path }} {{ monaco_projects_argument }}
+    cmd: /usr/local/bin/monaco delete --manifest {{ monaco_manifest_path }} --file {{ monaco_delete_path }}
   environment: "{{ monaco_deploy_environment }}"
