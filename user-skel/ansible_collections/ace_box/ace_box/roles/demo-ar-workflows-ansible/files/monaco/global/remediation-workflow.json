@@ -32,7 +32,7 @@
     "detect_remediation_actions": {
       "name": "detect_remediation_actions",
       "input": {
-        "query": "fetch events\n| filter event.type == \"CUSTOM_CONFIGURATION\" OR event.type == \"CUSTOM_DEPLOYMENT\" AND dt.entity.service == \"` event()['root_cause_entity_id'] `\"\n| filter remediationAction != \"0\" AND remediationAction != \"\" AND isNotNull(remediationAction)\n| filter remediationType != \"0\" AND remediationType != \"\" AND isNotNull(remediationType)\n| fields remediationAction, remediationType, timestamp\n| sort timestamp DESC"
+        "query": "{{`fetch events\n| filter in(event.id, array(\"{{ event()['dt.davis.event_ids'] | join('\\\", \\\"') }}\")) and isNotNull(remediationAction)\n| sort timestamp desc\n| limit 1`}}"
       },
       "action": "dynatrace.automations:execute-dql-query",
       "position": {
@@ -48,26 +48,22 @@
     },
     "trigger_ansible_remediation": {
       "name": "trigger_ansible_remediation",
+      "description": "Launch a job template in Red Hat Ansible Automation Controller",
+      "action": "dynatrace.redhat.ansible:launch-job-template",
       "input": {
-        "url": "{{`{{ result(\"detect_remediation_actions\").records[0].remediationAction }}`}}",
-        "method": "POST",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Basic {{ .awx_basic_auth }}"
-        }
+        "templateId": "{{`{{ result(\"detect_remediation_actions\").records[0].remediationAction }}`}}",
+        "connectionId": "{{ .ansibleConnectionId }}"
       },
-      "action": "dynatrace.automations:http-function",
       "position": {
         "x": 0,
         "y": 2
       },
+      "predecessors": ["detect_remediation_actions"],
       "conditions": {
         "states": {
           "detect_remediation_actions": "SUCCESS"
         }
-      },
-      "description": "Issue an HTTP request to any API",
-      "predecessors": ["detect_remediation_actions"]
+      }
     },
     "update_problem_on_remediation_start": {
       "name": "update_problem_on_remediation_start",

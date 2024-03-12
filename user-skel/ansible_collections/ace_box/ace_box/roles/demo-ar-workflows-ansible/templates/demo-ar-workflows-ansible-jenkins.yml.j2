@@ -74,7 +74,7 @@ controller:
             pipelineJob('{{ demo_jenkins_folder }}/4. Shift traffic') {
               parameters {
                 stringParam('CANARY_WEIGHT')
-                stringParam('REMEDIATION_URL')
+                stringParam('REMEDIATION_ACTION')
                 stringParam('REMEDIATION_TYPE')
               }
               definition {

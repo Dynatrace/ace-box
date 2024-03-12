@@ -38,3 +38,12 @@
     credentials_id: "DT_OAUTH_SSO_ENDPOINT"
     credentials_description: "DT_OAUTH_SSO_ENDPOINT"
     credentials_class: StringCredentialsImpl
+
+- include_role:
+    name: jenkins-config
+    tasks_from: ensure-credentials
+  vars:
+    credentials_value: "{{ awx_controller_token }}"
+    credentials_id: "AWX_CONTROLLER_TOKEN"
+    credentials_description: "AWX_CONTROLLER_TOKEN"
+    credentials_class: StringCredentialsImpl

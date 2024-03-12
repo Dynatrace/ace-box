@@ -181,7 +181,7 @@
     job_tags: canary_reset
     extra_vars:
       jenkins_url: "{{ jenkins_pipeline_url_shift_traffic }}"
-      remediation_url: ""
+      remediation_template_id: ""
     credentials:
       - "{{ credential_dt_api_token.id }}"
     controller_host: "{{ awx_internal_endpoint }}"
@@ -202,7 +202,7 @@
     skip_tags: canary_reset
     extra_vars:
       jenkins_url: "{{ jenkins_pipeline_url_shift_traffic }}"
-      remediation_url: "{{ awx_external_endpoint }}/api/v2/job_templates/{{ canary_reset_template.id }}/launch/"
+      remediation_template_id: "{{ canary_reset_template.id }}"
     credentials:
       - "{{ credential_dt_api_token.id }}"
     controller_host: "{{ awx_internal_endpoint }}"

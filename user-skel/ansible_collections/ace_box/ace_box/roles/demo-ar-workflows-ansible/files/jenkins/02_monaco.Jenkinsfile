@@ -18,6 +18,8 @@ pipeline {
         DT_OWNER_IDENTIFIER = 'demo-ar-workflows-ansible'
         RELEASE_PRODUCT = 'simplenodeservice'
         RELEASE_STAGE = 'canary-jenkins'
+        AWX_CONTROLLER_TOKEN = credentials('AWX_CONTROLLER_TOKEN')
+        AWX_URL = "${env.INGRESS_PROTOCOL}://ansible.${env.INGRESS_DOMAIN}/api/v2/"
     }
     stages {
         stage('Dynatrace global project - Validate') {
