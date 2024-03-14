@@ -1,5 +1,5 @@
 {
-    "matcher":"URL_STARTS_WITH",
-    "pattern":"{{ .pattern }}",
-    "applicationId":"{{ .applicationId }}"
+  "matcher": "URL_STARTS_WITH",
+  "pattern": "{{ .pattern }}",
+  "applicationId": "{{ .applicationId }}"
 }
