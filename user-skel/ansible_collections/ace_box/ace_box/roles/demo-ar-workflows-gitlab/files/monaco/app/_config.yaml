@@ -1,191 +1,195 @@
 configs:
-# Type "settings" Monaco config ids have to be unique across demos.
-# We therefore add a demo identifier.
-- id: demo_ar_workflows_gitlab_owner
-  config:
-    name:
-      type: environment
-      name: DT_OWNER_IDENTIFIER
-    template: owner.json
-    skip: false
-    parameters:
-      identifier:
+  # Type "settings" Monaco config ids have to be unique across demos.
+  # We therefore add a demo identifier.
+  - id: demo_ar_workflows_gitlab_owner
+    config:
+      name:
         type: environment
         name: DT_OWNER_IDENTIFIER
-      email: ace@dynatrace.com
-      solution: ACE-Box
-      # As of May 2023 there is no Gitlab integration. We therefore repurpose
-      # the JIRA integration as it has the biggest overlap with what we need for
-      # integrating with Gitlab's issue tracker.
-      gitlabProjectId:
-        type: environment
-        name: GITLAB_PROJECT_ID
-      gitlabDefaultAssigneeId:
-        type: environment
-        name: GITLAB_DEFAULT_ASSIGNEE_ID
-  type:
-    settings:
-      schema: builtin:ownership.teams
-      schemaVersion: 1.0.4
-      scope: environment
-- id: applicationWeb
-  config:
-    name:
-      type: compound
-      format: "{{ .releaseProduct }}-{{ .releaseStage }}"
-      references:
-        - releaseProduct
-        - releaseStage
-    template: application.json
-    skip: false
-    parameters:
-      releaseProduct:
-        type: environment
-        name: RELEASE_PRODUCT
-      releaseStage:
-        type: environment
-        name: RELEASE_STAGE
-  type:
-    api: application-web
-- id: appDetectionRule
-  config:
-    name: ["application-web", "applicationWeb", "name"]
-    template: app-detection-rule.json
-    skip: false
-    parameters:
-      applicationId: ["application-web", "applicationWeb", "id"]
-      pattern:
+      template: owner.json
+      skip: false
+      parameters:
+        identifier:
+          type: environment
+          name: DT_OWNER_IDENTIFIER
+        email: ace@dynatrace.com
+        solution: ACE-Box
+        # As of May 2023 there is no Gitlab integration. We therefore repurpose
+        # the JIRA integration as it has the biggest overlap with what we need for
+        # integrating with Gitlab's issue tracker.
+        gitlabProjectId:
+          type: environment
+          name: GITLAB_PROJECT_ID
+        gitlabDefaultAssigneeId:
+          type: environment
+          name: GITLAB_DEFAULT_ASSIGNEE_ID
+    type:
+      settings:
+        schema: builtin:ownership.teams
+        schemaVersion: 1.0.4
+        scope: environment
+  - id: applicationWeb
+    config:
+      name:
         type: compound
-        format: "{{ .ingressProtocol }}://{{ .releaseProduct }}-{{ .releaseStage }}.{{ .ingressDomain }}"
+        format: "{{ .releaseProduct }}-{{ .releaseStage }}"
         references:
-          - ingressProtocol
           - releaseProduct
           - releaseStage
-          - ingressDomain
-      ingressProtocol:
-        type: environment
-        name: INGRESS_PROTOCOL
-      releaseProduct:
-        type: environment
-        name: RELEASE_PRODUCT
-      releaseStage:
-        type: environment
-        name: RELEASE_STAGE
-      ingressDomain:
-        type: environment
-        name: INGRESS_DOMAIN
-  type:
-    api: app-detection-rule
-- id: autoTag
-  config:
-    name:
-      type: compound
-      format: "{{ .releaseProduct }}-{{ .releaseStage }}"
-      references:
-        - releaseProduct
-        - releaseStage
-    template: auto-tag.json
-    skip: false
-    parameters:
-      releaseProduct:
-        type: environment
-        name: RELEASE_PRODUCT
-      releaseStage:
-        type: environment
-        name: RELEASE_STAGE
-      applicationName: ["application-web", "applicationWeb", "name"]
-      hostGroup:
-        type: environment
-        name: HOST_GROUP
-        default: ""
-  type:
-    api: auto-tag
-- id: csmFailureRate
-  config:
-    name:
-      type: compound
-      format: "{{ .releaseProduct }}.{{ .releaseStage }}.failure_rate_by_version"
-      references:
-        - releaseProduct
-        - releaseStage
-    template: csm-failure-rate.json
-    skip: false
-    parameters:
-      metricKey:
+      template: application.json
+      skip: false
+      parameters:
+        releaseProduct:
+          type: environment
+          name: RELEASE_PRODUCT
+        releaseStage:
+          type: environment
+          name: RELEASE_STAGE
+    type:
+      api: application-web
+  - id: appDetectionRuleDemoArWorkflowsGitLab
+    config:
+      name: ["application-web", "applicationWeb", "name"]
+      template: app-detection-rule.json
+      skip: false
+      parameters:
+        applicationId: ["application-web", "applicationWeb", "id"]
+        pattern:
+          type: compound
+          format: "{{ .ingressProtocol }}://{{ .releaseProduct }}-{{ .releaseStage }}.{{ .ingressDomain }}"
+          references:
+            - ingressProtocol
+            - releaseProduct
+            - releaseStage
+            - ingressDomain
+        ingressProtocol:
+          type: environment
+          name: INGRESS_PROTOCOL
+        releaseProduct:
+          type: environment
+          name: RELEASE_PRODUCT
+        releaseStage:
+          type: environment
+          name: RELEASE_STAGE
+        ingressDomain:
+          type: environment
+          name: INGRESS_DOMAIN
+    type:
+      settings:
+        schema: builtin:rum.web.app-detection
+        scope: environment
+  - id: autoTag
+    config:
+      name:
         type: compound
-        format: "calc:service.{{ .name }}"
+        format: "{{ .releaseProduct }}-{{ .releaseStage }}"
         references:
-          - name
-      releaseProduct:
-        type: environment
-        name: RELEASE_PRODUCT
-      releaseStage:
-        type: environment
-        name: RELEASE_STAGE
-  type:
-    api: calculated-metrics-service
-- id: csmResponseTime
-  config:
-    name:
-      type: compound
-      format: "{{ .releaseProduct }}.{{ .releaseStage }}.response_time_by_version"
-      references:
-        - releaseProduct
-        - releaseStage
-    template: csm-response-time.json
-    skip: false
-    parameters:
-      metricKey:
+          - releaseProduct
+          - releaseStage
+      template: auto-tag.json
+      skip: false
+      parameters:
+        releaseProduct:
+          type: environment
+          name: RELEASE_PRODUCT
+        releaseStage:
+          type: environment
+          name: RELEASE_STAGE
+        applicationName: ["application-web", "applicationWeb", "name"]
+        hostGroup:
+          type: environment
+          name: HOST_GROUP
+          default: ""
+    type:
+      api: auto-tag
+  - id: csmFailureRate
+    config:
+      name:
         type: compound
-        format: "calc:service.{{ .name }}"
+        format: "{{ .releaseProduct }}.{{ .releaseStage }}.failure_rate_by_version"
         references:
-          - name
-      releaseProduct:
-        type: environment
-        name: RELEASE_PRODUCT
-      releaseStage:
-        type: environment
-        name: RELEASE_STAGE
-  type:
-    api: calculated-metrics-service
-- id: slo
-  config:
-    name:
-      type: compound
-      format: "{{ .releaseProduct }}.{{ .releaseStage }}"
-      references:
-        - releaseProduct
-        - releaseStage
-    template: slo.json
-    skip: false
-    parameters:
-      releaseProduct:
-        type: environment
-        name: RELEASE_PRODUCT
-      releaseStage:
-        type: environment
-        name: RELEASE_STAGE
-  type:
-    api: slo
-- id: dashboard
-  config:
-    name:
-      type: compound
-      format: "🐥 {{ .releaseProduct }}.{{ .releaseStage }} - Canary Tracker"
-      references:
-        - releaseProduct
-        - releaseStage
-    template: dashboard.json
-    skip: false
-    parameters:
-      releaseProduct:
-        type: environment
-        name: RELEASE_PRODUCT
-      releaseStage:
-        type: environment
-        name: RELEASE_STAGE
-      sloId: ["slo", "slo", "id"]
-      csmFailureRateMetricKey: ["calculated-metrics-service", "csmFailureRate", "metricKey"]
-      csmResponseTimeMetricKey: ["calculated-metrics-service", "csmResponseTime", "metricKey"]
-  type:
-    api: dashboard
+          - releaseProduct
+          - releaseStage
+      template: csm-failure-rate.json
+      skip: false
+      parameters:
+        metricKey:
+          type: compound
+          format: "calc:service.{{ .name }}"
+          references:
+            - name
+        releaseProduct:
+          type: environment
+          name: RELEASE_PRODUCT
+        releaseStage:
+          type: environment
+          name: RELEASE_STAGE
+    type:
+      api: calculated-metrics-service
+  - id: csmResponseTime
+    config:
+      name:
+        type: compound
+        format: "{{ .releaseProduct }}.{{ .releaseStage }}.response_time_by_version"
+        references:
+          - releaseProduct
+          - releaseStage
+      template: csm-response-time.json
+      skip: false
+      parameters:
+        metricKey:
+          type: compound
+          format: "calc:service.{{ .name }}"
+          references:
+            - name
+        releaseProduct:
+          type: environment
+          name: RELEASE_PRODUCT
+        releaseStage:
+          type: environment
+          name: RELEASE_STAGE
+    type:
+      api: calculated-metrics-service
+  - id: slo
+    config:
+      name:
+        type: compound
+        format: "{{ .releaseProduct }}.{{ .releaseStage }}"
+        references:
+          - releaseProduct
+          - releaseStage
+      template: slo.json
+      skip: false
+      parameters:
+        releaseProduct:
+          type: environment
+          name: RELEASE_PRODUCT
+        releaseStage:
+          type: environment
+          name: RELEASE_STAGE
+    type:
+      api: slo
+  - id: dashboard
+    config:
+      name:
+        type: compound
+        format: "🐥 {{ .releaseProduct }}.{{ .releaseStage }} - Canary Tracker"
+        references:
+          - releaseProduct
+          - releaseStage
+      template: dashboard.json
+      skip: false
+      parameters:
+        releaseProduct:
+          type: environment
+          name: RELEASE_PRODUCT
+        releaseStage:
+          type: environment
+          name: RELEASE_STAGE
+        sloId: ["slo", "slo", "id"]
+        csmFailureRateMetricKey:
+          ["calculated-metrics-service", "csmFailureRate", "metricKey"]
+        csmResponseTimeMetricKey:
+          ["calculated-metrics-service", "csmResponseTime", "metricKey"]
+    type:
+      api: dashboard
