@@ -6,6 +6,10 @@ pipeline {
         MONACO_MANIFEST = 'manifest.yaml'
         DT_API_TOKEN = credentials('DT_API_TOKEN')
         DT_TENANT_URL = credentials('DT_TENANT_URL')
+        DT_PLATFORM_TENANT_URL = credentials('DT_PLATFORM_TENANT_URL')
+        DT_OAUTH_CLIENT_ID = credentials('DT_OAUTH_CLIENT_ID')
+        DT_OAUTH_CLIENT_SECRET = credentials('DT_OAUTH_CLIENT_SECRET')
+        DT_OAUTH_SSO_ENDPOINT = credentials('DT_OAUTH_SSO_ENDPOINT')        
     }
     stages {
         stage('Dry Run on Validation') {
@@ -40,6 +44,7 @@ pipeline {
                 container('monaco') {
                     script {
                         sh "echo $env.MON_APP"
+                        sh "echo $env.DT_PLATFORM_TENANT_URL"
                         sh "monaco deploy $MONACO_MANIFEST -g validation"
                     }
                 }

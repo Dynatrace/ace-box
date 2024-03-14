@@ -1,0 +1,46 @@
+{
+    "title": "{{ .name }}",
+    "description": "{{ .wf_description }}",
+    "isPrivate": "{{ .wf_isPrivate }}",
+    "labels": {},
+    "schemaVersion": 3,
+    "taskDefaults": {},
+    "usages": [],
+    "version": 4,
+    "triggerType": "Event",
+    "trigger": {
+      "eventTrigger": {
+        "filterQuery": "event.type == \"guardian.validation.triggered\" ",
+        "isActive": true,
+        "triggerConfiguration": {
+          "type": "event",
+          "value": {
+            "eventType": "bizevents",
+            "query": "event.type == \"guardian.validation.triggered\" "
+          }
+        },
+        "uniqueExpression": null
+      }
+    },
+  
+    "tasks": {
+      "evaluate_srg": {
+        "action": "dynatrace.site.reliability.guardian:validate-guardian-action",
+        "description": "{{ .srg_task_description }}",
+        "input": {
+          "executionId": "{{`{{`}} execution().id {{`}}`}}",
+          "objectId": "{{ .guardian_id }}",
+          "expressionFrom": "{{`{{`}} event()['timeframe.from'] {{`}}`}}",
+          "expressionTo": "{{`{{`}} event()['timeframe.to'] {{`}}`}}",
+          "timeframeInputType": "expression"
+        },
+        "name": "evaluate_srg",
+        "position": {
+          "x": 0,
+          "y": 1
+        },
+        "predecessors": []
+      }
+    }
+  }
+  

@@ -1,0 +1,34 @@
+{
+    "name": "{{ .name }}",
+    "description": "{{ .description }}",
+    "tags": {{ .tags }},
+    "objectives": [
+      {
+        "name": "{{ .objective_name_slo_availability }}",
+        "description": "Availability",
+        "objectiveType": "REFERENCE_SLO",
+        "referenceSlo": "{{ .reference_slo_metric_availability }}",
+        "comparisonOperator": "GREATER_THAN_OR_EQUAL",
+        "target": {{ .failure_slo_availability }},
+        "warning": {{ .warning_slo_availability }}
+      },
+      {
+        "name": "{{ .objective_name_success_rate }}",
+        "description": "success rate",
+        "objectiveType": "REFERENCE_SLO",
+        "referenceSlo": "{{ .reference_slo_metric_success_rate }}",
+        "comparisonOperator": "GREATER_THAN_OR_EQUAL",
+        "target": {{ .failure_slo_success_rate }},
+        "warning": {{ .warning_slo_success_rate  }}
+      }
+      ,{
+        "name": "{{ .objective_name_dql_cpu_usage }}",
+        "objectiveType": "DQL",
+        "dqlQuery": "timeseries cpu=avg(dt.process.cpu.usage), by:{host.name} | summarize max(arrayAvg(cpu))",
+        "comparisonOperator": "LESS_THAN_OR_EQUAL",
+        "target": {{ .failure_dql_cpu_usage }},
+        "warning": {{ .warning_dql_cpu_usage }}
+      }
+      
+    ]
+  }
