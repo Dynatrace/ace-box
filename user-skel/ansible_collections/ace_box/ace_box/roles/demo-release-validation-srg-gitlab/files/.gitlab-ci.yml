@@ -121,17 +121,14 @@ Build Image:
   variables:
     STAGE_NAME: "$STAGE_NAME_STAGING"
   script:
-    # Infrastructure related configrations
+    # Infrastructure related configurations
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project infrastructure --group staging --dry-run
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project infrastructure --group staging
     # Wait for infrastructure configurations to be fulfilled before deploying app configurations
     - sleep 20 # You can adjust the wait time if this is not enough
-    # App related configrations
-    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group staging --dry-run
-    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group staging
-    # SRG and WF configrations
-    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project srg --group staging --dry-run
-    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project srg --group staging
+    # Remaining configurations
+    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --group staging --dry-run
+    - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --group staging
     # Sleep an additional (90 + delay for the start of the next jobs) to give Dynatrace some time
     # to tag host according to current config before sending config events
     - sleep 90
@@ -200,12 +197,12 @@ Validate Release with SRG:
   variables:
     STAGE_NAME: "$STAGE_NAME_PROD"
   script:
-    # Infrastructure related configrations
+    # Infrastructure related configurations
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project infrastructure --group production --dry-run
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project infrastructure --group production
       # Wait for infrastructure configurations to be fulfilled before deploying app configurations
     - sleep 20 # You can adjust the wait time if this is not enough
-    # App related configrations
+    # App related configurations
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group production --dry-run
     - MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco deploy $MANIFEST_FILE --project app --group production
     # Sleep an additional (90 + delay for the start of the next jobs) to give Dynatrace some time

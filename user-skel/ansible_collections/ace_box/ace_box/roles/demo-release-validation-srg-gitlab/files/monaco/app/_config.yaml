@@ -27,13 +27,13 @@ configs:
         schema: builtin:ownership.teams
         scope: environment
     groupOverrides:
-    - group: production
-      override:
-        skip: true
+      - group: production
+        override:
+          skip: true
 
   # auto-tag
   - id: autoTagApp
-    type: 
+    type:
       api: auto-tag
     config:
       template: auto-tag-app.json
@@ -56,7 +56,7 @@ configs:
           name: HOST_GROUP
           default: "ace-box"
 
-  # application-web 
+  # application-web
   - id: app
     type:
       api: application-web
@@ -69,7 +69,7 @@ configs:
           - releaseProduct
           - releaseStage
           - demoIdentifier
-      parameters:  
+      parameters:
         releaseProduct:
           type: environment
           name: RELEASE_PRODUCT
@@ -81,15 +81,14 @@ configs:
           name: DEMO_IDENTIFIER
       skip: false
 
-  # app-detection-rule 
+  # app-detection-rule
   - id: appDetection
     type:
       settings:
         schema: builtin:rum.web.app-detection
         scope: environment
-        schemaVersion: "2.0.1"
     config:
-      name: 
+      name:
         type: compound
         format: "{{ .releaseStage }}-app-detection-{{ .demoIdentifier }}"
         references:
@@ -128,12 +127,12 @@ configs:
     type:
       api: calculated-metrics-service
     config:
-      name: 
+      name:
         type: compound
         format: "{{ .releaseStage }}-failure_rate_by_version-{{ .demoIdentifier }}"
         references:
           - releaseStage
-          - demoIdentifier      
+          - demoIdentifier
       template: csm-failure-rate.json
       skip: false
       parameters:
@@ -151,17 +150,17 @@ configs:
         demoIdentifier:
           type: environment
           name: DEMO_IDENTIFIER
-      
+
   - id: csmResponseTime
     type:
       api: calculated-metrics-service
     config:
-      name: 
+      name:
         type: compound
         format: "{{ .releaseStage }}-response_time_by_version-{{ .demoIdentifier }}"
         references:
           - releaseStage
-          - demoIdentifier 
+          - demoIdentifier
       template: csm-response-time.json
       skip: false
       parameters:
@@ -179,7 +178,7 @@ configs:
         demoIdentifier:
           type: environment
           name: DEMO_IDENTIFIER
-    
+
   #slo
   - id: slo_success_rate
     type:
@@ -261,14 +260,13 @@ configs:
           name: SRG_EVALUATION_STAGE
       skip: false
 
-
   # dashboard
   - id: dashboard
     type:
       api: dashboard
     config:
       template: dashboard.json
-      name: 
+      name:
         type: compound
         format: "{{ .releaseStage }}-dashboard-{{ .demoIdentifier }}"
         references:
@@ -283,12 +281,14 @@ configs:
           type: environment
           name: RELEASE_STAGE
         sloId: ["slo", "slo_success_rate", "id"]
-        csmFailureRateMetricKey: ["calculated-metrics-service", "csmFailureRate", "metricKey"]
-        csmResponseTimeMetricKey: ["calculated-metrics-service", "csmResponseTime", "metricKey"]
+        csmFailureRateMetricKey:
+          ["calculated-metrics-service", "csmFailureRate", "metricKey"]
+        csmResponseTimeMetricKey:
+          ["calculated-metrics-service", "csmResponseTime", "metricKey"]
         demoIdentifier:
           type: environment
           name: DEMO_IDENTIFIER
-  
+
   # synthetic-monitor
   - id: health-simplenode
     type:
@@ -300,10 +300,16 @@ configs:
         references:
           - releaseStage
           - demoIdentifier
-      template: health-check-monitor.json      
+      template: health-check-monitor.json
       parameters:
-        description: Health check for simplenode in app-one       
-        location: ["infrastructure","synthetic-location", "synthetic-location-ace-box", "id"]
+        description: Health check for simplenode in app-one
+        location:
+          [
+            "infrastructure",
+            "synthetic-location",
+            "synthetic-location-ace-box",
+            "id",
+          ]
         tag: ["auto-tag", "autoTagApp", "name"]
         frequencyMin: 5
         url:
@@ -326,7 +332,7 @@ configs:
         ingressDomain:
           type: environment
           name: INGRESS_DOMAIN
-        demoIdentifier: 
+        demoIdentifier:
           type: environment
           name: DEMO_IDENTIFIER
       skip: false
