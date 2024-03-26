@@ -1,0 +1,316 @@
+{
+  "version": "5",
+  "defaultTimeframe": {
+    "from": "now-2h",
+    "to": "now",
+    "details": {
+      "from": {
+        "type": "expression",
+        "normalized": "now-2h",
+        "date": "2024-02-12T07:18:12.221Z"
+      },
+      "to": {
+        "type": "expression",
+        "normalized": "now",
+        "date": "2024-02-12T09:18:12.221Z"
+      }
+    }
+  },
+  "sections": [
+    {
+      "id": "2383c7bc-9d3a-464c-97c6-efbf2c0feb05",
+      "type": "function",
+      "showTitle": false,
+      "foldings": [],
+      "title": "ASSERTION - Deployment Event (Staging)",
+      "height": 113,
+      "showInput": false,
+      "state": {
+        "input": {
+          "value": "import { queryExecutionClient } from '@dynatrace-sdk/client-query';\n\nconst QUERY = `\nfetch events, from:now()-30m\n| filter event.type == \"CUSTOM_DEPLOYMENT\"\n| filter in(entity_tags, \"[Environment]DT_RELEASE_STAGE:simplenode-gitlab-staging\")\n| summarize count(), alias: eventCount\n| fieldsAdd validationId = 10, maxScore = 1, {if(eventCount >= 1, 1, else: 0), alias: finalScore}\n| fieldsRemove eventCount\n`\n\nexport default async function () {\n  const timeout = 60;\n  const response = await queryExecutionClient.queryExecute({ body: { query: QUERY, requestTimeoutMilliseconds: timeout * 1000, fetchTimeoutSeconds: timeout  } });\n  return response.result.records[0];\n}",
+          "timeframe": { "from": "now-2h", "to": "now" }
+        },
+        "state": "success",
+        "davis": {
+          "includeLogs": true,
+          "davisVisualization": { "isAvailable": true }
+        },
+        "visualizationSettings": {
+          "table": { "lineWrapIds": [] },
+          "singleValue": { "recordField": "validationId" },
+          "chartSettings": { "categoricalBarChartSettings": {} },
+          "histogram": { "dataMappings": [] },
+          "honeycomb": { "shape": "square" }
+        },
+        "result": {
+          "code": 200,
+          "value": { "validationId": "10", "maxScore": "1", "finalScore": "0" },
+          "notifications": [],
+          "logs": "",
+          "dateTime": "2024-03-13T13:44:26.138Z",
+          "input": {
+            "value": "import { queryExecutionClient } from '@dynatrace-sdk/client-query';\n\nconst QUERY = `\nfetch events, from:now()-30m\n| filter event.type == \"CUSTOM_DEPLOYMENT\"\n| filter in(entity_tags, \"[Environment]DT_RELEASE_STAGE:simplenode-gitlab-staging\")\n| summarize count(), alias: eventCount\n| fieldsAdd validationId = 10, maxScore = 1, {if(eventCount >= 1, 1, else: 0), alias: finalScore}\n| fieldsRemove eventCount\n`\n\nexport default async function () {\n  const timeout = 60;\n  const response = await queryExecutionClient.queryExecute({ body: { query: QUERY, requestTimeoutMilliseconds: timeout * 1000, fetchTimeoutSeconds: timeout  } });\n  return response.result.records[0];\n}",
+            "timeframe": { "from": "now-2h", "to": "now" }
+          }
+        },
+        "visualization": "table"
+      }
+    },
+    {
+      "id": "011295d6-f9d5-4d31-8d4e-408cb436ca0a",
+      "type": "function",
+      "title": "ASSERTION - Monaco Configuration Event (Staging)",
+      "showTitle": false,
+      "foldings": [],
+      "showInput": false,
+      "height": 106,
+      "state": {
+        "input": {
+          "value": "import { queryExecutionClient } from \"@dynatrace-sdk/client-query\";\n\nconst QUERY = `\nfetch events, from:now()-30m\n| filter event.type == \"CUSTOM_CONFIGURATION\"\n| filter configuration == \"simplenode-gitlab-staging\"\n| summarize count(), alias: eventCount\n| fieldsAdd validationId = 20, maxScore = 1, {if(eventCount >= 1, 1, else: 0), alias: finalScore}\n| fieldsRemove eventCount\n`\n\nexport default async function () {\n  const timeout = 60;\n  const response = await queryExecutionClient.queryExecute({ body: { query: QUERY, requestTimeoutMilliseconds: timeout * 1000, fetchTimeoutSeconds: timeout  } });\n  return response.result.records[0];\n}",
+          "timeframe": { "from": "now-2h", "to": "now" }
+        },
+        "state": "success",
+        "davis": {
+          "includeLogs": true,
+          "davisVisualization": { "isAvailable": true }
+        },
+        "visualizationSettings": {
+          "thresholds": [],
+          "chartSettings": {
+            "gapPolicy": "connect",
+            "circleChartSettings": {
+              "groupingThresholdType": "relative",
+              "groupingThresholdValue": 0,
+              "valueType": "relative"
+            },
+            "categoryOverrides": {},
+            "categoricalBarChartSettings": {}
+          },
+          "singleValue": {
+            "showLabel": true,
+            "label": "",
+            "prefixIcon": "",
+            "recordField": "questionId",
+            "autoscale": true,
+            "alignment": "center",
+            "colorThresholdTarget": "value"
+          },
+          "table": {
+            "rowDensity": "condensed",
+            "enableSparklines": false,
+            "hiddenColumns": [],
+            "lineWrapIds": [],
+            "firstVisibleRowIndex": 0,
+            "columnWidths": {}
+          },
+          "histogram": { "dataMappings": [] },
+          "honeycomb": { "shape": "square" }
+        },
+        "result": {
+          "code": 200,
+          "value": { "validationId": "20", "maxScore": "1", "finalScore": "1" },
+          "notifications": [],
+          "logs": "",
+          "dateTime": "2024-03-13T13:44:26.143Z",
+          "input": {
+            "value": "import { queryExecutionClient } from \"@dynatrace-sdk/client-query\";\n\nconst QUERY = `\nfetch events, from:now()-30m\n| filter event.type == \"CUSTOM_CONFIGURATION\"\n| filter configuration == \"simplenode-gitlab-staging\"\n| summarize count(), alias: eventCount\n| fieldsAdd validationId = 20, maxScore = 1, {if(eventCount >= 1, 1, else: 0), alias: finalScore}\n| fieldsRemove eventCount\n`\n\nexport default async function () {\n  const timeout = 60;\n  const response = await queryExecutionClient.queryExecute({ body: { query: QUERY, requestTimeoutMilliseconds: timeout * 1000, fetchTimeoutSeconds: timeout  } });\n  return response.result.records[0];\n}",
+            "timeframe": { "from": "now-2h", "to": "now" }
+          }
+        },
+        "visualization": "table"
+      }
+    },
+    {
+      "id": "30577f75-91f4-4024-a4c1-99fe99934b73",
+      "type": "function",
+      "title": "ASSERTION - SRG Evaluation Pass Event",
+      "showTitle": false,
+      "foldings": [],
+      "showInput": false,
+      "height": 93,
+      "state": {
+        "input": {
+          "value": "import { queryExecutionClient } from \"@dynatrace-sdk/client-query\";\n\nconst QUERY = `\nfetch bizevents, from:now()-30m\n| filter event.type == \"guardian.validation.finished\"\n| filter validation.status == \"pass\" or validation.status == \"warning\"\n| filter guardian.name == \"Simplenode Guardian for ACE Demo\"\n| summarize count(), alias: eventCount\n| fieldsAdd validationId = 30, maxScore = 1, {if(eventCount >= 1, 1, else: 0), alias: finalScore}\n| fieldsRemove eventCount\n`\n\nexport default async function () {\n  const timeout = 60;\n  const response = await queryExecutionClient.queryExecute({ body: { query: QUERY, requestTimeoutMilliseconds: timeout * 1000, fetchTimeoutSeconds: timeout  } });\n  return response.result.records[0];\n}",
+          "timeframe": { "from": "now-2h", "to": "now" }
+        },
+        "state": "success",
+        "davis": {
+          "includeLogs": true,
+          "davisVisualization": { "isAvailable": true }
+        },
+        "visualizationSettings": {
+          "thresholds": [],
+          "chartSettings": {
+            "gapPolicy": "connect",
+            "circleChartSettings": {
+              "groupingThresholdType": "relative",
+              "groupingThresholdValue": 0,
+              "valueType": "relative"
+            },
+            "categoryOverrides": {},
+            "categoricalBarChartSettings": {}
+          },
+          "singleValue": {
+            "showLabel": true,
+            "label": "",
+            "prefixIcon": "",
+            "recordField": "questionId",
+            "autoscale": true,
+            "alignment": "center",
+            "colorThresholdTarget": "value"
+          },
+          "table": {
+            "rowDensity": "condensed",
+            "enableSparklines": false,
+            "hiddenColumns": [],
+            "lineWrapIds": [],
+            "firstVisibleRowIndex": 0,
+            "columnWidths": {}
+          },
+          "histogram": { "dataMappings": [] },
+          "honeycomb": { "shape": "square" }
+        },
+        "result": {
+          "code": 200,
+          "value": { "validationId": "30", "maxScore": "1", "finalScore": "0" },
+          "notifications": [],
+          "logs": "",
+          "dateTime": "2024-03-13T13:44:26.146Z",
+          "input": {
+            "value": "import { queryExecutionClient } from \"@dynatrace-sdk/client-query\";\n\nconst QUERY = `\nfetch bizevents, from:now()-30m\n| filter event.type == \"guardian.validation.finished\"\n| filter validation.status == \"pass\" or validation.status == \"warning\"\n| filter guardian.name == \"Simplenode Guardian for ACE Demo\"\n| summarize count(), alias: eventCount\n| fieldsAdd validationId = 30, maxScore = 1, {if(eventCount >= 1, 1, else: 0), alias: finalScore}\n| fieldsRemove eventCount\n`\n\nexport default async function () {\n  const timeout = 60;\n  const response = await queryExecutionClient.queryExecute({ body: { query: QUERY, requestTimeoutMilliseconds: timeout * 1000, fetchTimeoutSeconds: timeout  } });\n  return response.result.records[0];\n}",
+            "timeframe": { "from": "now-2h", "to": "now" }
+          }
+        },
+        "visualization": "table"
+      }
+    },
+    {
+      "id": "2759f428-973e-4ebe-8704-97a3ac25ea77",
+      "type": "function",
+      "title": "ASSERTION - Deployment Event (Production)",
+      "showTitle": false,
+      "foldings": [],
+      "showInput": false,
+      "height": 83,
+      "state": {
+        "input": {
+          "value": "import { queryExecutionClient } from \"@dynatrace-sdk/client-query\";\n\nconst QUERY = `\nfetch events, from:now()-30m\n| filter event.type == \"CUSTOM_DEPLOYMENT\"\n| filter in(entity_tags, \"[Environment]DT_RELEASE_STAGE:simplenode-gitlab-prod\")\n| summarize count(), alias: eventCount\n| fieldsAdd validationId = 40, maxScore = 1, {if(eventCount >= 1, 1, else: 0), alias: finalScore}\n| fieldsRemove eventCount\n`\n\nexport default async function () {\n  const timeout = 60;\n  const response = await queryExecutionClient.queryExecute({ body: { query: QUERY, requestTimeoutMilliseconds: timeout * 1000, fetchTimeoutSeconds: timeout  } });\n  return response.result.records[0];\n}",
+          "timeframe": { "from": "now-2h", "to": "now" }
+        },
+        "state": "success",
+        "davis": {
+          "includeLogs": true,
+          "davisVisualization": { "isAvailable": true }
+        },
+        "visualizationSettings": {
+          "thresholds": [],
+          "chartSettings": {
+            "gapPolicy": "connect",
+            "circleChartSettings": {
+              "groupingThresholdType": "relative",
+              "groupingThresholdValue": 0,
+              "valueType": "relative"
+            },
+            "categoryOverrides": {},
+            "categoricalBarChartSettings": {}
+          },
+          "singleValue": {
+            "showLabel": true,
+            "label": "",
+            "prefixIcon": "",
+            "recordField": "questionId",
+            "autoscale": true,
+            "alignment": "center",
+            "colorThresholdTarget": "value"
+          },
+          "table": {
+            "rowDensity": "condensed",
+            "enableSparklines": false,
+            "hiddenColumns": [],
+            "lineWrapIds": [],
+            "firstVisibleRowIndex": 0,
+            "columnWidths": {}
+          },
+          "histogram": { "dataMappings": [] },
+          "honeycomb": { "shape": "square" }
+        },
+        "result": {
+          "code": 200,
+          "value": { "validationId": "40", "maxScore": "1", "finalScore": "0" },
+          "notifications": [],
+          "logs": "",
+          "dateTime": "2024-03-13T13:44:26.150Z",
+          "input": {
+            "value": "import { queryExecutionClient } from \"@dynatrace-sdk/client-query\";\n\nconst QUERY = `\nfetch events, from:now()-30m\n| filter event.type == \"CUSTOM_DEPLOYMENT\"\n| filter in(entity_tags, \"[Environment]DT_RELEASE_STAGE:simplenode-gitlab-prod\")\n| summarize count(), alias: eventCount\n| fieldsAdd validationId = 40, maxScore = 1, {if(eventCount >= 1, 1, else: 0), alias: finalScore}\n| fieldsRemove eventCount\n`\n\nexport default async function () {\n  const timeout = 60;\n  const response = await queryExecutionClient.queryExecute({ body: { query: QUERY, requestTimeoutMilliseconds: timeout * 1000, fetchTimeoutSeconds: timeout  } });\n  return response.result.records[0];\n}",
+            "timeframe": { "from": "now-2h", "to": "now" }
+          }
+        },
+        "visualization": "table"
+      }
+    },
+    {
+      "id": "8ddc1e70-085d-4972-adbd-e89617554cf5",
+      "type": "function",
+      "title": "ASSERTION - Monaco Configuration Event (Production)",
+      "showTitle": false,
+      "foldings": [],
+      "showInput": false,
+      "height": 90,
+      "state": {
+        "input": {
+          "value": "import { queryExecutionClient } from \"@dynatrace-sdk/client-query\";\n\nconst QUERY = `\nfetch events, from:now()-30m\n| filter event.type == \"CUSTOM_CONFIGURATION\"\n| filter configuration == \"simplenode-gitlab-prod\"\n| summarize count(), alias: eventCount\n| fieldsAdd validationId = 50, maxScore = 1, {if(eventCount >= 1, 1, else: 0), alias: finalScore}\n| fieldsRemove eventCount\n`\n\nexport default async function () {\n  const timeout = 60;\n  const response = await queryExecutionClient.queryExecute({ body: { query: QUERY, requestTimeoutMilliseconds: timeout * 1000, fetchTimeoutSeconds: timeout  } });\n  return response.result.records[0];\n}",
+          "timeframe": { "from": "now-2h", "to": "now" }
+        },
+        "state": "success",
+        "davis": {
+          "includeLogs": true,
+          "davisVisualization": { "isAvailable": true }
+        },
+        "visualizationSettings": {
+          "thresholds": [],
+          "chartSettings": {
+            "gapPolicy": "connect",
+            "circleChartSettings": {
+              "groupingThresholdType": "relative",
+              "groupingThresholdValue": 0,
+              "valueType": "relative"
+            },
+            "categoryOverrides": {},
+            "categoricalBarChartSettings": {}
+          },
+          "singleValue": {
+            "showLabel": true,
+            "label": "",
+            "prefixIcon": "",
+            "recordField": "questionId",
+            "autoscale": true,
+            "alignment": "center",
+            "colorThresholdTarget": "value"
+          },
+          "table": {
+            "rowDensity": "condensed",
+            "enableSparklines": false,
+            "hiddenColumns": [],
+            "lineWrapIds": [],
+            "firstVisibleRowIndex": 0,
+            "columnWidths": {}
+          },
+          "histogram": { "dataMappings": [] },
+          "honeycomb": { "shape": "square" }
+        },
+        "result": {
+          "code": 200,
+          "value": { "validationId": "50", "maxScore": "1", "finalScore": "0" },
+          "notifications": [],
+          "logs": "",
+          "dateTime": "2024-03-13T13:44:26.154Z",
+          "input": {
+            "value": "import { queryExecutionClient } from \"@dynatrace-sdk/client-query\";\n\nconst QUERY = `\nfetch events, from:now()-30m\n| filter event.type == \"CUSTOM_CONFIGURATION\"\n| filter configuration == \"simplenode-gitlab-prod\"\n| summarize count(), alias: eventCount\n| fieldsAdd validationId = 50, maxScore = 1, {if(eventCount >= 1, 1, else: 0), alias: finalScore}\n| fieldsRemove eventCount\n`\n\nexport default async function () {\n  const timeout = 60;\n  const response = await queryExecutionClient.queryExecute({ body: { query: QUERY, requestTimeoutMilliseconds: timeout * 1000, fetchTimeoutSeconds: timeout  } });\n  return response.result.records[0];\n}",
+            "timeframe": { "from": "now-2h", "to": "now" }
+          }
+        },
+        "visualization": "table"
+      }
+    }
+  ]
+}

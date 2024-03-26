@@ -1,0 +1,325 @@
+{
+  "defaultTimeframe": { "from": "now-2h", "to": "now" },
+  "sections": [
+    {
+      "id": "5bb43da2-322f-47fa-a3f8-3cc12f4c1ac2",
+      "type": "function",
+      "title": "ASSERTION - Configuration change event (30%)",
+      "showTitle": false,
+      "foldings": [],
+      "height": 77,
+      "showInput": false,
+      "state": {
+        "input": {
+          "value": "import { queryExecutionClient } from '@dynatrace-sdk/client-query';\n\nconst QUERY = `\nfetch events, from:now()-30m\n| filter event.type == \"CUSTOM_CONFIGURATION\"\n| filter in(entity_tags, \"[Environment]DT_RELEASE_STAGE:canary-jenkins\")\n| filter isNotNull(remediationAction) and remediationAction != \"\"\n| filter contains(event.description, \"canary weight set to 30%\")\n| summarize count(), alias: eventCount\n| fieldsAdd validationId = 10, maxScore = 1, {if(eventCount >= 1, 1, else: 0), alias: finalScore}\n| fieldsRemove eventCount\n`\n\nexport default async function () {\n  const timeout = 60;\n  const response = await queryExecutionClient.queryExecute({ body: { query: QUERY, requestTimeoutMilliseconds: timeout * 1000, fetchTimeoutSeconds: timeout  } });\n  return response.result.records[0];\n}",
+          "timeframe": { "from": "now-2h", "to": "now" }
+        },
+        "state": "success",
+        "davis": {
+          "includeLogs": true,
+          "davisVisualization": { "isAvailable": true }
+        },
+        "visualizationSettings": {
+          "thresholds": [],
+          "chartSettings": {
+            "gapPolicy": "connect",
+            "circleChartSettings": {
+              "groupingThresholdType": "relative",
+              "groupingThresholdValue": 0,
+              "valueType": "relative"
+            },
+            "categoryOverrides": {},
+            "categoricalBarChartSettings": {}
+          },
+          "singleValue": {
+            "showLabel": true,
+            "label": "",
+            "prefixIcon": "",
+            "recordField": "validationId",
+            "autoscale": true,
+            "alignment": "center",
+            "colorThresholdTarget": "value"
+          },
+          "table": {
+            "rowDensity": "condensed",
+            "enableSparklines": false,
+            "hiddenColumns": [],
+            "lineWrapIds": [],
+            "firstVisibleRowIndex": 0,
+            "columnWidths": {}
+          },
+          "histogram": { "dataMappings": [] },
+          "honeycomb": { "shape": "square" }
+        },
+        "result": {
+          "code": 200,
+          "value": { "validationId": "10", "maxScore": "1", "finalScore": "0" },
+          "notifications": [],
+          "logs": "",
+          "dateTime": "2024-03-13T13:46:10.285Z",
+          "input": {
+            "value": "import { queryExecutionClient } from '@dynatrace-sdk/client-query';\n\nconst QUERY = `\nfetch events, from:now()-30m\n| filter event.type == \"CUSTOM_CONFIGURATION\"\n| filter in(entity_tags, \"[Environment]DT_RELEASE_STAGE:canary-jenkins\")\n| filter isNotNull(remediationAction) and remediationAction != \"\"\n| filter contains(event.description, \"canary weight set to 30%\")\n| summarize count(), alias: eventCount\n| fieldsAdd validationId = 10, maxScore = 1, {if(eventCount >= 1, 1, else: 0), alias: finalScore}\n| fieldsRemove eventCount\n`\n\nexport default async function () {\n  const timeout = 60;\n  const response = await queryExecutionClient.queryExecute({ body: { query: QUERY, requestTimeoutMilliseconds: timeout * 1000, fetchTimeoutSeconds: timeout  } });\n  return response.result.records[0];\n}",
+            "timeframe": { "from": "now-2h", "to": "now" }
+          }
+        },
+        "visualization": "table"
+      }
+    },
+    {
+      "id": "7e60c09c-3767-4ea8-91c6-e592adb61911",
+      "type": "function",
+      "title": "ASSERTION - Configuration change event (70%)",
+      "showTitle": false,
+      "foldings": [],
+      "height": 77,
+      "showInput": false,
+      "state": {
+        "input": {
+          "value": "import { queryExecutionClient } from '@dynatrace-sdk/client-query';\n\nconst QUERY = `\nfetch events, from:now()-30m\n| filter event.type == \"CUSTOM_CONFIGURATION\"\n| filter in(entity_tags, \"[Environment]DT_RELEASE_STAGE:canary-jenkins\")\n| filter isNotNull(remediationAction) and remediationAction != \"\"\n| filter contains(event.description, \"canary weight set to 70%\")\n| summarize count(), alias: eventCount\n| fieldsAdd validationId = 20, maxScore = 1, {if(eventCount >= 1, 1, else: 0), alias: finalScore}\n| fieldsRemove eventCount\n`\n\nexport default async function () {\n  const timeout = 60;\n  const response = await queryExecutionClient.queryExecute({ body: { query: QUERY, requestTimeoutMilliseconds: timeout * 1000, fetchTimeoutSeconds: timeout  } });\n  return response.result.records[0];\n}",
+          "timeframe": { "from": "now-2h", "to": "now" }
+        },
+        "state": "success",
+        "davis": {
+          "includeLogs": true,
+          "davisVisualization": { "isAvailable": true }
+        },
+        "visualizationSettings": {
+          "thresholds": [],
+          "chartSettings": {
+            "gapPolicy": "connect",
+            "circleChartSettings": {
+              "groupingThresholdType": "relative",
+              "groupingThresholdValue": 0,
+              "valueType": "relative"
+            },
+            "categoryOverrides": {},
+            "categoricalBarChartSettings": {}
+          },
+          "singleValue": {
+            "showLabel": true,
+            "label": "",
+            "prefixIcon": "",
+            "recordField": "validationId",
+            "autoscale": true,
+            "alignment": "center",
+            "colorThresholdTarget": "value"
+          },
+          "table": {
+            "rowDensity": "condensed",
+            "enableSparklines": false,
+            "hiddenColumns": [],
+            "lineWrapIds": [],
+            "firstVisibleRowIndex": 0,
+            "columnWidths": {}
+          },
+          "histogram": { "dataMappings": [] },
+          "honeycomb": { "shape": "square" }
+        },
+        "result": {
+          "code": 200,
+          "value": { "validationId": "20", "maxScore": "1", "finalScore": "0" },
+          "notifications": [],
+          "logs": "",
+          "dateTime": "2024-03-13T13:46:16.168Z",
+          "input": {
+            "value": "import { queryExecutionClient } from '@dynatrace-sdk/client-query';\n\nconst QUERY = `\nfetch events, from:now()-30m\n| filter event.type == \"CUSTOM_CONFIGURATION\"\n| filter in(entity_tags, \"[Environment]DT_RELEASE_STAGE:canary-jenkins\")\n| filter isNotNull(remediationAction) and remediationAction != \"\"\n| filter contains(event.description, \"canary weight set to 70%\")\n| summarize count(), alias: eventCount\n| fieldsAdd validationId = 20, maxScore = 1, {if(eventCount >= 1, 1, else: 0), alias: finalScore}\n| fieldsRemove eventCount\n`\n\nexport default async function () {\n  const timeout = 60;\n  const response = await queryExecutionClient.queryExecute({ body: { query: QUERY, requestTimeoutMilliseconds: timeout * 1000, fetchTimeoutSeconds: timeout  } });\n  return response.result.records[0];\n}",
+            "timeframe": { "from": "now-2h", "to": "now" }
+          }
+        },
+        "visualization": "table"
+      }
+    },
+    {
+      "id": "a6fad84f-1c8f-430c-b412-b77c79367d66",
+      "type": "function",
+      "title": "ASSERTION - Configuration change event (100%)",
+      "showTitle": false,
+      "foldings": [],
+      "height": 77,
+      "showInput": false,
+      "state": {
+        "input": {
+          "value": "import { queryExecutionClient } from '@dynatrace-sdk/client-query';\n\nconst QUERY = `\nfetch events, from:now()-30m\n| filter event.type == \"CUSTOM_CONFIGURATION\"\n| filter in(entity_tags, \"[Environment]DT_RELEASE_STAGE:canary-jenkins\")\n| filter isNotNull(remediationAction) and remediationAction != \"\"\n| filter contains(event.description, \"canary weight set to 100%\")\n| summarize count(), alias: eventCount\n| fieldsAdd validationId = 30, maxScore = 1, {if(eventCount >= 1, 1, else: 0), alias: finalScore}\n| fieldsRemove eventCount\n`\n\nexport default async function () {\n  const timeout = 60;\n  const response = await queryExecutionClient.queryExecute({ body: { query: QUERY, requestTimeoutMilliseconds: timeout * 1000, fetchTimeoutSeconds: timeout  } });\n  return response.result.records[0];\n}",
+          "timeframe": { "from": "now-2h", "to": "now" }
+        },
+        "state": "success",
+        "davis": {
+          "includeLogs": true,
+          "davisVisualization": { "isAvailable": true }
+        },
+        "visualizationSettings": {
+          "thresholds": [],
+          "chartSettings": {
+            "gapPolicy": "connect",
+            "circleChartSettings": {
+              "groupingThresholdType": "relative",
+              "groupingThresholdValue": 0,
+              "valueType": "relative"
+            },
+            "categoryOverrides": {},
+            "categoricalBarChartSettings": {}
+          },
+          "singleValue": {
+            "showLabel": true,
+            "label": "",
+            "prefixIcon": "",
+            "recordField": "validationId",
+            "autoscale": true,
+            "alignment": "center",
+            "colorThresholdTarget": "value"
+          },
+          "table": {
+            "rowDensity": "condensed",
+            "enableSparklines": false,
+            "hiddenColumns": [],
+            "lineWrapIds": [],
+            "firstVisibleRowIndex": 0,
+            "columnWidths": {}
+          },
+          "histogram": { "dataMappings": [] },
+          "honeycomb": { "shape": "square" }
+        },
+        "result": {
+          "code": 200,
+          "value": { "validationId": "30", "maxScore": "1", "finalScore": "0" },
+          "notifications": [],
+          "logs": "",
+          "dateTime": "2024-03-13T13:46:20.052Z",
+          "input": {
+            "value": "import { queryExecutionClient } from '@dynatrace-sdk/client-query';\n\nconst QUERY = `\nfetch events, from:now()-30m\n| filter event.type == \"CUSTOM_CONFIGURATION\"\n| filter in(entity_tags, \"[Environment]DT_RELEASE_STAGE:canary-jenkins\")\n| filter isNotNull(remediationAction) and remediationAction != \"\"\n| filter contains(event.description, \"canary weight set to 100%\")\n| summarize count(), alias: eventCount\n| fieldsAdd validationId = 30, maxScore = 1, {if(eventCount >= 1, 1, else: 0), alias: finalScore}\n| fieldsRemove eventCount\n`\n\nexport default async function () {\n  const timeout = 60;\n  const response = await queryExecutionClient.queryExecute({ body: { query: QUERY, requestTimeoutMilliseconds: timeout * 1000, fetchTimeoutSeconds: timeout  } });\n  return response.result.records[0];\n}",
+            "timeframe": { "from": "now-2h", "to": "now" }
+          }
+        },
+        "visualization": "table"
+      }
+    },
+    {
+      "id": "0f3203c5-c4a3-47a4-b236-6afd6f88eda2",
+      "type": "function",
+      "title": "ASSERTION - Davis Problem",
+      "showTitle": false,
+      "foldings": [],
+      "showInput": false,
+      "height": 79,
+      "state": {
+        "input": {
+          "value": "import { queryExecutionClient } from '@dynatrace-sdk/client-query';\n\nconst QUERY = `\nfetch events, from:now()-30m\n| filter in(entity_tags, \"[Environment]DT_RELEASE_STAGE:canary-jenkins\")\n| filter event.kind == \"DAVIS_EVENT\"\n| filter event.category == \"ERROR\"\n| filter event.type == \"SERVICE_ERROR_RATE_INCREASED\"\n| summarize count(), alias: eventCount\n| fieldsAdd validationId = 40, maxScore = 1, {if(eventCount >= 1, 1, else: 0), alias: finalScore}\n| fieldsRemove eventCount\n`\n\nexport default async function () {\n  const timeout = 60;\n  const response = await queryExecutionClient.queryExecute({ body: { query: QUERY, requestTimeoutMilliseconds: timeout * 1000, fetchTimeoutSeconds: timeout  } });\n  return response.result.records[0];\n}",
+          "timeframe": { "from": "now-2h", "to": "now" }
+        },
+        "state": "success",
+        "davis": {
+          "includeLogs": true,
+          "davisVisualization": { "isAvailable": true }
+        },
+        "visualizationSettings": {
+          "thresholds": [],
+          "chartSettings": {
+            "gapPolicy": "connect",
+            "circleChartSettings": {
+              "groupingThresholdType": "relative",
+              "groupingThresholdValue": 0,
+              "valueType": "relative"
+            },
+            "categoryOverrides": {},
+            "categoricalBarChartSettings": {}
+          },
+          "singleValue": {
+            "showLabel": true,
+            "label": "",
+            "prefixIcon": "",
+            "recordField": "validationId",
+            "autoscale": true,
+            "alignment": "center",
+            "colorThresholdTarget": "value"
+          },
+          "table": {
+            "rowDensity": "condensed",
+            "enableSparklines": false,
+            "hiddenColumns": [],
+            "lineWrapIds": [],
+            "firstVisibleRowIndex": 0,
+            "columnWidths": {}
+          },
+          "histogram": { "dataMappings": [] },
+          "honeycomb": { "shape": "square" }
+        },
+        "result": {
+          "code": 200,
+          "value": { "validationId": "40", "maxScore": "1", "finalScore": "0" },
+          "notifications": [],
+          "logs": "",
+          "dateTime": "2024-03-13T13:46:25.969Z",
+          "input": {
+            "value": "import { queryExecutionClient } from '@dynatrace-sdk/client-query';\n\nconst QUERY = `\nfetch events, from:now()-30m\n| filter in(entity_tags, \"[Environment]DT_RELEASE_STAGE:canary-jenkins\")\n| filter event.kind == \"DAVIS_EVENT\"\n| filter event.category == \"ERROR\"\n| filter event.type == \"SERVICE_ERROR_RATE_INCREASED\"\n| summarize count(), alias: eventCount\n| fieldsAdd validationId = 40, maxScore = 1, {if(eventCount >= 1, 1, else: 0), alias: finalScore}\n| fieldsRemove eventCount\n`\n\nexport default async function () {\n  const timeout = 60;\n  const response = await queryExecutionClient.queryExecute({ body: { query: QUERY, requestTimeoutMilliseconds: timeout * 1000, fetchTimeoutSeconds: timeout  } });\n  return response.result.records[0];\n}",
+            "timeframe": { "from": "now-2h", "to": "now" }
+          }
+        },
+        "visualization": "table"
+      }
+    },
+    {
+      "id": "7d08c809-608e-416c-872d-cf0d773d34ad",
+      "type": "function",
+      "title": "ASSERTION - Configuration change event (0%)",
+      "showTitle": false,
+      "foldings": [],
+      "height": 77,
+      "showInput": false,
+      "state": {
+        "input": {
+          "value": "import { queryExecutionClient } from '@dynatrace-sdk/client-query';\n\nconst QUERY = `\nfetch events, from:now()-30m\n| filter event.type == \"CUSTOM_CONFIGURATION\"\n| filter in(entity_tags, \"[Environment]DT_RELEASE_STAGE:canary-jenkins\")\n| filter contains(event.description, \"canary weight set to 0%\")\n| summarize count(), alias: eventCount\n| fieldsAdd validationId = 50, maxScore = 1, {if(eventCount >= 1, 1, else: 0), alias: finalScore}\n| fieldsRemove eventCount\n`\n\nexport default async function () {\n  const timeout = 60;\n  const response = await queryExecutionClient.queryExecute({ body: { query: QUERY, requestTimeoutMilliseconds: timeout * 1000, fetchTimeoutSeconds: timeout  } });\n  return response.result.records[0];\n}",
+          "timeframe": { "from": "now-2h", "to": "now" }
+        },
+        "state": "success",
+        "davis": {
+          "includeLogs": true,
+          "davisVisualization": { "isAvailable": true }
+        },
+        "visualizationSettings": {
+          "thresholds": [],
+          "chartSettings": {
+            "gapPolicy": "connect",
+            "circleChartSettings": {
+              "groupingThresholdType": "relative",
+              "groupingThresholdValue": 0,
+              "valueType": "relative"
+            },
+            "categoryOverrides": {},
+            "categoricalBarChartSettings": {}
+          },
+          "singleValue": {
+            "showLabel": true,
+            "label": "",
+            "prefixIcon": "",
+            "recordField": "validationId",
+            "autoscale": true,
+            "alignment": "center",
+            "colorThresholdTarget": "value"
+          },
+          "table": {
+            "rowDensity": "condensed",
+            "enableSparklines": false,
+            "hiddenColumns": [],
+            "lineWrapIds": [],
+            "firstVisibleRowIndex": 0,
+            "columnWidths": {}
+          },
+          "histogram": { "dataMappings": [] },
+          "honeycomb": { "shape": "square" }
+        },
+        "result": {
+          "code": 200,
+          "value": { "validationId": "50", "maxScore": "1", "finalScore": "0" },
+          "notifications": [],
+          "logs": "",
+          "dateTime": "2024-03-13T13:46:32.101Z",
+          "input": {
+            "value": "import { queryExecutionClient } from '@dynatrace-sdk/client-query';\n\nconst QUERY = `\nfetch events, from:now()-30m\n| filter event.type == \"CUSTOM_CONFIGURATION\"\n| filter in(entity_tags, \"[Environment]DT_RELEASE_STAGE:canary-jenkins\")\n| filter contains(event.description, \"canary weight set to 0%\")\n| summarize count(), alias: eventCount\n| fieldsAdd validationId = 50, maxScore = 1, {if(eventCount >= 1, 1, else: 0), alias: finalScore}\n| fieldsRemove eventCount\n`\n\nexport default async function () {\n  const timeout = 60;\n  const response = await queryExecutionClient.queryExecute({ body: { query: QUERY, requestTimeoutMilliseconds: timeout * 1000, fetchTimeoutSeconds: timeout  } });\n  return response.result.records[0];\n}",
+            "timeframe": { "from": "now-2h", "to": "now" }
+          }
+        },
+        "visualization": "table"
+      }
+    }
+  ]
+}

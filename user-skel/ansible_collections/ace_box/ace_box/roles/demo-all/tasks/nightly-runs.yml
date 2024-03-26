@@ -63,6 +63,90 @@
 - set_fact:
     dt_app_id_gitlab: "{{ dt_app_id }}"
 
+- block:
+    - include_role:
+        name: dt-platform
+        tasks_from: ensure-notebook
+      vars:
+        dt_oauth_sso_endpoint: "{{ extra_vars.dt_oauth_sso_endpoint }}"
+        dt_oauth_client_id: "{{ extra_vars.dt_oauth_client_id }}"
+        dt_oauth_client_secret: "{{ extra_vars.dt_oauth_client_secret }}"
+        dt_oauth_account_urn: "{{ extra_vars.dt_oauth_account_urn }}"
+        dt_environment_url_gen3: "{{ extra_vars.dt_environment_url_gen3 }}"
+        notebook_path: "{{ role_path_abs }}/files/validations/Validation_AR_Demo_Ansible.json"
+        notebook_name: "Validation - AR Demo w Ansible"
+    - name: Persist Notebook Id
+      include_role:
+        name: config-v2
+        tasks_from: set-var
+      vars:
+        var_key_to_set: "notebook_id_Validation_AR_Demo_Ansible"
+        var_value_to_set: "{{ notebook_post_result_json.id }}"
+  when: notebook_id_Validation_AR_Demo_Ansible is not defined
+
+- block:
+    - include_role:
+        name: dt-platform
+        tasks_from: ensure-notebook
+      vars:
+        dt_oauth_sso_endpoint: "{{ extra_vars.dt_oauth_sso_endpoint }}"
+        dt_oauth_client_id: "{{ extra_vars.dt_oauth_client_id }}"
+        dt_oauth_client_secret: "{{ extra_vars.dt_oauth_client_secret }}"
+        dt_oauth_account_urn: "{{ extra_vars.dt_oauth_account_urn }}"
+        dt_environment_url_gen3: "{{ extra_vars.dt_environment_url_gen3 }}"
+        notebook_path: "{{ role_path_abs }}/files/validations/Validation_AR_Demo_GitLab.json"
+        notebook_name: "Validation - AR Demo w GitLab"
+    - name: Persist Notebook Id
+      include_role:
+        name: config-v2
+        tasks_from: set-var
+      vars:
+        var_key_to_set: "notebook_id_Validation_AR_Demo_GitLab"
+        var_value_to_set: "{{ notebook_post_result_json.id }}"
+  when: notebook_id_Validation_AR_Demo_GitLab is not defined
+
+- block:
+    - include_role:
+        name: dt-platform
+        tasks_from: ensure-notebook
+      vars:
+        dt_oauth_sso_endpoint: "{{ extra_vars.dt_oauth_sso_endpoint }}"
+        dt_oauth_client_id: "{{ extra_vars.dt_oauth_client_id }}"
+        dt_oauth_client_secret: "{{ extra_vars.dt_oauth_client_secret }}"
+        dt_oauth_account_urn: "{{ extra_vars.dt_oauth_account_urn }}"
+        dt_environment_url_gen3: "{{ extra_vars.dt_environment_url_gen3 }}"
+        notebook_path: "{{ role_path_abs }}/files/validations/Validation_SRG_Demo_FAIL.json"
+        notebook_name: "Validation - SRG Demo FAIL"
+    - name: Persist Notebook Id
+      include_role:
+        name: config-v2
+        tasks_from: set-var
+      vars:
+        var_key_to_set: "notebook_id_Validation_SRG_Demo_FAIL"
+        var_value_to_set: "{{ notebook_post_result_json.id }}"
+  when: notebook_id_Validation_SRG_Demo_FAIL is not defined
+
+- block:
+    - include_role:
+        name: dt-platform
+        tasks_from: ensure-notebook
+      vars:
+        dt_oauth_sso_endpoint: "{{ extra_vars.dt_oauth_sso_endpoint }}"
+        dt_oauth_client_id: "{{ extra_vars.dt_oauth_client_id }}"
+        dt_oauth_client_secret: "{{ extra_vars.dt_oauth_client_secret }}"
+        dt_oauth_account_urn: "{{ extra_vars.dt_oauth_account_urn }}"
+        dt_environment_url_gen3: "{{ extra_vars.dt_environment_url_gen3 }}"
+        notebook_path: "{{ role_path_abs }}/files/validations/Validation_SRG_Demo_PASS.json"
+        notebook_name: "Validation - SRG Demo PASS"
+    - name: Persist Notebook Id
+      include_role:
+        name: config-v2
+        tasks_from: set-var
+      vars:
+        var_key_to_set: "notebook_id_Validation_SRG_Demo_PASS"
+        var_value_to_set: "{{ notebook_post_result_json.id }}"
+  when: notebook_id_Validation_SRG_Demo_PASS is not defined
+
 #
 # Monaco
 #
