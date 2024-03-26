@@ -1,0 +1,41 @@
+---
+- block:
+    - name: Request DT OAuth access token
+      ansible.builtin.uri:
+        url: "{{ dt_oauth_sso_endpoint }}"
+        method: POST
+        status_code: 200
+        headers:
+          Content-Type: "application/x-www-form-urlencoded"
+        body_format: form-urlencoded
+        body:
+          grant_type: "client_credentials"
+          client_id: "{{ dt_oauth_client_id }}"
+          client_secret: "{{ dt_oauth_client_secret }}"
+          scope: "document:documents:read document:documents:delete"
+          resource: "{{ dt_oauth_account_urn }}"
+      register: auth_response_raw
+    - set_fact:
+        dt_oauth_access_token: "{{ auth_response_raw.json.access_token }}"
+
+- name: Get document
+  ansible.builtin.uri:
+    url: "{{ dt_environment_url_gen3.rstrip('/') }}/platform/document/v1/documents/{{ notebook_id }}/metadata"
+    method: GET
+    headers:
+      Authorization: "Bearer {{ dt_oauth_access_token }}"
+    status_code: 200, 404
+  register: get_metadata_result
+
+- block:
+    - set_fact:
+        notebook_version: "{{ get_metadata_result.json.version }}"
+    - name: Delete document
+      ansible.builtin.uri:
+        url: "{{ dt_environment_url_gen3.rstrip('/') }}/platform/document/v1/documents/{{ notebook_id }}?optimistic-locking-version={{ notebook_version }}"
+        method: DELETE
+        headers:
+          Authorization: "Bearer {{ dt_oauth_access_token }}"
+        status_code: 204
+      register: delete_result
+  when: get_metadata_result.status == 200

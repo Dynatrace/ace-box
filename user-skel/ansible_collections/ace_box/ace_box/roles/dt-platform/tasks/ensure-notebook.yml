@@ -1,0 +1,50 @@
+---
+- block:
+    - name: Request DT OAuth access token
+      ansible.builtin.uri:
+        url: "{{ dt_oauth_sso_endpoint }}"
+        method: POST
+        status_code: 200
+        headers:
+          Content-Type: "application/x-www-form-urlencoded"
+        body_format: form-urlencoded
+        body:
+          grant_type: "client_credentials"
+          client_id: "{{ dt_oauth_client_id }}"
+          client_secret: "{{ dt_oauth_client_secret }}"
+          scope: "document:documents:write"
+          resource: "{{ dt_oauth_account_urn }}"
+      register: auth_response_raw
+    - set_fact:
+        dt_oauth_access_token: "{{ auth_response_raw.json.access_token }}"
+#
+# For some reason, upload with URI started breaking around March 2024.
+# Therefore, cmd + CURL is used
+#
+# - name: Upload document
+#   ansible.builtin.uri:
+#     url: "{{ dt_environment_url_gen3.rstrip('/') }}/platform/document/v1/documents"
+#     method: POST
+#     body_format: form-multipart
+#     headers:
+#       Content-Type: "multipart/form-data"
+#       Authorization: "Bearer {{ dt_oauth_access_token }}"
+#     body:
+#       name: Test Notebook
+#       type: notebook
+#       content:
+#         content: "{{ lookup('file', 'test.json') }}"
+#         filename: "test.json"
+#         mime_type: application/json
+#     status_code: 201
+#   register: post_result
+
+- set_fact:
+    upload_url: '{{ extra_vars.dt_environment_url_gen3.rstrip("/") }}/platform/document/v1/documents'
+
+- name: Upload Notebook
+  ansible.builtin.command: 'curl --location "{{ upload_url }}"  --header "Authorization: Bearer {{ dt_oauth_access_token }}"  --form "name=\"{{ notebook_name }}\""  --form "type=\"notebook\""  --form "content=@\"{{ notebook_path }}\""'
+  register: post_result
+
+- set_fact:
+    notebook_post_result_json: "{{ post_result.stdout | from_json }}"
