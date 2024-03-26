@@ -1,0 +1,62 @@
+---
+configs:
+  - id: demoAllAnsibleConnection
+    config:
+      name: "ACE-Box - Demo All"
+      template: ansible.json
+      parameters:
+        token:
+          type: environment
+          name: AWX_CONTROLLER_TOKEN
+        url:
+          type: environment
+          name: AWX_URL
+    type:
+      settings:
+        schema: app:dynatrace.redhat.ansible:automation-controller.connection
+        scope: environment
+  - id: demoAllGitlabConnection
+    config:
+      name: "ACE-Box - Demo All"
+      template: gitlab.json
+      parameters:
+        url:
+          type: environment
+          name: GITLAB_URL
+        token:
+          type: environment
+          name: GITLAB_TOKEN
+    type:
+      settings:
+        schema: app:my.dynatrace.gitlab.tobias.gremmer:connection # As of Feb 2024, value can't be parameterized
+        scope: environment
+  - id: demoAllJenkinsConnection
+    config:
+      name: "ACE-Box - Demo All"
+      template: jenkins.json
+      parameters:
+        url:
+          type: environment
+          name: JENKINS_URL
+        user:
+          type: environment
+          name: JENKINS_USER
+        token:
+          type: environment
+          name: JENKINS_TOKEN
+    type:
+      settings:
+        schema: app:my.dynatrace.jenkins.tobias.gremmer:connection # As of Feb 2024, value can't be parameterized
+        scope: environment
+  - id: demoAllSlackConnection
+    config:
+      name: "ACE-Box - Demo All"
+      template: slack.json
+      parameters:
+        slackBotToken:
+          type: environment
+          name: SLACK_BOT_TOKEN
+    type:
+      settings:
+        schema: app:dynatrace.slack:connection
+        scope: environment

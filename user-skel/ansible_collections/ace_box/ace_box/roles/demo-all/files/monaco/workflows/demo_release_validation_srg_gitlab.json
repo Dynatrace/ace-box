@@ -10,7 +10,12 @@
         "name": "",
         "branchId": "main",
         "projectId": "{{ .projectId }}",
-        "variables": [],
+        "variables": [
+          {
+            "key": "BUILD_ID",
+            "value": "{{ .buildId }}"
+          }
+        ],
         "connection": "{{ .connectionId }}",
         "branchInputType": 0,
         "projectInputType": 0

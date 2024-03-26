@@ -10,6 +10,8 @@
       - { key: "dt_oauth_client_secret", regex: 'dt0s02\..' }
       - { key: "dt_oauth_account_urn", regex: "urn:dtaccount:." }
       - { key: "dt_environment_url_gen3" }
+      - { key: "slack_bot_token" }
+      - { key: "slack_channel" }
 
 - set_fact:
     role_path_abs: "{{ role_path }}"
@@ -62,6 +64,22 @@
 
 - set_fact:
     dt_app_id_gitlab: "{{ dt_app_id }}"
+
+- name: "Install {{ dt_app_id }}"
+  include_role:
+    name: "dt-platform"
+    tasks_from: "install-app-artifact"
+  vars:
+    dt_oauth_sso_endpoint: "{{ extra_vars.dt_oauth_sso_endpoint }}"
+    dt_oauth_client_id: "{{ extra_vars.dt_oauth_client_id }}"
+    dt_oauth_client_secret: "{{ extra_vars.dt_oauth_client_secret }}"
+    dt_oauth_account_urn: "{{ extra_vars.dt_oauth_account_urn }}"
+    dt_environment_url_gen3: "{{ extra_vars.dt_environment_url_gen3 }}"
+    dt_app_id: "my.dt.pegasys"
+    dt_app_artifact_path: "{{ role_path_abs }}/files/cheese-grater-0.0.27.zip"
+
+- set_fact:
+    dt_app_id_cheese_grater: "{{ dt_app_id }}"
 
 - block:
     - include_role:
@@ -174,4 +192,9 @@
       JENKINS_URL: "{{ ingress_protocol }}://jenkins.{{ ingress_domain }}/"
       JENKINS_USER: "{{ jenkins_username }}"
       JENKINS_TOKEN: "{{ jenkins_api_token }}"
-      # WORKFLOW_ACTOR_ID: "{{ extra_vars.workflow_actor_id }}"
+      SLACK_BOT_TOKEN: "{{ extra_vars.slack_bot_token }}"
+      SLACK_CHANNEL: "{{ extra_vars.slack_channel }}"
+      NOTEBOOK_ID_VALIDATION_AR_DEMO_ANSIBLE: "{{ notebook_id_Validation_AR_Demo_Ansible }}"
+      NOTEBOOK_ID_VALIDATION_AR_DEMO_GITLAB: "{{ notebook_id_Validation_AR_Demo_GitLab }}"
+      NOTEBOOK_ID_VALIDATION_SRG_DEMO_FAIL: "{{ notebook_id_Validation_SRG_Demo_FAIL }}"
+      NOTEBOOK_ID_VALIDATION_SRG_DEMO_PASS: "{{ notebook_id_Validation_SRG_Demo_PASS }}"
