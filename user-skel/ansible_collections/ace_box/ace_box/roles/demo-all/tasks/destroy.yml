@@ -1,0 +1,96 @@
+---
+- set_fact:
+    role_path_abs: "{{ role_path }}"
+
+- name: Monaco - Delete configuration
+  include_role:
+    name: monaco-v2
+    tasks_from: delete-monaco
+  vars:
+    monaco_manifest_path: "{{ role_path_abs }}/files/monaco/manifest.yml"
+    monaco_delete_path: "{{ role_path_abs }}/files/monaco/delete.yml"
+    monaco_environment:
+      DT_PLATFORM_TENANT_URL: "{{ extra_vars.dt_environment_url_gen3 }}"
+      DT_OAUTH_CLIENT_ID: "{{ extra_vars.dt_oauth_client_id }}"
+      DT_OAUTH_CLIENT_SECRET: "{{ extra_vars.dt_oauth_client_secret }}"
+      DT_OAUTH_SSO_ENDPOINT: "{{ extra_vars.dt_oauth_sso_endpoint }}"
+
+- block:
+    - include_role:
+        name: dt-platform
+        tasks_from: delete-notebook
+      vars:
+        dt_oauth_sso_endpoint: "{{ extra_vars.dt_oauth_sso_endpoint }}"
+        dt_oauth_client_id: "{{ extra_vars.dt_oauth_client_id }}"
+        dt_oauth_client_secret: "{{ extra_vars.dt_oauth_client_secret }}"
+        dt_oauth_account_urn: "{{ extra_vars.dt_oauth_account_urn }}"
+        dt_environment_url_gen3: "{{ extra_vars.dt_environment_url_gen3 }}"
+        notebook_id: "{{ notebook_id_Validation_AR_Demo_Ansible }}"
+    - name: Overwrite Notebook Id
+      include_role:
+        name: config-v2
+        tasks_from: set-var
+      vars:
+        var_key_to_set: "notebook_id_Validation_AR_Demo_Ansible"
+        var_value_to_set: ""
+  when: notebook_id_Validation_AR_Demo_Ansible is defined and notebook_id_Validation_AR_Demo_Ansible|length > 0
+
+- block:
+    - include_role:
+        name: dt-platform
+        tasks_from: delete-notebook
+      vars:
+        dt_oauth_sso_endpoint: "{{ extra_vars.dt_oauth_sso_endpoint }}"
+        dt_oauth_client_id: "{{ extra_vars.dt_oauth_client_id }}"
+        dt_oauth_client_secret: "{{ extra_vars.dt_oauth_client_secret }}"
+        dt_oauth_account_urn: "{{ extra_vars.dt_oauth_account_urn }}"
+        dt_environment_url_gen3: "{{ extra_vars.dt_environment_url_gen3 }}"
+        notebook_id: "{{ notebook_id_Validation_AR_Demo_GitLab }}"
+    - name: Overwrite Notebook Id
+      include_role:
+        name: config-v2
+        tasks_from: set-var
+      vars:
+        var_key_to_set: "notebook_id_Validation_AR_Demo_GitLab"
+        var_value_to_set: ""
+  when: notebook_id_Validation_AR_Demo_GitLab is defined and notebook_id_Validation_AR_Demo_GitLab|length > 0
+
+- block:
+    - include_role:
+        name: dt-platform
+        tasks_from: delete-notebook
+      vars:
+        dt_oauth_sso_endpoint: "{{ extra_vars.dt_oauth_sso_endpoint }}"
+        dt_oauth_client_id: "{{ extra_vars.dt_oauth_client_id }}"
+        dt_oauth_client_secret: "{{ extra_vars.dt_oauth_client_secret }}"
+        dt_oauth_account_urn: "{{ extra_vars.dt_oauth_account_urn }}"
+        dt_environment_url_gen3: "{{ extra_vars.dt_environment_url_gen3 }}"
+        notebook_id: "{{ notebook_id_Validation_SRG_Demo_FAIL }}"
+    - name: Overwrite Notebook Id
+      include_role:
+        name: config-v2
+        tasks_from: set-var
+      vars:
+        var_key_to_set: "notebook_id_Validation_SRG_Demo_FAIL"
+        var_value_to_set: ""
+  when: notebook_id_Validation_SRG_Demo_FAIL is defined and notebook_id_Validation_SRG_Demo_FAIL|length > 0
+
+- block:
+    - include_role:
+        name: dt-platform
+        tasks_from: delete-notebook
+      vars:
+        dt_oauth_sso_endpoint: "{{ extra_vars.dt_oauth_sso_endpoint }}"
+        dt_oauth_client_id: "{{ extra_vars.dt_oauth_client_id }}"
+        dt_oauth_client_secret: "{{ extra_vars.dt_oauth_client_secret }}"
+        dt_oauth_account_urn: "{{ extra_vars.dt_oauth_account_urn }}"
+        dt_environment_url_gen3: "{{ extra_vars.dt_environment_url_gen3 }}"
+        notebook_id: "{{ notebook_id_Validation_SRG_Demo_PASS }}"
+    - name: Overwrite Notebook Id
+      include_role:
+        name: config-v2
+        tasks_from: set-var
+      vars:
+        var_key_to_set: "notebook_id_Validation_SRG_Demo_PASS"
+        var_value_to_set: ""
+  when: notebook_id_Validation_SRG_Demo_PASS is defined and notebook_id_Validation_SRG_Demo_PASS|length > 0

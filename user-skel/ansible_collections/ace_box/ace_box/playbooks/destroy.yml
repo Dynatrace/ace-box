@@ -43,3 +43,7 @@
       ansible.builtin.include_role:
         name: otel-collector
         tasks_from: destroy
+    - name: Destroy demo-all
+      ansible.builtin.include_role:
+        name: demo-all
+        tasks_from: destroy
