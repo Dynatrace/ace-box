@@ -17,7 +17,10 @@ configs:
           type: environment
           name: AWX_CANARY_TEMPLATE_ID
         triggerTime: "03:00"
-        validationEnabled: true
+        validationEnabled:
+          type: environment
+          name: NIGHTLY_VALIDATIONS_ENABLED
+          default: false
         demoRunTimeM: "25"
         validationNotebookId:
           type: environment
@@ -53,7 +56,10 @@ configs:
           type: environment
           name: GITLAB_AR_PROJECT_ID
         triggerTime: "03:00"
-        validationEnabled: true
+        validationEnabled:
+          type: environment
+          name: NIGHTLY_VALIDATIONS_ENABLED
+          default: false
         demoRunTimeM: "25"
         validationNotebookId:
           type: environment
@@ -90,7 +96,10 @@ configs:
           name: GITLAB_SRG_PROJECT_ID
         buildId: "3"
         triggerTime: "03:00"
-        validationEnabled: true
+        validationEnabled:
+          type: environment
+          name: NIGHTLY_VALIDATIONS_ENABLED
+          default: false
         demoRunTimeM: "25"
         validationNotebookId:
           type: environment
@@ -127,7 +136,10 @@ configs:
           name: GITLAB_SRG_PROJECT_ID
         buildId: "2"
         triggerTime: "04:00"
-        validationEnabled: true
+        validationEnabled:
+          type: environment
+          name: NIGHTLY_VALIDATIONS_ENABLED
+          default: false
         demoRunTimeM: "25"
         validationNotebookId:
           type: environment
@@ -164,7 +176,10 @@ configs:
           name: GITLAB_SRG_PROJECT_ID
         buildId: "1"
         triggerTime: "05:00"
-        validationEnabled: true
+        validationEnabled:
+          type: environment
+          name: NIGHTLY_VALIDATIONS_ENABLED
+          default: false
         demoRunTimeM: "25"
         validationNotebookId:
           type: environment
