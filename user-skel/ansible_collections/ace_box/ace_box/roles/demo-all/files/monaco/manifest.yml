@@ -2,8 +2,8 @@
 manifestVersion: "1.0"
 
 projects:
-  - name: connections
-  - name: workflows
+  - name: demos
+  - name: validations
 
 environmentGroups:
   - name: default

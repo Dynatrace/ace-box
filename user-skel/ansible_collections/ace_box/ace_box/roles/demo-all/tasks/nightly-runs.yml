@@ -62,11 +62,6 @@
 - set_fact:
     dt_app_id_gitlab: "{{ dt_app_id }}"
 
-- name: Setup nightly validations resources
-  ansible.builtin.include_tasks:
-    file: nightly-validations.yml
-  when: extra_vars.are_nightly_auto_validations_enabled is defined and extra_vars.are_nightly_auto_validations_enabled|bool
-
 #
 # Monaco
 #
@@ -79,6 +74,7 @@
     tasks_from: apply-monaco
   vars:
     monaco_manifest_path: "{{ role_path_abs }}/files/monaco/manifest.yml"
+    monaco_project: "demos"
     monaco_environment:
       DT_PLATFORM_TENANT_URL: "{{ extra_vars.dt_environment_url_gen3 }}"
       DT_OAUTH_CLIENT_ID: "{{ extra_vars.dt_oauth_client_id }}"
@@ -94,10 +90,8 @@
       JENKINS_URL: "{{ ingress_protocol }}://jenkins.{{ ingress_domain }}/"
       JENKINS_USER: "{{ jenkins_username }}"
       JENKINS_TOKEN: "{{ jenkins_api_token }}"
-      NIGHTLY_VALIDATIONS_ENABLED: "{{ (extra_vars.are_nightly_auto_validations_enabled | default(false)) | bool }}"
-      SLACK_BOT_TOKEN: "{{ extra_vars.slack_bot_token | default(None) }}"
-      SLACK_CHANNEL: "{{ extra_vars.slack_channel | default(None) }}"
-      NOTEBOOK_ID_VALIDATION_AR_DEMO_ANSIBLE: "{{ notebook_id_Validation_AR_Demo_Ansible | default(None) }}"
-      NOTEBOOK_ID_VALIDATION_AR_DEMO_GITLAB: "{{ notebook_id_Validation_AR_Demo_GitLab | default(None) }}"
-      NOTEBOOK_ID_VALIDATION_SRG_DEMO_FAIL: "{{ notebook_id_Validation_SRG_Demo_FAIL | default(None) }}"
-      NOTEBOOK_ID_VALIDATION_SRG_DEMO_PASS: "{{ notebook_id_Validation_SRG_Demo_PASS | default(None) }}"
+
+- name: Setup nightly validations resources
+  ansible.builtin.include_tasks:
+    file: nightly-validations.yml
+  when: extra_vars.are_nightly_auto_validations_enabled is defined and extra_vars.are_nightly_auto_validations_enabled|bool

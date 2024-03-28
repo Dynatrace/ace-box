@@ -1,0 +1,148 @@
+---
+configs:
+  - id: demoAllAnsibleConnection
+    config:
+      name: "ACE-Box - Demo All"
+      template: ansible.json
+      parameters:
+        token:
+          type: environment
+          name: AWX_CONTROLLER_TOKEN
+        url:
+          type: environment
+          name: AWX_URL
+    type:
+      settings:
+        schema: app:dynatrace.redhat.ansible:automation-controller.connection
+        scope: environment
+  - id: demoAllGitlabConnection
+    config:
+      name: "ACE-Box - Demo All"
+      template: gitlab.json
+      parameters:
+        url:
+          type: environment
+          name: GITLAB_URL
+        token:
+          type: environment
+          name: GITLAB_TOKEN
+    type:
+      settings:
+        schema: app:my.dynatrace.gitlab.tobias.gremmer:connection # As of Feb 2024, value can't be parameterized
+        scope: environment
+  - id: demoAllJenkinsConnection
+    config:
+      name: "ACE-Box - Demo All"
+      template: jenkins.json
+      parameters:
+        url:
+          type: environment
+          name: JENKINS_URL
+        user:
+          type: environment
+          name: JENKINS_USER
+        token:
+          type: environment
+          name: JENKINS_TOKEN
+    type:
+      settings:
+        schema: app:my.dynatrace.jenkins.tobias.gremmer:connection # As of Feb 2024, value can't be parameterized
+        scope: environment
+  - id: demoArWorkflowsAnsible
+    config:
+      name: "ACE-Box - Nightly demo_ar_workflows_ansible"
+      template: demo_ar_workflows_ansible.json
+      skip: false
+      parameters:
+        connectionId:
+          [
+            "app:dynatrace.redhat.ansible:automation-controller.connection",
+            "demoAllAnsibleConnection",
+            "id",
+          ]
+        templateId:
+          type: environment
+          name: AWX_CANARY_TEMPLATE_ID
+        triggerTime: "03:00"
+    type:
+      automation:
+        resource: workflow
+  - id: demoArWorkflowsGitlab
+    config:
+      name: "ACE-Box - Nightly demo_ar_workflows_gitlab"
+      template: demo_ar_workflows_gitlab.json
+      skip: false
+      parameters:
+        connectionId:
+          [
+            "app:my.dynatrace.gitlab.tobias.gremmer:connection",
+            "demoAllGitlabConnection",
+            "id",
+          ]
+        projectId:
+          type: environment
+          name: GITLAB_AR_PROJECT_ID
+        triggerTime: "03:00"
+    type:
+      automation:
+        resource: workflow
+  - id: demoReleaseValidationSrgGitlab1
+    config:
+      name: "ACE-Box - Nightly demo_release_validation_srg_gitlab 1/3"
+      template: demo_release_validation_srg_gitlab.json
+      skip: false
+      parameters:
+        connectionId:
+          [
+            "app:my.dynatrace.gitlab.tobias.gremmer:connection",
+            "demoAllGitlabConnection",
+            "id",
+          ]
+        projectId:
+          type: environment
+          name: GITLAB_SRG_PROJECT_ID
+        buildId: "3"
+        triggerTime: "03:00"
+    type:
+      automation:
+        resource: workflow
+  - id: demoReleaseValidationSrgGitlab2
+    config:
+      name: "ACE-Box - Nightly demo_release_validation_srg_gitlab 2/3"
+      template: demo_release_validation_srg_gitlab.json
+      skip: false
+      parameters:
+        connectionId:
+          [
+            "app:my.dynatrace.gitlab.tobias.gremmer:connection",
+            "demoAllGitlabConnection",
+            "id",
+          ]
+        projectId:
+          type: environment
+          name: GITLAB_SRG_PROJECT_ID
+        buildId: "2"
+        triggerTime: "04:00"
+    type:
+      automation:
+        resource: workflow
+  - id: demoReleaseValidationSrgGitlab3
+    config:
+      name: "ACE-Box - Nightly demo_release_validation_srg_gitlab 3/3"
+      template: demo_release_validation_srg_gitlab.json
+      skip: false
+      parameters:
+        connectionId:
+          [
+            "app:my.dynatrace.gitlab.tobias.gremmer:connection",
+            "demoAllGitlabConnection",
+            "id",
+          ]
+        projectId:
+          type: environment
+          name: GITLAB_SRG_PROJECT_ID
+        buildId: "1"
+        triggerTime: "05:00"
+    type:
+      automation:
+        resource: workflow

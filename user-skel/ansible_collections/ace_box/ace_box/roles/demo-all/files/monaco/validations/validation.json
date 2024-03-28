@@ -1,0 +1,100 @@
+{
+  "title": "{{ .name }}",
+  "description": "",
+  "tasks": {
+    "run_validation": {
+      "name": "run_validation",
+      "action": "dynatrace.automations:run-javascript",
+      "description": "Build a custom task running js Code",
+      "input": {
+        "script": "import { functions } from '@dynatrace-sdk/adhoc-utils'\n\nconst NOTEBOOK_ID = \"{{ .validationNotebookId }}\"\nconst GROUP_ID = \"{{ .validationGroupId }}\"\nconst APP_ID = \"my.dt.pegasys\"\nconst FUNCTION_NAME = \"v1/evaluations/grade-evaluation\"\n\nexport default async function ({ execution_id }) {\n  const data = {\n    \"notebookId\": NOTEBOOK_ID,\n    \"participantId\": GROUP_ID\n  }\n  \n  const result = await functions.call(APP_ID, FUNCTION_NAME, data).then((res) => res.text())\n  return JSON.parse(result)\n}"
+      },
+      "position": {
+        "x": 0,
+        "y": 1
+      },
+      "predecessors": []
+    },
+    "wait_for_validation": {
+      "name": "wait_for_validation",
+      "action": "dynatrace.automations:run-javascript",
+      "description": "Build a custom task running js Code",
+      "input": {
+        "script": "const TIMEOUT_MS = 60 * 1000\n  \nexport default async function () {\n  return await new Promise(resolve => setTimeout(resolve, TIMEOUT_MS))\n}"
+      },
+      "position": {
+        "x": 0,
+        "y": 2
+      },
+      "predecessors": ["run_validation"],
+      "conditions": {
+        "states": {
+          "run_validation": "OK"
+        }
+      }
+    },
+    "query_validation_result": {
+      "name": "query_validation_result",
+      "action": "dynatrace.automations:execute-dql-query",
+      "description": "Executes DQL query",
+      "input": {
+        "query": "{{`fetch bizevents\n| filter type == \"EvaluationGrading.SummaryResult\"\n| filter executionId == \"{{ result('run_validation').data.executionId }}\"\n| fields notebookName, percentageScore`}}"
+      },
+      "position": {
+        "x": 0,
+        "y": 3
+      },
+      "predecessors": ["wait_for_validation"],
+      "conditions": {
+        "states": {
+          "wait_for_validation": "OK"
+        }
+      }
+    },
+    "report_validation_failure": {
+      "name": "report_validation_failure",
+      "action": "dynatrace.slack:slack-send-message",
+      "description": "Send a message to a Slack workspace",
+      "input": {
+        "channel": "{{ .slackChannel }}",
+        "message": "{{`Failed VALIDATION: {{ execution().title }}`}}",
+        "reaction": [],
+        "connection": "{{ .slackConnectionId }}",
+        "workflowID": "{{`{{ execution().workflow.id }}`}}",
+        "channelType": "expression",
+        "executionID": "{{`{{ execution().id }}`}}",
+        "executionDate": "{{`{{ execution().started_at }}`}}",
+        "appendToThread": false,
+        "selectedRequestType": 0,
+        "attachmentToggleValue": "none"
+      },
+      "position": {
+        "x": 0,
+        "y": 4
+      },
+      "predecessors": ["query_validation_result"],
+      "conditions": {
+        "states": {
+          "query_validation_result": "OK"
+        },
+        "custom": "{{`{{ result(\"query_validation_result\").records[0].percentageScore < 99 }}`}}"
+      }
+    }
+  },
+  "isPrivate": false,
+  "trigger": {
+    "schedule": {
+      "rule": null,
+      "trigger": {
+        "type": "time",
+        "time": "{{ .triggerTime }}"
+      },
+      "timezone": "Europe/Amsterdam",
+      "isActive": true,
+      "isFaulty": false,
+      "filterParameters": {},
+      "inputs": {}
+    }
+  },
+  "schemaVersion": 3
+}

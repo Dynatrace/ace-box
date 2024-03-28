@@ -1,0 +1,109 @@
+---
+configs:
+  - id: demoAllSlackConnection
+    config:
+      name: "ACE-Box - Demo All"
+      template: slack.json
+      parameters:
+        slackBotToken:
+          type: environment
+          name: SLACK_BOT_TOKEN
+    type:
+      settings:
+        schema: app:dynatrace.slack:connection
+        scope: environment
+  - id: demoArWorkflowsAnsibleValidations
+    config:
+      name: "ACE-Box - Nightly Validation demo_ar_workflows_ansible"
+      template: validation.json
+      skip: false
+      parameters:
+        triggerTime: "03:25"
+        validationNotebookId:
+          type: environment
+          name: NOTEBOOK_ID_VALIDATION_AR_DEMO_ANSIBLE
+        validationGroupId: "demoall"
+        slackConnectionId:
+          ["app:dynatrace.slack:connection", "demoAllSlackConnection", "id"]
+        slackChannel:
+          type: environment
+          name: SLACK_CHANNEL
+    type:
+      automation:
+        resource: workflow
+  - id: demoArWorkflowsGitlabValidations
+    config:
+      name: "ACE-Box - Nightly Validation demo_ar_workflows_gitlab"
+      template: validation.json
+      skip: false
+      parameters:
+        triggerTime: "03:25"
+        validationNotebookId:
+          type: environment
+          name: NOTEBOOK_ID_VALIDATION_AR_DEMO_GITLAB
+        validationGroupId: "demoall"
+        slackConnectionId:
+          ["app:dynatrace.slack:connection", "demoAllSlackConnection", "id"]
+        slackChannel:
+          type: environment
+          name: SLACK_CHANNEL
+    type:
+      automation:
+        resource: workflow
+  - id: demoReleaseValidationSrgGitlab1Validations
+    config:
+      name: "ACE-Box - Nightly Validation demo_release_validation_srg_gitlab 1/3"
+      template: validation.json
+      skip: false
+      parameters:
+        triggerTime: "03:25"
+        validationNotebookId:
+          type: environment
+          name: NOTEBOOK_ID_VALIDATION_SRG_DEMO_PASS
+        validationGroupId: "demoall"
+        slackConnectionId:
+          ["app:dynatrace.slack:connection", "demoAllSlackConnection", "id"]
+        slackChannel:
+          type: environment
+          name: SLACK_CHANNEL
+    type:
+      automation:
+        resource: workflow
+  - id: demoReleaseValidationSrgGitlab2Validations
+    config:
+      name: "ACE-Box - Nightly Validation demo_release_validation_srg_gitlab 2/3"
+      template: validation.json
+      skip: false
+      parameters:
+        triggerTime: "04:25"
+        validationNotebookId:
+          type: environment
+          name: NOTEBOOK_ID_VALIDATION_SRG_DEMO_FAIL
+        validationGroupId: "demoall"
+        slackConnectionId:
+          ["app:dynatrace.slack:connection", "demoAllSlackConnection", "id"]
+        slackChannel:
+          type: environment
+          name: SLACK_CHANNEL
+    type:
+      automation:
+        resource: workflow
+  - id: demoReleaseValidationSrgGitlab3Validations
+    config:
+      name: "ACE-Box - Nightly Validation demo_release_validation_srg_gitlab 3/3"
+      template: validation.json
+      skip: false
+      parameters:
+        triggerTime: "05:25"
+        validationNotebookId:
+          type: environment
+          name: NOTEBOOK_ID_VALIDATION_SRG_DEMO_PASS
+        validationGroupId: "demoall"
+        slackConnectionId:
+          ["app:dynatrace.slack:connection", "demoAllSlackConnection", "id"]
+        slackChannel:
+          type: environment
+          name: SLACK_CHANNEL
+    type:
+      automation:
+        resource: workflow

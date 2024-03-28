@@ -111,3 +111,22 @@
         var_key_to_set: "notebook_id_Validation_SRG_Demo_PASS"
         var_value_to_set: "{{ notebook_post_result_json.id }}"
   when: notebook_id_Validation_SRG_Demo_PASS is not defined
+
+- name: Monaco - Deploy configuration
+  include_role:
+    name: monaco-v2
+    tasks_from: apply-monaco
+  vars:
+    monaco_manifest_path: "{{ role_path_abs }}/files/monaco/manifest.yml"
+    monaco_project: "validations"
+    monaco_environment:
+      DT_PLATFORM_TENANT_URL: "{{ extra_vars.dt_environment_url_gen3 }}"
+      DT_OAUTH_CLIENT_ID: "{{ extra_vars.dt_oauth_client_id }}"
+      DT_OAUTH_CLIENT_SECRET: "{{ extra_vars.dt_oauth_client_secret }}"
+      DT_OAUTH_SSO_ENDPOINT: "{{ extra_vars.dt_oauth_sso_endpoint }}"
+      SLACK_BOT_TOKEN: "{{ extra_vars.slack_bot_token | default(None) }}"
+      SLACK_CHANNEL: "{{ extra_vars.slack_channel | default(None) }}"
+      NOTEBOOK_ID_VALIDATION_AR_DEMO_ANSIBLE: "{{ notebook_id_Validation_AR_Demo_Ansible | default(None) }}"
+      NOTEBOOK_ID_VALIDATION_AR_DEMO_GITLAB: "{{ notebook_id_Validation_AR_Demo_GitLab | default(None) }}"
+      NOTEBOOK_ID_VALIDATION_SRG_DEMO_FAIL: "{{ notebook_id_Validation_SRG_Demo_FAIL | default(None) }}"
+      NOTEBOOK_ID_VALIDATION_SRG_DEMO_PASS: "{{ notebook_id_Validation_SRG_Demo_PASS | default(None) }}"

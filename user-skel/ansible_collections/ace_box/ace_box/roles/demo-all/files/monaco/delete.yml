@@ -1,25 +1,43 @@
 delete:
-  - project: workflows
+  - project: demos
     type: workflow
     id: demoArWorkflowsAnsible
-  - project: workflows
+  - project: demos
     type: workflow
     id: demoArWorkflowsGitlab
-  - project: workflows
+  - project: demos
     type: workflow
     id: demoReleaseValidationSrgGitlab1
-  - project: workflows
+  - project: demos
     type: workflow
     id: demoReleaseValidationSrgGitlab2
-  - project: workflows
+  - project: demos
     type: workflow
     id: demoReleaseValidationSrgGitlab3
-  - project: connections
+  - project: demos
     type: app:dynatrace.redhat.ansible:automation-controller.connection
     id: demoAllAnsibleConnection
-  - project: connections
+  - project: demos
     type: app:my.dynatrace.gitlab.tobias.gremmer:connection # As of Feb 2024, value can't be parameterized
     id: demoAllGitlabConnection
-  - project: connections
+  - project: demos
     type: app:my.dynatrace.jenkins.tobias.gremmer:connection # As of Feb 2024, value can't be parameterized
     id: demoAllJenkinsConnection
+  - project: validations
+    type: workflow
+    id: demoArWorkflowsAnsibleValidations
+  - project: validations
+    type: workflow
+    id: demoArWorkflowsGitlabValidations
+  - project: validations
+    type: workflow
+    id: demoReleaseValidationSrgGitlab1Validations
+  - project: validations
+    type: workflow
+    id: demoReleaseValidationSrgGitlab2Validations
+  - project: validations
+    type: workflow
+    id: demoReleaseValidationSrgGitlab3Validations
+  - project: validations
+    type: app:dynatrace.slack:connection
+    id: demoAllSlackConnection
