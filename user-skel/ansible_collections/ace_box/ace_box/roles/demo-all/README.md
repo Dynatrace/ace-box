@@ -15,8 +15,9 @@
 |Variable name|Description|
 |---|---|
 |are_nightly_auto_runs_enabled|Optional: Enable automatic nightly use case runs; Default: false|
-|slack_bot_token|Required if are_nightly_auto_runs_enabled == true; Default: false|
-|slack_channel|Required if are_nightly_auto_runs_enabled == true; Default: false|
+|are_nightly_auto_validations_enabled|Optional: Enable automatic nightly use case validations; Default: false|
+|slack_bot_token|Required if are_nightly_auto_validations_enabled == true; Default: false|
+|slack_channel|Required if are_nightly_auto_validations_enabled == true; Default: false|
 
 
 Extra vars can be set e.g. as Terraform variables:
