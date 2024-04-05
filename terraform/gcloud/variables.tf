@@ -54,11 +54,6 @@ variable "dt_api_token" {
   description = "Dynatrace API token in format of 'dt0c01. ...'"
 }
 
-variable "ingress_protocol" {
-  description = "Ingress protocol"
-  default     = "http"
-}
-
 variable "use_case" {
   type        = string
   description = "Use cases the ACE-Box will be enabled for."
