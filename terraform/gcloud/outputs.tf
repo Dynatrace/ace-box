@@ -8,7 +8,7 @@ output "dashboard_password" {
 }
 
 output "acebox_ip" {
-  value = "connect using: ssh -i ${module.ssh_key.private_key_filename} ${var.acebox_user}@${google_compute_instance.acebox.network_interface[0].access_config[0].nat_ip}"
+  value = "connect using: ssh -i ${module.ssh_key.private_key_filename} ${var.acebox_user}@${local.public_vm_ip}"
 }
 
 output "comment" {
