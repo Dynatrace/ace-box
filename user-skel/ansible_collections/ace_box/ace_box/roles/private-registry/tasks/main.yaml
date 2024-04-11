@@ -7,8 +7,9 @@
 - name: Install resources private
   become: true
   become_user: root
-  shell:
-    cmd: "kubectl apply -f /home/{{ ace_box_user }}/registry-resources.yaml"
+  kubernetes.core.k8s:
+    state: present
+    src: "/home/{{ ace_box_user }}/registry-resources.yaml"
 
 - include_tasks:
-      file: configure-registry.yml # Includes k3s restart
+      file: configure-registry.yml

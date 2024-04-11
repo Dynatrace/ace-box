@@ -1,8 +1,4 @@
-#
-# k3s restart
-#
 - name: k3s restart
-  become: true
-  become_user: root
-  shell:
-    cmd: "systemctl restart k3s"
+  ansible.builtin.service:
+    name: k3s
+    state: restarted

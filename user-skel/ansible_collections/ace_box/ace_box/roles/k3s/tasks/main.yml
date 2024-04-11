@@ -19,17 +19,19 @@
     name:
       - kubernetes
 
-- name: mkdir kube config
+- name: Create a directory if it does not exist
   become: true
   become_user: root
-  shell:
-    cmd: "mkdir -p /home/{{ ace_box_user }}/.kube"
+  ansible.builtin.file:
+    path: /home/{{ ace_box_user }}/.kube
+    state: directory
 
 - name: copy kube config
   become: true
   become_user: root
-  shell:
-    cmd: "cp /etc/rancher/k3s/k3s.yaml /home/{{ ace_box_user }}/.kube/config"
+  ansible.builtin.copy:
+    src: /etc/rancher/k3s/k3s.yaml
+    dest: /home/{{ ace_box_user }}/.kube/config
 
 # Install helm via
 - name: Install Helm
