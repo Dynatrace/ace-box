@@ -1,4 +1,6 @@
 - name: k3s restart
+  become: true
+  become_user: root
   ansible.builtin.service:
     name: k3s
     state: restarted
