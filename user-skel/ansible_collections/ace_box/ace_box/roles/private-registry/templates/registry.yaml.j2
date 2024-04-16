@@ -1,0 +1,71 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: docker-registry-ingress
+  namespace: default
+  annotations:
+    kubernetes.io/ingress.class: "{{ ingress_class }}"
+spec:
+  rules:
+    - host: registry.{{ ingress_domain }}
+      http:
+        paths:
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: docker-registry-service
+                port:
+                  number: 5000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: docker-registry-service
+  namespace: default
+  labels:
+    run: docker-registry
+spec:
+  selector:
+    app: docker-registry
+  ports:
+    - protocol: TCP
+      port: 5000
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: docker-registry
+  namespace: default
+  labels:
+    app: docker-registry
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: docker-registry
+  template:
+    metadata:
+      labels:
+        app: docker-registry
+    spec:
+      containers:
+      - name: docker-registry
+        image: registry
+        ports:
+        - containerPort: 5000
+          protocol: TCP
+        volumeMounts:
+        - name: storage
+          mountPath: /var/lib/registry
+        env:
+        - name: REGISTRY_HTTP_ADDR
+          value: :5000
+        - name: REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY
+          value: /var/lib/registry
+      volumes:
+      - name: storage
+        emptyDir: {} # TODO -make this more permanent later

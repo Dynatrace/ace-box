@@ -1,0 +1,43 @@
+#
+# Set ingress_class to traefik
+#
+- include_role:
+    name: config-v2
+    tasks_from: set-var
+  vars:
+    var_key_to_set: "ingress_class"
+    var_value_to_set: "traefik"
+
+- name: Install k3s
+  become: true
+  become_user: root
+  shell:
+    cmd: "curl -sfL https://get.k3s.io | K3S_KUBECONFIG_MODE=\"644\" sh -"
+
+- name: pip install kubernetes 
+  pip:
+    name:
+      - kubernetes
+
+- name: Create a directory if it does not exist
+  become: true
+  become_user: root
+  ansible.builtin.file:
+    path: /home/{{ ace_box_user }}/.kube
+    state: directory
+
+- name: copy kube config
+  become: true
+  become_user: root
+  ansible.builtin.copy:
+    src: /etc/rancher/k3s/k3s.yaml
+    dest: /home/{{ ace_box_user }}/.kube/config
+
+# Install helm via
+- name: Install Helm
+  become: true
+  become_user: root
+  community.general.snap:
+    name:
+    - helm
+    classic: yes

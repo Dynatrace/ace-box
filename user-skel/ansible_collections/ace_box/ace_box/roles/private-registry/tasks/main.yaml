@@ -1,0 +1,13 @@
+- name: Private registry configuration
+  ansible.builtin.template:
+    src: registry.yaml.j2
+    dest: "/home/{{ ace_box_user }}/registry-resources.yaml"
+    mode: 0600
+
+- name: Install resources private
+  kubernetes.core.k8s:
+    state: present
+    src: "/home/{{ ace_box_user }}/registry-resources.yaml"
+
+- include_tasks:
+      file: configure-registry.yml
