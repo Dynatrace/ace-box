@@ -36,6 +36,7 @@ dt_operator_release: "v0.9.1" # the latest supported dynatrace operator release
 dt_operator_namespace: "dynatrace"
 host_group: "ace-box"
 operator_mode: "classicFullStack"
+cluster_name: "your-cluster-name"
 ```
 
 Possible values for operator_mode:
