@@ -1,0 +1,25 @@
+---
+- name: Create namespace for ArgoCD
+  kubernetes.core.k8s:
+    name: "{{ argocd_namespace }}"
+    api_version: v1
+    kind: Namespace
+    state: present
+
+- name: Apply ArgoCD manifest
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ role_path_abs }}/files/argocd-install.yml"
+    namespace: "{{ argocd_namespace }}"
+
+- name: Apply ArgoCD ingress http manifest
+  kubernetes.core.k8s:
+    state: present
+    template: "{{ role_path_abs }}/templates/argocd-ingress-http.yml.j2"
+    namespace: "{{ argocd_namespace }}"
+
+- name: Apply ArgoCD ingress grpc manifest
+  kubernetes.core.k8s:
+    state: present
+    template: "{{ role_path_abs }}/templates/argocd-ingress-grpc.yml.j2"
+    namespace: "{{ argocd_namespace }}"

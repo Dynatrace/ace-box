@@ -1,0 +1,26 @@
+---
+- name: Create application namespace
+  kubernetes.core.k8s:
+    name: "{{ application_namespace }}"
+    api_version: v1
+    kind: Namespace
+    state: present
+
+- name: Create ArgoCD Application
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: argoproj.io/v1alpha1
+      kind: Application
+      metadata:
+        name: "{{ application_name }}"
+        namespace: "{{ argocd_namespace }}"
+      spec:
+        project: "{{ application_project | default('default') }}"
+        source:
+          repoURL: "{{ repo_url }}"
+          targetRevision: HEAD
+          path: "{{ repo_path }}"
+        destination:
+          server: "https://kubernetes.default.svc"
+          namespace: "{{ application_namespace }}"
