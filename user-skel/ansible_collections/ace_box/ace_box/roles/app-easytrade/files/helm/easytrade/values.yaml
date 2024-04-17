@@ -11,4 +11,8 @@ easytrade:
     tag: 0d8bdc7
   headlessloadgen:
     image: gcr.io/dynatrace-demoability/headlessloadgen
-    tag: 848c2ab
+    tag: b554e03
+  accountservice:
+    tag: 151f288
+  engine:
+    tag: 151f288
