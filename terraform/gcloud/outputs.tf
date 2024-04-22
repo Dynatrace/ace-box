@@ -1,5 +1,5 @@
 output "acebox_dashboard" {
-  value = "http://dashboard.${local.ingress_domain}"
+  value = "${local.ingress_protocol}://dashboard.${local.ingress_domain}"
 }
 
 output "dashboard_password" {
