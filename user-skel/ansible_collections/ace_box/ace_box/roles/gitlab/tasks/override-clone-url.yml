@@ -1,0 +1,21 @@
+---
+- ansible.builtin.include_role:
+    name: gitlab
+    tasks_from: source-endpoints
+  when: gitlab_internal_endpoint is not defined
+
+- ansible.builtin.include_role:
+    name: gitlab
+    tasks_from: source-personal-access-token
+  when: gitlab_personal_access_token is not defined
+
+- name: Update clone URL
+  ansible.builtin.uri:
+    url: "{{ gitlab_internal_endpoint }}/api/v4/application/settings?custom_http_clone_url_root={{ gitlab_clone_url }}"
+    validate_certs: false
+    method: PUT
+    status_code: [200, 201]
+    headers:
+      Content-Type: "application/json"
+      Authorization: "Bearer {{ gitlab_personal_access_token }}"
+    timeout: 60

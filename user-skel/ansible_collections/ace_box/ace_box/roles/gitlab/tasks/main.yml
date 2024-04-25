@@ -78,6 +78,11 @@
 
 - ansible.builtin.include_tasks: deploy-gcpe.yml
 
+- ansible.builtin.include_tasks: override-clone-url.yml
+  vars:
+    gitlab_clone_url: "{{ ingress_protocol }}://gitlab.{{ ingress_domain }}"
+  when: ingress_protocol == "https"
+
 # Include Dashboard values
 - set_fact:
     include_dashboard_value_file: "{{ role_path }}/templates/gitlab-dashboard.yml.j2"
