@@ -9,17 +9,28 @@
 - name: Apply ArgoCD manifest
   kubernetes.core.k8s:
     state: present
-    src: "{{ role_path_abs }}/files/argocd-install.yml"
+    src: "{{ role_path }}/files/argocd-install.yml"
     namespace: "{{ argocd_namespace }}"
 
 - name: Apply ArgoCD ingress http manifest
   kubernetes.core.k8s:
     state: present
-    template: "{{ role_path_abs }}/templates/argocd-ingress-http.yml.j2"
+    template: "{{ role_path }}/templates/argocd-ingress-http.yml.j2"
     namespace: "{{ argocd_namespace }}"
 
 - name: Apply ArgoCD ingress grpc manifest
   kubernetes.core.k8s:
     state: present
-    template: "{{ role_path_abs }}/templates/argocd-ingress-grpc.yml.j2"
+    template: "{{ role_path }}/templates/argocd-ingress-grpc.yml.j2"
     namespace: "{{ argocd_namespace }}"
+
+- include_tasks:
+    file: source-initial-admin-password.yml
+
+- set_fact:
+    argocd_dashboard_value_file: "{{ role_path }}/templates/argocd-dashboard.yml.j2"
+
+- include_role:
+    name: dashboard
+  vars:
+    include_dashboard_value_file: "{{ argocd_dashboard_value_file }}"
