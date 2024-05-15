@@ -1,9 +1,0 @@
----
-- name: Download ArgoCD CLI
-  become: true
-  become_user: root
-  get_url:
-    url: "https://github.com/argoproj/argo-cd/releases/download/v2.10.5/argocd-linux-amd64"
-    dest: "/usr/local/bin/argocd"
-    mode: +x
-    timeout: 300
