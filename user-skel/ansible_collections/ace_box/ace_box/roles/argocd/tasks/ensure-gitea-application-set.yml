@@ -2,7 +2,7 @@
 - include_role:
     name: gitea
     tasks_from: source-secret
-  when: gitlab_personal_access_token is not defined or gitlab_username is not defined
+  when: gitea_username is not defined or gitea_access_token is not defined or gitea_password is not defined
 
 - set_fact:
     argocd_gitea_generator_api: "{{ ingress_protocol }}://gitea.{{ ingress_domain }}/"
@@ -28,7 +28,7 @@
         type: "{{ 'git' | b64encode }}"
         url: "{{ argocd_gitea_generator_owner_url | b64encode }}"
         username: "{{ gitea_username | b64encode }}"
-        password: "{{ gitea_access_token | b64encode }}"
+        password: "{{ gitea_password | b64encode }}"
         token: "{{ gitea_access_token | b64encode }}"
 
 - name: Ensure ApplicationSet
