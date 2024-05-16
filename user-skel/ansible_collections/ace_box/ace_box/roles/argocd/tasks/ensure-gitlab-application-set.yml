@@ -2,14 +2,7 @@
 - include_role:
     name: gitlab
     tasks_from: source-secret
-  when: gitlab_personal_access_token is not defined or gitlab_username is not defined
-
-# TBD: TEST
-
-# - include_role:
-#     name: gitlab
-#     tasks_from: source-endpoints
-#   when: gitlab_internal_endpoint is not defined
+  when: gitlab_personal_access_token is not defined or gitlab_username is not defined or gitlab_password is not defined
 
 - set_fact:
     argocd_gitlab_generator_api: "{{ ingress_protocol }}://gitlab.{{ ingress_domain }}/"
