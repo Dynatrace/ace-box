@@ -30,7 +30,7 @@ Requires vars:
 |argocd_gitlab_generator_owner|...|
 |argocd_gitlab_generator_k8s_path|...|
 
-For example, consider a repository `sandbox/test.git` with the following layout:
+For example, consider a repository `sandbox/test.git` (GitLab group `sandbox`) with the following layout:
 
 ```
 index.html
@@ -43,7 +43,7 @@ k8s/
 ...
 ```
 
-With repo, you want to set:
+With a repo layout like, you want to set:
 
 ```
 argocd_gitlab_generator_owner: "sandbox"
