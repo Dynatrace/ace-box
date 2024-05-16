@@ -16,7 +16,7 @@
     api_version: v1
     kind: Secret
     state: present
-    namespace: "argocd"
+    namespace: "{{ argocd_namespace }}"
     resource_definition:
       metadata:
         labels:
@@ -36,40 +36,3 @@
     state: present
     template: "{{ role_path }}/templates/argocd-gitea-application-set.yml.j2"
     namespace: "{{ argocd_namespace }}"
-#
-#
-#
-# ---
-# apiVersion: argoproj.io/v1alpha1
-# kind: ApplicationSet
-# metadata:
-#   name: "gitea"
-#   namespace: "argocd"
-# spec:
-#   generators:
-#     - scmProvider:
-#         requeueAfterSeconds: 60
-#         cloneProtocol: https
-#         gitea:
-#           # The Gitea owner to scan.
-#           owner: "{{ argocd_gitea_generator_owner }}"
-#           # The Gitea instance url
-#           api: "{{ argocd_gitea_generator_api }}"
-#           # If true, scan every branch of every repository. If false, scan only the default branch. Defaults to false.
-#           allBranches: true
-#           # Reference to a Secret containing an access token. (optional)
-#           tokenRef:
-#             secretName: gitea-creds
-#             key: token
-#   template:
-#     metadata:
-#       name: "{{ repository }}"
-#     spec:
-#       source:
-#         repoURL: "{{ url }}"
-#         targetRevision: "HEAD"
-#         path: "k8s/overlays/simplenodeservice"
-#       project: default
-#       destination:
-#         server: https://kubernetes.default.svc
-#         namespace: default
