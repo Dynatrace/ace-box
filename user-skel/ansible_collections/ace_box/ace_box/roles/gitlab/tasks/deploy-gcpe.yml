@@ -24,7 +24,7 @@
     group: "{{ ace_box_user }}"
     mode: "0644"
 
-- name: Install
+- name: Install GitLab CI Pipeline Exporter
   kubernetes.core.helm:
     name: "gitlab-ci-pipelines-exporter"
     chart_ref: mvisonneau/gitlab-ci-pipelines-exporter
