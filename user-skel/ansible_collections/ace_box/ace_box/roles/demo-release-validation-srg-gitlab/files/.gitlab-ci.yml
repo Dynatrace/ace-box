@@ -162,7 +162,7 @@ Run Tests:
   variables:
     LOCUST_LOCUSTFILE: locust/locustfile.py
     LOCUST_CONFIG: locust/locust.conf
-    LOCUST_HOST: "http://simplenodeservice-$RELEASE_STAGE.$INGRESS_DOMAIN"
+    LOCUST_HOST: "$INGRESS_PROTOCOL://simplenodeservice-$RELEASE_STAGE.$INGRESS_DOMAIN"
     LOCUST_LOAD_TEST_NAME: "Loadtest - $RELEASE_BUILD_VERSION"
   image: locustio/locust
   script:
