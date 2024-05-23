@@ -9,7 +9,8 @@
       "dqlQuery": "{{ .dqlQuery }}",
       "comparisonOperator": "{{ .comparisonOperator }}",
       "target": {{ .failure_dql }},
-      "warning": {{ .warning_dql }}
+      "warning": {{ .warning_dql }},
+      "autoAdaptiveThresholdEnabled": false
     },
     {
       "name": "{{ .objective_name_slo_success_rate }}",
@@ -35,7 +36,8 @@
       "dqlQuery": "{{ .dqlQuery_cpu_usage }}",
       "comparisonOperator": "LESS_THAN_OR_EQUAL",
       "target": {{ .failure_dql_cpu_usage }},
-      "warning": {{ .warning_dql_cpu_usage }}
+      "warning": {{ .warning_dql_cpu_usage }},
+      "autoAdaptiveThresholdEnabled": false
     }
   ]
 }
