@@ -18,7 +18,26 @@ configs:
             - "app:simplenode"
         # objective - dql - response time
         objective_name_dql: "Response Time of API Method"
-        dqlQuery: "fetch logs\n| filter dt.process.name == \"simplenodeservice.simplenode-gitlab-staging\"\n| filter k8s.namespace.name == \"simplenode-gitlab-staging\"\n| filter matchesPhrase(content, \"/api/invoke\")\n| parse content, \"DATA '/api/' DATA 'rt:' SPACE? FLOAT:responsetime \" \n| filter isNotNull(responsetime) \n| summarize median(responsetime), alias:response_time "
+        dqlQuery: |
+          fetch logs
+          | fields pgis = dt.entity.process_group_instance,content
+          | expand pgis
+          | lookup [
+            fetch dt.entity.process_group_instance
+            | fieldsAdd tags
+            | filter(matchesPhrase(tags,"DT_RELEASE_STAGE:simplenode-gitlab-staging"))
+            | filter(matchesPhrase(tags,"DT_RELEASE_PRODUCT:simplenodeservice"))
+            | sort lifetime desc
+            | summarize pgi_id = takeFirst(id)
+            ],
+            sourceField:pgis,
+            lookupField:pgi_id,
+            prefix:"pg_"
+          | filter isNotNull(pg_pgi_id)
+          | filter matchesPhrase(content, "/api/invoke")
+          | parse content, "DATA '/api/' DATA 'rt:' SPACE? FLOAT:responsetime " 
+          | filter isNotNull(responsetime) 
+          | summarize median(responsetime), alias:response_time
         comparisonOperator: "LESS_THAN_OR_EQUAL"
         failure_dql: 500
         warning_dql: 400
