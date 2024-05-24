@@ -1,0 +1,43 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: "gitea-{{ argocd_gitea_generator_owner }}"
+spec:
+  generators:
+    - scmProvider:
+        requeueAfterSeconds: 60
+        cloneProtocol: https
+        gitea:
+          # The Gitea owner to scan.
+          owner: "{{ argocd_gitea_generator_owner }}"
+          # The Gitea instance url
+          api: "{{ argocd_gitea_generator_api }}"
+          # If true, scan every branch of every repository. If false, scan only the default branch. Defaults to false.
+          # allBranches: true
+          # Reference to a Secret containing an access token. (optional)
+          tokenRef:
+            secretName: gitea-creds
+            key: token
+  template:
+    metadata:
+      name: "{% raw %}{{ repository }}{% endraw %}"
+    spec:
+      source:
+        repoURL: "{% raw %}{{ url }}{% endraw %}"
+        targetRevision: "{% raw %}{{ branch }}{% endraw %}"
+        path: "{{ argocd_gitea_generator_k8s_path }}"
+      project: default
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: default
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+          allowEmpty: true
+        syncOptions:
+          - Validate=true
+          - CreateNamespace=true
+          - PrunePropagationPolicy=foreground
+          - PruneLast=true

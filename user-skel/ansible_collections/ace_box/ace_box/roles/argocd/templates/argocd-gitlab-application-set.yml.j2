@@ -1,0 +1,49 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: "gitlab-{{ argocd_gitlab_generator_owner }}"
+spec:
+  generators:
+    - scmProvider:
+        requeueAfterSeconds: 60
+        cloneProtocol: https
+        gitlab:
+          group: "{{ argocd_gitlab_generator_owner }}"
+          # api: "{{ gitlab_internal_endpoint }}" # This might not work!?!?! -> TEST
+          api: "{{ argocd_gitlab_generator_api }}"
+          # If true, scan every branch of every repository. If false, scan only the default branch. Defaults to false.
+          # allBranches: true
+          # If true, recurses through subgroups. If false, it searches only in the base group. Defaults to false.
+          # includeSubgroups: true
+          # If true and includeSubgroups is also true, include Shared Projects, which is gitlab API default.
+          # If false only search Projects under the same path. Defaults to true.
+          # includeSharedProjects: false
+          # filter projects by topic. A single topic is supported by Gitlab API. Defaults to "" (all topics).
+          # topic: "my-topic"
+          tokenRef:
+            secretName: gitlab-creds
+            key: token
+          insecure: true
+  template:
+    metadata:
+      name: "{% raw %}{{ repository }}{% endraw %}"
+    spec:
+      source:
+        repoURL: "{% raw %}{{ url }}{% endraw %}"
+        targetRevision: "{% raw %}{{ branch }}{% endraw %}"
+        path: "{{ argocd_gitlab_generator_k8s_path }}"
+      project: default
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: default
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+          allowEmpty: true
+        syncOptions:
+          - Validate=true
+          - CreateNamespace=true
+          - PrunePropagationPolicy=foreground
+          - PruneLast=true

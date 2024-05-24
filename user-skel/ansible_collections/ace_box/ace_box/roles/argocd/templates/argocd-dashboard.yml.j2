@@ -1,0 +1,12 @@
+---
+extRefs:
+  ArgoCD:
+    url: "{{ ingress_protocol }}://argocd.{{ ingress_domain }}"
+    description: "ArgoCD is available at {{ ingress_protocol }}://argocd.{{ ingress_domain }}."
+    creds:
+      - description: Username
+        type: text
+        value: "admin"
+      - description: Password
+        type: password
+        value: "{{ argocd_admin_password }}"

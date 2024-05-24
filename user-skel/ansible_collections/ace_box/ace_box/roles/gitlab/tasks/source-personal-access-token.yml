@@ -44,7 +44,22 @@
           Authorization: "Bearer {{ gitlab_oauth_token_result.json.access_token }}"
         body:
           name: "ace-box-pat"
-          scopes: ["api"]
+          scopes:
+            [
+              "api",
+              "read_api",
+              "read_user",
+              "create_runner",
+              "k8s_proxy",
+              "read_repository",
+              "write_repository",
+              "read_registry",
+              "write_registry",
+              "ai_features",
+              "sudo",
+              "admin_mode",
+              "read_service_ping",
+            ]
         body_format: json
       register: gitlab_personal_access_token_result
     - name: Persist Gitlab root PAT
