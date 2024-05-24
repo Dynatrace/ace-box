@@ -71,6 +71,17 @@ resource "google_compute_backend_service" "ace_box" {
   session_affinity                = "NONE"
   timeout_sec                     = 30
 
+  # 
+  # Custom X-Forwarded-... headers are required by certain tools (e.g. GitLab)
+  # if they are ran behind a TLS terminating proxy.
+  # 
+  custom_request_headers = [
+    "X-Forwarded-Port: 443",
+    "X-Forwarded-Scheme: https",
+    "X-Forwarded-Proto: https",
+    "X-Forwarded-Ssl: on",
+  ]
+
   backend {
     group           = var.instance_group
     balancing_mode  = "UTILIZATION"
