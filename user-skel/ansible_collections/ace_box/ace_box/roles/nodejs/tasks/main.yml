@@ -1,0 +1,29 @@
+---
+- name: Install nvm
+  ansible.builtin.shell: >
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/{{ nodejs_nvm_version }}/install.sh | bash
+  args:
+    creates: "{{ ansible_env.HOME }}/.nvm/nvm.sh"
+    chdir: "{{ ansible_env.HOME }}"
+    executable: /bin/bash
+
+- name: "Install Node.js {{ nodejs_node_version }}"
+  shell: >
+    . {{ ansible_env.HOME }}/.nvm/nvm.sh && nvm install {{ nodejs_node_version }}
+  args:
+    creates: "{{ ansible_env.HOME }}/.nvm/versions/node/{{ nodejs_node_version }}"
+    chdir: "{{ ansible_env.HOME }}"
+    executable: /bin/bash
+
+- set_fact:
+    nodejs_path_env_var: "{{ ansible_env.HOME }}/.nvm/versions/node/{{ nodejs_node_version }}/bin"
+
+- name: Install YARN
+  shell: >
+    npm install yarn --global
+  args:
+    creates: "{{ ansible_env.HOME }}/.nvm/versions/node/{{ nodejs_node_version }}/lib/node_modules/yarn"
+    chdir: "{{ ansible_env.HOME }}"
+    executable: /bin/bash
+  environment:
+    PATH: "{{ lookup('ansible.builtin.env', 'PATH') }}:{{ nodejs_path_env_var }}"
