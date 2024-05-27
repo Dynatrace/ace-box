@@ -1,0 +1,12 @@
+[
+  {
+    "op": "replace",
+    "path": "/spec/rules/0/host",
+    "value": "backstage.{{ ingress_domain }}"
+  },
+  {
+    "op": "replace",
+    "path": "/metadata/annotations/kubernetes.io~1ingress.class",
+    "value": "{{ ingress_class }}"
+  }
+]

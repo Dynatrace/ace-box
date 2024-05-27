@@ -1,0 +1,18 @@
+---
+- name: Source GitLab creds
+  include_role:
+    name: gitlab
+    tasks_from: source-secret
+  when: gitlab_password is not defined
+
+- name: Publish docs
+  include_role:
+    name: repository
+  vars:
+    git_username: "root"
+    git_password: "{{ gitlab_password }}"
+    git_remote: "gitlab"
+    git_org: "{{ backstage_templates_gitlab_group }}"
+    git_repo: "{{ backstage_catalog_git_repo }}"
+    repo_src: "{{ backstage_catalog_git_repo_src }}"
+    track_upstream: true

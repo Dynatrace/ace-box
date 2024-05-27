@@ -1,0 +1,152 @@
+---
+- include_role:
+    name: nodejs
+  vars:
+    nodejs_node_version: "v18.20.1"
+
+- name: Yarn install Backstage packages
+  community.general.yarn:
+    path: "{{ role_path }}/files/ace-box-backstage"
+  environment:
+    PATH: "{{ lookup('ansible.builtin.env', 'PATH') }}:{{ nodejs_path_env_var }}"
+
+- name: Compile Backstage Typescript
+  shell: >
+    yarn tsc
+  args:
+    creates: "{{ role_path }}/files/ace-box-backstage/dist-types"
+    chdir: "{{ role_path }}/files/ace-box-backstage"
+    executable: /bin/bash
+  environment:
+    PATH: "{{ lookup('ansible.builtin.env', 'PATH') }}:{{ nodejs_path_env_var }}"
+
+- name: Generate Backstage backend auth key
+  include_role:
+    name: config-v2
+    tasks_from: set-var
+  vars:
+    var_key_to_set: "backstage_backend_auth_key"
+    var_value_to_set: "{{ lookup('community.general.random_string', length=24, base64=True) }}"
+  when: backstage_backend_auth_key is not defined
+
+- name: Gitlab - Ensure OAuth App
+  include_role:
+    name: gitlab
+    tasks_from: ensure-application
+  vars:
+    gitlab_application_name: "backstage"
+    gitlab_application_redirect_uri: "{{ ingress_protocol }}://backstage.{{ ingress_domain }}/api/auth/gitlab/handler/frame"
+    gitlab_application_scopes: "read_user read_repository write_repository openid profile email"
+
+- name: Gitlab - Ensure Backstage template group
+  include_role:
+    name: gitlab
+    tasks_from: ensure-group
+  vars:
+    gitlab_group_name: "{{ backstage_templates_gitlab_group }}"
+
+- name: Source GitLab creds
+  include_role:
+    name: gitlab
+    tasks_from: source-secret
+  when: gitlab_personal_access_token is not defined
+
+- name: Source GitLab internal IP
+  include_role:
+    name: gitlab
+    tasks_from: source-endpoints
+  when: gitlab_internal_endpoint is not defined
+
+- name: Template app-config.yml
+  template:
+    src: "{{ role_path }}/templates/app-config.yml.j2"
+    dest: "{{ role_path }}/files/ace-box-backstage/app-config.yml"
+    owner: "{{ ace_box_user }}"
+    group: "{{ ace_box_user }}"
+    mode: "0644"
+
+- name: Build Backstage app-config.yml
+  shell: >
+    yarn build:backend --config ../../app-config.yml
+  args:
+    creates: "{{ role_path }}/files/ace-box-backstage/packages/backend/dist"
+    chdir: "{{ role_path }}/files/ace-box-backstage"
+    executable: /bin/bash
+  environment:
+    PATH: "{{ lookup('ansible.builtin.env', 'PATH') }}:{{ nodejs_path_env_var }}"
+
+#
+# TBD: From new registry role
+#
+- include_role:
+    name: microk8s
+    tasks_from: source-registry-url
+
+- set_fact:
+    backstage_image_tag: "1.0.0"
+
+#
+# As of April 2024, images has to be built and pushed manually as `community.docker.docker_image` fails with:
+# "Error connecting: Error while fetching server API version: request() got an unexpected keyword argument 'chunked'"
+#
+
+- name: Build Backstage image
+  shell: >
+    docker image build . -f packages/backend/Dockerfile --tag {{ registry_url }}/backstage:{{ backstage_image_tag }}
+  args:
+    chdir: "{{ role_path }}/files/ace-box-backstage"
+    executable: /bin/bash
+
+- name: Push Backstage image
+  shell: >
+    docker push {{ registry_url }}/backstage:{{ backstage_image_tag }}
+  args:
+    chdir: "{{ role_path }}/files/ace-box-backstage"
+    executable: /bin/bash
+
+- name: Ensure Postgres data directory
+  become: true
+  become_user: root
+  ansible.builtin.file:
+    path: /mnt/data
+    state: directory
+    mode: "0777"
+
+- name: Template backstage.patch.json
+  template:
+    src: "{{ role_path }}/templates/backstage.patch.json.j2"
+    dest: "{{ role_path }}/files/ace-box-backstage/k8s/base/backstage.patch.json"
+    owner: "{{ ace_box_user }}"
+    group: "{{ ace_box_user }}"
+    mode: "0644"
+
+- name: Template backstage-ingress.patch.json
+  template:
+    src: "{{ role_path }}/templates/backstage-ingress.patch.json.j2"
+    dest: "{{ role_path }}/files/ace-box-backstage/k8s/base/backstage-ingress.patch.json"
+    owner: "{{ ace_box_user }}"
+    group: "{{ ace_box_user }}"
+    mode: "0644"
+
+- name: Template gitlab-secrets.yml
+  template:
+    src: "{{ role_path }}/templates/gitlab-secrets.yml.j2"
+    dest: "{{ role_path }}/files/ace-box-backstage/k8s/base/gitlab-secrets.yml"
+    owner: "{{ ace_box_user }}"
+    group: "{{ ace_box_user }}"
+    mode: "0644"
+
+- set_fact:
+    kustomize_dir: "{{ role_path }}/files/ace-box-backstage/k8s/base"
+
+- name: Apply Kustomization
+  k8s:
+    definition: "{{ lookup('kubernetes.core.kustomize', dir=kustomize_dir) }}"
+
+- set_fact:
+    backstage_dashboard_value_file: "{{ role_path }}/templates/backstage-dashboard.yml.j2"
+
+- include_role:
+    name: dashboard
+  vars:
+    include_dashboard_value_file: "{{ backstage_dashboard_value_file }}"
