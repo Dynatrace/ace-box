@@ -5,7 +5,7 @@
     tasks_from: source-secret
   when: gitlab_password is not defined
 
-- name: Publish docs
+- name: Publish repo
   include_role:
     name: repository
   vars:
