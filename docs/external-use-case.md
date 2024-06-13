@@ -30,11 +30,16 @@ The following curated roles can be added to your external use case. See [templat
 
 |Role|Description|
 |---|---|
+|[app-easytrade](../user-skel/ansible_collections/ace_box/ace_box/roles/app-easytrade/Readme.md)|Installs the [Easy Trade demo application]|
+|[app-easytravel](../user-skel/ansible_collections/ace_box/ace_box/roles/app-easytravel/Readme.md)|Installs the [Easy Travel demo application]|
+|[app-hipstershop](../user-skel/ansible_collections/ace_box/ace_box/roles/app-hipstershop/Readme.md)|Installs the [Hipstershop demo application]|
+|[app-simplenode](../user-skel/ansible_collections/ace_box/ace_box/roles/app-simplenode/Readme.md)|Installs the [Simplenode demo application]|
+|[app-unguard](../user-skel/ansible_collections/ace_box/ace_box/roles/app-unguard/Readme.md)|Installs the [Unguard demo application]|
+|[argocd](../user-skel/ansible_collections/ace_box/ace_box/roles/argocd/Readme.md)|Installs the [ArgoCD](https://argoproj.github.io/cd/)|
 |[awx](../user-skel/ansible_collections/ace_box/ace_box/roles/awx/Readme.MD)|Installs AWX|
-|[cloudautomation](../user-skel/ansible_collections/ace_box/ace_box/roles/cloudautomation/Readme.md)|Links an existing Cloud Automation instance|
 |[dashboard](../user-skel/ansible_collections/ace_box/ace_box/roles/dashboard/Readme.md)|Installs the ACE-Box dashboard|
 |[dt-oneagent-classic](../user-skel/ansible_collections/ace_box/ace_box/roles/dt-oneagent-classic/Readme.md)|Installs the OneAgent on the host|
-|[dt-activegate-private-synth-classic](../user-skel/ansible_collections/ace_box/ace_box/roles/dt-activegate-private-synth-classic/Readme.md)|Installs a Synthetic enabled ActiveGate|
+|[dt-activegate-classic](../user-skel/ansible_collections/ace_box/ace_box/roles/dt-activegate-classic/Readme.md)|Installs a Classic VM based ActiveGate|
 |[dt-operator](../user-skel/ansible_collections/ace_box/ace_box/roles/dt-operator/Readme.md)|Installs the [Dynatrace Operator](https://github.com/Dynatrace/dynatrace-operator)|
 |[gitea](../user-skel/ansible_collections/ace_box/ace_box/roles/gitea/Readme.md)|Installs Gitea|
 |[gitlab](../user-skel/ansible_collections/ace_box/ace_box/roles/gitlab/Readme.md)|Installs Gitlab|
