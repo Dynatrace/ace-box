@@ -33,7 +33,7 @@ The following curated roles can be added to your external use case. See [templat
 |[app-easytrade](../user-skel/ansible_collections/ace_box/ace_box/roles/app-easytrade/Readme.md)|Installs the [Easy Trade demo application]|
 |[app-easytravel](../user-skel/ansible_collections/ace_box/ace_box/roles/app-easytravel/Readme.md)|Installs the [Easy Travel demo application]|
 |[app-hipstershop](../user-skel/ansible_collections/ace_box/ace_box/roles/app-hipstershop/Readme.md)|Installs the [Hipstershop demo application]|
-|[app-simplenode](../user-skel/ansible_collections/ace_box/ace_box/roles/app-simplenode/Readme.md)|Installs the [Simplenode demo application]|
+|[app-simplenode](../user-skel/ansible_collections/ace_box/ace_box/roles/app-simplenode/README.md)|Installs the [Simplenode demo application]|
 |[app-unguard](../user-skel/ansible_collections/ace_box/ace_box/roles/app-unguard/Readme.md)|Installs the [Unguard demo application]|
 |[argocd](../user-skel/ansible_collections/ace_box/ace_box/roles/argocd/Readme.md)|Installs the [ArgoCD](https://argoproj.github.io/cd/)|
 |[awx](../user-skel/ansible_collections/ace_box/ace_box/roles/awx/Readme.MD)|Installs AWX|
