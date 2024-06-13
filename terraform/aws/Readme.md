@@ -30,16 +30,9 @@ At the moment, GCP and Azure are supported with a ready-made Terraform config.
 1. Create a `terraform.tfvars` file inside the *terraform* folder
    and add at a minimum the required parameters from the list below:
 
-    ### Global Variables
+    ### Use case variables
 
-    |Variable|Description|Required|Default|
-    |---|---|---|---|
-    | dt_tenant |Dynatrace environment URL |**yes** |-|
-    | dt_api_token  |Initial API token with scopes `apiTokens.read` and `apiTokens.write`. This token will be used by various roles to manage their own tokens. |**yes** |-|
-    | use_case |Use case, the ACE Box will be prepared for. Options are:<ul> <li>`demo_default`</li><li>`demo_quality_gates_jenkins`</li><li>`demo_security_gates_jenkins`</li><li>`demo_quality_gates_gitlab`</li><li>`demo_auto_remediation_ansible`</li><li>`demo_all`</li><li>`demo_monaco_gitops`</li><li>URL to an external repository ([see docs](docs/external-use-case.md))</li></ul>|-|demo_default|
-    | extra_vars |Additional variables that are passed and persisted on the VM. Variables can be sourced as `extra_vars.<variable key>` for e.g. external use cases |-|-|
-    |dashboard_user|ACE-Box dashboard user.|-|dynatrace|
-    |dashboard_password|ACE-Box dashboard password. If not set, a random password will be generated. The password can retrieved by running `terraform output dashboard_password`. Attention: Output shows leading and trailing quotes that are not part of the password!|-|-|
+    Please see [main readme](../../Readme.md).
 
     ### Default AWS variables
 
