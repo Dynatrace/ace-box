@@ -57,7 +57,7 @@ variable "dt_api_token" {
 variable "use_case" {
   type        = string
   description = "Use cases the ACE-Box will be enabled for."
-  default     = "demo_default"
+  default     = "https://github.com/dynatrace-ace/ace-box-ext-template.git"
 }
 
 variable "extra_vars" {

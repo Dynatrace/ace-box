@@ -73,16 +73,15 @@ The recommended way of installing any ACE box version, local or cloud, is via Te
 
   Use Case | k8s | OneAgent | Synth AG | Jenkins | Gitea | Registry | GitLab | AWX | Keptn | Dashboard | Notes |
   -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- |
-  `demo_default` | x | x | x | x | x | x |  |  | x | x | See `demo_quality_gates_jenkins` below. `demo_default` and `demo_quality_gates_jenkins` can be used interchangeably. |
-  `demo_quality_gates_jenkins` | x | x | x | x | x | x |  |  | x | x | Demo flow for Quality Gates using Jenkins/Gitea/Cloud Automation. `demo_default` and `demo_quality_gates_jenkins` can be used interchangeably. |
-  `demo_security_gates_jenkins` | x | x | x | x | x | x |  |  | x |  x | Demo flow for Security Gates using Jenkins/Gitea/Cloud Automation |
-  `demo_quality_gates_gitlab` | x | x | x |  |  |  | x |  | x |  x | Demo flow for Quality Gates using GitLab/Cloud Automation |
+  `demo_default` | | | | | | | | | | | Empty use case, pointing to the [external use case template](https://github.com/dynatrace-ace/ace-box-ext-template). |
   [`demo_release_validation_srg_gitlab`](user-skel/ansible_collections/ace_box/ace_box/roles/demo-release-validation-srg-gitlab/README.md) | x | x | x |  |  |  | x |  | x |  x | Demo flow for Release Validation using GitLab/Site Reliability Guardian |
-  `demo_auto_remediation_ansible` | x | x | x | x | x | x |  | x |  | x | Demo flow for Quality Gates using Jenkins/Gitea/Cloud Automation |
-  [`demo_ar_workflows_gitlab`](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-gitlab/README.md) | x | x | x | x | x | x |  | x |  | x | Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows |
-  `demo_monaco_gitops` | x | x | x | x | x | x |  |  |  | x | Demo flow for Quality Gates using Jenkins/Gitea/Cloud Automation |
-
-  > Note: When specifying Cloud Automation instance details, Keptn will not be deployed
+  [`demo_ar_workflows_ansible`](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-gitlab/README.md) | x | x | | x | x | x | x | x |  | x | Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows |
+  [`demo_ar_workflows_gitlab`](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-gitlab/README.md) | x | x | | | | x |  | x |  | x | Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows |
+  `demo_monaco_gitops` | x | x | x | x | x | x |  |  |  | x | Demo flow for Application Onboarding using Jenkins/Gitea |
+  `demo_quality_gates_jenkins` (DEPRECATED) | x | x | x | x | x | x |  |  | x | x | Demo flow for Quality Gates using Jenkins/Gitea/Cloud Automation. |
+  `demo_security_gates_jenkins` (DEPRECATED) | x | x | x | x | x | x |  |  | x |  x | Demo flow for Security Gates using Jenkins/Gitea/Cloud Automation |
+  `demo_quality_gates_gitlab` (DEPRECATED) | x | x | x |  |  |  | x |  | x |  x | Demo flow for Quality Gates using GitLab/Cloud Automation |
+  `demo_auto_remediation_ansible` (DEPRECATED) | x | x | x | x | x | x |  | x |  | x | Demo flow for Quality Gates using Jenkins/Gitea/Cloud Automation |
 
   > Note: You can also enter a link to an external repository (e.g.: `https://github.com/my-org/my-ext-use-case.git`) if you want to load an external use case. See [External Use Case](#external-use-case) for more details and examples
 
