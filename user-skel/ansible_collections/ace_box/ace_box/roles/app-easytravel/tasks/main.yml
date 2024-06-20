@@ -37,7 +37,7 @@
     chdir: /tmp/easytravel-kubernetes-manifests/kubernetes-manifests/
   args:
     executable: /bin/bash
-    
+
 - name: Update the service type to ClusterIP
   kubernetes.core.k8s:
     kind: Service
@@ -50,8 +50,13 @@
       spec:
         type: ClusterIP
 
-- name: Apply the ingress manifest
+- name: Render the ingress template to a file
+  ansible.builtin.template:
+    src: "{{ role_path }}/templates/easytravel-ingress.yaml.j2"
+    dest: "/tmp/easytravel-kubernetes-manifests/kubernetes-manifests/easytravel-ingress.yaml"
+
+- name: Apply the rendered ingress manifest
   kubernetes.core.k8s:
     state: present
     namespace: "{{ easytravel_namespace }}"
-    src: "{{ role_path }}/files/easytravel-ingress.yaml"
+    src: "/tmp/easytravel-kubernetes-manifests/kubernetes-manifests/easytravel-ingress.yaml"

@@ -10,7 +10,7 @@ metadata:
   name: easytravel-angular
 spec:
   rules:
-  - host: easytravel.mydomain.com
+  - host: "{{ easytravel_domain }}"
     http:
       paths:
       - backend:
