@@ -26,22 +26,22 @@
 
 - name: Ensure the easytravel namespace exists
   kubernetes.core.k8s:
-  kind: Namespace
-  api_version: v1
-  name: "{{ easytravel_namespace }}"
-  state: present
+    kind: Namespace
+    api_version: v1
+    name: "{{ easytravel_namespace }}"
+    state: present
 
 - name: Deploy Kubernetes manifests in the easytravel namespace
   kubernetes.core.k8s:
     state: present
-    namespace: {{ easytravel_namespace }}
+    namespace: "{{ easytravel_namespace }}"
     src: "/tmp/easytravel-kubernetes-manifests/kubernetes-manifests/{{ item }}"
   loop: "{{ lookup('ansible.builtin.fileglob', '/tmp/easytravel-kubernetes-manifests/kubernetes-manifests/*.yaml', wantlist=True) }}"
 
 - name: Update the service type to ClusterIP
   kubernetes.core.k8s:
     kind: Service
-    namespace: {{ easytravel_namespace }}
+    namespace: "{{ easytravel_namespace }}"
     name: angular-nginx-service
     merge_type:
       - strategic-merge
@@ -53,5 +53,5 @@
 - name: Apply the ingress manifest
   kubernetes.core.k8s:
     state: present
-    namespace: {{ easytravel_namespace }}
+    namespace: "{{ easytravel_namespace }}"
     src: "{{ role_path }}/files/easytravel-ingress.yaml"
