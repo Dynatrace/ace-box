@@ -1,50 +1,51 @@
-- name: Deploy Easytravel
-  kubernetes.core.helm:
-    name: easytravel
-    chart_ref: "{{ role_path }}/files/helm/easytravel"
-    release_namespace: "{{ easytravel_namespace }}"
-    create_namespace: true
-    wait: true
-    wait_timeout: 10m
-    values:
-      config:
-        ingress:
-          domain: "{{ easytravel_domain }}"
-          angular_domain: "{{ easytravel_angular_domain }}"
-          class: "{{ ingress_class }}"
-        frontend:
-          tag: "{{ easytravel_image_tag }}"
-        backend:
-          tag: "{{ easytravel_image_tag }}"
-        loadgen:
-          visitNumber: "{{ easytravel_visit_number }}"
-          tag: "{{ easytravel_image_tag }}"
-          problems: ""
-        loadgen_angular: 
-          replicas: "{{ easytravel_headless_replicas }}"
-          tag: "{{ easytravel_image_tag }}"
-        www:
-          tag: "{{ easytravel_image_tag }}"
-        mongodb:
-          tag: "{{ easytravel_image_tag }}"
-        pluginservice:
-          tag: "{{ easytravel_image_tag }}"
+- name: Clone the specific Kubernetes manifests folder from Easytravel repository
+  ansible.builtin.git:
+    repo: 'https://github.com/Dynatrace/easyTravel-Docker.git'
+    dest: '/tmp/easytravel-kubernetes-manifests'
+    version: 'HEAD' # Use the latest commit on the default branch
+    depth: 1
+  register: git_clone
 
-# Below is done to overcome instrumentation issues when first deploying ET WWW Nginx
-- name: Easytravel www - scale down
-  kubernetes.core.k8s_scale:
-    api_version: v1
-    kind: Deployment
-    name: easytravel-www
-    namespace: "{{ easytravel_namespace }}"
-    replicas: 0
-    wait_timeout: 60
+- name: Initialize sparse checkout
+  ansible.builtin.shell: |
+    cd /tmp/easytravel-kubernetes-manifests
+    git sparse-checkout init --cone
+  when: git_clone.changed
 
-- name: Easytravel www - scale up
-  kubernetes.core.k8s_scale:
-    api_version: v1
-    kind: Deployment
-    name: easytravel-www
-    namespace: "{{ easytravel_namespace }}"
-    replicas: 1
-    wait_timeout: 60
+- name: Set the specific folder for sparse checkout
+  ansible.builtin.shell: |
+    cd /tmp/easytravel-kubernetes-manifests
+    git sparse-checkout set kubernetes-manifests
+  when: git_clone.changed
+
+- name: Checkout the sparse checkout
+  ansible.builtin.shell: |
+    cd /tmp/easytravel-kubernetes-manifests
+    git checkout
+  when: git_clone.changed
+
+ 
+- name: Deploy Kubernetes manifests in the easytravel namespace
+  kubernetes.core.k8s:
+    state: present
+    namespace: {{ easytravel_namespace }}
+    src: "/tmp/easytravel-kubernetes-manifests/kubernetes-manifests/{{ item }}"
+  loop: "{{ lookup('ansible.builtin.fileglob', '/tmp/easytravel-kubernetes-manifests/kubernetes-manifests/*.yaml', wantlist=True) }}"
+
+- name: Update the service type to ClusterIP
+  kubernetes.core.k8s:
+    kind: Service
+    namespace: {{ easytravel_namespace }}
+    name: angular-nginx-service
+    merge_type:
+      - strategic-merge
+      - merge
+    definition:
+      spec:
+        type: ClusterIP
+
+- name: Apply the ingress manifest
+  kubernetes.core.k8s:
+    state: present
+    namespace: {{ easytravel_namespace }}
+    src: "{{ role_path }}/files/easytravel-ingress.yaml"

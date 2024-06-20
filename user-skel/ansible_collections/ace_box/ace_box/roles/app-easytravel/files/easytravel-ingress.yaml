@@ -1,0 +1,22 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    meta.helm.sh/release-name: easytravel
+    kubernetes.io/ingress.class: public
+  labels:
+    app: easytravel
+  name: easytravel-angular
+spec:
+  rules:
+  - host: easytravel.mydomain.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: angular-nginx-service
+            port: 
+              number: 80
+        path: /
+        pathType: ImplementationSpecific
