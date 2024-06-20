@@ -24,7 +24,13 @@
     git checkout
   when: git_clone.changed
 
- 
+- name: Ensure the easytravel namespace exists
+  kubernetes.core.k8s:
+  kind: Namespace
+  api_version: v1
+  name: "{{ easytravel_namespace }}"
+  state: present
+
 - name: Deploy Kubernetes manifests in the easytravel namespace
   kubernetes.core.k8s:
     state: present
