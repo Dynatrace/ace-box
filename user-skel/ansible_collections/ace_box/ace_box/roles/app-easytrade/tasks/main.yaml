@@ -38,17 +38,17 @@
   args:
     executable: /bin/bash
 
-# - name: Update the service type to ClusterIP
-#   kubernetes.core.k8s:
-#     kind: Service
-#     namespace: "{{ easytrade_namespace }}"
-#     name: angular-nginx-service
-#     merge_type:
-#       - strategic-merge
-#       - merge
-#     definition:
-#       spec:
-#         type: ClusterIP
+- name: Update the service type to ClusterIP
+  kubernetes.core.k8s:
+    kind: Service
+    namespace: "{{ easytrade_namespace }}"
+    name: frontendreverseproxy-easytrade
+    merge_type:
+      - strategic-merge
+      - merge
+    definition:
+      spec:
+        type: ClusterIP
 
 # - name: Render the ingress template to a file
 #   ansible.builtin.template:
