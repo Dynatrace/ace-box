@@ -50,16 +50,16 @@
       spec:
         type: ClusterIP
 
-# - name: Render the ingress template to a file
-#   ansible.builtin.template:
-#     src: "{{ role_path }}/templates/easytrade-ingress.yaml.j2"
-#     dest: "/tmp/easytrade-kubernetes-manifests/kubernetes-manifests/easytrade-ingress.yaml"
+- name: Render the ingress template to a file
+  ansible.builtin.template:
+    src: "{{ role_path }}/templates/easytrade-ingress.yml.j2"
+    dest: "/tmp/easytrade-kubernetes-manifests/kubernetes-manifests/easytrade-ingress.yml"
 
-# - name: Apply the rendered ingress manifest
-#   kubernetes.core.k8s:
-#     state: present
-#     namespace: "{{ easytrade_namespace }}"
-#     src: "/tmp/easytrade-kubernetes-manifests/kubernetes-manifests/easytrade-ingress.yaml"
+- name: Apply the rendered ingress manifest
+  kubernetes.core.k8s:
+    state: present
+    namespace: "{{ easytrade_namespace }}"
+    src: "/tmp/easytrade-kubernetes-manifests/kubernetes-manifests/easytrade-ingress.yml"
 
 - include_tasks:
     file: add-dashboard-links.yaml
