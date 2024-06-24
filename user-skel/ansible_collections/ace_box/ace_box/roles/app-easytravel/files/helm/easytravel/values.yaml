@@ -4,7 +4,10 @@ ingress:
   class: public
   domain: myurl.com
 
-
 easytravel:
   images:
     tag: "2.0.0.3599"
+
+nginx:
+  service:
+    type: ClusterIP

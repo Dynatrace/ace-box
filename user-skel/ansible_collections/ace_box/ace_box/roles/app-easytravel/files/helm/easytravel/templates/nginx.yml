@@ -44,4 +44,4 @@ spec:
       port: 80
   selector:
     app: nginx
-  type: LoadBalancer
+  type: {{ .Values.nginx.service.type }}
