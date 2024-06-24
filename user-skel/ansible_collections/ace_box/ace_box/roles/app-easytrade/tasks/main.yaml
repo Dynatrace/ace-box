@@ -11,6 +11,14 @@
       when: deployment_strategy == 'dynamic'
       register: git_clone
 
+    - name: Ensure local Easytrade folder exists
+      ansible.builtin.file:
+        path: "{{ local_easytrade_folder_path }}"
+        state: directory
+        owner: "{{ ace_box_user }}"
+        group: "{{ ace_box_user }}"
+        mode: '0755'
+
     - name: Template Easytrade Kustomization
       template:
         src: "{{ role_path }}/templates/kustomization.yml.j2"

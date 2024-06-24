@@ -7,9 +7,9 @@
 
 - name: Kustomize Build
   set_fact:
-    resources: "{{ lookup('kubernetes.core.kustomize', dir=local_easytrade_folder_path }}"
+    resources: "{{ lookup('kubernetes.core.kustomize', dir=local_easytrade_folder_path) }}"
 
 - name: Kustomize Apply
   k8s:
-    definition: "{{ lookup('kubernetes.core.kustomize', dir=local_easytrade_folder_path }}"
+    definition: "{{ lookup('kubernetes.core.kustomize', dir=local_easytrade_folder_path) }}"
     state: present
