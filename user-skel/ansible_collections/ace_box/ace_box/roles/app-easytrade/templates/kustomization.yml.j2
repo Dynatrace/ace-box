@@ -1,13 +1,13 @@
 {% if deployment_strategy == 'dynamic' %}
 resources:
-  - "{{ local_easytrade_folder_path }}/kubernetes-manifests"
+  - "{{ local_easytrade_folder_path }}/kubernetes-manifests/"
 {% else %}
 resources:
-  - "{{ role_path }}/files/kubernetes-manifests"
+  - "{{ role_path }}/files/kubernetes-manifests/"
 {% endif %}
 
-patchesStrategicMerge:
-  - "{{ role_path }}/files/kustomize/frontendreverseproxy-patch.yaml"
+patches:
+  - path: "{{ role_path }}/files/kustomize/frontendreverseproxy-patch.yaml"
 
 images:
 - name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/accountservice
