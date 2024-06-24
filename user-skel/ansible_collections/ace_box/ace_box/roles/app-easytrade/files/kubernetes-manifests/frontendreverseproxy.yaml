@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontendreverseproxy
+spec:
+  selector:
+    matchLabels:
+      app: frontendreverseproxy
+  template:
+    metadata:
+      labels:
+        app: frontendreverseproxy
+    spec:
+      containers:
+        - name: frontendreverseproxy
+          image: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/frontendreverseproxy:d863a2e
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 50m
+              memory: 50Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontendreverseproxy-easytrade
+spec:
+  type: LoadBalancer
+  selector:
+    app: frontendreverseproxy
+  ports:
+    - name: easytrade-frontend
+      port: 80
+      targetPort: 80

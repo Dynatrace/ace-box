@@ -1,13 +1,28 @@
-- name: Clone the Easytrade repository with the full contents of the latest commit on the default branch
-  ansible.builtin.git:
-    repo: 'https://github.com/Dynatrace/easytrade.git'
-    dest: "{{ local_easytrade_folder_path }}"
-    version: 'HEAD' # Use the latest commit on the default branch
-    depth: 1
-  register: git_clone
+- name: Determine deployment strategy
+  vars:
+    deployment_strategy: "{{ deployment_strategy | default('static') }}"  # Default to 'static' if not defined
+  block:
+    - name: Clone the Easytrade repository with the full contents of the latest commit on the default branch
+      ansible.builtin.git:
+        repo: 'https://github.com/Dynatrace/easytrade.git'
+        dest: "{{ local_easytrade_folder_path }}"
+        version: 'HEAD'  # Use the latest commit on the default branch
+        depth: 1
+      when: deployment_strategy == 'dynamic'
+      register: git_clone
 
-- include_tasks:
-    file: deploy_kubernetes_manifests.yml
+    - name: Template Easytrade Kustomization
+      template:
+        src: "{{ role_path }}/templates/kustomization.yml.j2"
+        dest: "{{ local_easytrade_folder_path }}/kustomization.yml"
+        owner: "{{ ace_box_user }}"
+        group: "{{ ace_box_user }}"
+        mode: '0644'
 
-- include_tasks:
-    file: add-dashboard-links.yml
+- name: Deploy Kubernetes manifests
+  include_tasks: deploy_kubernetes_manifests.yml
+  vars:
+    deployment_strategy: "{{ deployment_strategy }}"
+
+- name: Add dashboard links
+  include_tasks: add-dashboard-links.yml

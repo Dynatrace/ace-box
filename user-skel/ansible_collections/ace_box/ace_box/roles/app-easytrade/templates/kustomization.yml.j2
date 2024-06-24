@@ -1,0 +1,65 @@
+{% if deployment_strategy == 'dynamic' %}
+resources:
+  - "{{ local_easytrade_folder_path }}/kubernetes-manifests"
+{% else %}
+resources:
+  - "{{ role_path }}/files/kubernetes-manifests"
+{% endif %}
+
+patchesStrategicMerge:
+  - "{{ role_path }}/files/kustomize/frontendreverseproxy-patch.yaml"
+
+images:
+- name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/accountservice
+  newTag: "{{ easytrade_image_tag }}"
+
+- name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/aggregatorservice
+  newTag: "{{ easytrade_image_tag }}"
+
+- name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/broker-service
+  newTag: "{{ easytrade_image_tag }}"
+
+- name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/calculationservice
+  newTag: "{{ easytrade_image_tag }}"
+
+- name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/contentcreator
+  newTag: "{{ easytrade_image_tag }}"
+
+- name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/credit-card-order-service
+  newTag: "{{ easytrade_image_tag }}"
+
+- name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/db
+  newTag: "{{ easytrade_image_tag }}"
+
+- name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/engine
+  newTag: "{{ easytrade_image_tag }}"
+
+- name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/feature-flag-service
+  newTag: "{{ easytrade_image_tag }}"
+
+- name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/frontend
+  newTag: "{{ easytrade_image_tag }}"
+
+- name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/frontendreverseproxy
+  newTag: "{{ easytrade_image_tag }}"
+
+- name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/loadgen
+  newTag: "{{ easytrade_image_tag }}"
+
+- name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/loginservice
+  newTag: "{{ easytrade_image_tag }}"
+
+- name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/manager
+  newTag: "{{ easytrade_image_tag }}"
+
+- name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/offerservice
+  newTag: "{{ easytrade_image_tag }}"
+
+- name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/pricing-service
+  newTag: "{{ easytrade_image_tag }}"
+
+- name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/rabbitmq
+  newTag: "{{ easytrade_image_tag }}"
+
+- name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/third-party-service
+  newTag: "{{ easytrade_image_tag }}"

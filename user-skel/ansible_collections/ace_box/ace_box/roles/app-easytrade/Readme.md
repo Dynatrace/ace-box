@@ -18,6 +18,8 @@ This role depends on the following roles to be deployed beforehand:
 ```yaml
 - include_role:
     name: app-easytrade
+  vars:
+    deployment_strategy: "static" # static or dynamic: static will use the static files from the app-easytrade role, dynamic will clone the EasyTrade repository with the latest files
 ```
 
 Variables that can be set are as follows:

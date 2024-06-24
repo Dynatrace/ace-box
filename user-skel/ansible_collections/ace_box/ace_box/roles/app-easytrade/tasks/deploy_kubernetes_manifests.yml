@@ -5,32 +5,11 @@
     name: "{{ easytrade_namespace }}"
     state: present
 
-- name: Apply all Kubernetes manifests in the directory
-  ansible.builtin.command:
-    cmd: kubectl apply -f "{{ local_easytrade_folder_path }}/kubernetes-manifests/" -n "{{ easytrade_namespace }}"
-    chdir: "{{ local_easytrade_folder_path }}/kubernetes-manifests/"
-  args:
-    executable: /bin/bash
+- name: Kustomize Build
+  set_fact:
+    resources: "{{ lookup('kubernetes.core.kustomize', dir=local_easytrade_folder_path }}"
 
-- name: Update the service type to ClusterIP
-  kubernetes.core.k8s:
-    kind: Service
-    namespace: "{{ easytrade_namespace }}"
-    name: frontendreverseproxy-easytrade
-    merge_type:
-      - strategic-merge
-      - merge
-    definition:
-      spec:
-        type: ClusterIP
-
-- name: Render the ingress template to a file
-  ansible.builtin.template:
-    src: "{{ role_path }}/templates/easytrade-ingress.yml.j2"
-    dest: "{{ local_easytrade_folder_path }}/kubernetes-manifests/easytrade-ingress.yml"
-
-- name: Apply the rendered ingress manifest
-  kubernetes.core.k8s:
+- name: Kustomize Apply
+  k8s:
+    definition: "{{ lookup('kubernetes.core.kustomize', dir=local_easytrade_folder_path }}"
     state: present
-    namespace: "{{ easytrade_namespace }}"
-    src: "{{ local_easytrade_folder_path }}/kubernetes-manifests/easytrade-ingress.yml"
