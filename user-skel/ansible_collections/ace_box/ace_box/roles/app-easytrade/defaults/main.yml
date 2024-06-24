@@ -3,5 +3,6 @@
 easytrade_namespace: "easytrade"
 easytrade_domain: "easytrade.{{ ingress_domain }}"
 local_easytrade_folder_path: "/tmp/easytrade"
+easytrade_image_tag: "d863a2e"
 easytrade_addDashboardLink: true
 easytrade_addDashboardPreview: true
