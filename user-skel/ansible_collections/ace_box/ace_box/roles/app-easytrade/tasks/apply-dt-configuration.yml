@@ -1,7 +1,37 @@
 ---
+
+- include_role:
+    name: dt-access-token
+  vars:
+    access_token_var_name: "monaco_api_token"
+    access_token_scope:
+      [
+        "CaptureRequestData",
+        "credentialVault.read",
+        "credentialVault.write",
+        "DataExport",
+        "DataPrivacy",
+        "ExternalSyntheticIntegration",
+        "ReadConfig",
+        "WriteConfig",
+        "events.ingest",
+        "settings.read",
+        "settings.write",
+        "slo.read",
+        "slo.write",
+      ]
+
 - name: Monaco - Deploy configuration
   include_role:
     name: monaco-v2
     tasks_from: apply-monaco
   vars:
     monaco_manifest_path: "{{ local_easytrade_folder_path }}/monaco/manifest.yaml"
+    monaco_project: "{{ item }}"
+    monaco_environment:
+      TENANT_URL: "{{ extra_vars.dt_environment_url_gen3.rstrip('/') }}"
+      TENANT_TOKEN: "{{ monaco_api_token }}"
+      CLIENT_ID: "{{ extra_vars.dt_oauth_client_id }}"
+      CLIENT_SECRET: "{{ extra_vars.dt_oauth_client_secret }}"
+  loop: "{{ monaco_projects }}"
+
