@@ -24,6 +24,7 @@ Variables that can be set are as follows:
 ---
 easytravel_namespace: "easytravel" # namespace that Easytravel will be deployed in
 easytravel_domain: "easytravel.{{ ingress_domain }}" #ingress domain for regular Easytravel
+easytravel_image_tag: "2.0.0.3599" #easytravel docker image tag
 ```
 
 ### (Optional) To enable observability with Dynatrace OneAgent

@@ -1,3 +1,4 @@
 ---
 easytravel_namespace: "easytravel"
 easytravel_domain: "easytravel.{{ ingress_domain }}"
+easytravel_image_tag: "2.0.0.3599"

@@ -1,0 +1,4 @@
+apiVersion: v2
+description: EasyTravel Demo Application
+name: easytravel
+version: 2.0.0
