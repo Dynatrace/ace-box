@@ -4,7 +4,7 @@
 
 - name: Determine deployment strategy
   block:
-    - name: Remove the existing directory if deployment strategy is dynamic
+    - name: Remove the existing directory if deployment strategy is fetch_latest
       ansible.builtin.file:
         path: "{{ role_path }}/files/easytrade"
         state: absent
