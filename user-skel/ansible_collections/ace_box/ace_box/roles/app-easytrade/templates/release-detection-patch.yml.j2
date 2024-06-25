@@ -1,0 +1,31 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+commonLabels:
+  app.kubernetes.io/version: "{{ easytrade_image_tag }}"
+  app.kubernetes.io/part-of: easytrade
+
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value: 
+    name: DT_RELEASE_VERSION
+    valueFrom:
+      fieldRef:
+        fieldPath: metadata.labels['app.kubernetes.io/version']
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value: 
+    name: DT_RELEASE_PRODUCT
+    valueFrom:
+      fieldRef:
+        fieldPath: metadata.labels['app.kubernetes.io/part-of']
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value: 
+    name: DT_RELEASE_BUILD_VERSION
+    value: "{{ easytrade_build_version }}"
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value: 
+    name: DT_RELEASE_STAGE
+    value: "{{ easytrade_release_stage }}"

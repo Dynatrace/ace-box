@@ -6,3 +6,5 @@ local_easytrade_folder_path: "/tmp/easytrade"
 easytrade_image_tag: "d863a2e"
 easytrade_addDashboardLink: true
 easytrade_addDashboardPreview: true
+easytrade_build_version: "1.0.0"
+easytrade_release_stage: "staging"
