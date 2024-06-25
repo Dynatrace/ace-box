@@ -22,7 +22,7 @@
       ]
 
 - set_fact:
-    monaco_projects_folder: "{{ (deployment_strategy == 'static' or deployment_strategy == 'dynamic') | ternary(role_path + '/files/monaco', local_easytrade_folder_path + '/monaco') }}"
+    monaco_projects_folder: "{{ role_path }}/files/easytrade/monaco"
 
 - name: Monaco - Deploy configuration
   include_role:

@@ -28,7 +28,6 @@ Variables that can be set are as follows:
 ---
 easytrade_namespace: "easytrade" # namespace that EasyTrade will be deployed in
 easytrade_domain: "easytrade.{{ ingress_domain }}" #ingress domain for regular EasyTrade
-local_easytrade_folder_path: "/tmp/easytrade" # local folder path to store EasyTrade files
 easytrade_addDashboardLink: true # add a link to the dashboard when enabled
 easytrade_addDashboardPreview: true # add a preview to the dashboard when enabled
 ```
