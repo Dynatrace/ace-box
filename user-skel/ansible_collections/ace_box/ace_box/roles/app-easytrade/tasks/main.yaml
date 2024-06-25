@@ -1,6 +1,9 @@
+
+- name: Set deployment strategy as a fact
+  set_fact:
+    deployment_strategy: "{{ deployment_strategy | default('static') }}"
+
 - name: Determine deployment strategy
-  vars:
-    deployment_strategy: "{{ deployment_strategy | default('static') }}"  # Default to 'static' if not defined
   block:
     - name: Clone the Easytrade repository with the full contents of the latest commit on the default branch
       ansible.builtin.git:

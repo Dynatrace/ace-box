@@ -1,0 +1,72 @@
+{
+  "enabled": true,
+  "ruleName": "EasyTrade [pricing-service | Go] - GET /v1/prices/latest",
+  "triggers": [
+    {
+      "source": {
+        "dataSource": "request.path"
+      },
+      "type": "EQUALS",
+      "value": "/v1/prices/latest",
+      "caseSensitive": false
+    },
+    {
+      "source": {
+        "dataSource": "request.method"
+      },
+      "type": "EQUALS",
+      "value": "GET",
+      "caseSensitive": false
+    }
+  ],
+  "event": {
+    "provider": {
+      "sourceType": "constant.string",
+      "source": "www.easytrade.com"
+    },
+    "type": {
+      "sourceType": "constant.string",
+      "source": "com.easytrade.latest-prices"
+    },
+    "category": {
+      "sourceType": "request.path"
+    },
+    "data": [
+      {
+        "name": "array",
+        "source": {
+          "sourceType": "constant.string",
+          "source": "true"
+        }
+      },
+      {
+        "name": "firstId",
+        "source": {
+          "sourceType": "response.body",
+          "path": "results.0.id"
+        }
+      },
+      {
+        "name": "firstInstrumentId",
+        "source": {
+          "sourceType": "response.body",
+          "path": "results.0.instrumentId"
+        }
+      },
+      {
+        "name": "firstTime",
+        "source": {
+          "sourceType": "response.body",
+          "path": "results.0.time"
+        }
+      },
+      {
+        "name": "firstClose",
+        "source": {
+          "sourceType": "response.body",
+          "path": "results.0.close"
+        }
+      }
+    ]
+  }
+}

@@ -5,7 +5,7 @@
     name: "{{ easytrade_namespace }}"
     state: present
 
-- name: Template Hipsterhop Ingress Kubernetes Manifest
+- name: Template Easytrade Ingress Kubernetes Manifest
   template:
     src: "{{ role_path }}/templates/easytrade-ingress.yml.j2"
     dest: "{{ role_path }}/files/kubernetes-manifests/easytrade-ingress.yml"

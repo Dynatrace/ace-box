@@ -21,12 +21,15 @@
         "slo.write",
       ]
 
+- set_fact:
+    monaco_projects_folder: "{{ (deployment_strategy == 'static' or deployment_strategy == 'dynamic') | ternary(role_path + '/files/monaco', local_easytrade_folder_path + '/monaco') }}"
+
 - name: Monaco - Deploy configuration
   include_role:
     name: monaco-v2
     tasks_from: apply-monaco
   vars:
-    monaco_manifest_path: "{{ local_easytrade_folder_path }}/monaco/manifest.yaml"
+    monaco_manifest_path: "{{ monaco_projects_folder }}/manifest.yaml"
     monaco_project: "{{ item }}"
     monaco_environment:
       TENANT_URL: "{{ extra_vars.dt_environment_url_gen3.rstrip('/') }}"
