@@ -21,6 +21,7 @@
         owner: "{{ ace_box_user }}"
         group: "{{ ace_box_user }}"
         mode: '0755'
+      when: deployment_strategy == 'dynamic'
 
     - name: Template Easytrade Kustomization
       template:
