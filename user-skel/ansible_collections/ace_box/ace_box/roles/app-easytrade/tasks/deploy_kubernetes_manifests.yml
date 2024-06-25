@@ -5,11 +5,16 @@
     name: "{{ easytrade_namespace }}"
     state: present
 
-- name: Kustomize Build
-  set_fact:
-    resources: "{{ lookup('kubernetes.core.kustomize', dir=local_easytrade_folder_path) }}"
+- name: Template Hipsterhop Ingress Kubernetes Manifest
+  template:
+    src: "{{ role_path }}/templates/easytrade-ingress.yml.j2"
+    dest: "{{ role_path }}/files/kubernetes-manifests/easytrade-ingress.yml"
+    owner: "{{ ace_box_user }}"
+    group: "{{ ace_box_user }}"
+    mode: '0644'
 
-- name: Kustomize Apply
-  k8s:
-    definition: "{{ lookup('kubernetes.core.kustomize', dir=local_easytrade_folder_path) }}"
-    state: present
+- name: Apply Kubernetes manifests using kubectl and Kustomize
+  ansible.builtin.shell:
+    cmd: kubectl apply -k "{{ role_path }}/files/kustomize"
+  args:
+    executable: /bin/bash

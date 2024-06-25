@@ -1,13 +1,12 @@
-{% if deployment_strategy == 'dynamic' %}
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: "{{ easytrade_namespace }}"
+
 resources:
-  - "{{ local_easytrade_folder_path }}/kubernetes-manifests/"
-{% else %}
-resources:
-  - "{{ role_path }}/files/kubernetes-manifests/"
-{% endif %}
+  - "../kubernetes-manifests"
 
 patches:
-  - path: "{{ role_path }}/files/kustomize/frontendreverseproxy-patch.yaml"
+  - path: "frontendreverseproxy-patch.yml"
 
 images:
 - name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/accountservice

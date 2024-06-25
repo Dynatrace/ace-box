@@ -22,7 +22,7 @@
     - name: Template Easytrade Kustomization
       template:
         src: "{{ role_path }}/templates/kustomization.yml.j2"
-        dest: "{{ local_easytrade_folder_path }}/kustomization.yml"
+        dest: "{{ role_path }}/files/kustomize/kustomization.yml"
         owner: "{{ ace_box_user }}"
         group: "{{ ace_box_user }}"
         mode: '0644'
