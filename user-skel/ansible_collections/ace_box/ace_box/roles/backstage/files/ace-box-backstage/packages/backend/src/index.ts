@@ -41,4 +41,7 @@ backend.add(import('@backstage/plugin-search-backend-module-techdocs/alpha'));
 backend.add(import('@backstage/plugin-scaffolder-backend/alpha'));
 backend.add(import('@backstage/plugin-scaffolder-backend-module-gitlab'));
 
+// Dynatrace
+backend.add(import('@dynatrace/backstage-plugin-dql-backend'));
+
 backend.start();

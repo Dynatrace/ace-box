@@ -39,7 +39,7 @@ import {
   EntityOwnershipCard,
 } from '@backstage/plugin-org';
 import { EntityTechdocsContent } from '@backstage/plugin-techdocs';
-import { EmptyState } from '@backstage/core-components';
+import { EmptyState, TabbedLayout } from '@backstage/core-components';
 import {
   Direction,
   EntityCatalogGraphCard,
@@ -54,9 +54,12 @@ import {
   RELATION_PART_OF,
   RELATION_PROVIDES_API,
 } from '@backstage/catalog-model';
-
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
+import {
+  EntityDqlQueryCard,
+  EntityKubernetesDeploymentsCard,
+} from '@dynatrace/backstage-plugin-dql';
 
 const techdocsContent = (
   <EntityTechdocsContent>
@@ -175,6 +178,20 @@ const serviceEntityPage = (
     <EntityLayout.Route path="/docs" title="Docs">
       {techdocsContent}
     </EntityLayout.Route>
+
+    <EntityLayout.Route path="/dynatrace" title="Dynatrace">
+      <TabbedLayout>
+        <TabbedLayout.Route path="/kubernetes" title="Kubernetes Deployments">
+          <EntityKubernetesDeploymentsCard title="Kubernetes Deployments" />
+        </TabbedLayout.Route>
+        <TabbedLayout.Route path="/davis-events" title="Davis Events">
+          <EntityDqlQueryCard
+            title="Davis Events"
+            queryId="custom.davis-events"
+          />
+        </TabbedLayout.Route>
+      </TabbedLayout>
+    </EntityLayout.Route>
   </EntityLayout>
 );
 
@@ -201,6 +218,20 @@ const websiteEntityPage = (
 
     <EntityLayout.Route path="/docs" title="Docs">
       {techdocsContent}
+    </EntityLayout.Route>
+
+    <EntityLayout.Route path="/dynatrace" title="Dynatrace">
+      <TabbedLayout>
+        <TabbedLayout.Route path="/kubernetes" title="Kubernetes Deployments">
+          <EntityKubernetesDeploymentsCard title="Kubernetes Deployments" />
+        </TabbedLayout.Route>
+        <TabbedLayout.Route path="/davis-events" title="Davis Events">
+          <EntityDqlQueryCard
+            title="Davis Events"
+            queryId="custom.davis-events"
+          />
+        </TabbedLayout.Route>
+      </TabbedLayout>
     </EntityLayout.Route>
   </EntityLayout>
 );

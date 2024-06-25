@@ -98,3 +98,12 @@ catalog:
       target: catalog/org.yaml
       rules:
         - allow: [User, Group]
+
+dynatrace:
+  environments:
+    - name: default
+      url: "{{ extra_vars.dt_environment_url_gen3 }}"
+      tokenUrl: "{{ extra_vars.dt_oauth_sso_endpoint }}"
+      accountUrn: "{{ extra_vars.dt_oauth_account_urn }}"
+      clientId: "{{ extra_vars.dt_oauth_client_id }}"
+      clientSecret: "{{ extra_vars.dt_oauth_client_secret }}"
