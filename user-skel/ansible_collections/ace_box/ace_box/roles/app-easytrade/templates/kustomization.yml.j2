@@ -3,7 +3,7 @@ kind: Kustomization
 namespace: "{{ easytrade_namespace }}"
 
 resources:
-  - "../kubernetes-manifests"
+  - "../easytrade/kubernetes-manifests"
 
 patches:
   - path: "frontendreverseproxy-patch.yml"

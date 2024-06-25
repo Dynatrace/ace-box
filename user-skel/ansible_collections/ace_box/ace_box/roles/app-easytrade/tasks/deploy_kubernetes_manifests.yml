@@ -8,7 +8,7 @@
 - name: Template Easytrade Ingress Kubernetes Manifest
   template:
     src: "{{ role_path }}/templates/easytrade-ingress.yml.j2"
-    dest: "{{ role_path }}/files/kubernetes-manifests/easytrade-ingress.yml"
+    dest: "{{ role_path }}/files/easytrade/kubernetes-manifests/easytrade-ingress.yml"
     owner: "{{ ace_box_user }}"
     group: "{{ ace_box_user }}"
     mode: '0644'
