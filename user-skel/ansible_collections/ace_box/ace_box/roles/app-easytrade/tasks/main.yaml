@@ -1,18 +1,30 @@
-
 - name: Set deployment strategy as a fact
   set_fact:
     deployment_strategy: "{{ deployment_strategy | default('static') }}"
 
 - name: Determine deployment strategy
   block:
+    - name: Remove the existing directory if deployment strategy is dynamic
+      ansible.builtin.file:
+        path: "{{ role_path }}/files/easytrade"
+        state: absent
+
     - name: Clone the Easytrade repository with the full contents of the latest commit on the default branch
       ansible.builtin.git:
         repo: 'https://github.com/Dynatrace/easytrade.git'
         dest: "{{ role_path }}/files"
         version: 'HEAD'  # Use the latest commit on the default branch
         depth: 1
-      when: deployment_strategy == 'dynamic'
       register: git_clone
+
+    - name: Template Easytrade Kustomization
+      template:
+        src: "{{ role_path }}/templates/kustomization-base.yml.j2"
+        dest: "{{ role_path }}/files/easytrade/kubernetes-manifests/kustomization.yml"
+        owner: "{{ ace_box_user }}"
+        group: "{{ ace_box_user }}"
+        mode: '0644'
+  when: deployment_strategy == 'fetch_latest'
 
 - name: Template Easytrade Kustomization
   template:
@@ -32,8 +44,6 @@
 
 - name: Deploy Kubernetes manifests
   include_tasks: deploy_kubernetes_manifests.yml
-  vars:
-    deployment_strategy: "{{ deployment_strategy }}"
 
 - name: Add dashboard links
   include_tasks: add-dashboard-links.yml
