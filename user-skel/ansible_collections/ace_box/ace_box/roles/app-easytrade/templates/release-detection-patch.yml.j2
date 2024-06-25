@@ -1,9 +1,15 @@
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
 
-commonLabels:
-  app.kubernetes.io/version: "{{ easytrade_image_tag }}"
-  app.kubernetes.io/part-of: easytrade
+- op: add
+  path: /spec/template/metadata/labels/app.kubernetes.io~1version
+  value: "{{ easytrade_build_version }}"
+
+- op: add
+  path: /spec/template/metadata/labels/app.kubernetes.io~1part-of
+  value: easytrade
+
+- op: add
+  path: /spec/template/metadata/labels/dt.owner
+  value: ace-box
 
 - op: add
   path: /spec/template/spec/containers/0/env/-
