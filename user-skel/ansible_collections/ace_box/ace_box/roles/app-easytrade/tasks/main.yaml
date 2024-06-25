@@ -14,13 +14,21 @@
       when: deployment_strategy == 'dynamic'
       register: git_clone
 
-    - name: Template Easytrade Kustomization
-      template:
-        src: "{{ role_path }}/templates/kustomization.yml.j2"
-        dest: "{{ role_path }}/files/kustomize/kustomization.yml"
-        owner: "{{ ace_box_user }}"
-        group: "{{ ace_box_user }}"
-        mode: '0644'
+- name: Template Easytrade Kustomization
+  template:
+    src: "{{ role_path }}/templates/kustomization.yml.j2"
+    dest: "{{ role_path }}/files/kustomize/kustomization.yml"
+    owner: "{{ ace_box_user }}"
+    group: "{{ ace_box_user }}"
+    mode: '0644'
+
+- name: Template Easytrade Release Detection Patch
+  template:
+    src: "{{ role_path }}/templates/release-detection-patch.yml.j2"
+    dest: "{{ role_path }}/files/kustomize/release-detection-patch.yml"
+    owner: "{{ ace_box_user }}"
+    group: "{{ ace_box_user }}"
+    mode: '0644'
 
 - name: Deploy Kubernetes manifests
   include_tasks: deploy_kubernetes_manifests.yml
