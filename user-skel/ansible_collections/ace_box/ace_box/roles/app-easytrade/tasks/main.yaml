@@ -1,6 +1,6 @@
 - name: Set deployment strategy as a fact
   set_fact:
-    deployment_strategy: "{{ deployment_strategy | default('static') }}"
+    manifest_strategy: "{{ manifest_strategy | default('static') }}"
 
 - name: Determine deployment strategy
   block:
@@ -24,7 +24,7 @@
         owner: "{{ ace_box_user }}"
         group: "{{ ace_box_user }}"
         mode: '0644'
-  when: deployment_strategy == 'fetch_latest'
+  when: manifest_strategy == 'fetch_latest'
 
 - name: Template Easytrade Kustomization
   template:
