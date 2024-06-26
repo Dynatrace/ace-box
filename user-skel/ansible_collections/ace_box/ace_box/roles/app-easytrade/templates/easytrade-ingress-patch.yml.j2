@@ -6,3 +6,12 @@ metadata:
 spec:
   rules:
   - host: "{{ easytrade_domain }}"
+    http:
+      paths:
+      - backend:
+          service:
+            name: frontendreverseproxy-easytrade
+            port: 
+              number: 80
+        path: /
+        pathType: ImplementationSpecific
