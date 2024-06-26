@@ -3,9 +3,11 @@ kind: Kustomization
 
 resources:
   - "../easytrade/kubernetes-manifests"
+  - "ingress"
 
 patches:
   - path: "frontendreverseproxy-patch.yml"
+  - path: "easytrade-ingress-patch.yml"
   - target:
       group: apps
       version: v1

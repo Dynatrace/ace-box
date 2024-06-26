@@ -10,7 +10,7 @@ metadata:
   name: easytrade-ingress
 spec:
   rules:
-  - host: "{{ easytrade_domain }}"
+  - host: "easytrade.host-url"
     http:
       paths:
       - backend:

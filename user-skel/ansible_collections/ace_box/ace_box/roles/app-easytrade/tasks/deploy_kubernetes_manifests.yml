@@ -5,10 +5,10 @@
     name: "{{ easytrade_namespace }}"
     state: present
 
-- name: Template Easytrade Ingress Kubernetes Manifest
+- name: Template Easytrade Ingress Patch
   template:
-    src: "{{ role_path }}/templates/easytrade-ingress.yml.j2"
-    dest: "{{ role_path }}/files/easytrade/kubernetes-manifests/easytrade-ingress.yml"
+    src: "{{ role_path }}/templates/easytrade-ingress-patch.yml.j2"
+    dest: "{{ role_path }}/files/kustomize/easytrade-ingress-patch.yml"
     owner: "{{ ace_box_user }}"
     group: "{{ ace_box_user }}"
     mode: '0644'
