@@ -100,6 +100,11 @@ catalog:
         - allow: [User, Group]
 
 dynatrace:
+  queries:
+    - id: davis-events
+      description: Fetches all Davis events
+      query: >
+        fetch events | filter event.kind == "DAVIS_EVENT" | fields event.kind, timestamp
   environments:
     - name: default
       url: "{{ extra_vars.dt_environment_url_gen3 }}"
