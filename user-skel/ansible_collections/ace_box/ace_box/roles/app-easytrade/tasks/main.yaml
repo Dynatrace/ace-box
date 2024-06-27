@@ -36,8 +36,8 @@
 
 - name: Template Easytrade Release Detection Patch
   template:
-    src: "{{ role_path }}/templates/release-detection-patch.yml.j2"
-    dest: "{{ role_path }}/files/kustomize/release-detection-patch.yml"
+    src: "{{ role_path }}/templates/kubernetes-labels-patch.yml.j2"
+    dest: "{{ role_path }}/files/kustomize/kubernetes-labels-patch.yml"
     owner: "{{ ace_box_user }}"
     group: "{{ ace_box_user }}"
     mode: '0644'

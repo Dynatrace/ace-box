@@ -6,74 +6,72 @@ resources:
   - "ingress"
 
 patches:
-  - path: "frontendreverseproxy-patch.yml"
-  - path: "easytrade-ingress-patch.yml"
   - target:
       group: apps
       version: v1
       kind: Deployment
       name: accountservice
-    path: release-detection-patch.yml
+    path: kubernetes-labels-patch.yml
   - target:
       group: apps
       version: v1
       kind: Deployment
       name: broker-service
-    path: release-detection-patch.yml
+    path: kubernetes-labels-patch.yml
   - target:
       group: apps
       version: v1
       kind: Deployment
       name: contentcreator
-    path: release-detection-patch.yml
+    path: kubernetes-labels-patch.yml
   - target:
       group: apps
       version: v1
       kind: Deployment
       name: credit-card-order-service
-    path: release-detection-patch.yml
+    path: kubernetes-labels-patch.yml
   - target:
       group: apps
       version: v1
       kind: Deployment
       name: db
-    path: release-detection-patch.yml
+    path: kubernetes-labels-patch.yml
   - target:
       group: apps
       version: v1
       kind: Deployment
       name: engine
-    path: release-detection-patch.yml
+    path: kubernetes-labels-patch.yml
   - target:
       group: apps
       version: v1
       kind: Deployment
       name: loadgen
-    path: release-detection-patch.yml
+    path: kubernetes-labels-patch.yml
   - target:
       group: apps
       version: v1
       kind: Deployment
       name: loginservice
-    path: release-detection-patch.yml
+    path: kubernetes-labels-patch.yml
   - target:
       group: apps
       version: v1
       kind: Deployment
       name: manager
-    path: release-detection-patch.yml
+    path: kubernetes-labels-patch.yml
   - target:
       group: apps
       version: v1
       kind: Deployment
       name: pricing-service
-    path: release-detection-patch.yml
+    path: kubernetes-labels-patch.yml
   - target:
       group: apps
       version: v1
       kind: Deployment
       name: third-party-service
-    path: release-detection-patch.yml
+    path: kubernetes-labels-patch.yml
 
 images:
 - name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/accountservice

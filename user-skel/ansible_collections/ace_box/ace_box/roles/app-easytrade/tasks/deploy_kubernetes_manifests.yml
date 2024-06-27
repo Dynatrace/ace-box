@@ -7,8 +7,8 @@
 
 - name: Template Easytrade Ingress Patch
   template:
-    src: "{{ role_path }}/templates/easytrade-ingress-patch.yml.j2"
-    dest: "{{ role_path }}/files/kustomize/easytrade-ingress-patch.yml"
+    src: "{{ role_path }}/templates/easytrade-ingress.yml.j2"
+    dest: "{{ role_path }}/files/kustomize/ingress/easytrade-ingress.yml"
     owner: "{{ ace_box_user }}"
     group: "{{ ace_box_user }}"
     mode: '0644'
