@@ -27,8 +27,8 @@ Requires vars:
 
 |Variable name|Description|
 |---|---|
-|argocd_gitlab_generator_owner|...|
-|argocd_gitlab_generator_k8s_path|...|
+|argocd_gitlab_generator_owner|GitLab repo owner|
+|argocd_gitlab_generator_k8s_path|Path to k8s resources within repo|
 
 For example, consider a repository `sandbox/test.git` (GitLab group `sandbox`) with the following layout:
 

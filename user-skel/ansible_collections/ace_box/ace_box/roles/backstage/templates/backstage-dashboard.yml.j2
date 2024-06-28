@@ -1,0 +1,9 @@
+---
+extRefs:
+  Backstage:
+    url: "{{ ingress_protocol }}://backstage.{{ ingress_domain }}"
+    description: "Backstage is available at {{ ingress_protocol }}://backstage.{{ ingress_domain }}. Please use your GitLab credentials to log in."
+    creds:
+      - description: Credentials
+        type: text
+        value: "Log in with GitLab"

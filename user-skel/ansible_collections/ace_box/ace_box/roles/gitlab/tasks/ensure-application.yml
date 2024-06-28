@@ -1,0 +1,38 @@
+---
+- include_tasks: source-endpoints.yml
+  when: gitlab_internal_endpoint is not defined
+
+- ansible.builtin.include_tasks: source-personal-access-token.yml
+  when: gitlab_personal_access_token is not defined
+
+- block:
+    - name: Create application
+      uri:
+        url: "{{ gitlab_internal_endpoint }}/api/v4/applications"
+        validate_certs: false
+        method: POST
+        status_code: [201]
+        headers:
+          Content-Type: "application/json"
+          Authorization: "Bearer {{ gitlab_personal_access_token }}"
+        body:
+          name: "{{ gitlab_application_name }}"
+          redirect_uri: "{{ gitlab_application_redirect_uri }}"
+          scopes: "{{ gitlab_application_scopes }}"
+        body_format: json
+      register: gitlab_post_applications_result
+    - name: Persist gitlab_application_client_id
+      include_role:
+        name: config-v2
+        tasks_from: set-var
+      vars:
+        var_key_to_set: "gitlab_application_client_id"
+        var_value_to_set: "{{ gitlab_post_applications_result.json.application_id }}"
+    - name: Persist gitlab_application_client_secret
+      include_role:
+        name: config-v2
+        tasks_from: set-var
+      vars:
+        var_key_to_set: "gitlab_application_client_secret"
+        var_value_to_set: "{{ gitlab_post_applications_result.json.secret }}"
+  when: gitlab_application_client_id is not defined or gitlab_application_client_secret is not defined

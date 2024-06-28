@@ -14,7 +14,8 @@ This role depends on the following roles to be deployed beforehand:
     name: microk8s
 
 ```
-### Deploying Gitlab
+
+## Deploying Gitlab
 
 The main task deploys Gitlab on a Kubernetes cluster with the default variables set. 
 
@@ -52,9 +53,9 @@ gitlab_gcpe_tag: "v0.5.3"
 gitlab_root_creds_secret_name: "ace-gitlab-initial-root-password"
 ```
 
-### Other Tasks in the Role
+## Other Tasks in the Role
 
-#### "source-endpoints" 
+### source-endpoints
 This task fetches the internal service endpoint and sources the following variables:
 - `gitlab_internal_endpoint`
 
@@ -64,7 +65,7 @@ This task fetches the internal service endpoint and sources the following variab
     tasks_from: source-endpoints
 ```
 
-#### "source-endpoints-external" 
+### source-endpoints-external
 This task fetches the external endpoint and sources the following variables:
 - `gitlab_external_endpoint`
   
@@ -74,7 +75,7 @@ This task fetches the external endpoint and sources the following variables:
     tasks_from: source-endpoints-external
 ```
 
-#### "configure-demo-group" 
+### configure-demo-group
 This task creates a default demo group and adds relevant ACE-Box secrets such as Dynatrace environment URL, Dynatrace Synthetic node ID to be used in GitLab pipelines.
 
 ```yaml
@@ -85,7 +86,7 @@ This task creates a default demo group and adds relevant ACE-Box secrets such as
 
 Attention: For ACE-Box versions > 
 
-#### "deploy-gcpe" 
+### deploy-gcpe
 This task deploys gcpe (gitlab-ci-pipelines-exporter) under the gitlab namespace.
 
 Note: gitlab-ci-pipelines-exporter allows you to monitor your GitLab CI pipelines with Prometheus or any monitoring solution supporting the OpenMetrics format.
@@ -99,7 +100,7 @@ For the details: https://github.com/mvisonneau/gitlab-ci-pipelines-exporter
     tasks_from: deploy-gcpe
 ```
 
-#### "source-secret" 
+### source-secret
 This task fetches the admin secret and sources the following variables:
 - `gitlab_username`
 - `gitlab_password`
@@ -111,7 +112,7 @@ This task fetches the admin secret and sources the following variables:
     tasks_from: source-secret
 ```
 
-#### "ensure-group" 
+### ensure-group
 This task creates a group if not exists and sources the following variables:
 - `gitlab_group_name`
 - `gitlab_group_id`
@@ -124,7 +125,7 @@ This task creates a group if not exists and sources the following variables:
     gitlab_group_name: "<gitlab group name>" # specify a Gitlab group name to be created
 ```
 
-#### "ensure-group-var" 
+### ensure-group-var
 This task creates a group variable in key/value format
 
 ```yaml
@@ -137,7 +138,7 @@ This task creates a group variable in key/value format
     gitlab_var_value: "<a gitlab variable value>" # specify a Gitlab variable value to be created
 ```
 
-#### "ensure-project" 
+### ensure-project
 This task creates a project under a group if not exists and sources the following variables:
 - `gitlab_prj`
 - `gitlab_project_id`
@@ -151,7 +152,7 @@ This task creates a project under a group if not exists and sources the followin
     gitlab_prj_namespace_id: "<gitlab group id>"
 ```
 
-#### "uninstall" 
+### uninstall
 This task uninstalls Gitlab and GCPE via Helm
 
 ```yaml
@@ -159,3 +160,20 @@ This task uninstalls Gitlab and GCPE via Helm
     name: gitlab
     tasks_from: uninstall
 ```
+
+### ensure-application
+
+Creates a new GitLab OAuth Application if no existing one found. Task persists the `gitlab_application_client_id` fact, which is leveraged to determine whether a new application shall be deployed. As this is a global fact, only one GitLab OAuth Application can currently be deployed per ACE-Box.
+
+```yaml
+- include_role:
+    name: gitlab
+    tasks_from: ensure-application
+  vars:
+    gitlab_application_name: "<name, helps you indentify your application in GitLab>"
+    gitlab_application_redirect_uri: "<redirect URL, e.g. '{{ ingress_protocol }}://backstage.{{ ingress_domain }}/api/auth/gitlab/handler/frame'>"
+    gitlab_application_scopes: "<application allowed scopes, e.g. 'read_user read_repository write_repository openid profile email'>"
+```
+
+Sets facts:
+- gitlab_application_client_id

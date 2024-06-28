@@ -1,0 +1,132 @@
+<html>
+  <head>
+    <title>Dynatrace Tutorial: Simple Node JS Microservice Tutorial</title>
+	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <style>
+      body {color: #ffffff;font-family: Arial, sans-serif;font-size:14px;-moz-transition-property: text-shadow;-moz-transition-duration: 4s;-webkit-transition-property: text-shadow;-webkit-transition-duration: 4s;text-shadow: none;}
+      body.blurry {-moz-transition-property: text-shadow;-moz-transition-duration: 4s;-webkit-transition-property: text-shadow;-webkit-transition-duration: 4s;text-shadow: #fff 0px 0px 25px;}
+      a {color: #55aaff;}
+      .textColumn, .linksColumn {padding: 2em;}
+      .textColumn {
+        background-color: BACKGROUND-COLOR;
+        position: absolute;top: 0px;right: 50%;bottom: 0px;left: 0px;
+        text-align: right;padding-top: 11em;
+      }
+      .textColumn p {width: 75%;float:right;}
+      .linksColumn {
+        position: absolute;
+        top:0px;
+        right: 0px;
+        bottom: 0px;
+        left: 50%;
+        background-color: #33342D;
+        overflow: scroll;
+      }
+      .header{color: #33342D;font-size: 300%;font-weight: normal;margin-bottom: 0em;}
+      .header2{color: #33342D;font-size: 150%;font-weight: normal;margin-top: 20px;}
+      .header3{color: #33342D;font-size: 120%;font-weight: normal;margin-top: 20px;}
+      .footer1{color: #33342D;font-size: 100%;font-weight: normal;margin-top: 40px;position: absolute;bottom:30px}
+      h2{font-size: 200%;font-weight: normal;margin-bottom: 0em;}
+      ul {padding-left: 1em;margin: 0px;}
+      li {margin: 1em 0em;}
+      * { box-sizing: border-box; }
+      .column { float: left; width: 50.00%;  padding: 5px;} 
+      .row::after {content: "";clear: both;display: table;}
+      #result {
+        white-space: pre-line;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="textColumn" style="text-align:center">
+      <div class="header">Congratulations: Build BUILD_NUMBER (NAMESPACE)</div>
+      <div class="header2">Its not a fancy service - but it was deployed with a Cloud-Native spirit! :-)</div>
+      <div style="margin-top:50px">
+        <div style="text-align:center">
+          <div class="header3">Monitored, operated and validated by</div>
+          <img src="https://dt-cdn.net/wp-content/uploads/2016/12/dynatrace_logo.png" style="padding-top:20px;width:20%">
+        </div>
+      </div>
+      <div class="footer1">This page is served from HOSTNAME!</div>
+    </div>
+
+    <div class="linksColumn">
+      <h2>Interact with the Service</h2>
+      <div style="padding:16px;">
+          Sleep Setting (in ms): <input type="textbox" id="SleepTime" value="1000"></input>
+      </div>
+	    <div style="padding:16px;">
+        Say Something : <input type="textbox" id="SayText" value="Just say whatever you want"></input>
+		    <button id="Echo">Echo</button>
+      </div>
+	    <div style="padding:16px;">
+        Invoke Server Side URL (full URL please) : <input type="textbox" id="RemoteURL" value="https://www.amazon.com"></input>
+		    <button id="Invoke">Invoke</button>
+      </div>
+      <div style="padding:16px;" id="loginarea">
+        Your Username (can be used for user tagging) : <input type="textbox" id="Username" value="Joe Mueller"></input>
+        <button id="Login">LOG ME IN :-)</button>
+      </div>
+      <div style="padding:16px;">
+      <button id="Version">Get MyVersion!</button>
+    </div>
+	  <div>
+	    <p id="result">Results will show up here!</p>
+	  </div>
+	  <br>
+	  <br>
+    <h2>Learn more about Dynatrace</h2>
+    <ul>
+      <li><a href="http://bit.ly/dtsaastrial">Get your own Dynatrace SaaS Trial</a></li>
+      <li><a href="https://www.dynatrace.com/support/help">Dynatrace Documentation</a></li>
+    </ul>	       
+  </div>
+	
+    <script>	
+	    function getRESTEndpoint() {
+        return window.location.href;
+      }
+		
+	    function executeCall(requestString, sleep) {
+        var sleepTime = $('#SleepTime').val();	  
+	      var fullURL = getRESTEndpoint() + requestString;
+        
+        if(fullURL.indexOf("?") > 0) fullURL = fullURL + "&sleep=" + sleepTime;
+        else fullURL = fullURL + "?sleep=" + sleepTime;
+		  
+	      $.ajax({
+          url: fullURL
+        }).success(function(data) {
+          $('#result').text(data);
+        }).fail(function() {
+          $('#result').text("invoke failed!");
+	      });
+	    }
+		
+		  $("#Echo").click(function () {	
+        var text = $('#SayText').val();	
+          executeCall("api/echo?text=" + text);
+        });
+
+      $("#Invoke").click(function () {	
+        var text = $('#RemoteURL').val();		
+        executeCall("api/invoke?url=" + text);
+      });
+		
+      $("#Version").click(function () {	
+        executeCall("api/version");
+      });
+
+      $("#Login").click(function () {	
+        var username = $('#Username').val();	
+        var loggedinusername = $("#loggedinusername");
+        if(loggedinusername.length <= 0) {
+          $("<div id=\"usrhelparea\">You are now Logged in as user: <p id=\"loggedinusername\">" + username + "</p></div>").appendTo("#loginarea")
+        } else {
+          loggedinusername.text(username);
+        }
+        executeCall("api/login?username=" + username);
+      });
+	  </script>	
+  </body>
+</html>

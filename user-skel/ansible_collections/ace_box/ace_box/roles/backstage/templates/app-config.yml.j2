@@ -1,0 +1,114 @@
+app:
+  title: ACE-Box Backstage App
+  baseUrl: "{{ ingress_protocol }}://backstage.{{ ingress_domain }}"
+
+organization:
+  name: Dynatrace
+
+backend:
+  auth:
+    keys:
+      - secret: "{{ backstage_backend_auth_key }}"
+  baseUrl: "{{ ingress_protocol }}://backstage.{{ ingress_domain }}"
+  listen:
+    port: 7007
+    # Uncomment the following host directive to bind to specific interfaces
+    # host: 127.0.0.1
+  csp:
+    connect-src: ["'self'", "http:", "https:"]
+    # Content-Security-Policy directives follow the Helmet format: https://helmetjs.github.io/#reference
+    # Default Helmet Content-Security-Policy values can be removed by setting the key to false
+  cors:
+    origin: "{{ ingress_protocol }}://backstage.{{ ingress_domain }}"
+    methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+    credentials: true
+  database:
+    client: pg
+    connection:
+      host: ${POSTGRES_SERVICE_HOST}
+      port: ${POSTGRES_SERVICE_PORT}
+      user: ${POSTGRES_USER}
+      password: ${POSTGRES_PASSWORD}
+  # workingDirectory: /tmp # Use this to configure a working directory for the scaffolder, defaults to the OS temp-dir
+
+integrations:
+  gitlab:
+    - host: "gitlab.{{ ingress_domain }}"
+      apiBaseUrl: "{{ gitlab_internal_endpoint }}/api/v4"
+      baseUrl: "{{ gitlab_internal_endpoint }}"
+      token: ${GITLAB_TOKEN}
+
+proxy: {}
+### Example for how to add a proxy endpoint for the frontend.
+### A typical reason to do this is to handle HTTPS and CORS for internal services.
+# endpoints:
+#   '/test':
+#     target: 'https://example.com'
+#     changeOrigin: true
+
+# Reference documentation http://backstage.io/docs/features/techdocs/configuration
+# Note: After experimenting with basic setup, use CI/CD to generate docs
+# and an external cloud storage when deploying TechDocs for production use-case.
+# https://backstage.io/docs/features/techdocs/how-to-guides#how-to-migrate-from-techdocs-basic-to-recommended-deployment-approach
+techdocs:
+  builder: "local" # Alternatives - 'external'
+  generator:
+    runIn: "docker" # Alternatives - 'local'
+  publisher:
+    type: "local" # Alternatives - 'googleGcs' or 'awsS3'. Read documentation for using alternatives.
+
+auth:
+  environment: production
+  providers:
+    # guest:
+    #   dangerouslyAllowOutsideDevelopment: true
+    gitlab:
+      production:
+        clientId: ${GITLAB_APP_CLIENT_ID}
+        clientSecret: ${GITLAB_APP_CLIENT_SECRET}
+        audience: "{{ ingress_protocol }}://gitlab.{{ ingress_domain }}"
+        callbackUrl: "{{ ingress_protocol }}://backstage.{{ ingress_domain }}/api/auth/gitlab/handler/frame"
+        signIn:
+          resolvers:
+            - resolver: usernameMatchingUserEntityName
+
+scaffolder: {}
+# see https://backstage.io/docs/features/software-templates/configuration for software template options
+
+catalog:
+  rules:
+    - allow: [Component, System, API, Resource, Location, Template]
+  providers:
+    gitlab:
+      aceBoxGitLab:
+        host: "gitlab.{{ ingress_domain }}" # Identifies one of the hosts set up in the integrations
+        branch: main # Optional. Used to discover on a specific branch
+        # fallbackBranch: master # Optional. Fallback to be used if there is no default branch configured at the Gitlab repository. It is only used, if `branch` is undefined. Uses `master` as default
+        # skipForkedRepos: false # Optional. If the project is a fork, skip repository
+        group: backstage-templates # Optional. Group and subgroup (if needed) to look for repositories. If not present the whole instance will be scanned
+        entityFilename: catalog-info.yaml # Optional. Defaults to `catalog-info.yaml`
+        # projectPattern: '[\s\S]*' # Optional. Filters found projects based on provided patter. Defaults to `[\s\S]*`, which means to not filter anything
+        schedule: # Same options as in TaskScheduleDefinition. Optional for the Legacy Backend System
+          # supports cron, ISO duration, "human duration" as used in code
+          frequency: { minutes: 5 }
+          # supports ISO duration, "human duration" as used in code
+          timeout: { minutes: 3 }
+  locations:
+    - type: file
+      target: catalog/org.yaml
+      rules:
+        - allow: [User, Group]
+
+dynatrace:
+  queries:
+    - id: davis-events
+      description: Fetches all Davis events
+      query: >
+        fetch events | filter event.kind == "DAVIS_EVENT" | fields event.kind, timestamp
+  environments:
+    - name: default
+      url: "{{ extra_vars.dt_environment_url_gen3 }}"
+      tokenUrl: "{{ extra_vars.dt_oauth_sso_endpoint }}"
+      accountUrn: "{{ extra_vars.dt_oauth_account_urn }}"
+      clientId: "{{ extra_vars.dt_oauth_client_id }}"
+      clientSecret: "{{ extra_vars.dt_oauth_client_secret }}"

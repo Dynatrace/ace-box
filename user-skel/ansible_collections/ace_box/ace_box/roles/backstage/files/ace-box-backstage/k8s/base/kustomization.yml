@@ -1,0 +1,21 @@
+---
+resources:
+  - namespace.yml
+  - postgres-secrets.yml
+  - postgres-storage.yml
+  - postgres.yml
+  - postgres-service.yml
+  - gitlab-secrets.yml
+  - backstage.yml
+  - backstage-service.yml
+  - backstage-ingress.yml
+
+patches:
+  - path: backstage-ingress.patch.json
+    target:
+      kind: Ingress
+      name: backstage
+  - path: backstage.patch.json
+    target:
+      kind: Deployment
+      name: backstage

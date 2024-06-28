@@ -4,18 +4,18 @@
     use_case_repo_path: "/home/{{ ace_box_user }}/repos/{{ use_case_ext_src | ace_box.ace_box.useCaseExtSrcToName }}"
 
 - block:
-  - name: Create repos directory
-    ansible.builtin.file:
-      path: "/home/{{ ace_box_user }}/repos"
-      state: directory
-      mode: '0755'
-    when: not local|bool
-  - name: Clone external use case
-    ansible.builtin.git:
-      repo: "{{ use_case_ext_src }}"
-      version: "{{ use_case_ext_version }}"
-      dest: "{{ use_case_repo_path }}"
-    when: not local|bool
+    - name: Create repos directory
+      ansible.builtin.file:
+        path: "/home/{{ ace_box_user }}/repos"
+        state: directory
+        mode: "0755"
+      when: not local|bool
+    - name: Clone external use case
+      ansible.builtin.git:
+        repo: "{{ use_case_ext_src }}"
+        version: "{{ use_case_ext_version }}"
+        dest: "{{ use_case_repo_path }}"
+      when: not local|bool
 
 - name: Synchronize Use Case role
   synchronize:
