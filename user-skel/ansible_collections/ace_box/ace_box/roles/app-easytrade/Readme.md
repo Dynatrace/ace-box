@@ -19,7 +19,7 @@ This role depends on the following roles to be deployed beforehand:
 - include_role:
     name: app-easytrade
   vars:
-    manifest_strategy: "static" # static or fetch_latest: static will use the static files from the app-easytrade role, dynamic will clone the EasyTrade repository with the latest files
+    manifest_strategy: "static" # static or fetch_latest: static will use the static files from the app-easytrade role, dynamic will clone the EasyTrade repository with the latest files. Attention: This would break the existing deployments if the EasyTrade repository is updated.
 ```
 
 Variables that can be set are as follows:

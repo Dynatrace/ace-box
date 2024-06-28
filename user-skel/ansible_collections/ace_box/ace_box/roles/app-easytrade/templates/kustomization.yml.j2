@@ -2,8 +2,11 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - "../easytrade/kubernetes-manifests"
+  - "../../easytrade/kubernetes-manifests"
   - "ingress"
+
+patchesStrategicMerge:
+  - "ingress/frontendreverseproxy-patch.yml"
 
 patches:
   - target:
@@ -11,67 +14,67 @@ patches:
       version: v1
       kind: Deployment
       name: accountservice
-    path: kubernetes-labels-patch.yml
+    path: labels/kubernetes-labels-patch.yml
   - target:
       group: apps
       version: v1
       kind: Deployment
       name: broker-service
-    path: kubernetes-labels-patch.yml
+    path: labels/kubernetes-labels-patch.yml
   - target:
       group: apps
       version: v1
       kind: Deployment
       name: contentcreator
-    path: kubernetes-labels-patch.yml
+    path: labels/kubernetes-labels-patch.yml
   - target:
       group: apps
       version: v1
       kind: Deployment
       name: credit-card-order-service
-    path: kubernetes-labels-patch.yml
+    path: labels/kubernetes-labels-patch.yml
   - target:
       group: apps
       version: v1
       kind: Deployment
       name: db
-    path: kubernetes-labels-patch.yml
+    path: labels/kubernetes-labels-patch.yml
   - target:
       group: apps
       version: v1
       kind: Deployment
       name: engine
-    path: kubernetes-labels-patch.yml
+    path: labels/kubernetes-labels-patch.yml
   - target:
       group: apps
       version: v1
       kind: Deployment
       name: loadgen
-    path: kubernetes-labels-patch.yml
+    path: labels/kubernetes-labels-patch.yml
   - target:
       group: apps
       version: v1
       kind: Deployment
       name: loginservice
-    path: kubernetes-labels-patch.yml
+    path: labels/kubernetes-labels-patch.yml
   - target:
       group: apps
       version: v1
       kind: Deployment
       name: manager
-    path: kubernetes-labels-patch.yml
+    path: labels/kubernetes-labels-patch.yml
   - target:
       group: apps
       version: v1
       kind: Deployment
       name: pricing-service
-    path: kubernetes-labels-patch.yml
+    path: labels/kubernetes-labels-patch.yml
   - target:
       group: apps
       version: v1
       kind: Deployment
       name: third-party-service
-    path: kubernetes-labels-patch.yml
+    path: labels/kubernetes-labels-patch.yml
 
 images:
 - name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/accountservice

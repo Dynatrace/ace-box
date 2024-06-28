@@ -29,15 +29,15 @@
 - name: Template Easytrade Kustomization
   template:
     src: "{{ role_path }}/templates/kustomization.yml.j2"
-    dest: "{{ role_path }}/files/kustomize/kustomization.yml"
+    dest: "{{ role_path }}/files/kustomize/base/kustomization.yml"
     owner: "{{ ace_box_user }}"
     group: "{{ ace_box_user }}"
     mode: '0644'
 
-- name: Template Easytrade Release Detection Patch
+- name: Template Easytrade Ingress Patch
   template:
-    src: "{{ role_path }}/templates/kubernetes-labels-patch.yml.j2"
-    dest: "{{ role_path }}/files/kustomize/kubernetes-labels-patch.yml"
+    src: "{{ role_path }}/templates/easytrade-ingress.yml.j2"
+    dest: "{{ role_path }}/files/kustomize/base/ingress/easytrade-ingress.yml"
     owner: "{{ ace_box_user }}"
     group: "{{ ace_box_user }}"
     mode: '0644'

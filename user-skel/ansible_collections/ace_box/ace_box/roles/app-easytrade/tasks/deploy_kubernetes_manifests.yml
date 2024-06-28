@@ -5,16 +5,8 @@
     name: "{{ easytrade_namespace }}"
     state: present
 
-- name: Template Easytrade Ingress Patch
-  template:
-    src: "{{ role_path }}/templates/easytrade-ingress.yml.j2"
-    dest: "{{ role_path }}/files/kustomize/ingress/easytrade-ingress.yml"
-    owner: "{{ ace_box_user }}"
-    group: "{{ ace_box_user }}"
-    mode: '0644'
-
 - name: Apply Kubernetes manifests using kubectl and Kustomize
   ansible.builtin.shell:
-    cmd: kubectl apply -k "{{ role_path }}/files/kustomize" -n "{{ easytrade_namespace }}"
+    cmd: kubectl apply -k "{{ role_path }}/files/kustomize/base" -n "{{ easytrade_namespace }}"
   args:
     executable: /bin/bash
