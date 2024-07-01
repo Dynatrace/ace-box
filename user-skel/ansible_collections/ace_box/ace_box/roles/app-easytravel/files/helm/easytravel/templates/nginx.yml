@@ -19,6 +19,14 @@ spec:
               value: angular-frontend-service:8080
             - name: ET_BACKEND_LOCATION
               value: backend-service:8080
+            - name: DT_RELEASE_VERSION
+              value: {{ .Values.easytravel.images.tag }}
+            - name: DT_RELEASE_BUILD_VERSION
+              value: {{ .Values.easytravel.images.tag }}
+            - name: DT_RELEASE_STAGE
+              value: {{ .Release.Namespace }}
+            - name: DT_RELEASE_PRODUCT
+              value: {{ .Release.Name }}
           image: dynatrace/easytravel-nginx:{{ .Values.easytravel.images.tag }}
           imagePullPolicy: Always
           name: nginx

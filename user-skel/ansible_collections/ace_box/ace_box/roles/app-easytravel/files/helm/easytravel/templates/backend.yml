@@ -24,6 +24,14 @@ spec:
               value: etAdmin
             - name: ET_DATABASE_PASSWORD
               value: adminadmin
+            - name: DT_RELEASE_VERSION
+              value: {{ .Values.easytravel.images.tag }}
+            - name: DT_RELEASE_BUILD_VERSION
+              value: {{ .Values.easytravel.images.tag }}
+            - name: DT_RELEASE_STAGE
+              value: {{ .Release.Namespace }}
+            - name: DT_RELEASE_PRODUCT
+              value: {{ .Release.Name }}
           image: dynatrace/easytravel-backend:{{ .Values.easytravel.images.tag }}
           imagePullPolicy: Always
           name: backend

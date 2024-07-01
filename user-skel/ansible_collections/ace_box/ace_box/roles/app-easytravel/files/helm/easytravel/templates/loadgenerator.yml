@@ -25,6 +25,14 @@ spec:
               value: "4"
             - name: ET_PROBLEMS
               value: BadCacheSynchronization,CPULoad,DatabaseCleanup,DatabaseSlowdown,FetchSizeTooSmall,JourneySearchError404,JourneySearchError500,LoginProblems,MobileErrors,TravellersOptionBox
+            - name: DT_RELEASE_VERSION
+              value: {{ .Values.easytravel.images.tag }}
+            - name: DT_RELEASE_BUILD_VERSION
+              value: {{ .Values.easytravel.images.tag }}
+            - name: DT_RELEASE_STAGE
+              value: {{ .Release.Namespace }}
+            - name: DT_RELEASE_PRODUCT
+              value: {{ .Release.Name }}          
           image: dynatrace/easytravel-headless-loadgen:{{ .Values.easytravel.images.tag }}
           name: angular-loadgen
           imagePullPolicy: Always

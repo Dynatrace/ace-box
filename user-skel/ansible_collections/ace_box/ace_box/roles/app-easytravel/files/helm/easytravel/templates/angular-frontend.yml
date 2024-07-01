@@ -17,6 +17,14 @@ spec:
         - env:
             - name: ET_BACKEND_URL
               value: http://backend-service:8080
+            - name: DT_RELEASE_VERSION
+              value: {{ .Values.easytravel.images.tag }}
+            - name: DT_RELEASE_BUILD_VERSION
+              value: {{ .Values.easytravel.images.tag }}
+            - name: DT_RELEASE_STAGE
+              value: {{ .Release.Namespace }}
+            - name: DT_RELEASE_PRODUCT
+              value: {{ .Release.Name }}
           image: dynatrace/easytravel-angular-frontend:{{ .Values.easytravel.images.tag }}
           imagePullPolicy: Always
           name: angular-frontend

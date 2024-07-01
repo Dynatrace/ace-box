@@ -27,6 +27,15 @@ spec:
               memory: "100Mi"
             limits:
               memory: "100Mi"
+          env:
+            - name: DT_RELEASE_VERSION
+              value: {{ .Values.easytravel.images.tag }}
+            - name: DT_RELEASE_BUILD_VERSION
+              value: {{ .Values.easytravel.images.tag }}
+            - name: DT_RELEASE_STAGE
+              value: {{ .Release.Namespace }}
+            - name: DT_RELEASE_PRODUCT
+              value: {{ .Release.Name }}
 
 ---
 apiVersion: v1
