@@ -1,23 +1,49 @@
-# Deploy EasyTrade
-- name: Deploy EasyTrade
-  kubernetes.core.helm:
-    name: easytrade
-    chart_ref: "{{ role_path }}/files/helm/easytrade"
-    release_namespace: "{{ easytrade_namespace }}"
-    create_namespace: true
-    wait: true
-    wait_timeout: 10m
-    values:
+- name: Set deployment strategy as a fact
+  set_fact:
+    manifest_strategy: "{{ manifest_strategy | default('static') }}"
 
-      ingress:
-        domain: "{{ easytrade_domain }}"
-        class: "{{ ingress_class }}"
-      easytrade:
-        images:
-          registry: gcr.io/dynatrace-demoability/easytrade
-          tag: "{{ easytrade_image_tag }}"
-        headlessloadgen:
-          tag: "{{ easytrade_headlessloadgen_tag }}"
+- name: Determine deployment strategy
+  block:
+    - name: Remove the existing directory if deployment strategy is fetch_latest
+      ansible.builtin.file:
+        path: "{{ role_path }}/files/easytrade"
+        state: absent
 
-- include_tasks:
-    file: add-dashboard-links.yaml
+    - name: Clone the Easytrade repository with the full contents of the latest commit on the default branch
+      ansible.builtin.git:
+        repo: 'https://github.com/Dynatrace/easytrade.git'
+        dest: "{{ role_path }}/files"
+        version: 'HEAD'  # Use the latest commit on the default branch
+        depth: 1
+      register: git_clone
+
+    - name: Template Easytrade Kustomization
+      template:
+        src: "{{ role_path }}/templates/kustomization-base.yml.j2"
+        dest: "{{ role_path }}/files/easytrade/kubernetes-manifests/kustomization.yml"
+        owner: "{{ ace_box_user }}"
+        group: "{{ ace_box_user }}"
+        mode: '0644'
+  when: manifest_strategy == 'fetch_latest'
+
+- name: Template Easytrade Kustomization
+  template:
+    src: "{{ role_path }}/templates/kustomization.yml.j2"
+    dest: "{{ role_path }}/files/kustomize/base/kustomization.yml"
+    owner: "{{ ace_box_user }}"
+    group: "{{ ace_box_user }}"
+    mode: '0644'
+
+- name: Template Easytrade Ingress Patch
+  template:
+    src: "{{ role_path }}/templates/easytrade-ingress.yml.j2"
+    dest: "{{ role_path }}/files/kustomize/base/ingress/easytrade-ingress.yml"
+    owner: "{{ ace_box_user }}"
+    group: "{{ ace_box_user }}"
+    mode: '0644'
+
+- name: Deploy Kubernetes manifests
+  include_tasks: deploy_kubernetes_manifests.yml
+
+- name: Add dashboard links
+  include_tasks: add-dashboard-links.yml

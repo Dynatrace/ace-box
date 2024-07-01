@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pricing-service
+spec:
+  selector:
+    matchLabels:
+      app: pricing-service
+  template:
+    metadata:
+      labels:
+        app: pricing-service
+    spec:
+      containers:
+        - name: pricing-service
+          image: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/pricing-service:d863a2e
+          ports:
+            - containerPort: 8080
+          env:
+            - name: RABBITMQ_HOST
+              value: "rabbitmq"
+            - name: RABBITMQ_USER
+              value: "userxxx"
+            - name: RABBITMQ_PASSWORD
+              value: "passxxx"
+            - name: RABBITMQ_QUEUE
+              value: "Trade_Data_Raw"
+            - name: PROXY_PREFIX
+              value: "pricing-service"
+            - name: MSSQL_CONNECTIONSTRING
+              valueFrom:
+                configMapKeyRef:
+                  name: connection-strings
+                  key: GO_CONNECTION_STRING
+          resources:
+            requests:
+              cpu: 100m
+              memory: 350Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pricing-service
+spec:
+  type: ClusterIP
+  selector:
+    app: pricing-service
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080

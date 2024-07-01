@@ -1,5 +1,0 @@
-config:
-    - app-easytrade: "easytrade.json"
-  
-app-easytrade:
-    - name: "app.easytrade"

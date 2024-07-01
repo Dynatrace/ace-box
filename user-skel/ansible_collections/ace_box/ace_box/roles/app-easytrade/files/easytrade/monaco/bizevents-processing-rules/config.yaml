@@ -1,0 +1,9 @@
+configs:
+  - id: easytrade_mask-cvv
+    config:
+      template: easytrade_mask-cvv.json
+      skip: false
+    type:
+      settings:
+        schema: builtin:bizevents-processing-pipelines.rule
+        scope: environment

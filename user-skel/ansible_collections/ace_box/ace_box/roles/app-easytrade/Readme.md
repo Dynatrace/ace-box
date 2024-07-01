@@ -1,6 +1,8 @@
 # app-easytrade
 
 This currated role can be used to deploy EasyTrade demo application on the ACE-Box.
+Easytrade application files are stored in this [repository](https://github.com/Dynatrace/easytrade).
+Check the [EasyTrade documentation](https://github.com/Dynatrace/easytrade/blob/main/README.md) for more information.
 
 ## Using the role
 
@@ -16,6 +18,8 @@ This role depends on the following roles to be deployed beforehand:
 ```yaml
 - include_role:
     name: app-easytrade
+  vars:
+    manifest_strategy: "static" # static or fetch_latest: static will use the static files from the app-easytrade role, dynamic will clone the EasyTrade repository with the latest files. Attention: This would break the existing deployments if the EasyTrade repository is updated.
 ```
 
 Variables that can be set are as follows:
@@ -24,8 +28,6 @@ Variables that can be set are as follows:
 ---
 easytrade_namespace: "easytrade" # namespace that EasyTrade will be deployed in
 easytrade_domain: "easytrade.{{ ingress_domain }}" #ingress domain for regular EasyTrade
-easytrade_image_tag: "5aa49fb" #image tag to use, check https://console.cloud.google.com/gcr/images/dynatrace-demoability/global/easytrade
-easytrade_headlessloadgen_tag: "848c2ab" #image tag for headless loadgen, check https://console.cloud.google.com/gcr/images/dynatrace-demoability/global/headlessloadgen
 easytrade_addDashboardLink: true # add a link to the dashboard when enabled
 easytrade_addDashboardPreview: true # add a preview to the dashboard when enabled
 ```
@@ -51,49 +53,21 @@ easytrade_addDashboardPreview: true # add a preview to the dashboard when enable
 To enable monaco:
 
 ```yaml
-- name: Deploy Monaco
+- name: Deploy Dynatrace configurations
   include_role:
-    name: monaco
+    name: monaco-v2
+  vars:
+    monaco_version: "latest"
 ```
 
 > Note: the below applies Dynatrace configurations with the monaco project embedded in the role.
-> 
-> To enable private synthetic monitor for EasyTeavel via Dynatrace ActiveGate, set the "skip_synthetic_monitor" variable "false". The default value is "true".
 
 ```yaml
 - include_role:
     name: app-easytrade
-    tasks_from: apply-monaco
-  vars:
-    skip_synthetic_monitor: "false"
+    tasks_from: apply-dt-configuration
+
 ```
-
-To delete the configuration:
-
-```yaml
-- include_role:
-    name: app-easytrade
-    tasks_from: delete-monaco
-```
-
-Dynatrace Configurations List (check the files/monaco/projects/easytrade folder for the latest):
-
-    Infrastructure:
-      - "auto-tag/app"
-      - "auto-tag/environment"
-      - "conditional-naming-processgroup/ACE Box - containername.namespace"
-      - "conditional-naming-service/app.environment"
-      - "synthetic-location/ACE-BOX" # if skip_synthetic_monitor: "false"
-    
-    EasyTrade Aplication Specific:
-        - "app-detection-rule/app.easytrade"
-        - "application-web/app.easytrade"
-        - "auto-tag/easytrade"
-        - "management-zone/easytrade-prod"
-        - "synthetic-monitor/webcheck.easytrade.prod" # if skip_synthetic_monitor: "false"
-        - "synthetic-monitor/webcheck.easytrade-angular.prod" # if skip_synthetic_monitor: "false"
-        - "synthetic-monitor/browser.easytrade-angular.prod.home" # if skip_synthetic_monitor: "false"
-        - "synthetic-monitor/browser.easytrade.prod.home" # if skip_synthetic_monitor: "false"
 
 ### Add to ACE Dashboard
 To add references to the ACE dashboard, set the following vars:

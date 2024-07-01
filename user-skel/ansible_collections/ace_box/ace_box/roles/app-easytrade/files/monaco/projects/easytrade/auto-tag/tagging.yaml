@@ -1,6 +1,0 @@
-config:
-    - tagging-easytrade: "tagging.json"
-  
-tagging-easytrade:
-    - name: "easytrade"
-    - namespace: "{{ .Env.APP_NAMESPACE }}"

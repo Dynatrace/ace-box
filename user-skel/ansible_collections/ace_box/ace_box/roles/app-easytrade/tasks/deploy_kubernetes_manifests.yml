@@ -1,0 +1,12 @@
+- name: Ensure the easytrade namespace exists
+  kubernetes.core.k8s:
+    kind: Namespace
+    api_version: v1
+    name: "{{ easytrade_namespace }}"
+    state: present
+
+- name: Apply Kubernetes manifests using kubectl and Kustomize
+  ansible.builtin.shell:
+    cmd: kubectl apply -k "{{ role_path }}/files/kustomize/base" -n "{{ easytrade_namespace }}"
+  args:
+    executable: /bin/bash
