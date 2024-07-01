@@ -7,44 +7,9 @@
     wait: true
     wait_timeout: 10m
     values:
-      config:
-        ingress:
-          domain: "{{ easytravel_domain }}"
-          angular_domain: "{{ easytravel_angular_domain }}"
-          class: "{{ ingress_class }}"
-        frontend:
+      ingress:
+        domain: "{{ easytravel_domain }}"
+        class: "{{ ingress_class }}"
+      easytravel:
+        images:
           tag: "{{ easytravel_image_tag }}"
-        backend:
-          tag: "{{ easytravel_image_tag }}"
-        loadgen:
-          visitNumber: "{{ easytravel_visit_number }}"
-          tag: "{{ easytravel_image_tag }}"
-          problems: ""
-        loadgen_angular: 
-          replicas: "{{ easytravel_headless_replicas }}"
-          tag: "{{ easytravel_image_tag }}"
-        www:
-          tag: "{{ easytravel_image_tag }}"
-        mongodb:
-          tag: "{{ easytravel_image_tag }}"
-        pluginservice:
-          tag: "{{ easytravel_image_tag }}"
-
-# Below is done to overcome instrumentation issues when first deploying ET WWW Nginx
-- name: Easytravel www - scale down
-  kubernetes.core.k8s_scale:
-    api_version: v1
-    kind: Deployment
-    name: easytravel-www
-    namespace: "{{ easytravel_namespace }}"
-    replicas: 0
-    wait_timeout: 60
-
-- name: Easytravel www - scale up
-  kubernetes.core.k8s_scale:
-    api_version: v1
-    kind: Deployment
-    name: easytravel-www
-    namespace: "{{ easytravel_namespace }}"
-    replicas: 1
-    wait_timeout: 60
