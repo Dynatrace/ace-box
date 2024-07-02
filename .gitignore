@@ -11,10 +11,15 @@ microk8s/*.log
 *gen.yml
 *gen.yaml
 *gen.html
+# Exception for specific files
+!loadgen.yaml
+!loadgen.yml
+
 *.tgz
 *.tgz.sig
 *.pem
 kubeconfig
+
 
 microk8s/ansible/kubeconfig
 
