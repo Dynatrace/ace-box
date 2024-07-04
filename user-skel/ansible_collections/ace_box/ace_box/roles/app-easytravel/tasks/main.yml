@@ -21,6 +21,14 @@
     name: "{{ easytravel_namespace }}"
     state: present
 
+- name: Create Default Service Account in Namespace
+  kubernetes.core.k8s:
+    kind: ServiceAccount
+    api_version: v1
+    name: default
+    namespace: "{{ easytravel_namespace }}"
+    state: present
+
 - name: Apply Kubernetes manifests using kubectl and Kustomize
   ansible.builtin.shell:
     cmd: kubectl apply -k "{{ role_path }}/files/kustomize/base" -n "{{ easytravel_namespace }}"
