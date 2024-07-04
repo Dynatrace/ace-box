@@ -1,15 +1,46 @@
-- name: Deploy Easytravel
-  kubernetes.core.helm:
-    name: easytravel
-    chart_ref: "{{ role_path }}/files/helm/easytravel"
-    release_namespace: "{{ easytravel_namespace }}"
-    create_namespace: true
-    wait: true
-    wait_timeout: 10m
-    values:
-      ingress:
-        domain: "{{ easytravel_domain }}"
-        class: "{{ ingress_class }}"
-      easytravel:
-        images:
-          tag: "{{ easytravel_image_tag }}"
+- name: Template Easytravel Kustomization
+  template:
+    src: "{{ role_path }}/templates/kustomization.yml.j2"
+    dest: "{{ role_path }}/files/kustomize/base/kustomization.yml"
+    owner: "{{ ace_box_user }}"
+    group: "{{ ace_box_user }}"
+    mode: '0644'
+
+- name: Template Easytravel Ingress Patch
+  template:
+    src: "{{ role_path }}/templates/easytravel-ingress.yml.j2"
+    dest: "{{ role_path }}/files/kustomize/base/ingress/easytravel-ingress.yml"
+    owner: "{{ ace_box_user }}"
+    group: "{{ ace_box_user }}"
+    mode: '0644'
+
+- name: Ensure the easytravel namespace exists
+  kubernetes.core.k8s:
+    kind: Namespace
+    api_version: v1
+    name: "{{ easytravel_namespace }}"
+    state: present
+
+- name: Apply Kubernetes manifests using kubectl and Kustomize
+  ansible.builtin.shell:
+    cmd: kubectl apply -k "{{ role_path }}/files/kustomize/base" -n "{{ easytravel_namespace }}"
+  args:
+    executable: /bin/bash
+
+
+
+# - name: Deploy Easytravel
+#   kubernetes.core.helm:
+#     name: easytravel
+#     chart_ref: "{{ role_path }}/files/helm/easytravel"
+#     release_namespace: "{{ easytravel_namespace }}"
+#     create_namespace: true
+#     wait: true
+#     wait_timeout: 10m
+#     values:
+#       ingress:
+#         domain: "{{ easytravel_domain }}"
+#         class: "{{ ingress_class }}"
+#       easytravel:
+#         images:
+#           tag: "{{ easytravel_image_tag }}"

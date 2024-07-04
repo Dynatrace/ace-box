@@ -1,0 +1,32 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - env-vars
+  - ingress
+
+patches:
+  - path: ingress/nginx-patch.yml
+  - path: kubernetes-labels-patch.yml
+    target:
+        kind: Deployment
+
+images:
+- name: dynatrace/easytravel-angular-frontend
+  newTag: "{{ easytravel_image_tag }}"
+
+- name: dynatrace/easytravel-backend
+  newTag: "{{ easytravel_image_tag }}"
+
+- name: dynatrace/easytravel-headless-loadgen
+  newTag: "{{ easytravel_image_tag }}"
+
+- name: dynatrace/easytravel-mongodb-content-creator
+  newTag: "{{ easytravel_image_tag }}"
+
+- name: dynatrace/easytravel-mongodb
+  newTag: "{{ easytravel_image_tag }}"
+
+- name: dynatrace/easytravel-nginx
+  newTag: "{{ easytravel_image_tag }}"
+
