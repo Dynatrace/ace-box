@@ -4,7 +4,6 @@ kind: Ingress
 metadata:
   annotations:
     meta.helm.sh/release-name: {{ .Release.Name }}
-    kubernetes.io/ingress.class: {{ .Values.ingress.class }}
   labels:
     app: {{ .Release.Name }}
     app.kubernetes.io/managed-by: Helm
@@ -13,6 +12,7 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ .Release.Name }}
 spec:
+  ingressClassName: {{ .Values.ingress.class }}
   rules:
   - host: {{ .Values.ingress.domain }}
     http:

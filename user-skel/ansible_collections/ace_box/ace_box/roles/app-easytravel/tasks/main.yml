@@ -1,3 +1,18 @@
+- name: Ensure the easytravel namespace exists
+  kubernetes.core.k8s:
+    kind: Namespace
+    api_version: v1
+    name: "{{ easytravel_namespace }}"
+    state: present
+
+- name: Create Default Service Account in Namespace
+  kubernetes.core.k8s:
+    kind: ServiceAccount
+    api_version: v1
+    name: default
+    namespace: "{{ easytravel_namespace }}"
+    state: present
+
 - name: Deploy Easytravel
   kubernetes.core.helm:
     name: easytravel
