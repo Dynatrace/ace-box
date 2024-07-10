@@ -1,0 +1,108 @@
+{
+  "title": "{{ .name }}",
+  "description": "{{ .wf_description }}",
+  "isPrivate": "{{ .wf_isPrivate }}",
+  "labels": {},
+  "schemaVersion": 3,
+  "taskDefaults": {},
+  "usages": [],
+  "version": 4,
+  "triggerType": "Event",
+  "trigger": {
+    "eventTrigger": {
+      "filterQuery": "event.type == \"guardian.validation.triggered\" AND service==\"{{ .tag_service }}\" AND stage==\"{{ .tag_stage }}\"",
+      "isActive": true,
+      "triggerConfiguration": {
+        "type": "event",
+        "value": {
+          "eventType": "bizevents",
+          "query": "event.type == \"guardian.validation.triggered\" AND service==\"{{ .tag_service }}\" AND stage==\"{{ .tag_stage }}\""
+        }
+      },
+      "uniqueExpression": null
+    }
+  },
+
+  "tasks": {
+    "evaluate_srg": {
+      "action": "dynatrace.site.reliability.guardian:validate-guardian-action",
+      "description": "{{ .srg_task_description }}",
+      "input": {
+        "executionId": "{{`{{`}} execution().id {{`}}`}}",
+        "objectId": "{{ .guardian_id }}",
+        "expressionFrom": "{{`{{`}} event()['timeframe.from'] {{`}}`}}",
+        "expressionTo": "{{`{{`}} event()['timeframe.to'] {{`}}`}}",
+        "timeframeInputType": "expression"
+      },
+      "name": "evaluate_srg",
+      "position": {
+        "x": 0,
+        "y": 1
+      },
+      "predecessors": []
+    },
+    "query_service_entities": {
+      "name": "query_service_entities",
+      "input": {
+        "query": "{{ .dql_service_entities_query }}"
+      },
+      "action": "dynatrace.automations:execute-dql-query",
+      "position": {
+        "x": 0,
+        "y": 2
+      },
+      "conditions": {
+        "custom": "{{ `{{` }} result(\"evaluate_srg\").validation_status != \"pass\" {{ `}}` }}",
+        "states": {
+          "evaluate_srg": "OK"
+        }
+      },
+      "description": "Executes DQL query",
+      "predecessors": ["evaluate_srg"]
+    },
+    "identify_ownership": {
+      "name": "identify_ownership",
+      "input": {
+        "entityIds": "{{ `{{` }} result(\"query_service_entities\").records[0].id {{ `}}` }}",
+        "responsibilities": []
+      },
+      "action": "dynatrace.ownership:get-ownership-from-entity",
+      "position": {
+        "x": 0,
+        "y": 3
+      },
+      "conditions": {
+        "states": {
+          "query_service_entities": "SUCCESS"
+        }
+      },
+      "description": "Retrieves entity and extracts ownership data from it.",
+      "predecessors": ["query_service_entities"]
+    },
+    "create_gitlab_issue": {
+      "action": "dynatrace.automations:http-function",
+      "conditions": {
+        "custom": "{{`{{`}} (result('identify_ownership').owners | length > 0) {{`}}`}}",
+        "states": {
+          "identify_ownership": "OK"
+        }
+      },
+      "description": "{{ .gitlab_task_description }}",
+      "input": {
+        "headers": {
+          "Content-Type": "application/json",
+          "PRIVATE-TOKEN": "{{ .gitlab_private_token }}"
+        },
+        "method": "POST",
+        "url": "{{ .gitlab_url }}/api/v4/projects/{{`{{`}} result(\"identify_ownership\").owners[0].contactDetails | selectattr('integrationType', 'equalto', 'JIRA') | map(attribute='jira.project') | first() {{`}}`}}/issues",
+        "payload": "{\n  \"title\": \"Site Reliability Guardian validation failed\",\n  \"description\": \"For the SRG validation details, go to {{`{{`}} result(\"evaluate_srg\").validation_url {{`}}`}}\"\n}"
+      },
+      "name": "create_gitlab_issue",
+      "position": {
+        "x": 0,
+        "y": 4
+      },
+      "predecessors": ["identify_ownership"]
+    }
+  }
+}

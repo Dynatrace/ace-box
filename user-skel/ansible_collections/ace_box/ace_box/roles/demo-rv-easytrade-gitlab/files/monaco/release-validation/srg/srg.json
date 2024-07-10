@@ -1,0 +1,43 @@
+{
+  "name": "{{ .name }}",
+  "description": "{{ .description }}",
+  "tags": {{ .tags }},
+  "objectives": [
+    {
+      "name": "{{ .objective_name_dql }}",
+      "objectiveType": "DQL",
+      "dqlQuery": "{{ .dqlQuery }}",
+      "comparisonOperator": "{{ .comparisonOperator }}",
+      "target": {{ .failure_dql }},
+      "warning": {{ .warning_dql }},
+      "autoAdaptiveThresholdEnabled": false
+    },
+    {
+      "name": "{{ .objective_name_slo_success_rate }}",
+      "description": null,
+      "objectiveType": "REFERENCE_SLO",
+      "referenceSlo": "{{ .reference_slo_metric_success_rate }}",
+      "comparisonOperator": "GREATER_THAN_OR_EQUAL",
+      "target": {{ .failure_slo_success_rate }},
+      "warning": {{ .warning_slo_success_rate }}
+    },
+    {
+      "name": "{{ .objective_name_slo_availability }}",
+      "description": null,
+      "objectiveType": "REFERENCE_SLO",
+      "referenceSlo": "{{ .reference_slo_metric_availability }}",
+      "comparisonOperator": "GREATER_THAN_OR_EQUAL",
+      "target": {{ .failure_slo_availability }},
+      "warning": {{ .warning_slo_availability }}
+    },
+    {
+      "name": "{{ .objective_name_dql_cpu_usage }}",
+      "objectiveType": "DQL",
+      "dqlQuery": "{{ .dqlQuery_cpu_usage }}",
+      "comparisonOperator": "LESS_THAN_OR_EQUAL",
+      "target": {{ .failure_dql_cpu_usage }},
+      "warning": {{ .warning_dql_cpu_usage }},
+      "autoAdaptiveThresholdEnabled": false
+    }
+  ]
+}

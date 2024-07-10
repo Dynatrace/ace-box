@@ -174,7 +174,8 @@ workflow:
 Configure DT - Staging:
   stage: Deploy Staging
   variables: 
-    MANIFEST_FILE: ./easytrade/monaco/manifest.yaml
+    EASYTRADE_MANIFEST_FILE: ./easytrade/monaco/manifest.yaml
+    USECASE_MANIFEST_FILE: ./monaco/manifest.yaml
   image: dynatrace/dynatrace-configuration-as-code:$MONACO_IMAGE_VERSION
   script:
     # export environment variables
@@ -183,10 +184,12 @@ Configure DT - Staging:
       export TENANT_TOKEN="$DT_API_TOKEN"
       export CLIENT_ID="$DT_OAUTH_CLIENT_ID"
       export CLIENT_SECRET="$DT_OAUTH_CLIENT_SECRET"
-    # run monaco
-    - monaco deploy $MANIFEST_FILE --project application,bizevents-processing-rules,management-zone,easytrade-validation.srg -e dev --dry-run
-    # run monaco
-    - monaco deploy $MANIFEST_FILE --project application,bizevents-processing-rules,management-zone,easytrade-validation.srg -e dev     
+    # run monaco for easytrade original configs
+    - monaco deploy $EASYTRADE_MANIFEST_FILE --project bizevents-processing-rules,management-zone,easytrade-validation.srg -e dev --dry-run
+    - monaco deploy $EASYTRADE_MANIFEST_FILE --project bizevents-processing-rules,management-zone,easytrade-validation.srg -e dev     
+    # run monaco for use case specific configs
+    - monaco deploy $USECASE_MANIFEST_FILE --project application -e dev --dry-run
+    - monaco deploy $USECASE_MANIFEST_FILE --project application -e dev  
 
 Apply Deployment Update - Staging:
   variables:
