@@ -1,0 +1,167 @@
+---
+- include_role:
+    name: microk8s
+
+- include_role:
+    name: dt-operator
+
+- include_role:
+    name: monaco-v2
+  vars:
+    monaco_version: "v{{ monacoVersion }}"
+
+- include_role:
+    name: app-easytrade
+  vars:
+    easytrade_namespace: "easytrade-staging"
+    easytrade_domain: "easytrade-staging.{{ ingress_domain }}"
+
+- include_role:
+    name: app-easytrade
+    tasks_from: apply-dt-configuration
+  vars:
+    monaco_projects: 
+      - application
+      - bizevents
+      - bizevents-processing-rules
+
+- name: Template Easytrade Ingress Patch for Staging
+  template:
+    src: "{{ role_path }}/templates/easytrade-ingress.yml.j2"
+    dest: "{{ role_path }}/files/kustomize/overlays/staging/easytrade-ingress.yml"
+    owner: "{{ ace_box_user }}"
+    group: "{{ ace_box_user }}"
+    mode: '0644'
+  vars:
+    easytrade_domain: "easytrade-staging.{{ ingress_domain }}"
+
+- name: Template Easytrade Ingress Patch for Production
+  template:
+    src: "{{ role_path }}/templates/easytrade-ingress.yml.j2"
+    dest: "{{ role_path }}/files/kustomize/overlays/production/easytrade-ingress.yml"
+    owner: "{{ ace_box_user }}"
+    group: "{{ ace_box_user }}"
+    mode: '0644'
+  vars:
+    easytrade_domain: "easytrade-production.{{ ingress_domain }}"
+
+- include_role:
+    name: gitlab
+
+- name: Gitlab - Ensure Group
+  include_role:
+    name: gitlab
+    tasks_from: ensure-group
+  vars:
+    gitlab_group_name: "{{ gitlab_group }}"
+
+- name: Gitlab - Ensure Default Group Vars
+  include_role:
+    name: gitlab
+    tasks_from: ensure-default-group-vars
+  vars:
+    gitlab_group_name: "{{ gitlab_group }}"
+
+- name: Gitlab - Ensure Project
+  include_role:
+    name: gitlab
+    tasks_from: ensure-project
+  vars:
+    gitlab_prj: "{{ gitlab_repo_name }}"
+    gitlab_prj_namespace_id: "{{ gitlab_group_id }}"
+
+- include_role:
+    name: gitlab
+    tasks_from: source-endpoints-external
+  when: gitlab_external_endpoint is not defined
+
+- include_role:
+    name: gitlab
+    tasks_from: source-secret
+  when: gitlab_personal_access_token is not defined or gitlab_username is not defined or gitlab_password is not defined
+
+- name: Gitlab - Additional Environment Variables
+  include_role:
+    name: gitlab
+    tasks_from: ensure-group-var
+  vars:
+    gitlab_var_key: "{{ item.key }}"
+    gitlab_var_value: "{{ item.value }}"
+  loop:
+    - {
+        key: "DT_PLATFORM_TENANT_URL",
+        value: "{{ extra_vars.dt_environment_url_gen3.rstrip('/') }}",
+      }
+    - {
+        key: "DT_OAUTH_CLIENT_ID",
+        value: "{{ extra_vars.dt_oauth_client_id }}",
+      }
+    - {
+        key: "DT_OAUTH_CLIENT_SECRET",
+        value: "{{ extra_vars.dt_oauth_client_secret }}",
+      }
+    - {
+        key: "DT_OAUTH_SSO_ENDPOINT",
+        value: "{{ extra_vars.dt_oauth_sso_endpoint.rstrip('/') }}",
+      }
+    - {
+        key: "DT_OAUTH_ACCOUNT_URN",
+        value: "{{ extra_vars.dt_oauth_account_urn }}",
+      }
+    - { key: "GITLAB_USERNAME", value: "{{ gitlab_username }}" }
+    - { key: "GITLAB_PASSWORD", value: "{{ gitlab_password }}" }
+    - {
+        key: "GITLAB_PRIVATE_TOKEN",
+        value: "{{ gitlab_personal_access_token }}",
+      }
+    - {
+        key: "GITLAB_EXTERNAL_ENDPOINT",
+        value: "{{ gitlab_external_endpoint }}",
+      }
+    - { key: "DEMO_IDENTIFIER", value: "{{ demo_identifier }}" }
+
+- name: Source Gitlab endpoint
+  include_role:
+    name: gitlab
+    tasks_from: source-endpoints
+
+- set_fact:
+    easytrade_source: "{{ role_path }}/../app-easytrade/files"
+    usecase_source: "{{ role_path }}/files"
+
+- name: Unshallow the repository if the manifest_strategy is fetch_latest
+  ansible.builtin.command: git fetch --unshallow
+  args:
+    chdir: "{{ repo_source }}"
+  ignore_errors: yes  # In case the repository is already a full clone
+  when: manifest_strategy == 'fetch_latest'
+
+- name: Copy files from usecase_source to easytrade_source
+  ansible.builtin.copy:
+    src: "{{ usecase_source }}/"
+    dest: "{{ easytrade_source }}/"
+    remote_src: yes
+    directory_mode: yes
+
+- name: Publish easytrade to Gitlab
+  include_role:
+    name: repository
+  vars:
+    git_username: "root"
+    git_password: "{{ gitlab_password }}"
+    git_domain: "{{ gitlab_domain }}"
+    git_remote: "gitlab"
+    git_org: "{{ gitlab_group }}"
+    git_repo: "{{ gitlab_repo_name }}"
+    repo_src: "{{ easytrade_source }}"
+
+
+- set_fact:
+    include_dashboard_value_file: "{{ role_path }}/templates/apps-dashboard.yml.j2"
+
+- include_role:
+    name: dashboard
+    tasks_from: template-values-file
+
+- include_role:
+    name: dashboard

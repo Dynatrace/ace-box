@@ -1,0 +1,5 @@
+---
+monacoVersion: "2.14.2"
+gitlab_group: "cert"
+gitlab_repo_name: "automation"
+demo_identifier: "auto"

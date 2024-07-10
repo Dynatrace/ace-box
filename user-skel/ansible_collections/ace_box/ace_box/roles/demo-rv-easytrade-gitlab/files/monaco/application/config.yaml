@@ -1,0 +1,58 @@
+configs:
+  - id: easytrade
+    config:
+      name: EasyTrade
+      template: easytrade.json
+      skip: false
+    type:
+      api: application-web
+  - id: easytrade-proxy
+    config:
+      parameters:
+        easytrade_web_app:
+          configId: easytrade
+          configType: application-web
+          property: id
+          type: reference
+        pattern:
+          type: compound
+          format: "{{ .ingressProtocol }}://{{ .releaseProduct }}-{{ .releaseStage }}.{{ .ingressDomain }}"
+          references:
+            - ingressProtocol
+            - releaseProduct
+            - releaseStage
+            - ingressDomain
+        ingressProtocol:
+          type: environment
+          name: INGRESS_PROTOCOL
+        releaseProduct:
+          type: environment
+          name: RELEASE_PRODUCT
+        releaseStage:
+          type: environment
+          name: RELEASE_STAGE
+        ingressDomain:
+          type: environment
+          name: INGRESS_DOMAIN
+      template: easytrade-proxy.json
+      skip: false
+    type:
+      settings:
+        schema: builtin:rum.web.app-detection
+        scope: environment
+
+  - id: workflowGitlabConnection
+    config:
+      name: "Gitlab Connection"
+      template: gitlab-connection.json
+      parameters:
+        token:
+          type: environment
+          name: GITLAB_PRIVATE_TOKEN
+        url:
+          type: environment
+          name: GITLAB_EXTERNAL_ENDPOINT
+    type:
+      settings:
+        schema: app:dynatrace.gitlab.connector:connection
+        scope: environment

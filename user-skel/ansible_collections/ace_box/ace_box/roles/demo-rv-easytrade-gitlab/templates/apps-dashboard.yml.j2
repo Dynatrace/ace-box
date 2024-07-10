@@ -1,0 +1,13 @@
+---
+extRefs:
+  Dynatrace:
+    url: "{{ extra_vars.dt_environment_url_gen3 }}"
+useCases:
+  app-easytrade:
+    previews:
+    - section: Easytrade Deployment
+      description: Staging
+      url: "{{ ingress_protocol }}://easytrade-staging.{{ ingress_domain }}"
+    - section: Easytrade Deployment
+      description: Production
+      url: "{{ ingress_protocol }}://easytrade-production.{{ ingress_domain }}"

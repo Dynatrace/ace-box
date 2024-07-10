@@ -1,0 +1,236 @@
+variables:
+
+  BUILD_ID:
+    value: "1"
+    description: |
+      Build ID. Please set to 1, 2, 3, or 4 to select the corresponding major version.
+      This ID controls feature flags and configurations specific to each version.
+      
+      - 1: Basic features without a problem pattern enabled
+      - 2: Enables slowdown for the Easytrade OfferService
+      - 3: DB not responding will be simulated, this will cause errors when trying to create any new transactions
+      - 4: Enables both slowdown and DB not responding
+
+  # Dynamically set the RELEASE_VERSION and RELEASE_BUILD_VERSION based on BUILD_ID
+  RELEASE_VERSION: "$BUILD_ID.0.0"
+  RELEASE_BUILD_VERSION: "$BUILD_ID.0.0-$CI_COMMIT_SHORT_SHA"
+
+  STAGE_NAME_STAGING: "staging"
+  STAGE_NAME_PROD: "production"
+  STAGE_NAME: "$STAGE_NAME_STAGING" # default
+
+  USE_CASE: "automation-cert"
+  RELEASE_PRODUCT: "easytrade"
+  RELEASE_STAGE: "$STAGE_NAME"
+
+  MONACO_IMAGE_VERSION: "2.14.3"
+  #dta and srg
+  DTA_IMAGE_VERSION: "1.0.2"
+  TEST_TIMEFRAME: 300 # in seconds
+
+stages:
+  - Configure Dynatrace
+  - Deploy Staging
+  - Test
+  - Validate Release
+  - Deploy Production
+  - Cleanup
+
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "web"
+    - if: $CI_PIPELINE_SOURCE == "api"
+    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "main"
+
+.deployment_common:
+  image: bitnami/kubectl
+  variables:
+    NAMESPACE: $RELEASE_PRODUCT-$RELEASE_STAGE
+
+  script:
+    - echo "Ensure the namespace exists"
+    - kubectl create ns $NAMESPACE || true
+    # Replace placeholders or existing values with dynamic ones
+    - echo "$RELEASE_BUILD_VERSION to be deployed" 
+    - sed -i "s/1.0.0/$RELEASE_VERSION/g; s/1.0.1-0/$RELEASE_BUILD_VERSION/g; s/staging/$RELEASE_STAGE/g" ./kustomize/base/kubernetes-labels-patch.yml
+
+    - echo "Apply the kubernetes manifests"
+    - kubectl apply -k ./kustomize/overlays/$RELEASE_STAGE -n $NAMESPACE
+    - sleep 60 # to give an adaptation time for the loadgen results
+
+.apply_feature_flags:
+  image: curlimages/curl
+  variables:
+    NAMESPACE: $RELEASE_PRODUCT-$RELEASE_STAGE
+    HOST_URL_INTERNAL: http://feature-flag-service.$NAMESPACE.svc.cluster.local:8080
+  before_script:
+    - |
+      # Assuming RELEASE_VERSION is defined, e.g., "1" for v1.x.x
+      MAJOR_VERSION="${RELEASE_VERSION}"
+
+      # Reset feature flags
+      ergo_aggregator_slowdown="false"
+      db_not_responding="false"
+
+      # Enable/disable features based on the major version
+      if [ "$BUILD_ID" == "1" ]; then
+        # v1.x.x - All features disabled
+        :
+      elif [ "$BUILD_ID" == "2" ]; then
+        # v2.x.x - Enable ergo_aggregator_slowdown
+        ergo_aggregator_slowdown="true"
+      elif [ "$BUILD_ID" == "3" ]; then
+        # v3.x.x - Enable db_not_responding
+        db_not_responding="true"
+      elif [ "$BUILD_ID" == "4" ]; then
+        # v4.x.x - Enable both features
+        ergo_aggregator_slowdown="true"
+        db_not_responding="true"
+      else
+        echo "Unknown or unsupported version, feature flags remain at default."
+      fi
+
+      # Optionally, set the variables in the CI environment or use them in subsequent commands
+      echo "Feature ergo_aggregator_slowdown is $ergo_aggregator_slowdown"
+      echo "Feature db_not_responding is $db_not_responding"
+  script:
+    - echo $HOST_URL_INTERNAL
+    - echo "ergo_aggregator_slowdown=$ergo_aggregator_slowdown"
+    - | 
+      JSON_PAYLOAD_ERGO=$(cat <<EOF
+      {
+        "enabled": $ergo_aggregator_slowdown
+      }
+      EOF
+      )
+    - |
+      curl --fail -X "PUT" \
+      "${HOST_URL_INTERNAL}/v1/flags/ergo_aggregator_slowdown" \
+      -H "accept: application/json" \
+      -H "Content-Type: application/json" \
+      -d "${JSON_PAYLOAD_ERGO}"
+    - echo "Check if it is enabled"
+    - |
+      curl -X GET "$HOST_URL_INTERNAL/v1/flags/ergo_aggregator_slowdown" -H "accept: application/json"
+
+    - echo "db_not_responding=$db_not_responding"
+    - | 
+      JSON_PAYLOAD_DB=$(cat <<EOF
+      {
+        "enabled": $db_not_responding
+      }
+      EOF
+      )
+    - |
+      curl --fail -X "PUT" \
+      "${HOST_URL_INTERNAL}/v1/flags/db_not_responding" \
+      -H "accept: application/json" \
+      -H "Content-Type: application/json" \
+      -d "${JSON_PAYLOAD_DB}"
+    - echo "Check if it is enabled"
+    - |
+      curl -X GET "$HOST_URL_INTERNAL/v1/flags/db_not_responding" -H "accept: application/json"
+
+Configure DT - Staging:
+  stage: Deploy Staging
+  variables: 
+    MANIFEST_FILE: ./easytrade/monaco/manifest.yaml
+  image: dynatrace/dynatrace-configuration-as-code:$MONACO_IMAGE_VERSION
+  script:
+    # export environment variables
+    - |
+      export TENANT_URL="$DT_PLATFORM_TENANT_URL"
+      export TENANT_TOKEN="$DT_API_TOKEN"
+      export CLIENT_ID="$DT_OAUTH_CLIENT_ID"
+      export CLIENT_SECRET="$DT_OAUTH_CLIENT_SECRET"
+    # run monaco
+    - monaco deploy $MANIFEST_FILE --project application,bizevents-processing-rules,management-zone -e dev --dry-run
+    # run monaco
+    - monaco deploy $MANIFEST_FILE --project application,bizevents-processing-rules,management-zone -e dev     
+
+Apply Deployment Update - Staging:
+  variables:
+    STAGE_NAME: "$STAGE_NAME_STAGING"
+  stage: Deploy Staging
+  needs: ["Configure DT - Staging"]
+  extends:
+    - .deployment_common
+
+Apply Feature Flags - Staging:
+  stage: Deploy Staging
+  needs: ["Apply Deployment Update - Staging"]
+  variables:
+    STAGE_NAME: "$STAGE_NAME_STAGING"
+  extends:
+    - .apply_feature_flags
+
+Run Tests and Observe:
+  before_script:
+    - echo $(date -u +"%Y-%m-%dT%H:%M:%SZ") > srg.test.starttime
+  after_script:
+    - echo $(date -u +"%Y-%m-%dT%H:%M:%SZ") > srg.test.endtime
+  stage: Test
+  image: alpine:latest
+  script:
+    - echo "RELEASE_BUILD_VERSION $RELEASE_BUILD_VERSION is being tested"
+    - sleep $TEST_TIMEFRAME
+  dependencies:
+    - "Apply Deployment Update - Staging"  
+  artifacts:
+    paths:
+      - srg.test.starttime
+      - srg.test.endtime
+
+Evaluate with SRG:
+  image: dynatraceace/dt-automation-cli:$DTA_IMAGE_VERSION
+  stage: Validate Release
+  variables:
+    DYNATRACE_URL_GEN3: $DT_PLATFORM_TENANT_URL
+    ACCOUNT_URN: $DT_OAUTH_ACCOUNT_URN
+    DYNATRACE_CLIENT_ID: $DT_OAUTH_CLIENT_ID
+    DYNATRACE_SECRET: $DT_OAUTH_CLIENT_SECRET
+    DYNATRACE_SSO_URL: $DT_OAUTH_SSO_ENDPOINT
+    SRG_EVALUATION_STOP_ON_FAILURE: "true"
+  script:
+    - echo "RELEASE_BUILD_VERSION $RELEASE_BUILD_VERSION is being evaluated via Site Reliability Guardian"
+    - eval_start=$(cat srg.test.starttime)
+    - eval_end=$(cat srg.test.endtime)
+    - export LOG_LEVEL=verbose
+    - dta srg evaluate --service $RELEASE_PRODUCT --stage $STAGE_NAME --release-version $RELEASE_VERSION --buildId	$RELEASE_BUILD_VERSION --start-time=$eval_start --end-time=$eval_end
+  dependencies:
+    - "Apply Deployment Update - Staging"
+    - "Run Tests and Observe"
+
+Apply Deployment Update - Production:
+  variables:
+    STAGE_NAME: "$STAGE_NAME_PROD"
+  stage: Deploy Production
+  needs: ["Configure DT - Production"]
+  extends:
+    - .deployment_common
+
+Apply Feature Flags - Production:
+  variables:
+    STAGE_NAME: "$STAGE_NAME_PROD"
+  stage: Deploy Production
+  needs: ["Apply Deployment Update - Production"]
+  extends:
+    - .apply_feature_flags
+
+Configure DT - Production:
+  stage: Deploy Production
+  needs: ["Evaluate with SRG"]
+  variables: 
+    MANIFEST_FILE: ./easytrade/monaco/manifest.yaml
+  image: dynatrace/dynatrace-configuration-as-code:$MONACO_IMAGE_VERSION
+  script:
+    # export environment variables
+    - |
+      export TENANT_URL="$DT_PLATFORM_TENANT_URL"
+      export TENANT_TOKEN="$DT_API_TOKEN"
+      export CLIENT_ID="$DT_OAUTH_CLIENT_ID"
+      export CLIENT_SECRET="$DT_OAUTH_CLIENT_SECRET"
+    # run monaco
+    - monaco deploy $MANIFEST_FILE --project application,bizevents-processing-rules,management-zone -e dev --dry-run
+    # run monaco
+    - monaco deploy $MANIFEST_FILE --project application,bizevents-processing-rules,management-zone -e dev     
