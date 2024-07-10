@@ -1,5 +1,6 @@
 ---
-monacoVersion: "2.14.2"
-gitlab_group: "cert"
-gitlab_repo_name: "automation"
-demo_identifier: "auto"
+monacoVersion: "2.14.3"
+gitlab_group: "demo"
+gitlab_repo_name: "validation-pipeline"
+demo_identifier: "srg"
+gitlab_demo_metrics_exporter_repo_name: "dynatrace-metrics-exporter"
