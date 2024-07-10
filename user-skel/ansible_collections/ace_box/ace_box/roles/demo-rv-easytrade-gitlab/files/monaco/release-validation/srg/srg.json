@@ -4,39 +4,21 @@
   "tags": {{ .tags }},
   "objectives": [
     {
-      "name": "{{ .objective_name_dql }}",
+      "name": "{{ .objective_name_dql_resp_time }}",
       "objectiveType": "DQL",
-      "dqlQuery": "{{ .dqlQuery }}",
-      "comparisonOperator": "{{ .comparisonOperator }}",
-      "target": {{ .failure_dql }},
-      "warning": {{ .warning_dql }},
+      "dqlQuery": "{{ .dql_resp_time }}",
+      "comparisonOperator": "{{ .comparisonOperator_resp_time }}",
+      "target": {{ .failure_resp_time }},
+      "warning": {{ .warning_resp_time }},
       "autoAdaptiveThresholdEnabled": false
     },
     {
-      "name": "{{ .objective_name_slo_success_rate }}",
-      "description": null,
-      "objectiveType": "REFERENCE_SLO",
-      "referenceSlo": "{{ .reference_slo_metric_success_rate }}",
-      "comparisonOperator": "GREATER_THAN_OR_EQUAL",
-      "target": {{ .failure_slo_success_rate }},
-      "warning": {{ .warning_slo_success_rate }}
-    },
-    {
-      "name": "{{ .objective_name_slo_availability }}",
-      "description": null,
-      "objectiveType": "REFERENCE_SLO",
-      "referenceSlo": "{{ .reference_slo_metric_availability }}",
-      "comparisonOperator": "GREATER_THAN_OR_EQUAL",
-      "target": {{ .failure_slo_availability }},
-      "warning": {{ .warning_slo_availability }}
-    },
-    {
-      "name": "{{ .objective_name_dql_cpu_usage }}",
+      "name": "{{ .objective_name_dql_failure_rate }}",
       "objectiveType": "DQL",
-      "dqlQuery": "{{ .dqlQuery_cpu_usage }}",
+      "dqlQuery": "{{ .dql_failure_rate  }}",
       "comparisonOperator": "LESS_THAN_OR_EQUAL",
-      "target": {{ .failure_dql_cpu_usage }},
-      "warning": {{ .warning_dql_cpu_usage }},
+      "target": {{ .failure_failure_rate  }},
+      "warning": {{ .warning_failure_rate  }},
       "autoAdaptiveThresholdEnabled": false
     }
   ]

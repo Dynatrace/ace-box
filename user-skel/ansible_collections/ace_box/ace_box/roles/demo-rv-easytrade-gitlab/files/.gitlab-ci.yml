@@ -188,8 +188,8 @@ Configure DT - Staging:
     - monaco deploy $EASYTRADE_MANIFEST_FILE --project bizevents-processing-rules,management-zone,easytrade-validation.srg -e dev --dry-run
     - monaco deploy $EASYTRADE_MANIFEST_FILE --project bizevents-processing-rules,management-zone,easytrade-validation.srg -e dev     
     # run monaco for use case specific configs
-    - monaco deploy $USECASE_MANIFEST_FILE --project application -e dev --dry-run
-    - monaco deploy $USECASE_MANIFEST_FILE --project application -e dev  
+    - monaco deploy $USECASE_MANIFEST_FILE --project application,release-validation -e dev --dry-run
+    - monaco deploy $USECASE_MANIFEST_FILE --project application,release-validation -e dev  
 
 Apply Deployment Update - Staging:
   variables:

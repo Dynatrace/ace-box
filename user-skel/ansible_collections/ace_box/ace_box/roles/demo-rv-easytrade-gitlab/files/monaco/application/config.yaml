@@ -16,7 +16,7 @@ configs:
           type: reference
         pattern:
           type: compound
-          format: "{{ .ingressProtocol }}://{{ .releaseProduct }}-{{ .releaseStage }}.{{ .ingressDomain }}"
+          format: "{{ .releaseProduct }}-{{ .releaseStage }}.{{ .ingressDomain }}"
           references:
             - ingressProtocol
             - releaseProduct
