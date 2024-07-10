@@ -3,13 +3,14 @@ variables:
   BUILD_ID:
     value: "1"
     description: |
-      Build ID. Please set to 1, 2, 3, or 4 to select the corresponding major version.
+      Build ID. Please set to 1, 2, 3, 4, 5 to select the corresponding major version.
       This ID controls feature flags and configurations specific to each version.
       
       - 1: Basic features without a problem pattern enabled
       - 2: Enables slowdown for the Easytrade OfferService
       - 3: DB not responding will be simulated, this will cause errors when trying to create any new transactions
-      - 4: Enables both slowdown and DB not responding
+      - 4: Order Controller Service Error: division by 0 error will be simulated. Creadit Card tab resulting in an ugly error page
+      - 5: Factory Crisis: The factory wont produce new cards, which will cause the 3rd party service not to process credit card orders
 
   # Dynamically set the RELEASE_VERSION and RELEASE_BUILD_VERSION based on BUILD_ID
   RELEASE_VERSION: "$BUILD_ID.0.0"
@@ -77,25 +78,26 @@ workflow:
         # v1.x.x - All features disabled
         :
       elif [ "$BUILD_ID" == "2" ]; then
-        # v2.x.x - Enable ergo_aggregator_slowdown
         ergo_aggregator_slowdown="true"
+        echo "Feature ergo_aggregator_slowdown is $ergo_aggregator_slowdown"
       elif [ "$BUILD_ID" == "3" ]; then
-        # v3.x.x - Enable db_not_responding
         db_not_responding="true"
+        echo "Feature db_not_responding is $db_not_responding"
       elif [ "$BUILD_ID" == "4" ]; then
-        # v4.x.x - Enable both features
-        ergo_aggregator_slowdown="true"
-        db_not_responding="true"
+        credit_card_meltdown="true"
+        echo "Feature credit_card_meltdown is $credit_card_meltdown"
+      elif [ "$BUILD_ID" == "5" ]; then
+        factory_crisis="true"
+        echo "Feature factory_crisis is $factory_crisis"
       else
         echo "Unknown or unsupported version, feature flags remain at default."
       fi
 
       # Optionally, set the variables in the CI environment or use them in subsequent commands
-      echo "Feature ergo_aggregator_slowdown is $ergo_aggregator_slowdown"
-      echo "Feature db_not_responding is $db_not_responding"
+      
+      
   script:
     - echo $HOST_URL_INTERNAL
-    - echo "ergo_aggregator_slowdown=$ergo_aggregator_slowdown"
     - | 
       JSON_PAYLOAD_ERGO=$(cat <<EOF
       {
@@ -130,6 +132,42 @@ workflow:
     - echo "Check if it is enabled"
     - |
       curl -X GET "$HOST_URL_INTERNAL/v1/flags/db_not_responding" -H "accept: application/json"
+
+    - echo "credit_card_meltdown=$credit_card_meltdown"
+    - | 
+      JSON_PAYLOAD_CR=$(cat <<EOF
+      {
+        "enabled": $credit_card_meltdown
+      }
+      EOF
+      )
+    - |
+      curl --fail -X "PUT" \
+      "${HOST_URL_INTERNAL}/v1/flags/credit_card_meltdown" \
+      -H "accept: application/json" \
+      -H "Content-Type: application/json" \
+      -d "${JSON_PAYLOAD_CR}"
+    - echo "Check if it is enabled"
+    - |
+      curl -X GET "$HOST_URL_INTERNAL/v1/flags/credit_card_meltdown" -H "accept: application/json"
+
+    - echo "factory_crisis=$factory_crisis"
+    - | 
+      JSON_PAYLOAD_FC=$(cat <<EOF
+      {
+        "enabled": $factory_crisis
+      }
+      EOF
+      )
+    - |
+      curl --fail -X "PUT" \
+      "${HOST_URL_INTERNAL}/v1/flags/factory_crisis" \
+      -H "accept: application/json" \
+      -H "Content-Type: application/json" \
+      -d "${JSON_PAYLOAD_FC}"
+    - echo "Check if it is enabled"
+    - |
+      curl -X GET "$HOST_URL_INTERNAL/v1/flags/factory_crisis" -H "accept: application/json"
 
 Configure DT - Staging:
   stage: Deploy Staging
