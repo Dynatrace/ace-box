@@ -47,6 +47,12 @@
         - demo_release_validation_srg_gitlab
         - never
 
+    # Use case - Release Validation with Site Reliability Guardion via Gitlab using easytrade app
+    - role: demo-rv-easytrade-gitlab
+      tags:
+        - demo_rv_easytrade_gitlab
+        - never
+
     # Use case - Auto Remediation Workflows with Ansible
     - role: demo-ar-workflows-ansible
       tags:
