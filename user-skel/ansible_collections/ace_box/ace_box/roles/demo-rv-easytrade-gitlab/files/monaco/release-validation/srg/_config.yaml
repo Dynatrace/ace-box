@@ -1,15 +1,81 @@
-timeseries p95 = percentile(dt.service.request.response_time, 95), by:{dt.entity.service}
-| lookup [
-  fetch dt.entity.service
-  | fieldsAdd tags
-  | filter(matchesPhrase(tags,"DT_RELEASE_STAGE:staging"))
-  | filter(matchesPhrase(tags,"DT_RELEASE_PRODUCT:easytrade"))
-  | filter(matchesPhrase(tags,"[Kubernetes]app:offerservice"))
-  | sort lifetime desc
-  | summarize svc_id = takeFirst(id)
-  ],
-  sourceField:dt.entity.service,
-  lookupField:svc_id,
-  prefix:"svc_"
-| filter isNotNull(svc_svc_id)
-| fields response_time_95 = (arrayAvg(p95))/1000
+configs:
+  # srg
+  - id: easytrade-srg
+    type:
+      settings:
+        schema: app:dynatrace.site.reliability.guardian:guardians
+        scope: environment
+    config:
+      name: "Easytrade Validation"
+      template: srg.json
+      parameters:
+        description: "Easytrade Guardian for ACE Demo"
+        tags:
+          type: list
+          values:
+            - "stage:staging"
+            - "owner:acebox"
+            - "service:easytrade"
+        releaseStage:
+          type: environment
+          name: RELEASE_STAGE
+        releaseProduct:
+          type: environment
+          name: RELEASE_PRODUCT
+        # objective - dql - response time
+        objective_name_dql_resp_time: "Response Time of Offer Service"
+        dql_resp_time:
+          type: compound
+          format: |
+            timeseries p95 = percentile(dt.service.request.response_time, 95), by:{dt.entity.service}
+            | lookup [
+              fetch dt.entity.service
+              | fieldsAdd tags
+              | filter(matchesPhrase(tags,"DT_RELEASE_STAGE:{{ .releaseStage }}"))
+              | filter(matchesPhrase(tags,"DT_RELEASE_PRODUCT:{{ .releaseProduct }}"))
+              | filter(matchesPhrase(tags,"[Kubernetes]app:offerservice"))
+              | sort lifetime desc
+              | summarize svc_id = takeFirst(id)
+              ],
+              sourceField:dt.entity.service,
+              lookupField:svc_id,
+              prefix:"svc_"
+            | filter isNotNull(svc_svc_id)
+            | fields response_time_95 = (arrayAvg(p95))/1000
+          references:
+            - releaseStage
+            - releaseProduct
+        comparisonOperator_resp_time: "LESS_THAN_OR_EQUAL"
+        failure_resp_time: 200
+        warning_resp_time: 150
+        # objective - dql - failure rate
+        objective_name_dql_failure_rate: "Service Failure Rate"
+        dql_failure_rate:
+          type: compound
+          format: |
+            timeseries {
+              failure_count = avg(dt.service.request.failure_count),
+              request_count = avg(dt.service.request.count)
+            }, by:{dt.entity.service}
+            | lookup [
+              fetch dt.entity.service
+              | fieldsAdd tags
+              | filter(matchesPhrase(tags,"DT_RELEASE_STAGE:{{ .releaseStage }}"))
+              | filter(matchesPhrase(tags,"DT_RELEASE_PRODUCT:{{ .releaseProduct }}"))
+              | filter(matchesPhrase(tags,"[Kubernetes]app:frontendreverseproxy"))
+              | sort lifetime desc
+              | summarize svc_id = takeFirst(id)
+              ],
+              sourceField:dt.entity.service,
+              lookupField:svc_id,
+              prefix:"svc_"
+            | filter isNotNull(svc_svc_id)
+            | fieldsAdd result = 100 * (failure_count[]/request_count[])
+            | fields failure_rate = arrayAvg(result)
+          references:
+            - releaseStage
+            - releaseProduct
+        comparisonOperator_failure_rate: "LESS_THAN_OR_EQUAL"
+        failure_failure_rate: 2
+        warning_failure_rate: 1
+      skip: false

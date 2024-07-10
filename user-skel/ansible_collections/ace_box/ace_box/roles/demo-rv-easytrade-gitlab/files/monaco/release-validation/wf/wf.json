@@ -80,29 +80,31 @@
       "predecessors": ["query_service_entities"]
     },
     "create_gitlab_issue": {
-      "action": "dynatrace.automations:http-function",
-      "conditions": {
-        "custom": "{{`{{`}} (result('identify_ownership').owners | length > 0) {{`}}`}}",
-        "states": {
-          "identify_ownership": "OK"
-        }
-      },
+      "name": "create_gitlab_issue",
+      "action": "dynatrace.gitlab.connector:gitlab-issue-create",
       "description": "{{ .gitlab_task_description }}",
       "input": {
-        "headers": {
-          "Content-Type": "application/json",
-          "PRIVATE-TOKEN": "{{ .gitlab_private_token }}"
-        },
-        "method": "POST",
-        "url": "{{ .gitlab_url }}/api/v4/projects/{{`{{`}} result(\"identify_ownership\").owners[0].contactDetails | selectattr('integrationType', 'equalto', 'JIRA') | map(attribute='jira.project') | first() {{`}}`}}/issues",
-        "payload": "{\n  \"title\": \"Site Reliability Guardian validation failed\",\n  \"description\": \"For the SRG validation details, go to {{`{{`}} result(\"evaluate_srg\").validation_url {{`}}`}}\"\n}"
+        "type": "issue",
+        "title": "Site Reliability Guardian validation failed",
+        "labels": "",
+        "assignees": "",
+        "projectId": 1,
+        "connection": "vu9U3hXa3q0AAAABAClhcHA6ZHluYXRyYWNlLmdpdGxhYi5jb25uZWN0b3I6Y29ubmVjdGlvbgAGdGVuYW50AAZ0ZW5hbnQAJDdmNmJiNDJiLWY1NGUtMzg5Mi1iZTY3LTllMTc2MzkxYTYwM77vVN4V2t6t",
+        "description": "For the SRG validation details, go to {{`{{`}} result(\"evaluate_srg\").validation_url {{`}}`}}"
       },
-      "name": "create_gitlab_issue",
       "position": {
         "x": 0,
         "y": 4
       },
-      "predecessors": ["identify_ownership"]
+      "predecessors": [
+        "identify_ownership"
+      ],
+      "conditions": {
+        "states": {
+          "identify_ownership": "OK"
+        },
+        "custom": "{{`{{`}} (result('identify_ownership').owners | length > 0) {{`}}`}}"
+      }
     }
   }
 }

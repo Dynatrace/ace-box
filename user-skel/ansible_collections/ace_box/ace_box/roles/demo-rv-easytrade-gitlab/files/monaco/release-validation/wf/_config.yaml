@@ -1,28 +1,29 @@
 configs:
   # workflow
-  - id: simplenodeworkflow
+  - id: easytrade_workflow
     config:
-      name: Simplenode SRG Evaluation
+      name: Easytrade SRG Evaluation
       template: wf.json
       skip: false
       parameters:
         #wf related
-        wf_description: "Simplenode Workflow with Guardians by Monaco for demo purposes"
+        wf_description: "Easytrade Validation Workflow"
         wf_isPrivate: false
         #trigger related
         tag_service:
           type: environment
-          name: SRG_EVALUATION_SERVICE
+          name: RELEASE_PRODUCT
         tag_stage:
           type: environment
-          name: SRG_EVALUATION_STAGE
+          name: RELEASE_STAGE
         #srg related
-        srg_task_description: "Evaluate simplenode app guardian objectives"
+        srg_task_description: "Evaluate Easytrade app guardian objectives"
         guardian_id:
           configType: app:dynatrace.site.reliability.guardian:guardians
+          project: release-validation.srg
           property: id
           type: reference
-          configId: simplenodeguardian
+          configId: easytrade-srg
         #gitlab related
         gitlab_task_description: "Create a Gitlab Issue when SRG fails"
         gitlab_url:
@@ -31,12 +32,6 @@ configs:
         gitlab_private_token:
           type: environment
           name: GITLAB_PRIVATE_TOKEN
-        gitlab_username:
-          type: environment
-          name: GITLAB_USERNAME
-        gitlab_passwd:
-          type: environment
-          name: GITLAB_PASSWORD
         dt_url:
           type: environment
           name: DT_TENANT_URL
