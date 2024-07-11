@@ -1,8 +1,11 @@
 configs:
-  # gitlab connection
   - id: workflowGitlabConnection
     config:
-      name: "Gitlab Connection"
+      name:
+        type: compound
+        format: "Gitlab {{ .releaseProduct }}"
+        references:
+          - releaseProduct      
       template: gitlab-connection.json
       parameters:
         token:
@@ -11,6 +14,9 @@ configs:
         url:
           type: environment
           name: GITLAB_EXTERNAL_ENDPOINT
+        releaseProduct:
+          type: environment
+          name: RELEASE_PRODUCT
     type:
       settings:
         schema: app:dynatrace.gitlab.connector:connection
@@ -42,6 +48,11 @@ configs:
           type: reference
           configId: easytrade-srg
         #gitlab related
+        gitlab_connection:
+          configType: app:dynatrace.gitlab.connector:connection
+          property: id
+          type: reference
+          configId: workflowGitlabConnection
         gitlab_task_description: "Create a Gitlab Issue when SRG fails"
         gitlab_url:
           type: environment
