@@ -1,4 +1,21 @@
 configs:
+  # gitlab connection
+  - id: workflowGitlabConnection
+    config:
+      name: "Gitlab Connection"
+      template: gitlab-connection.json
+      parameters:
+        token:
+          type: environment
+          name: GITLAB_PRIVATE_TOKEN
+        url:
+          type: environment
+          name: GITLAB_EXTERNAL_ENDPOINT
+    type:
+      settings:
+        schema: app:dynatrace.gitlab.connector:connection
+        scope: environment
+
   # workflow
   - id: easytrade_workflow
     config:

@@ -41,18 +41,55 @@ configs:
         schema: builtin:rum.web.app-detection
         scope: environment
 
-  - id: workflowGitlabConnection
-    config:
-      name: "Gitlab Connection"
-      template: gitlab-connection.json
-      parameters:
-        token:
-          type: environment
-          name: GITLAB_PRIVATE_TOKEN
-        url:
-          type: environment
-          name: GITLAB_EXTERNAL_ENDPOINT
+  # ownership
+  - id: ownership-demo-rv
     type:
       settings:
-        schema: app:dynatrace.gitlab.connector:connection
+        schema: builtin:ownership.teams
         scope: environment
+    config:
+      skip: false
+      name:
+        type: compound
+        format: "Team Demo {{ .releaseProduct }} {{ .releaseStage }}"
+        references:
+          - releaseStage
+          - releaseProduct
+      template: ownership.json
+      parameters:        
+        releaseProduct:
+          type: environment
+          name: RELEASE_PRODUCT
+        releaseStage:
+          type: environment
+          name: RELEASE_STAGE 
+        demoIdentifier:
+          type: environment
+          name: DEMO_IDENTIFIER     
+        description: "Demo team for Easytrade"
+        identifier:
+          type: compound
+          format: "{{ .demoIdentifier }}-{{ .releaseProduct }}-{{ .releaseStage }}"
+          references:
+            - demoIdentifier 
+            - releaseStage 
+            - releaseProduct    
+        supplementaryIdentifier:
+          type: compound
+          format: "{{ .demoIdentifier }}-{{ .releaseProduct }}"
+          references:
+            - demoIdentifier 
+            - releaseProduct             
+        isDevelopment: false
+        isSecurity: true
+        isOperations: true
+        isInfrastructure: true
+        isLineofBusiness: false
+        gitlabAssigneeID: "1"       
+        
+        email: team-demo@your-company.com
+        jiraProjectId: "ProjectDemo"
+        jiraDefaultAssigneeId: "team-demo"
+        slackChannel: "#team-demo"
+        slackChannelURL: "https://demoworkflowworkspace.slack.com"
+
