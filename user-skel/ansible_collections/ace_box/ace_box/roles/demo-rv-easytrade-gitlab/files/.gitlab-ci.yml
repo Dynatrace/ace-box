@@ -53,7 +53,7 @@ workflow:
     - kubectl create ns $NAMESPACE || true
     # Replace placeholders or existing values with dynamic ones
     - echo "$RELEASE_BUILD_VERSION to be deployed" 
-    - sed -i "s/1.0.0/$RELEASE_VERSION/g; s/1.0.1-0/$RELEASE_BUILD_VERSION/g; s/staging/$RELEASE_STAGE/g; s/ace-box/$DEMO_IDENTIFIER-$RELEASE_PRODUCT-$RELEASE_STAGE/g" ./kustomize/base/kubernetes-labels-patch.yml
+    - sed -i "s/1.0.0/$RELEASE_VERSION/g; s/1.0.1-0/$RELEASE_BUILD_VERSION/g; s/staging/$RELEASE_STAGE/g; s/ace-box/$DEMO_IDENTIFIER-$RELEASE_PRODUCT/g" ./kustomize/base/kubernetes-labels-patch.yml
 
     - echo "Apply the kubernetes manifests"
     - kubectl apply -k ./kustomize/overlays/$RELEASE_STAGE -n $NAMESPACE
