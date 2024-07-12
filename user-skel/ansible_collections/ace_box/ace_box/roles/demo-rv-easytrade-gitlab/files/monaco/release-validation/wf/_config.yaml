@@ -75,8 +75,7 @@ configs:
           type: compound
           format: |  
             Guardian validation failed for {{ .guardianName }}
-            For the SRG validation details, go to 
-            {{ .dt_url }}/ui/apps/dynatrace.site.reliability.guardian/analysis/{{ `{{` }} result("evaluate_srg").guardian_id {{ `}}` }}?validationId={{ `{{` }}  result("evaluate_srg").validation_id {{ `}}` }}'
+            For the SRG validation details, go to {{ .dt_url }}/ui/apps/dynatrace.site.reliability.guardian/analysis/{{ `{{` }} result("evaluate_srg").guardian_id {{ `}}` }}?validationId={{ `{{` }} result("evaluate_srg").validation_id {{ `}}` }}
           references:
             - dt_url
             - guardianName
