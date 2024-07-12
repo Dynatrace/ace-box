@@ -47,6 +47,12 @@ configs:
           property: id
           type: reference
           configId: easytrade-srg
+        guardianName:
+          configType: app:dynatrace.site.reliability.guardian:guardians
+          project: release-validation.srg
+          property: name
+          type: reference
+          configId: easytrade-srg
         #gitlab related
         gitlab_connection:
           configType: app:dynatrace.gitlab.connector:connection
@@ -54,15 +60,26 @@ configs:
           type: reference
           configId: workflowGitlabConnection
         gitlab_task_description: "Create a Gitlab Issue when SRG fails"
-        gitlab_url:
+        gitlab_project_id: 
           type: environment
-          name: GITLAB_EXTERNAL_ENDPOINT
-        gitlab_private_token:
-          type: environment
-          name: GITLAB_PRIVATE_TOKEN
+          name: CI_PROJECT_ID
+        gitlab_issue_title:
+          type: compound
+          format: "Guardian validation failed for {{ .guardianName }}"
+          references:
+            - guardianName
         dt_url:
           type: environment
-          name: DT_TENANT_URL
+          name: DT_PLATFORM_TENANT_URL
+        gitlab_issue_desc: 
+          type: compound
+          format: |  
+            Guardian validation failed for {{ .guardianName }}
+            For the SRG validation details, go to 
+            {{ .dt_url }}/ui/apps/dynatrace.site.reliability.guardian/analysis/{{ `{{` }} result("evaluate_srg").guardian_id {{ `}}` }}?validationId={{ `{{` }}  result("evaluate_srg").validation_id {{ `}}` }}'
+          references:
+            - dt_url
+            - guardianName
         # Query service entities
         releaseProduct:
           type: environment

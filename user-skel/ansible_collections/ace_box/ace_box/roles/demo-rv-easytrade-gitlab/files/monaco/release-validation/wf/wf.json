@@ -85,12 +85,12 @@
       "description": "{{ .gitlab_task_description }}",
       "input": {
         "type": "issue",
-        "title": "Site Reliability Guardian validation failed",
+        "title": "{{ .gitlab_issue_title }}",
         "labels": "",
-        "assignees": "",
-        "projectId": 1,
+        "assignees": "{% if result(\"identify_ownership\").owners[0].additionalInformation[0].key == \"gitlab-assignee-id\" %} {{ `{{` }} result(\"identify_ownership\").owners[0].additionalInformation[0].value {{ `}}` }} {% endif %}",
+        "projectId": "{{ .gitlab_project_id }}",
         "connection": "{{ .gitlab_connection }}",
-        "description": "For the SRG validation details, go to {{`{{`}} result(\"evaluate_srg\").validation_url {{`}}`}}"
+        "description": "{{ .gitlab_issue_desc }}"
       },
       "position": {
         "x": 0,
