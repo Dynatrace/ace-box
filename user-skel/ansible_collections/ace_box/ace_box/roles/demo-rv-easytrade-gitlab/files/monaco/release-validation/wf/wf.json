@@ -84,7 +84,7 @@
       "action": "dynatrace.gitlab.connector:gitlab-issue-create",
       "description": "{{ .gitlab_task_description }}",
       "input": {
-        "type": "issue",
+        "type": "ISSUE",
         "title": "{{ .gitlab_issue_title }}",
         "labels": "",
         "assignees": "{% if result(\"identify_ownership\").owners[0].additionalInformation[0].key == \"gitlab-assignee-id\" %} {{ `{{` }} result(\"identify_ownership\").owners[0].additionalInformation[0].value {{ `}}` }} {% endif %}",
