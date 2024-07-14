@@ -42,8 +42,17 @@
     group: "{{ ace_box_user }}"
     mode: '0644'
 
+- name: Template Easytrade Labels Patch
+  template:
+    src: "{{ role_path }}/templates/easytrade-labels-patch.yml.j2"
+    dest: "{{ role_path }}/files/kustomize/base/easytrade-labels-patch.yml"
+    owner: "{{ ace_box_user }}"
+    group: "{{ ace_box_user }}"
+    mode: '0644'
+
 - name: Deploy Kubernetes manifests
   include_tasks: deploy_kubernetes_manifests.yml
+  when: easytrade_deploy 
 
 - name: Add dashboard links
   include_tasks: add-dashboard-links.yml
