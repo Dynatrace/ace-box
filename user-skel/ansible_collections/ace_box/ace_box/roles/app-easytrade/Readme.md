@@ -30,6 +30,8 @@ easytrade_namespace: "easytrade" # namespace that EasyTrade will be deployed in
 easytrade_domain: "easytrade.{{ ingress_domain }}" #ingress domain for regular EasyTrade
 easytrade_addDashboardLink: true # add a link to the dashboard when enabled
 easytrade_addDashboardPreview: true # add a preview to the dashboard when enabled
+easytrade_deploy: true # Choose to deploy or not easytrade. True by default but useful to set it to false when it is combined with gitlab or any other ci/cd, so it's gets deployed from the pipeline
+easytrade_owner: "ace-box" # Customize the dt.owner annotation for your lab.
 ```
 
 ### (Optional) To enable observability with Dynatrace OneAgent
