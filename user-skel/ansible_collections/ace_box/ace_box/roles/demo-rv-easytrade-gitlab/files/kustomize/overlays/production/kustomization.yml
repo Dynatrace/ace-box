@@ -6,3 +6,6 @@ resources:
   
 patches:
   - path: easytrade-ingress.yml
+  - path: kubernetes-labels-patch.yml
+    target:
+      kind: Deployment

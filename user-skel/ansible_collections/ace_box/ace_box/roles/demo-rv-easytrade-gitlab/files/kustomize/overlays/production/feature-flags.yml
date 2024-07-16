@@ -1,0 +1,4 @@
+ergo_aggregator_slowdown: true
+db_not_responding: false
+credit_card_meltdown: false
+factory_crisis: false

@@ -17,7 +17,7 @@ variables:
   RELEASE_BUILD_VERSION: "$BUILD_ID.0.0-$CI_COMMIT_SHORT_SHA"
 
   STAGE_NAME_STAGING: "staging"
-  STAGE_NAME_PROD: "production"
+  STAGE_NAME_PRODUCTION: "production"
   STAGE_NAME: "$STAGE_NAME_STAGING" # default
 
   USE_CASE: "automation-cert"
@@ -30,10 +30,11 @@ variables:
   TEST_TIMEFRAME: 300 # in seconds
 
 stages:
-  - Configure Dynatrace
+  - Update Manifests Staging
   - Deploy Staging
   - Test
   - Validate Release
+  - Update Manifests Production
   - Deploy Production
   - Cleanup
 
@@ -43,67 +44,118 @@ workflow:
     - if: $CI_PIPELINE_SOURCE == "api"
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "main"
 
+
+.update_manifests:
+  image: bitnami/git
+  script:
+    - git config --global user.email "acebox@example.com"
+    - git config --global user.name "acebox"
+    - git checkout main || git checkout -b main
+
+    - |    
+      # Update specific flags based on BUILD_ID and reset others to false
+      case "$BUILD_ID" in
+        "1")
+          sed -i "s/ergo_aggregator_slowdown: .*/ergo_aggregator_slowdown: false/" $FEATURE_FLAGS_FILE_PATH
+          sed -i "s/db_not_responding: .*/db_not_responding: false/" $FEATURE_FLAGS_FILE_PATH
+          sed -i "s/credit_card_meltdown: .*/credit_card_meltdown: false/" $FEATURE_FLAGS_FILE_PATH
+          sed -i "s/factory_crisis: .*/factory_crisis: false/" $FEATURE_FLAGS_FILE_PATH
+          ;;
+        "2")
+          sed -i "s/ergo_aggregator_slowdown: .*/ergo_aggregator_slowdown: true/" $FEATURE_FLAGS_FILE_PATH
+          sed -i "s/db_not_responding: .*/db_not_responding: false/" $FEATURE_FLAGS_FILE_PATH
+          sed -i "s/credit_card_meltdown: .*/credit_card_meltdown: false/" $FEATURE_FLAGS_FILE_PATH
+          sed -i "s/factory_crisis: .*/factory_crisis: false/" $FEATURE_FLAGS_FILE_PATH
+          ;;
+        "3")
+          sed -i "s/ergo_aggregator_slowdown: .*/ergo_aggregator_slowdown: false/" $FEATURE_FLAGS_FILE_PATH
+          sed -i "s/db_not_responding: .*/db_not_responding: true/" $FEATURE_FLAGS_FILE_PATH
+          sed -i "s/credit_card_meltdown: .*/credit_card_meltdown: false/" $FEATURE_FLAGS_FILE_PATH
+          sed -i "s/factory_crisis: .*/factory_crisis: false/" $FEATURE_FLAGS_FILE_PATH
+          ;;
+        "4")
+          sed -i "s/ergo_aggregator_slowdown: .*/ergo_aggregator_slowdown: false/" $FEATURE_FLAGS_FILE_PATH
+          sed -i "s/db_not_responding: .*/db_not_responding: false/" $FEATURE_FLAGS_FILE_PATH
+          sed -i "s/credit_card_meltdown: .*/credit_card_meltdown: true/" $FEATURE_FLAGS_FILE_PATH
+          sed -i "s/factory_crisis: .*/factory_crisis: false/" $FEATURE_FLAGS_FILE_PATH
+          ;;
+        "5")
+          sed -i "s/ergo_aggregator_slowdown: .*/ergo_aggregator_slowdown: false/" $FEATURE_FLAGS_FILE_PATH
+          sed -i "s/db_not_responding: .*/db_not_responding: false/" $FEATURE_FLAGS_FILE_PATH
+          sed -i "s/credit_card_meltdown: .*/credit_card_meltdown: false/" $FEATURE_FLAGS_FILE_PATH
+          sed -i "s/factory_crisis: .*/factory_crisis: true/" $FEATURE_FLAGS_FILE_PATH
+          ;;
+        *)
+          echo "Unknown or unsupported BUILD_ID, feature flags remain at default."
+          ;;
+      esac
+      
+    - |
+      sed -i '/name: DT_RELEASE_BUILD_VERSION/{n;s|value: .*|value: "'"$RELEASE_BUILD_VERSION"'"|}; /path: \/spec\/template\/metadata\/labels\/app.kubernetes.io~1version/{n;s|value: .*|value: "'"$RELEASE_VERSION"'"|}' ./kustomize/overlays/$STAGE_NAME/kubernetes-labels-patch.yml
+    - git add ./kustomize/overlays/$STAGE_NAME/kubernetes-labels-patch.yml $FEATURE_FLAGS_FILE_PATH || true
+    - git commit -m "Update kubernetes labels and feature flags for release $RELEASE_VERSION [ci skip]" || true
+    
+    - export GIT_SSL_NO_VERIFY=true
+    - git push "https://${GITLAB_USERNAME}:${GITLAB_PRIVATE_TOKEN}@${CI_REPOSITORY_URL#*@}" "HEAD:main" || true
+    - unset GIT_SSL_NO_VERIFY
+
+Update Manifests - Staging:
+  variables:
+    STAGE_NAME: "$STAGE_NAME_STAGING"
+    FEATURE_FLAGS_FILE_PATH: ./kustomize/overlays/staging/feature-flags.yml
+  stage: Update Manifests Staging
+  extends:
+    - .update_manifests
+
+Update Manifests - Production:
+  variables:
+    STAGE_NAME: "$STAGE_NAME_PRODUCTION"
+    FEATURE_FLAGS_FILE_PATH: ./kustomize/overlays/production/feature-flags.yml
+  stage: Update Manifests Production
+  extends:
+    - .update_manifests
+
 .deployment_common:
-  image: bitnami/kubectl
+  image: dtzar/helm-kubectl #bitnami/kubectl
   variables:
     NAMESPACE: $RELEASE_PRODUCT-$RELEASE_STAGE
 
   script:
+    - git pull origin main
     - echo "Ensure the namespace exists"
     - kubectl create ns $NAMESPACE || true
-    # Replace placeholders or existing values with dynamic ones
-    - echo "$RELEASE_BUILD_VERSION to be deployed" 
-    - sed -i "s/1.0.0/$RELEASE_VERSION/g; s/1.0.1-0/$RELEASE_BUILD_VERSION/g; s/staging/$RELEASE_STAGE/g; s/ace-box/$DEMO_IDENTIFIER-$RELEASE_PRODUCT/g" ./kustomize/base/kubernetes-labels-patch.yml
 
     - echo "Apply the kubernetes manifests"
     - kubectl apply -k ./kustomize/overlays/$RELEASE_STAGE -n $NAMESPACE
     - sleep 60 # to give an adaptation time for the loadgen results
 
 .apply_feature_flags:
-  image: curlimages/curl
+  image: mrnonz/alpine-git-curl
   variables:
     NAMESPACE: $RELEASE_PRODUCT-$RELEASE_STAGE
     HOST_URL_INTERNAL: http://feature-flag-service.$NAMESPACE.svc.cluster.local:8080
+    FEATURE_FLAGS_FILE_PATH: ./kustomize/overlays/$STAGE_NAME/feature-flags.yml
   before_script:
+    - git pull origin main
+    - echo $FEATURE_FLAGS_FILE_PATH
+    - cat $FEATURE_FLAGS_FILE_PATH
+    - ls -la $FEATURE_FLAGS_FILE_PATH
     - |
-      # Assuming RELEASE_VERSION is defined, e.g., "1" for v1.x.x
-      MAJOR_VERSION="${RELEASE_VERSION}"
-
-      # Reset feature flags
-      ergo_aggregator_slowdown="false"
-      db_not_responding="false"
-      credit_card_meltdown="false"
-      factory_crisis="false"
-      
-      # Enable/disable features based on the major version
-      if [ "$BUILD_ID" == "1" ]; then
-        # v1.x.x - All features disabled
-        :
-      elif [ "$BUILD_ID" == "2" ]; then
-        ergo_aggregator_slowdown="true"
-        echo "Feature ergo_aggregator_slowdown is $ergo_aggregator_slowdown"
-      elif [ "$BUILD_ID" == "3" ]; then
-        db_not_responding="true"
-        echo "Feature db_not_responding is $db_not_responding"
-      elif [ "$BUILD_ID" == "4" ]; then
-        credit_card_meltdown="true"
-        echo "Feature credit_card_meltdown is $credit_card_meltdown"
-      elif [ "$BUILD_ID" == "5" ]; then
-        factory_crisis="true"
-        echo "Feature factory_crisis is $factory_crisis"
+      if [ -f "$FEATURE_FLAGS_FILE_PATH" ] && [ -r "$FEATURE_FLAGS_FILE_PATH" ]; then
+        while IFS=": " read -r key value || [ -n "$key" ]; do
+          export $(echo $key | tr '-' '_' | tr '[:lower:]' '[:upper:]')=$(echo $value | tr -d ' ')
+          echo "$key - $value"
+        done < <(cat $FEATURE_FLAGS_FILE_PATH; echo)
       else
-        echo "Unknown or unsupported version, feature flags remain at default."
+        echo "Cannot read $FEATURE_FLAGS_FILE_PATH. Check if file exists and permissions are correct."
       fi
-
-      # Optionally, set the variables in the CI environment or use them in subsequent commands
-      
-      
   script:
     - echo $HOST_URL_INTERNAL
+    - echo "ergo_aggregator_slowdown=$ERGO_AGGREGATOR_SLOWDOWN"
     - | 
       JSON_PAYLOAD_ERGO=$(cat <<EOF
       {
-        "enabled": $ergo_aggregator_slowdown
+        "enabled": $ERGO_AGGREGATOR_SLOWDOWN
       }
       EOF
       )
@@ -117,11 +169,11 @@ workflow:
     - |
       curl -X GET "$HOST_URL_INTERNAL/v1/flags/ergo_aggregator_slowdown" -H "accept: application/json"
 
-    - echo "db_not_responding=$db_not_responding"
+    - echo "db_not_responding=$DB_NOT_RESPONDING"
     - | 
       JSON_PAYLOAD_DB=$(cat <<EOF
       {
-        "enabled": $db_not_responding
+        "enabled": $DB_NOT_RESPONDING
       }
       EOF
       )
@@ -135,11 +187,11 @@ workflow:
     - |
       curl -X GET "$HOST_URL_INTERNAL/v1/flags/db_not_responding" -H "accept: application/json"
 
-    - echo "credit_card_meltdown=$credit_card_meltdown"
+    - echo "credit_card_meltdown=$CREDIT_CARD_MELTDOWN"
     - | 
       JSON_PAYLOAD_CR=$(cat <<EOF
       {
-        "enabled": $credit_card_meltdown
+        "enabled": $CREDIT_CARD_MELTDOWN
       }
       EOF
       )
@@ -153,11 +205,11 @@ workflow:
     - |
       curl -X GET "$HOST_URL_INTERNAL/v1/flags/credit_card_meltdown" -H "accept: application/json"
 
-    - echo "factory_crisis=$factory_crisis"
+    - echo "factory_crisis=$FACTORY_CRISIS"
     - | 
       JSON_PAYLOAD_FC=$(cat <<EOF
       {
-        "enabled": $factory_crisis
+        "enabled": $FACTORY_CRISIS
       }
       EOF
       )
@@ -184,6 +236,7 @@ Configure DT - Staging:
       export TENANT_TOKEN="$DT_API_TOKEN"
       export CLIENT_ID="$DT_OAUTH_CLIENT_ID"
       export CLIENT_SECRET="$DT_OAUTH_CLIENT_SECRET"
+      echo $CI_PROJECT_ID
     # run monaco for easytrade original configs
     - monaco deploy $EASYTRADE_MANIFEST_FILE --project bizevents-processing-rules,management-zone,easytrade-validation.srg -e dev --dry-run
     - monaco deploy $EASYTRADE_MANIFEST_FILE --project bizevents-processing-rules,management-zone,easytrade-validation.srg -e dev     
@@ -246,7 +299,7 @@ Evaluate with SRG:
 
 Apply Deployment Update - Production:
   variables:
-    STAGE_NAME: "$STAGE_NAME_PROD"
+    STAGE_NAME: "$STAGE_NAME_PRODUCTION"
   stage: Deploy Production
   needs: ["Configure DT - Production"]
   extends:
@@ -254,7 +307,7 @@ Apply Deployment Update - Production:
 
 Apply Feature Flags - Production:
   variables:
-    STAGE_NAME: "$STAGE_NAME_PROD"
+    STAGE_NAME: "$STAGE_NAME_PRODUCTION"
   stage: Deploy Production
   needs: ["Apply Deployment Update - Production"]
   extends:
