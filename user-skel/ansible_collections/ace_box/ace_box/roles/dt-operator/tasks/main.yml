@@ -78,7 +78,7 @@
         - "app.kubernetes.io/name=oneagent"
     register: dt_oneagent_pods_creation
     until: dt_oneagent_pods_creation.resources | length > 0
-    retries: 30
+    retries: 10
     delay: 10
 
   - name: Wait for at least one Dynatrace ActiveGate pod to be created
@@ -89,7 +89,7 @@
         - "app.kubernetes.io/name=activegate"
     register: dt_activegate_pods_creation
     until: dt_activegate_pods_creation.resources | length > 0
-    retries: 30
+    retries: 10
     delay: 10
 
   - name: Ensure all Dynatrace OneAgent pods are in Running state and ready
