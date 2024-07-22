@@ -69,3 +69,49 @@
     retries: 10
     delay: 10
     until: dynakube is not failed
+
+  - name: Wait for at least one Dynatrace OneAgent pod to be created
+    kubernetes.core.k8s_info:
+      kind: Pod
+      namespace: dynatrace
+      label_selectors:
+        - "app.kubernetes.io/name=oneagent"
+    register: dt_oneagent_pods_creation
+    until: dt_oneagent_pods_creation.resources | length > 0
+    retries: 30
+    delay: 10
+
+  - name: Wait for at least one Dynatrace ActiveGate pod to be created
+    kubernetes.core.k8s_info:
+      kind: Pod
+      namespace: dynatrace
+      label_selectors:
+        - "app.kubernetes.io/name=activegate"
+    register: dt_activegate_pods_creation
+    until: dt_activegate_pods_creation.resources | length > 0
+    retries: 30
+    delay: 10
+
+  - name: Ensure all Dynatrace OneAgent pods are in Running state and ready
+    kubernetes.core.k8s_info:
+      kind: Pod
+      namespace: dynatrace
+      label_selectors:
+        - "app.kubernetes.io/name=oneagent"
+    register: dt_oneagent_pods
+    until: >
+      dt_oneagent_pods.resources | selectattr('status.phase', 'equalto', 'Running') | map(attribute='status.containerStatuses') | selectattr('0.ready', 'equalto', true) | length == dt_oneagent_pods.resources | length
+    retries: 30
+    delay: 10
+
+  - name: Ensure all Dynatrace ActiveGate pods are in Running state and ready
+    kubernetes.core.k8s_info:
+      kind: Pod
+      namespace: dynatrace
+      label_selectors:
+        - "app.kubernetes.io/name=activegate"
+    register: dt_activegate_pods
+    until: >
+      dt_activegate_pods.resources | selectattr('status.phase', 'equalto', 'Running') | map(attribute='status.containerStatuses') | selectattr('0.ready', 'equalto', true) | length == dt_activegate_pods.resources | length
+    retries: 30
+    delay: 10
