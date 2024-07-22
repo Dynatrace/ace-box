@@ -45,6 +45,16 @@ workflow:
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "main"
 
 
+.skip_update_rule_staging: &skip_update_rule_staging
+  rules:
+    - if: '$CI_COMMIT_MESSAGE =~ /skip update staging/'
+      when: on_success
+
+.skip_update_rule_production: &skip_update_rule_production
+  rules:
+    - if: '$CI_COMMIT_MESSAGE =~ /skip update production/'
+      when: on_success
+
 .update_manifests:
   image: bitnami/git
   script:
@@ -93,7 +103,7 @@ workflow:
     - |
       sed -i '/name: DT_RELEASE_BUILD_VERSION/{n;s|value: .*|value: "'"$RELEASE_BUILD_VERSION"'"|}; /path: \/spec\/template\/metadata\/labels\/app.kubernetes.io~1version/{n;s|value: .*|value: "'"$RELEASE_VERSION"'"|}' ./kustomize/overlays/$STAGE_NAME/kubernetes-labels-patch.yml
     - git add ./kustomize/overlays/$STAGE_NAME/kubernetes-labels-patch.yml $FEATURE_FLAGS_FILE_PATH || true
-    - git commit -m "Update kubernetes labels and feature flags for release $RELEASE_VERSION [ci skip]" || true
+    - git commit -m "Update kubernetes labels and feature flags for release $RELEASE_VERSION [skip update $STAGE_NAME]" || true
     
     - export GIT_SSL_NO_VERIFY=true
     - git push "https://${GITLAB_USERNAME}:${GITLAB_PRIVATE_TOKEN}@${CI_REPOSITORY_URL#*@}" "HEAD:main" || true
@@ -106,8 +116,12 @@ Update Manifests - Staging:
   stage: Update Manifests Staging
   extends:
     - .update_manifests
-
+  rules:
+    - if: '$CI_COMMIT_MESSAGE !~ /skip update/'
+      when: on_success
+      
 Update Manifests - Production:
+  <<: *skip_update_rule_staging
   variables:
     STAGE_NAME: "$STAGE_NAME_PRODUCTION"
     FEATURE_FLAGS_FILE_PATH: ./kustomize/overlays/production/feature-flags.yml
@@ -224,6 +238,7 @@ Update Manifests - Production:
       curl -X GET "$HOST_URL_INTERNAL/v1/flags/factory_crisis" -H "accept: application/json"
 
 Configure DT - Staging:
+  <<: *skip_update_rule_staging
   stage: Deploy Staging
   variables: 
     EASYTRADE_MANIFEST_FILE: ./easytrade/monaco/manifest.yaml
@@ -245,6 +260,7 @@ Configure DT - Staging:
     - monaco deploy $USECASE_MANIFEST_FILE --project application,release-validation -e dev  
 
 Apply Deployment Update - Staging:
+  <<: *skip_update_rule_staging
   variables:
     STAGE_NAME: "$STAGE_NAME_STAGING"
   stage: Deploy Staging
@@ -252,7 +268,9 @@ Apply Deployment Update - Staging:
   extends:
     - .deployment_common
 
+
 Apply Feature Flags - Staging:
+  <<: *skip_update_rule_staging
   stage: Deploy Staging
   needs: ["Apply Deployment Update - Staging"]
   variables:
@@ -261,6 +279,7 @@ Apply Feature Flags - Staging:
     - .apply_feature_flags
 
 Run Tests and Observe:
+  <<: *skip_update_rule_staging
   before_script:
     - echo $(date -u +"%Y-%m-%dT%H:%M:%SZ") > srg.test.starttime
   after_script:
@@ -278,6 +297,7 @@ Run Tests and Observe:
       - srg.test.endtime
 
 Evaluate with SRG:
+  <<: *skip_update_rule_staging
   image: dynatraceace/dt-automation-cli:$DTA_IMAGE_VERSION
   stage: Validate Release
   variables:
@@ -298,6 +318,7 @@ Evaluate with SRG:
     - "Run Tests and Observe"
 
 Apply Deployment Update - Production:
+  <<: *skip_update_rule_production
   variables:
     STAGE_NAME: "$STAGE_NAME_PRODUCTION"
   stage: Deploy Production
@@ -306,6 +327,7 @@ Apply Deployment Update - Production:
     - .deployment_common
 
 Apply Feature Flags - Production:
+  <<: *skip_update_rule_production
   variables:
     STAGE_NAME: "$STAGE_NAME_PRODUCTION"
   stage: Deploy Production
@@ -314,8 +336,8 @@ Apply Feature Flags - Production:
     - .apply_feature_flags
 
 Configure DT - Production:
+  <<: *skip_update_rule_production
   stage: Deploy Production
-  needs: ["Evaluate with SRG"]
   variables: 
     MANIFEST_FILE: ./easytrade/monaco/manifest.yaml
   image: dynatrace/dynatrace-configuration-as-code:$MONACO_IMAGE_VERSION

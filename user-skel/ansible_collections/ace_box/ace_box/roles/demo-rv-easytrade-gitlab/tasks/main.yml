@@ -45,19 +45,19 @@
   vars:
     easytrade_domain: "easytrade-production.{{ ingress_domain }}"
 
-# - include_role:
-#     name: dt-platform
-#     tasks_from: ensure-app
-#   vars:
-#     dt_app_id: "{{ item.dt_app_id }}"
-#     dt_environment_url_gen3: "{{ extra_vars.dt_environment_url_gen3 }}"
-#     dt_oauth_sso_endpoint: "{{ extra_vars.dt_oauth_sso_endpoint }}"
-#     dt_oauth_client_id: "{{ extra_vars.dt_oauth_client_id }}"
-#     dt_oauth_client_secret: "{{ extra_vars.dt_oauth_client_secret }}"
-#     dt_oauth_account_urn: "{{ extra_vars.dt_oauth_account_urn }}"
-#   loop:
-#     - dt_app_id: "dynatrace.gitlab.connector"
-#       dt_app_version: "0.1.0"
+- include_role:
+    name: dt-platform
+    tasks_from: ensure-app
+  vars:
+    dt_app_id: "{{ item.dt_app_id }}"
+    dt_environment_url_gen3: "{{ extra_vars.dt_environment_url_gen3 }}"
+    dt_oauth_sso_endpoint: "{{ extra_vars.dt_oauth_sso_endpoint }}"
+    dt_oauth_client_id: "{{ extra_vars.dt_oauth_client_id }}"
+    dt_oauth_client_secret: "{{ extra_vars.dt_oauth_client_secret }}"
+    dt_oauth_account_urn: "{{ extra_vars.dt_oauth_account_urn }}"
+  loop:
+    - dt_app_id: "dynatrace.gitlab.connector"
+      dt_app_version: "0.2.0"
 
 
 - include_role:
