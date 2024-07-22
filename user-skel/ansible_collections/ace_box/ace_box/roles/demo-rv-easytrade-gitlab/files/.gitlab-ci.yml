@@ -47,12 +47,12 @@ workflow:
 
 .skip_update_rule_staging: &skip_update_rule_staging
   rules:
-    - if: '$CI_COMMIT_MESSAGE =~ /skip update staging/'
+    - if: '$CI_COMMIT_MESSAGE =~ /skip update staging/ && $CI_PIPELINE_SOURCE != "web"'
       when: on_success
 
 .skip_update_rule_production: &skip_update_rule_production
   rules:
-    - if: '$CI_COMMIT_MESSAGE =~ /skip update production/'
+    - if: '$CI_COMMIT_MESSAGE =~ /skip update production/ && $CI_PIPELINE_SOURCE != "web"'
       when: on_success
 
 .update_manifests:
@@ -103,7 +103,7 @@ workflow:
     - |
       sed -i '/name: DT_RELEASE_BUILD_VERSION/{n;s|value: .*|value: "'"$RELEASE_BUILD_VERSION"'"|}; /path: \/spec\/template\/metadata\/labels\/app.kubernetes.io~1version/{n;s|value: .*|value: "'"$RELEASE_VERSION"'"|}' ./kustomize/overlays/$STAGE_NAME/kubernetes-labels-patch.yml
     - git add ./kustomize/overlays/$STAGE_NAME/kubernetes-labels-patch.yml $FEATURE_FLAGS_FILE_PATH || true
-    - git commit -m "Update kubernetes labels and feature flags for release $RELEASE_VERSION [skip update $STAGE_NAME]" || true
+    - git commit -m "$STAGE_NAME - Update kubernetes labels and feature flags for release $RELEASE_VERSION [skip update $STAGE_NAME]" || true
     
     - export GIT_SSL_NO_VERIFY=true
     - git push "https://${GITLAB_USERNAME}:${GITLAB_PRIVATE_TOKEN}@${CI_REPOSITORY_URL#*@}" "HEAD:main" || true
@@ -117,6 +117,8 @@ Update Manifests - Staging:
   extends:
     - .update_manifests
   rules:
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+      when: always
     - if: '$CI_COMMIT_MESSAGE !~ /skip update/'
       when: on_success
       
