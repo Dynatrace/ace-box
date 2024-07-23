@@ -101,7 +101,7 @@
     register: dt_oneagent_pods
     until: >
       dt_oneagent_pods.resources | selectattr('status.phase', 'equalto', 'Running') | map(attribute='status.containerStatuses') | selectattr('0.ready', 'equalto', true) | length == dt_oneagent_pods.resources | length
-    retries: 30
+    retries: 20
     delay: 10
 
   - name: Ensure all Dynatrace ActiveGate pods are in Running state and ready
@@ -113,5 +113,5 @@
     register: dt_activegate_pods
     until: >
       dt_activegate_pods.resources | selectattr('status.phase', 'equalto', 'Running') | map(attribute='status.containerStatuses') | selectattr('0.ready', 'equalto', true) | length == dt_activegate_pods.resources | length
-    retries: 30
+    retries: 20
     delay: 10
