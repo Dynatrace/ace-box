@@ -63,8 +63,8 @@
         key: "DT_OAUTH_ACCOUNT_URN",
         value: "{{ extra_vars.dt_oauth_account_urn }}",
       }
-    # - { key: "GITLAB_USERNAME", value: "{{ gitlab_username }}" }
-    # - { key: "GITLAB_PASSWORD", value: "{{ gitlab_password }}" }
+    - { key: "GITLAB_USERNAME", value: "{{ git_username }}" }
+    - { key: "GITLAB_PASSWORD", value: "{{ git_password }}" }
     - {
         key: "GITLAB_PRIVATE_TOKEN",
         value: "{{ gitlab_personal_access_token }}",
