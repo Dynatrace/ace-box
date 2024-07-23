@@ -4,6 +4,9 @@
 
 - include_role:
     name: dt-operator
+  vars:
+    dt_operator_release: "{{ dtOperatorVersion }}"
+    operator_mode: "{{ dtOperatorMode }}"
 
 - include_role:
     name: monaco-v2
