@@ -5,6 +5,7 @@ resources:
   - ../../../easytrade/kubernetes-manifests
 
 patches:
+  - path: frontendreverseproxy-patch.yml
   - target:
       group: apps
       version: v1
