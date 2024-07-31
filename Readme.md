@@ -19,6 +19,7 @@ Terraform (Cloud) are used for spinning up the VM, Ansible is used for setting u
   - [Accessing ACE Dashboard](#accessing-ace-dashboard)
   - [Behind the scenes](#behind-the-scenes)
   - [ACE-CLI](#ace-cli)
+  - [Licensing](#licensing)
 
 
 ## Installation
@@ -157,3 +158,9 @@ Spinning up an ACE-Box can be split into two main parts:
 
 ## ACE-CLI
 Check out the [ACE CLI](docs/ace-cli.md) page for more details.
+
+## Licensing
+
+Please see `LICENSE` in repo root for license details.
+
+License headers can be added automatically be running `./tools/addlicenseheader.sh` (see file for details).
