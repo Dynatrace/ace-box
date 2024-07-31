@@ -47,6 +47,9 @@
 #
 - include_tasks:
     file: deploy-gitlab.yml
+  vars:
+    git_username: "root"
+    git_password: "{{ gitlab_password }}"
 
 #
 # Simplenodeservice + load generator
