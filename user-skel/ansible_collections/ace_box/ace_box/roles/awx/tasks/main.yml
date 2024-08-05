@@ -1,18 +1,18 @@
 ---
-# To work around https://github.com/ansible/awx-operator/issues/1149 
+# To work around https://github.com/ansible/awx-operator/issues/1149
 - name: Install AWX
   block:
     - include_tasks:
         file: install.yml
-    - include_tasks:
-        file: customize-branding.yml
+    # - include_tasks:
+    #     file: customize-branding.yml
   rescue:
     - include_tasks:
         file: uninstall.yml
     - include_tasks:
         file: install.yml
-    - include_tasks:
-        file: customize-branding.yml
+    # - include_tasks:
+    #     file: customize-branding.yml
 
 - include_tasks: source-secrets.yml
 

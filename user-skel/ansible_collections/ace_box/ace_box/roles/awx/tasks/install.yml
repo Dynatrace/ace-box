@@ -20,14 +20,14 @@
     dest: "{{ role_path }}/files/awx-operator-values.yml"
     owner: "{{ ace_box_user }}"
     group: "{{ ace_box_user }}"
-    mode: '0644'
+    mode: "0644"
 
 - name: Install
   kubernetes.core.helm:
     name: awx
-    chart_ref: "{{ role_path }}/files/awx-operator"
-    # chart_ref: awx-operator/awx-operator
-    # chart_version: "{{ awx_helm_chart_version }}"
+    #chart_ref: "{{ role_path }}/files/awx-operator"
+    chart_ref: awx-operator/awx-operator
+    chart_version: "{{ awx_helm_chart_version }}"
     release_namespace: "{{ awx_namespace }}"
     create_namespace: true
     wait: true
