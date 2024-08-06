@@ -1,11 +1,11 @@
 ---
 awx_namespace: "awx"
-# awx_helm_chart_version: "1.1.1"
+awx_helm_chart_version: "2.19.1"
 awx_ingress_domain: "ansible.{{ ingress_domain }}"
 awx_secret_key_secret_name: "awx-secret-key"
 awx_admin_creds_secret_name: "awx-admin-creds"
 awx_default_org_name: "Default"
-awx_admin_user : "dynatrace"
+awx_admin_user: "dynatrace"
 awx_admin_email: "dynatrace@dtrace.com"
 awx_logo_header_replace: "files/logo/red-hat-ansible-logo.svg"
 awx_logo_login_replace: "files/logo/red-hat-ansible-logo.svg"
