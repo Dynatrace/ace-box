@@ -1,9 +1,12 @@
-# Welcome to the ACE-BOX
+# Welcome to the ACE-Box
+
+**Note**
+> This product is not officially supported by Dynatrace.
 
 The ace-box is an all-in-one Autonomous Cloud Enablement machine that you can use as a portable sandbox, demo and testing environment. 
 
 Terraform (Cloud) are used for spinning up the VM, Ansible is used for setting up the various components.
-- [Welcome to the ACE-BOX](#welcome-to-the-ace-box)
+- [Welcome to the ACE-Box](#welcome-to-the-ace-box)
   - [Installation](#installation)
     - [Available use cases:](#available-use-cases)
     - [Useful Terraform Commands](#useful-terraform-commands)
@@ -16,6 +19,7 @@ Terraform (Cloud) are used for spinning up the VM, Ansible is used for setting u
   - [Accessing ACE Dashboard](#accessing-ace-dashboard)
   - [Behind the scenes](#behind-the-scenes)
   - [ACE-CLI](#ace-cli)
+  - [Licensing](#licensing)
 
 
 ## Installation
@@ -154,3 +158,9 @@ Spinning up an ACE-Box can be split into two main parts:
 
 ## ACE-CLI
 Check out the [ACE CLI](docs/ace-cli.md) page for more details.
+
+## Licensing
+
+Please see `LICENSE` in repo root for license details.
+
+License headers can be added automatically be running `./tools/addlicenseheader.sh` (see file for details).
