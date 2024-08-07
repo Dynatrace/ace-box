@@ -158,6 +158,10 @@
     controller_password: "{{ awx_admin_password }}"
     controller_username: "{{ awx_admin_username }}"
   register: project
+  retries: 5
+  delay: 30
+  until: project is not failed
+
 
 - name: Create remediation inventory
   awx.awx.inventory:
