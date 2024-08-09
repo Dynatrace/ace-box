@@ -23,7 +23,7 @@
 - name: Add chart repo
   kubernetes.core.helm_repository:
     name: awx-operator
-    repo_url: "https://ansible.github.io/awx-operator/"
+    repo_url: "https://ansible-community.github.io/awx-operator-helm/"
 
 - include_tasks:
     file: create-secrets.yml
