@@ -18,6 +18,7 @@
       ansible.builtin.uri:
         url: "{{ dt_oauth_sso_endpoint }}"
         method: POST
+        timeout: 120
         status_code: 200
         headers:
           Content-Type: "application/x-www-form-urlencoded"

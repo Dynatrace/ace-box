@@ -19,6 +19,7 @@
         url: "{{ dt_oauth_sso_endpoint }}"
         method: POST
         status_code: 200
+        timeout: 120
         headers:
           Content-Type: "application/x-www-form-urlencoded"
         body_format: form-urlencoded
