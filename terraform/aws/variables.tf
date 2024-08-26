@@ -104,6 +104,11 @@ variable "ingress_protocol" {
   default     = "http"
 }
 
+variable "skip_domain_workspace_alignment" {
+  description = "Set to true if your custom domain shall not be aligned with the currently active Terraform workspace. ATTENTION: This will result in conflicts when the same custom domain is used in multiple workspaces!"
+  default     = false
+}
+
 #
 # AWS VPC variables
 #

@@ -49,6 +49,11 @@ module "ingress" {
   ec2_public_ip        = aws_instance.acebox.public_ip
   network_interface_id = aws_network_interface.acebox_nic.id
   associate_eip        = var.associate_eip
+  skip_domain_workspace_alignment = var.skip_domain_workspace_alignment
+  name_prefix          = var.name_prefix
+  vpc_id      = module.vpc.vpc_id
+  subnet_ids           =  [module.vpc.subnet_ids[0], module.vpc.subnet_ids[1]]
+  aws_instance_ids     = { "acebox" = aws_instance.acebox.id }
 }
 
 #
@@ -62,7 +67,7 @@ module "security_group" {
   vpc_id      = module.vpc.vpc_id
 
   ingress_cidr_blocks = ["0.0.0.0/0"]
-  ingress_rules       = ["http-80-tcp", "https-443-tcp", "ssh-tcp"]
+  ingress_rules       = ["ssh-tcp"]
   egress_rules        = ["all-all"]
 }
 
