@@ -69,6 +69,18 @@ module "security_group" {
   ingress_cidr_blocks = ["0.0.0.0/0"]
   ingress_rules       = ["ssh-tcp"]
   egress_rules        = ["all-all"]
+
+  ingress_with_source_security_group_id = [
+    {
+      rule                     = "http-80-tcp"
+      source_security_group_id = module.ingress.alb_security_group_id
+    },
+    {
+      rule                     = "https-443-tcp"
+      source_security_group_id = module.ingress.alb_security_group_id
+    }
+  ]
+
 }
 
 #

@@ -23,3 +23,7 @@ output "ingress_ip" {
 output "ingress_domain" {
   value = local.is_custom_domain ? local.custom_domain : "${local.ingress_ip}.nip.io"
 }
+
+output "alb_security_group_id" {
+  value = module.alb_security_group.security_group_id
+}
