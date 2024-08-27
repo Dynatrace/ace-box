@@ -12,3 +12,7 @@ AWX:
     admin_password_secret: "{{ awx_admin_creds_secret_name }}"
     secret_key_secret: "{{ awx_secret_key_secret_name }}"
     auto_upgrade: false
+    extra_settings:
+    - setting: CSRF_TRUSTED_ORIGINS
+      value:
+        - "{{ ingress_protocol }}://{{ awx_ingress_domain }}"
