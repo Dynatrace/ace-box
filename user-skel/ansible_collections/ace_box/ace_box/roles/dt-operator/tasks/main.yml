@@ -47,7 +47,7 @@
       state: present
       src: "{{ role_path }}/files/dt_operator.yaml"
     register: dt_operator
-    retries: 10
+    retries: 20
     delay: 5
     until: dt_operator is not failed
 
@@ -62,7 +62,7 @@
       state: present
       src: "{{ role_path }}/files/dt_operator-csi.yaml"
     register: dt_operator_csi
-    retries: 10
+    retries: 20
     delay: 5
     until: dt_operator_csi is not failed
     when: operator_mode != "classicFullStack"
@@ -80,8 +80,8 @@
       state: present
       src: "{{ role_path }}/files/{{ operator_mode }}.yaml"
     register: dynakube
-    retries: 10
-    delay: 10
+    retries: 20
+    delay: 20
     until: dynakube is not failed
 
   - name: Wait for at least one Dynatrace OneAgent pod to be created
@@ -92,8 +92,8 @@
         - "app.kubernetes.io/name=oneagent"
     register: dt_oneagent_pods_creation
     until: dt_oneagent_pods_creation.resources | length > 0
-    retries: 10
-    delay: 10
+    retries: 20
+    delay: 20
 
   - name: Wait for at least one Dynatrace ActiveGate pod to be created
     kubernetes.core.k8s_info:
@@ -103,8 +103,8 @@
         - "app.kubernetes.io/name=activegate"
     register: dt_activegate_pods_creation
     until: dt_activegate_pods_creation.resources | length > 0
-    retries: 10
-    delay: 10
+    retries: 20
+    delay: 20
 
   - name: Ensure all Dynatrace OneAgent pods are in Running state and ready
     kubernetes.core.k8s_info:
@@ -116,7 +116,7 @@
     until: >
       dt_oneagent_pods.resources | selectattr('status.phase', 'equalto', 'Running') | map(attribute='status.containerStatuses') | selectattr('0.ready', 'equalto', true) | length == dt_oneagent_pods.resources | length
     retries: 20
-    delay: 10
+    delay: 20
 
   - name: Ensure all Dynatrace ActiveGate pods are in Running state and ready
     kubernetes.core.k8s_info:
@@ -128,4 +128,4 @@
     until: >
       dt_activegate_pods.resources | selectattr('status.phase', 'equalto', 'Running') | map(attribute='status.containerStatuses') | selectattr('0.ready', 'equalto', true) | length == dt_activegate_pods.resources | length
     retries: 20
-    delay: 10
+    delay: 20
