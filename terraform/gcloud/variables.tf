@@ -90,3 +90,15 @@ variable "dashboard_password" {
   description = "ACE-Box dashboard password."
   default     = ""
 }
+variable "dt_owner_team" {
+  type        = string
+  description = "Required when using Dynatrace GCP environments to provision. Check with DT GCP admins for your specific team value"
+  nullable = false
+
+}
+variable "dt_owner_email" {
+  type        = string
+  description = "Required when using Dynatrace GCP environments in the format:  name_surname-dynatrace_com. (This helps identify who owns the resources)"
+  nullable = false
+}
+

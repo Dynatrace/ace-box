@@ -28,6 +28,10 @@ resource "random_id" "uuid" {
 
 resource "google_compute_address" "ace_box" {
   name = "${var.name_prefix}-ipv4-addr-${random_id.uuid.hex}"
+  labels = {
+    "dt_owner_team" = "${var.dt_owner_team}"
+    "dt_owner_email" = "${var.dt_owner_email}" 
+  }
 }
 
 locals {
@@ -43,6 +47,7 @@ resource "google_dns_record_set" "ace_box_ssh" {
   type         = "A"
   rrdatas      = [local.public_vm_ip]
   ttl          = 300
+  
 }
 
 resource "google_dns_record_set" "ace_box" {
@@ -52,15 +57,18 @@ resource "google_dns_record_set" "ace_box" {
   type         = "A"
   rrdatas      = [module.https_lb[0].public_lb_ip]
   ttl          = 300
+  
 }
 
 resource "google_dns_record_set" "ace_box_wildcard" {
+  
   count        = local.is_custom_domain ? 1 : 0
   managed_zone = var.managed_zone_name
   name         = "*.${local.custom_domain}."
   type         = "A"
   rrdatas      = [module.https_lb[0].public_lb_ip]
   ttl          = 300
+  
 }
 
 resource "google_compute_firewall" "ace_box" {
@@ -82,12 +90,19 @@ resource "google_compute_firewall" "ace_box" {
 resource "google_compute_instance_template" "ace_box" {
   name         = "${var.name_prefix}-${random_id.uuid.hex}"
   machine_type = var.acebox_size
-
+  labels = {
+    "dt_owner_team" = "${var.dt_owner_team}"
+    "dt_owner_email" = "${var.dt_owner_email}" 
+  }
   disk {
     source_image = var.acebox_os
     auto_delete  = true
     boot         = true
     disk_size_gb = var.disk_size
+      labels = {
+    "dt_owner_team" = "${var.dt_owner_team}"
+    "dt_owner_email" = "${var.dt_owner_email}" 
+  }
   }
 
   network_interface {
@@ -134,6 +149,7 @@ module "https_lb" {
   custom_domain     = local.custom_domain
   managed_zone_name = var.managed_zone_name
   instance_group    = google_compute_instance_group_manager.ace_box.instance_group
+  
 }
 
 #
