@@ -63,6 +63,19 @@
         initialRootPassword:
           secret: "{{ gitlab_root_creds_secret_name }}"
           key: password
+        minio:
+          enabled: true
+          persistence:
+            enabled: true
+            size: 5Gi
+        gitaly:
+          enabled: true
+        redis:
+          install: false
+        kas:
+          enabled: false
+        gitlab-exporter:
+          enabled: false
       certmanager:
         install: false
       gitlab-runner:
@@ -80,6 +93,16 @@
                 mount_path = "/certs/client"
                 medium = "Memory"
       nginx-ingress:
+        enabled: false
+      prometheus:
+        install: false
+      grafana:
+        install: false
+      registry:
+        enabled: false
+      sidekiq:
+        enabled: false
+      unicorn:
         enabled: false
   register: gitlab_helm
 
@@ -99,7 +122,7 @@
 # First time sourcing PAT will issue and persist token
 - ansible.builtin.include_tasks: source-personal-access-token.yml
 
-- ansible.builtin.include_tasks: deploy-gcpe.yml
+#- ansible.builtin.include_tasks: deploy-gcpe.yml
 
 # Include Dashboard values
 - set_fact:
