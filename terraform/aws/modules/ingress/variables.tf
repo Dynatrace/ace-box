@@ -27,3 +27,16 @@ variable "ec2_public_ip" {}
 variable "network_interface_id" {}
 
 variable "associate_eip" {}
+
+variable "skip_domain_workspace_alignment" {}
+
+variable "name_prefix" {}
+
+variable "vpc_id" {}
+
+variable "subnet_ids" {}
+
+variable "aws_instance_ids" {
+  description = "List of instance IDs to attach to the target groups"
+  type        = map(string)
+}
