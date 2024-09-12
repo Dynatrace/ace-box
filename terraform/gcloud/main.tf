@@ -86,7 +86,17 @@ resource "google_compute_firewall" "ace_box" {
   target_tags   = ["${var.name_prefix}-${random_id.uuid.hex}"]
   source_ranges = ["0.0.0.0/0"]
 }
-
+resource "google_compute_disk" "ace_box_disk" {
+  name  = "${var.name_prefix}-${random_id.uuid.hex}-disk"
+  image =  var.acebox_os
+  size  = var.disk_size
+  type  = "pd-ssd"
+  zone  = "${var.gcloud_zone}"
+    labels = {
+    "dt_owner_team" = "${var.dt_owner_team}"
+    "dt_owner_email" = "${var.dt_owner_email}" 
+  }
+}
 resource "google_compute_instance_template" "ace_box" {
   name         = "${var.name_prefix}-${random_id.uuid.hex}"
   machine_type = var.acebox_size
@@ -95,14 +105,11 @@ resource "google_compute_instance_template" "ace_box" {
     "dt_owner_email" = "${var.dt_owner_email}" 
   }
   disk {
-    source_image = var.acebox_os
+    source = google_compute_disk.ace_box_disk.name
     auto_delete  = true
     boot         = true
-    disk_size_gb = var.disk_size
-      labels = {
-    "dt_owner_team" = "${var.dt_owner_team}"
-    "dt_owner_email" = "${var.dt_owner_email}" 
-  }
+   
+    
   }
 
   network_interface {
