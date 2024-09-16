@@ -1,0 +1,42 @@
+   # Copyright 2024 Dynatrace LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+---
+- include_tasks: source-endpoints.yml
+  when: gitlab_internal_endpoint is not defined
+
+- ansible.builtin.include_tasks: source-personal-access-token.yml
+  when: gitlab_personal_access_token is not defined
+
+- name: Gitlab - Create user"
+  uri:
+      url: "{{ gitlab_internal_endpoint }}/api/v4/users"
+      validate_certs: false
+      method: POST
+      status_code: [200, 201]
+      headers:
+        Content-Type: "application/json"
+        Authorization: "Bearer {{ gitlab_personal_access_token }}"
+      body:
+        admin: true
+        email: "{{ gitlab_user_email }}"
+        name: "{{ gitlab_user_name }}"
+        username: "{{ gitlab_user_username }}"
+        password: "{{ gitlab_user_password }}"
+        skip_confirmation: true
+      body_format: json
+  register: gitlab_post_user_result
+- set_fact:
+        gitlab_user_id: "{{ gitlab_post_user_result.json.id }}"
+        new_gitlab_user_created: "{{ gitlab_post_user_result.status is defined and gitlab_post_user_result.status == 201 }}"
