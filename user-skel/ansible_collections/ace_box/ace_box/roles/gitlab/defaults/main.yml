@@ -1,12 +1,27 @@
+# Copyright 2024 Dynatrace LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 ---
 gitlab_username: "root"
 gitlab_namespace: "gitlab"
 gitlab_group_name: "demo"
 feature_gitlab: false
-gitlab_helm_chart_version: "v7.9.0"
+gitlab_helm_chart_version: "v8.3.2"
 gitlab_domain: "gitlab.{{ ingress_domain }}"
 gitlab_gcpe_helm_chart_version: "0.2.15"
 gitlab_gcpe_tag: "v0.5.3"
+gitlab_monitoring: false
 gitlab_root_creds_secret_name: "ace-gitlab-initial-root-password"
 gitlab_root_pat_secret_name: "ace-gitlab-root-pat"
 gitlab_dt_access_token_name: "ace_box_gitlab_api_token"

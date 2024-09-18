@@ -1,3 +1,17 @@
+# Copyright 2024 Dynatrace LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 variable "gcloud_project" {
   description = "Google Cloud Project where resources will be created"
 }
@@ -76,3 +90,17 @@ variable "dashboard_password" {
   description = "ACE-Box dashboard password."
   default     = ""
 }
+variable "dt_owner_team" {
+  type        = string
+  description = "Required when using Dynatrace GCP environments to provision. Check with DT GCP admins for your specific team value"
+  default= "pending-team"
+  #nullable = false
+
+}
+variable "dt_owner_email" {
+  type        = string
+  description = "Required when using Dynatrace GCP environments in the format:  name_surname-dynatrace_com. (This helps identify who owns the resources)"
+  default= "pending-email"
+  #nullable = false
+}
+

@@ -1,3 +1,17 @@
+# Copyright 2024 Dynatrace LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 locals {
   is_custom_domain  = var.custom_domain != "" && var.managed_zone_name != ""
   custom_domain_ext = (var.skip_domain_workspace_alignment || terraform.workspace == "default") ? "" : terraform.workspace
@@ -14,6 +28,10 @@ resource "random_id" "uuid" {
 
 resource "google_compute_address" "ace_box" {
   name = "${var.name_prefix}-ipv4-addr-${random_id.uuid.hex}"
+  labels = {
+    "dt_owner_team" = "${var.dt_owner_team}"
+    "dt_owner_email" = "${var.dt_owner_email}" 
+  }
 }
 
 locals {
@@ -29,6 +47,7 @@ resource "google_dns_record_set" "ace_box_ssh" {
   type         = "A"
   rrdatas      = [local.public_vm_ip]
   ttl          = 300
+  
 }
 
 resource "google_dns_record_set" "ace_box" {
@@ -38,15 +57,18 @@ resource "google_dns_record_set" "ace_box" {
   type         = "A"
   rrdatas      = [module.https_lb[0].public_lb_ip]
   ttl          = 300
+  
 }
 
 resource "google_dns_record_set" "ace_box_wildcard" {
+  
   count        = local.is_custom_domain ? 1 : 0
   managed_zone = var.managed_zone_name
   name         = "*.${local.custom_domain}."
   type         = "A"
   rrdatas      = [module.https_lb[0].public_lb_ip]
   ttl          = 300
+  
 }
 
 resource "google_compute_firewall" "ace_box" {
@@ -64,16 +86,30 @@ resource "google_compute_firewall" "ace_box" {
   target_tags   = ["${var.name_prefix}-${random_id.uuid.hex}"]
   source_ranges = ["0.0.0.0/0"]
 }
-
+resource "google_compute_disk" "ace_box_disk" {
+  name  = "${var.name_prefix}-${random_id.uuid.hex}-disk"
+  image =  var.acebox_os
+  size  = var.disk_size
+  type  = "pd-ssd"
+  zone  = "${var.gcloud_zone}"
+    labels = {
+    "dt_owner_team" = "${var.dt_owner_team}"
+    "dt_owner_email" = "${var.dt_owner_email}" 
+  }
+}
 resource "google_compute_instance_template" "ace_box" {
   name         = "${var.name_prefix}-${random_id.uuid.hex}"
   machine_type = var.acebox_size
-
+  labels = {
+    "dt_owner_team" = "${var.dt_owner_team}"
+    "dt_owner_email" = "${var.dt_owner_email}" 
+  }
   disk {
-    source_image = var.acebox_os
+    source = google_compute_disk.ace_box_disk.name
     auto_delete  = true
     boot         = true
-    disk_size_gb = var.disk_size
+   
+    
   }
 
   network_interface {
@@ -120,6 +156,7 @@ module "https_lb" {
   custom_domain     = local.custom_domain
   managed_zone_name = var.managed_zone_name
   instance_group    = google_compute_instance_group_manager.ace_box.instance_group
+  
 }
 
 #

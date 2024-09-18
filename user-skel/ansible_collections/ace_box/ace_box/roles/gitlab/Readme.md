@@ -111,6 +111,21 @@ This task fetches the admin secret and sources the following variables:
     name: gitlab
     tasks_from: source-secret
 ```
+### ensure-user
+This task creates a user in the gitlab instance with the folowing variables:
+- `gitlab_user_id`
+
+```yaml
+- include_role:
+    name: gitlab
+    tasks_from: ensure-user
+  vars:
+    gitlab_user_email: "john@dynatrace.test"
+    gitlab_user_name: "John Doe"
+-   gitlab_user_username: "johndoe"
+-   gitlab_user_password: "somethingrandom"
+```
+Password must be 8 characters or longer and include special characters.
 
 ### ensure-group
 This task creates a group if not exists and sources the following variables:

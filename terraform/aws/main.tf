@@ -1,3 +1,17 @@
+# Copyright 2024 Dynatrace LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 #
 # Randomization
 #
@@ -35,6 +49,11 @@ module "ingress" {
   ec2_public_ip        = aws_instance.acebox.public_ip
   network_interface_id = aws_network_interface.acebox_nic.id
   associate_eip        = var.associate_eip
+  skip_domain_workspace_alignment = var.skip_domain_workspace_alignment
+  name_prefix          = var.name_prefix
+  vpc_id      = module.vpc.vpc_id
+  subnet_ids           =  [module.vpc.subnet_ids[0], module.vpc.subnet_ids[1]]
+  aws_instance_ids     = { "acebox" = aws_instance.acebox.id }
 }
 
 #
@@ -48,8 +67,20 @@ module "security_group" {
   vpc_id      = module.vpc.vpc_id
 
   ingress_cidr_blocks = ["0.0.0.0/0"]
-  ingress_rules       = ["http-80-tcp", "https-443-tcp", "ssh-tcp"]
+  ingress_rules       = ["ssh-tcp"]
   egress_rules        = ["all-all"]
+
+  ingress_with_source_security_group_id = [
+    {
+      rule                     = "http-80-tcp"
+      source_security_group_id = module.ingress.alb_security_group_id
+    },
+    {
+      rule                     = "https-443-tcp"
+      source_security_group_id = module.ingress.alb_security_group_id
+    }
+  ]
+
 }
 
 #

@@ -1,9 +1,12 @@
-# Welcome to the ACE-BOX
+# Welcome to the ACE-Box
+
+**Note**
+> This product is not officially supported by Dynatrace.
 
 The ace-box is an all-in-one Autonomous Cloud Enablement machine that you can use as a portable sandbox, demo and testing environment. 
 
 Terraform (Cloud) are used for spinning up the VM, Ansible is used for setting up the various components.
-- [Welcome to the ACE-BOX](#welcome-to-the-ace-box)
+- [Welcome to the ACE-Box](#welcome-to-the-ace-box)
   - [Installation](#installation)
     - [Available use cases:](#available-use-cases)
     - [Useful Terraform Commands](#useful-terraform-commands)
@@ -16,6 +19,7 @@ Terraform (Cloud) are used for spinning up the VM, Ansible is used for setting u
   - [Accessing ACE Dashboard](#accessing-ace-dashboard)
   - [Behind the scenes](#behind-the-scenes)
   - [ACE-CLI](#ace-cli)
+  - [Licensing](#licensing)
 
 
 ## Installation
@@ -47,6 +51,8 @@ The recommended way of installing any ACE box version, local or cloud, is via Te
         | --- | --- | -------- | ------- |
         | dt_tenant | string | **yes** | Dynatrace environment URL |
         | dt_api_token | string | **yes** | Initial API token with scopes `apiTokens.read` and `apiTokens.write`. This token will be used by various roles to manage their own tokens. |
+        | dt_owner_team | string | yes | Required when using Dynatrace enviroments. Check with Dynatrace GCP/AWS admins for your specific team value.
+        | dt_owner_email | string | yes |Required when using Dynatrace enviroments. Format:  name_surname-dynatrace_com. (replace "." with "_" and "@" with "-")
         | acebox_user | string | no | User, for which home directory will be provisioned (Default: "ace") |
         | use_case | string | no | Use case, the ACE Box will be prepared for. Options are:<ul> <li>`demo_default` (Default)</li><li>`demo_all` (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-all/README.md))</li><li>`demo_monaco_gitops`</li><li>`demo_ar_workflows_ansible` (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-ansible/README.md))</li><li>`demo_ar_workflows_gitlab` (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-gitlab/README.md))</li><li>`demo_release_validation_srg_gitlab` (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-release-validation-srg-gitlab/README.md))</li><li>URL to an external repository (see below)</li><li> `demo_quality_gates_jenkins` (DEPRECATED)</li><li>`demo_security_gates_jenkins` (DEPRECATED)</li><li>`demo_quality_gates_gitlab` (DEPRECATED)</li><li>`demo_auto_remediation_ansible` (DEPRECATED)</li></ul>|
         | extra_vars | map(string) | no | Additional variables that are passed and persisted on the VM. Variables can be sourced as `extra_vars.<variable key>` for e.g. external use cases |
@@ -154,3 +160,9 @@ Spinning up an ACE-Box can be split into two main parts:
 
 ## ACE-CLI
 Check out the [ACE CLI](docs/ace-cli.md) page for more details.
+
+## Licensing
+
+Please see `LICENSE` in repo root for license details.
+
+License headers can be added automatically be running `./tools/addlicenseheader.sh` (see file for details).
