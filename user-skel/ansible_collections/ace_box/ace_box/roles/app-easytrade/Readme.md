@@ -71,6 +71,17 @@ To enable monaco:
 
 ```
 
+### (Optional) k3s compatibility
+
+In order to make easytrade work for k3s, add the following variable:
+
+```yaml
+- include_role:
+    name: app-easytrade
+  vars:
+    easytrade_ingress_class: "traefik"
+```
+
 ### Add to ACE Dashboard
 To add references to the ACE dashboard, set the following vars:
 
