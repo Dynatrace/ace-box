@@ -14,7 +14,5 @@
 
 ---
 postgres_namespace: "postgres"
-postgres_user: "admin"
-postgres_db: "mattermost"
 postgres_size: "8Gi"
-postgres_root_creds_secret_name: "ace-postgres-initial-admin-password"
+
