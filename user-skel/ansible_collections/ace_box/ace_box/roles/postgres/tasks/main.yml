@@ -1,0 +1,56 @@
+# Copyright 2024 Dynatrace LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+---
+
+- include_tasks: create-secret.yml
+
+- name: Add Bitnami Helm repository
+  become: true
+  become_user: root
+  shell: helm repo add bitnami https://charts.bitnami.com/bitnami
+
+- name: Update Helm repositories
+  become: true
+  become_user: root
+  shell: helm repo update
+
+- name: Install PostgreSQL using Helm
+  become: true
+  become_user: root
+  kubernetes.core.helm:
+    name: postgres
+    chart_ref: bitnami/postgresql
+    release_namespace: postgres
+    create_namespace: false
+    values:
+      global:
+        postgresql:
+          postgresqlUsername: "{{ postgres_user }}"
+          postgresqlPassword: "{{ postgres_password }}"
+          postgresqlDatabase: "{{ postgres_db }}"
+      persistence:
+        enabled: true
+        size: {{ postgres_size }}
+    wait: true
+    wait_timeout: 15m
+
+- name: Print PostgreSQL connection details
+  debug:
+    msg:
+      - "PostgreSQL Username: {{ postgres_user }}"
+      - "PostgreSQL Password: {{ postgres_password }}"
+      - "PostgreSQL Database: {{ postgres_db }}"
+      - "PostgreSQL Host: postgres.postgres.svc.cluster.local"
+      - "PostgreSQL Port: 5432"
