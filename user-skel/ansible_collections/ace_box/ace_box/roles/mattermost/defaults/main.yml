@@ -14,3 +14,4 @@
 
 ---
 mattermost_namespace: "mattermost"
+mattermost_image_tag: "10.1.1"
