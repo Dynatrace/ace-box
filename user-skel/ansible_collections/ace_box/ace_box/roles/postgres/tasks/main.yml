@@ -23,6 +23,7 @@
   kubernetes.core.helm:
     name: postgres
     chart_ref: bitnami/postgresql
+    version: "{{ postgres_chart_version }}"
     release_namespace: "{{ postgres_namespace }}"
     create_namespace: true
     wait: true
