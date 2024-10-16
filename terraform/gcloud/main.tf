@@ -143,6 +143,10 @@ resource "google_compute_instance_group_manager" "ace_box" {
   target_size        = 1
 }
 
+locals {
+  acebox_hostname     = google_compute_instance_group_manager.ace_box.name
+}
+
 # 
 # HTTPS Loadbalancer
 # 
@@ -189,4 +193,8 @@ module "provisioner" {
   extra_vars         = var.extra_vars
   dashboard_user     = var.dashboard_user
   dashboard_password = local.dashboard_password
+  hostname           = local.acebox_hostname
+  otel_export_endpoint      = var.otel_export_endpoint
+  otel_export_auth_header  = var.otel_export_auth_header
+  otel_export_enable = var.otel_export_enable
 }
