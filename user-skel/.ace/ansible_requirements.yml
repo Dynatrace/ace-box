@@ -18,3 +18,5 @@ collections:
   version: "24.6.1"
 - name: community.docker
   version: "3.4.2"
+- name: community.general
+  version: "9.5.0"
