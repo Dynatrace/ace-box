@@ -49,6 +49,18 @@ A GCP account is needed.
     $ terraform apply
     ```
 
+## Send OpenTelemetry Traces to Dynatrace
+
+It is possible to leverage the [Ansible OpenTelemetry callback plugin](https://docs.ansible.com/ansible/latest/collections/community/general/opentelemetry_callback.html) to send Traces to the Dynatraces API.
+
+The following variable need to be set to enable it:
+
+```hcl
+otel_export_enable = true
+```
+
+> Note: The traces will be sent to the `dt_tenant/api/v2/otlp` endpoint
+> Note: The api token specified in the `dt_api_token` variable needs to have the additional `openTelemetryTrace.ingest` scope 
 
 ## Custom domain support
 

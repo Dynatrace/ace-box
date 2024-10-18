@@ -26,6 +26,8 @@ locals {
   extra_vars         = var.extra_vars
   dashboard_user     = var.dashboard_user
   dashboard_password = var.dashboard_password
+  use_case           = var.use_case
+  otel_export_enable      = var.otel_export_enable
 }
 
 resource "null_resource" "provisioner_home_dir" {
@@ -112,12 +114,22 @@ locals {
     "sudo",
     "ACE_ANSIBLE_WORKDIR=/home/${local.user}/ansible/",
     "ACE_BOX_USER=${local.user}",
+    "OTEL_EXPORTER_OTLP_ENDPOINT=${local.dt_tenant}/api/v2/otlp",
+    "OTEL_EXPORTER_OTLP_HEADERS=\"Authorization=Api-Token%20${local.dt_api_token}\"",
+    "ANSIBLE_OPENTELEMETRY_ENABLED=${local.otel_export_enable}",
+    "OTEL_EXPORTER_OTLP_TRACES_PROTOCOL=http/protobuf",
+    "ANSIBLE_OPENTELEMETRY_ENABLE_FROM_ENVIRONMENT=ANSIBLE_OPENTELEMETRY_ENABLED",
     "ace enable ${var.use_case}",
   ]
   destroy_cmd = [
     "sudo",
     "ACE_ANSIBLE_WORKDIR=/home/${local.user}/ansible/",
     "ACE_BOX_USER=${local.user}",
+    "OTEL_EXPORTER_OTLP_ENDPOINT=${local.dt_tenant}/api/v2/otlp",
+    "OTEL_EXPORTER_OTLP_HEADERS=\"Authorization=Api-Token%20${local.dt_api_token}\"",
+    "ANSIBLE_OPENTELEMETRY_ENABLED=${local.otel_export_enable}",
+    "OTEL_EXPORTER_OTLP_TRACES_PROTOCOL=http/protobuf",
+    "ANSIBLE_OPENTELEMETRY_ENABLE_FROM_ENVIRONMENT=ANSIBLE_OPENTELEMETRY_ENABLED",
     "ace destroy",
   ]
 }

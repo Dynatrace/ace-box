@@ -60,3 +60,7 @@ variable "dashboard_user" {
 variable "dashboard_password" {
 
 }
+
+variable "otel_export_enable" {
+
+}

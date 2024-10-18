@@ -103,4 +103,8 @@ variable "dt_owner_email" {
   default= "pending-email"
   #nullable = false
 }
-
+variable "otel_export_enable" {
+  type        = bool
+  description = "Enable openetelemetry export to Dynatrace"
+  default     = false
+}
