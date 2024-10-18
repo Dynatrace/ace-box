@@ -63,8 +63,8 @@
     name: mattermost
     tasks_from: ensure-admin
   vars:
-    mm_admin_email: "{{ mm_admin_email }}"
-    mm_admin_name: "{{ mm_admin_name }}"
+    mm_admin_email: "{{ mattermost_admin_email }}"
+    mm_admin_name: "{{ mattermost_admin_name }}"
     mm_admin_password: "{{ mattermost_password }}"
 
 - name: Mattermost - Ensure admin token
@@ -72,14 +72,14 @@
     name: mattermost
     tasks_from: ensure-token
   vars:
-    mm_user_name: "{{ mm_admin_name }}"
-    mm_token_name: "{{ mm_token_name }}"
+    mm_user_name: "{{ mattermost_admin_name }}"
+    mm_token_name: "{{ mattermost_token_name }}"
 
 - name: Mattermost - Ensure team
   include_role:
     name: mattermost
     tasks_from: ensure-team
   vars:
-    mm_team_name: "{{ mm_team_name }}"
+    mm_team_name: "{{ mattermost_team_name }}"
     mm_admin_token: "{{ mm_token }}"
-    mm_team_display_name: "{{ mm_team_name }}"
+    mm_team_display_name: "{{ mattermost_team_name }}"

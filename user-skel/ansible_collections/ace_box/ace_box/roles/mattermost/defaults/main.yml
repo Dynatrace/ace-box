@@ -15,6 +15,7 @@
 ---
 mattermost_namespace: "mattermost"
 mattermost_image_tag: "10.1.1"
-mm_admin_email: "admin@example.com"
-mm_admin_name: "admin"
-mm_token_name: "mm-admin-token"
+mattermost_admin_email: "admin@example.com"
+mattermost_admin_name: "admin"
+mattermost_token_name: "mm-admin-token"
+mattermost_team_name: "team-default"

@@ -22,7 +22,7 @@
       - app.kubernetes.io/instance = mattermost
   register: mm_pod
 
-- name: Create User
+- name: Create Admin User
   kubernetes.core.k8s_exec:
     namespace: "{{ mattermost_namespace }}"
     pod: "{{ mm_pod.resources[0].metadata.name }}"
