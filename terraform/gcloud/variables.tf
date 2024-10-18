@@ -103,20 +103,8 @@ variable "dt_owner_email" {
   default= "pending-email"
   #nullable = false
 }
-
-variable "otel_export_endpoint" {
-  type        = string
-  description = "Endpoint where to send opentelemetry data from acebox provisioning to. Example https://your-environment-id.live.dynatrace.com/api/v2/otlp"
-  default     = ""
-}
-
-variable "otel_export_auth_header" {
-  type        = string
-  description = "Authentication Header for opentelemetry collector. To send to Dynatrace directly, this value needs to be URL encoded (for the value of the key=value pair only!) Example Authorization=Api-Token%20dt0c01.ABCD..."
-  default     = ""
-}
 variable "otel_export_enable" {
   type        = bool
-  description = "Enable openetelemetry export"
+  description = "Enable openetelemetry export to Dynatrace"
   default     = false
 }

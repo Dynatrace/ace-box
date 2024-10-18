@@ -26,10 +26,7 @@ locals {
   extra_vars         = var.extra_vars
   dashboard_user     = var.dashboard_user
   dashboard_password = var.dashboard_password
-  hostname           = var.hostname
   use_case           = var.use_case
-  otel_export_endpoint    = var.otel_export_endpoint
-  otel_export_auth_header = var.otel_export_auth_header
   otel_export_enable      = var.otel_export_enable
 }
 
@@ -117,9 +114,8 @@ locals {
     "sudo",
     "ACE_ANSIBLE_WORKDIR=/home/${local.user}/ansible/",
     "ACE_BOX_USER=${local.user}",
-    "OTEL_EXPORTER_OTLP_ENDPOINT=${local.otel_export_endpoint}",
-    "OTEL_EXPORTER_OTLP_HEADERS=\"${local.otel_export_auth_header}\"",
-    "OTEL_SERVICE_NAME=${local.hostname}",
+    "OTEL_EXPORTER_OTLP_ENDPOINT=${local.dt_tenant}/api/v2/otlp",
+    "OTEL_EXPORTER_OTLP_HEADERS=\"Authorization=Api-Token%20${local.dt_api_token}\"",
     "ANSIBLE_OPENTELEMETRY_ENABLED=${local.otel_export_enable}",
     "OTEL_EXPORTER_OTLP_TRACES_PROTOCOL=http/protobuf",
     "ANSIBLE_OPENTELEMETRY_ENABLE_FROM_ENVIRONMENT=ANSIBLE_OPENTELEMETRY_ENABLED",
@@ -129,9 +125,8 @@ locals {
     "sudo",
     "ACE_ANSIBLE_WORKDIR=/home/${local.user}/ansible/",
     "ACE_BOX_USER=${local.user}",
-    "OTEL_EXPORTER_OTLP_ENDPOINT=${local.otel_export_endpoint}",
-    "OTEL_EXPORTER_OTLP_HEADERS=\"${local.otel_export_auth_header}\"",
-    "OTEL_SERVICE_NAME=${local.hostname}",
+    "OTEL_EXPORTER_OTLP_ENDPOINT=${local.dt_tenant}/api/v2/otlp",
+    "OTEL_EXPORTER_OTLP_HEADERS=\"Authorization=Api-Token%20${local.dt_api_token}\"",
     "ANSIBLE_OPENTELEMETRY_ENABLED=${local.otel_export_enable}",
     "OTEL_EXPORTER_OTLP_TRACES_PROTOCOL=http/protobuf",
     "ANSIBLE_OPENTELEMETRY_ENABLE_FROM_ENVIRONMENT=ANSIBLE_OPENTELEMETRY_ENABLED",

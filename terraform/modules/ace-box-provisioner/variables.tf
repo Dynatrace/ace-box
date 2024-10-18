@@ -61,18 +61,6 @@ variable "dashboard_password" {
 
 }
 
-variable "otel_export_endpoint" {
-
-}
-
-variable "otel_export_auth_header" {
-
-}
-
 variable "otel_export_enable" {
-
-}
-
-variable "hostname" {
 
 }

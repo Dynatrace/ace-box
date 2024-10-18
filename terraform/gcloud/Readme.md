@@ -51,18 +51,16 @@ A GCP account is needed.
 
 ## Send OpenTelemetry Traces to Dynatrace
 
-It is possible to leverage the [Ansible OpenTelemetry callback plugin](https://docs.ansible.com/ansible/latest/collections/community/general/opentelemetry_callback.html) to send Traces to Dynatraces or an OpenTelemetry collector. This is currently using the `http/protobuf` transport protocol.
+It is possible to leverage the [Ansible OpenTelemetry callback plugin](https://docs.ansible.com/ansible/latest/collections/community/general/opentelemetry_callback.html) to send Traces to the Dynatraces API.
 
-The following variables need to be set :
+The following variable need to be set to enable it:
 
 ```hcl
-otel_export_endpoint = "https://Your endpoint" # Endpoint where to send opentelemetry data from acebox provisioning to. For Example https://your-environment-id.live.dynatrace.com/api/v2/otlp to send directly to Dynatrace
-otel_export_auth_header = "Authorization=Api-Token%20dt0c01.ABCD.." # Authentication Header for opentelemetry collector. This is in the format key=value
 otel_export_enable = true
 ```
 
-> Note: The API token used for this needs to have the `openTelemetryTrace.ingest` scope
-> Note: For `otel_export_auth_header`, this value needs to be URL encoded (for the value of the key=value pair only!) Example Authorization=Api-Token%20dt0c01.ABCD... So no need to url encode the `=` sign, only what comes after (the value)
+> Note: The traces will be sent to the `dt_tenant/api/v2/otlp` endpoint
+> Note: The api token specified in the `dt_api_token` variable needs to have the additional `openTelemetryTrace.ingest` scope 
 
 ## Custom domain support
 
