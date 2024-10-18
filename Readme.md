@@ -33,7 +33,7 @@ The recommended way of installing any ACE box version, local or cloud, is via Te
    1. Check out the `Readme.md` for your specific cloud provider to verify the provider-specific configuration that needs to be set
    2. Add ace-box specific information (see below for more details)
    3. Set them by either
-      1. adding `dt_tenant, dt_api_token` to a `terraform.tfvars` file:
+      1. adding `dt_tenant, dt_api_token, ...` to a `terraform.tfvars` file:
           ```
           dt_tenant = "https://....dynatrace.com"
           dt_api_token = "dt0c01...."
@@ -54,7 +54,7 @@ The recommended way of installing any ACE box version, local or cloud, is via Te
         | dt_owner_team | string | yes | Required when using Dynatrace enviroments. Check with Dynatrace GCP/AWS admins for your specific team value.
         | dt_owner_email | string | yes |Required when using Dynatrace enviroments. Format:  name_surname-dynatrace_com. (replace "." with "_" and "@" with "-")
         | acebox_user | string | no | User, for which home directory will be provisioned (Default: "ace") |
-        | use_case | string | no | Use case, the ACE Box will be prepared for. Options are:<ul> <li>`demo_default` (Default)</li><li>`demo_all` (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-all/README.md))</li><li>`demo_monaco_gitops`</li><li>`demo_ar_workflows_ansible` (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-ansible/README.md))</li><li>`demo_ar_workflows_gitlab` (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-gitlab/README.md))</li><li>`demo_release_validation_srg_gitlab` (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-release-validation-srg-gitlab/README.md))</li><li>URL to an external repository (see below)</li><li> `demo_quality_gates_jenkins` (DEPRECATED)</li><li>`demo_security_gates_jenkins` (DEPRECATED)</li><li>`demo_quality_gates_gitlab` (DEPRECATED)</li><li>`demo_auto_remediation_ansible` (DEPRECATED)</li></ul>|
+        | use_case | string | no | Hardened use cases embedded in the ACE-Box. Options are:<ul><li>`demo_all` (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-all/README.md))</li><li>`demo_monaco_gitops`</li><li>`demo_ar_workflows_ansible` (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-ansible/README.md))</li><li>`demo_ar_workflows_gitlab` (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-gitlab/README.md))</li><li>`demo_release_validation_srg_gitlab` (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-release-validation-srg-gitlab/README.md))</li><li>URL to an external repository (see below)</li></ul>|
         | extra_vars | map(string) | no | Additional variables that are passed and persisted on the VM. Variables can be sourced as `extra_vars.<variable key>` for e.g. external use cases |
         |dashboard_user|string|no|ACE-Box dashboard user (Default: "dynatrace")|
         |dashboard_password|string|no|ACE-Box dashboard password. If not set, a random password will be generated. The password can retrieved by running `terraform output dashboard_password`. **Note**: Output shows leading and trailing quotes that are not part of the password!|
@@ -69,8 +69,6 @@ The recommended way of installing any ACE box version, local or cloud, is via Te
        
         > Note: `demo_release_validation_srg_gitlab` requires extra variables. See [use case README](user-skel/ansible_collections/ace_box/ace_box/roles/demo-release-validation-srg-gitlab/README.md) for details.
 
-        > Note: `demo_quality_gates_jenkins`,  `demo_security_gates_jenkins`, `demo_quality_gates_gitlab` and `demo_auto_remediation_ansible` are based on the previous Dynatrace. Although technically still working they are considered deprecated.
-
 4. Run `terraform init`
 5. Run `terraform apply`
 6. Grab a coffee, this process will take some time...
@@ -79,15 +77,10 @@ The recommended way of installing any ACE box version, local or cloud, is via Te
 
   Use Case | k8s | OneAgent | Synth AG | Jenkins | Gitea | Registry | GitLab | AWX | Keptn | Dashboard | Notes |
   -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- |
-  `demo_default` | | | | | | | | | | | Empty use case, pointing to the [external use case template](https://github.com/dynatrace-ace/ace-box-ext-template). |
   [`demo_release_validation_srg_gitlab`](user-skel/ansible_collections/ace_box/ace_box/roles/demo-release-validation-srg-gitlab/README.md) | x | x | x |  |  |  | x |  | x |  x | Demo flow for Release Validation using GitLab/Site Reliability Guardian |
-  [`demo_ar_workflows_ansible`](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-gitlab/README.md) | x | x | | x | x | x | x | x |  | x | Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows |
+  [`demo_ar_workflows_ansible`](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-ansible/README.md) | x | x | | x | x | x | x | x |  | x | Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows |
   [`demo_ar_workflows_gitlab`](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-gitlab/README.md) | x | x | | | | x |  | x |  | x | Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows |
   `demo_monaco_gitops` | x | x | x | x | x | x |  |  |  | x | Demo flow for Application Onboarding using Jenkins/Gitea |
-  `demo_quality_gates_jenkins` (DEPRECATED) | x | x | x | x | x | x |  |  | x | x | Demo flow for Quality Gates using Jenkins/Gitea/Cloud Automation. |
-  `demo_security_gates_jenkins` (DEPRECATED) | x | x | x | x | x | x |  |  | x |  x | Demo flow for Security Gates using Jenkins/Gitea/Cloud Automation |
-  `demo_quality_gates_gitlab` (DEPRECATED) | x | x | x |  |  |  | x |  | x |  x | Demo flow for Quality Gates using GitLab/Cloud Automation |
-  `demo_auto_remediation_ansible` (DEPRECATED) | x | x | x | x | x | x |  | x |  | x | Demo flow for Quality Gates using Jenkins/Gitea/Cloud Automation |
 
   > Note: You can also enter a link to an external repository (e.g.: `https://github.com/my-org/my-ext-use-case.git`) if you want to load an external use case. See [External Use Case](#external-use-case) for more details and examples
 
@@ -105,24 +98,9 @@ Bringing your own Ubuntu Virtual Machine has not been tested, but should be poss
 
 Check out [BYO VM](docs/byo-vm.md) documentation for more details.
 
-## Default mode
-
-By default, an ACE Box is prepared for a demo use case (i.e. "demo_default"). The following resources will be deployed, configured and ready for you to use:
-
-- Microk8s 
-- Helm 
-- Dynatrace Acitve Gate for Private Synthetic gets installed and automatically configured in the Dynatrace tenant as a Private Location
-- Dynatrace OneAgent operator gets installed via Helm
-- Gitea gets installed, a user gets created and a repository created
-- Cloud Automation instance linked (opt. Keptn installed)
-- Jenkins gets installed with all the plugins that are needed, pipeline libraries get added for interaction with Cloud Automation (Keptn) and Dynatrace, pipelines get created and linked to the gitea repository
-- A dashboard gets built and deployed with links to all the components as well as credentials
-- A kubernetes ingress gets configured for all applications so it is easy to navigate
-- Dynatrace tag rules and request attributes get set up via the API
-
 ## External use case
 
-In addition to use cases provided natively by the ACE-Box, it is now possible to source external use cases. This allows using the ACE-Box as a platform to develop own use cases, demos, trainings, etc.
+In addition to use cases provided natively by the ACE-Box, it is possible to source external use cases. This allows using the ACE-Box as a platform to develop own use cases, demos, trainings, etc.
 
 Check out [External Use Case](docs/external-use-case.md) documentation for more info.
 
@@ -140,13 +118,15 @@ GitLab | 11 mCores, 2GB RAM
 Jenkins | 1mCore, 1GB RAM
 Gitea | 2 mCores, 250MB RAM
 
+For up to date information, check the currated role's Readme for more information
+
 
 ## Troubleshooting
 1. Make sure that the cloud account you are using for provisioning has sufficient permissions to create all the resources in the particular region
    
 
 ## Accessing ACE Dashboard
-At the end of the provisioning, an ACE Dashboard gets created with more information on how to use the ACE-BOX. Check out [ACE Dashboard](Dashboard.md) for more details.
+At the end of the provisioning of any of the out of the box supported use cases, an ACE Dashboard gets created with more information on how to use the ACE-BOX. Check out [ACE Dashboard](Dashboard.md) for more details.
 
 ## Behind the scenes
 Spinning up an ACE-Box can be split into two main parts:
@@ -156,7 +136,7 @@ Spinning up an ACE-Box can be split into two main parts:
    1) Copying working directory: Everything in [user-skel](/user-skel) is copied to the VM
    2) Package manager update: [init.sh](/user-skel/init.sh) is run. This runs an `apt-get` update and installs `Python3.9`, Ansible and the `ace-cli`
    3) `ace prepare` is run, which asks for ACE-Box specific configurations (e.g. protocol, custom domain, ...)
-   4) Once the VM is prepared, the actual installation happens by running `ace install default`
+   4) Once the VM is prepared, the actual installation happens by running `ace enable USECASE_NAME|USECASE_URL`
 
 ## ACE-CLI
 Check out the [ACE CLI](docs/ace-cli.md) page for more details.
