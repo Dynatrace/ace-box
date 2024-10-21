@@ -1,0 +1,11 @@
+---
+extRefs:
+  Mattermost:
+    url: "{{ ingress_protocol }}://mattermost.{{ ingress_domain }}"
+    creds:
+    - description: Username
+      type: text
+      value: "{{ mattermost_admin_name }}"
+    - description: Password
+      type: password
+      value: "{{ mm_admin_password }}"

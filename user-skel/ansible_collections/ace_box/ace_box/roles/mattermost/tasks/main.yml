@@ -83,3 +83,11 @@
     mm_team_name: "{{ mattermost_team_name }}"
     mm_admin_token: "{{ mm_token }}"
     mm_team_display_name: "{{ mattermost_team_name }}"
+
+# Include Dashboard values
+- set_fact:
+    include_dashboard_value_file: "{{ role_path }}/templates/mattermost-dashboard.yml.j2"
+
+- include_role:
+    name: dashboard
+    tasks_from: template-values-file
