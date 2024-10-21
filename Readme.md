@@ -6,6 +6,7 @@
 ## What is it?
 
 The ACE-Box is a framework that can be used as a portable sandbox, demo and testing environment.
+This framework deploys a virtual machine (VM) as well as all the modules and resources that have been declared in a configuration file.
 
 ### Example
 
@@ -22,7 +23,12 @@ More details of the available modules [below](link somewhere)
 
 ## ARCHITECTURE
 
-Terraform (Cloud) are used for spinning up the VM, Ansible is used for setting up the various components.
+Terraform is used for spinning up the VM and all the needed resources within the Cloud Provider environment (AWS, GCP, Azure).
+Ansible is used for setting up the various modules on top of the VM.
+
+Referring to the previous example, Terraform is used to provision the VM and auxiliary resources on the Cloud Provider, while Ansible is used to deploy all the components (k8s, DT Operator and Easytrade) on the VM.
+
+
 - [Welcome to the ACE-Box](#welcome-to-the-ace-box)
   - [Installation](#installation)
     - [Available use cases:](#available-use-cases)
