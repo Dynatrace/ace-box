@@ -17,10 +17,9 @@
   ansible.builtin.uri:
     url: "{{ ingress_protocol }}://mattermost.{{ ingress_domain }}/api/v4/teams/{{ mm_team_id }}/channels/name/{{ mm_channel_name }}"
     method: GET
-    status_code: [200, 404]
-    body_format: json
+    status_code: [200, 404, 400]
     headers:
-      Authorization: "Bearer {{ mm_admin_token }}"
+      Authorization: "Bearer {{ mm_admin_token | default(mm_token) }}"
   register: mm_channel_get_raw
 
 - block:
@@ -36,13 +35,16 @@
         status_code: 201
         body_format: json
         headers:
-          Authorization: "Bearer {{ mm_admin_token }}"
+          Authorization: "Bearer {{ mm_admin_token | default(mm_token) }}"
       register: mm_channel_post_raw
-    - set_fact:
-        mm_channel_id: "{{ mm_channel_post_raw.json.id }}"
-  when: mm_channel_get_raw.status == 404
 
-- block:
-    - ansible.builtin.set_fact:
-        mm_channel_id: "{{ mm_channel_get_raw.json.id }}"
+    - name: Set channel ID if new channel is created
+      ansible.builtin.set_fact:
+        mm_channel_id: "{{ mm_channel_post_raw.json.id }}"
+      when: mm_channel_post_raw.status == 201
+  when: mm_channel_get_raw.status in [404, 400]
+
+- name: Set channel ID if channel exists
+  ansible.builtin.set_fact:
+    mm_channel_id: "{{ mm_channel_get_raw.json.id }}"
   when: mm_channel_get_raw.status == 200
