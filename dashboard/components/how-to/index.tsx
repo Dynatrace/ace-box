@@ -21,6 +21,7 @@ import Keptn from "./keptn";
 import Dynatrace from "./dynatrace";
 import Gitea from "./gitea";
 import Gitlab from "./gitlab";
+import Mattermost from "./mattermost";
 import Jenkins from "./jenkins";
 import Kubernetes from "./kubernetes";
 
@@ -47,6 +48,7 @@ const ToolTabs: FunctionComponent<ToolTabsProps> = () => {
     GITLAB: <Gitlab />,
     JENKINS: <Jenkins />,
     KUBERNETES: <Kubernetes />,
+    MATTERMOST: <Mattermost />,
   };
 
   const isBuiltInHowTo = !!activeTab && activeTab.toUpperCase() in howTos;
