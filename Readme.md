@@ -3,7 +3,24 @@
 **Note**
 > This product is not officially supported by Dynatrace.
 
-The ace-box is an all-in-one Autonomous Cloud Enablement machine that you can use as a portable sandbox, demo and testing environment. 
+## What is it?
+
+The ACE-Box is a framework that can be used as a portable sandbox, demo and testing environment.
+
+### Example
+
+You can use different modules to build an environment composed by the following:
+- k8s (k3s)
+- Dynatrace Operator
+- Easytrade (demo app)
+
+In order to automatically provision a demo environment to showcase Dynatrace observability
+
+SCREENSHOT OF EASYTRADE BEING MONITORED BY DYNATRACE
+
+More details of the available modules [below](link somewhere)
+
+## ARCHITECTURE
 
 Terraform (Cloud) are used for spinning up the VM, Ansible is used for setting up the various components.
 - [Welcome to the ACE-Box](#welcome-to-the-ace-box)
