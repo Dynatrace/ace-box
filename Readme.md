@@ -3,46 +3,75 @@
 **Note**
 > This product is not officially supported by Dynatrace.
 
-## What is it?
+- [What is it?](#what-is-it)
+- [Who is it for?](#who-is-it-for)
+- [Architecture](#architecture)
+- [Use-cases](#use-cases)
+  - [Available use cases:](#available-use-cases)
+  - [External use-case](#external-use-case)
+- [Installation](#installation)
+  - [Useful Terraform Commands](#useful-terraform-commands)
+- [Alt: Bring-your-own-VM](#alt-bring-your-own-vm)
+- [Default mode](#default-mode)
+- [Configuration settings](#configuration-settings)
+  - [Resource Requirements](#resource-requirements)
+- [Troubleshooting](#troubleshooting)
+- [Accessing ACE Dashboard](#accessing-ace-dashboard)
+- [Behind the scenes](#behind-the-scenes)
+- [ACE-CLI](#ace-cli)
+- [Licensing](#licensing)
 
-The ACE-Box is a framework that can be used as a portable sandbox, demo and testing environment.
-This framework deploys a virtual machine (VM) as well as all the modules and resources that have been declared in a configuration file.
+## What is it?
+The ACE-Box is a framework that can be used as a portable sandbox, demo and testing environment. It has been designed to simplify resource deployment and to streamline content creation.
+The ACE-box allows to deploy compute instances (usually cloud-hosted virtual machines) and to install modules on them. 
+The framework follows a declarative approach where modules, resources and configurations are defined in a set of configuration files.
+
+
+## Who is it for?
+The ACE-Box framework is ideal for anybody who needs to create isolated testing environments, run demonstrations, or build reproducible deployment setups. It caters to those seeking to prototype new features, test new features and integrations, or deliver hands-on training in an efficient and portable manner.
+
 
 ### Example
-
-You can use different modules to build an environment composed by the following:
+You can configure the ACE-Box to spin up a virtual machine hosted on AWS and use different built-in modules to install on that machine the following components:
 - k8s (k3s)
 - Dynatrace Operator
 - Easytrade (demo app)
 
-In order to automatically provision a demo environment to showcase Dynatrace observability
+The environment (VM + the modules installed on it) is automatically provisioned by the framework and it can be leveraged to showcase Dynatrace observability capabilities:
 
 SCREENSHOT OF EASYTRADE BEING MONITORED BY DYNATRACE
 
-More details of the available modules [below](link somewhere)
 
-## ARCHITECTURE
+## Architecture
+Terraform is used for spinning up and configure the compute instance and all the needed resources within the Cloud Provider environment (AWS, GCP, Azure).
+Ansible is used for setting up the various modules on top of the compute instance.
+Referring to the previous example, Terraform is used to provision the virtual machine and some auxiliary resources on the Cloud Provider environment, while Ansible is used to deploy the k8s cluster, Dynatrace operator and Easytrade application on the VM.
 
-Terraform is used for spinning up the VM and all the needed resources within the Cloud Provider environment (AWS, GCP, Azure).
-Ansible is used for setting up the various modules on top of the VM.
+### Ace CLI
+High-level description ...
+Check out the [ACE CLI](docs/ace-cli.md) page for more details.
 
-Referring to the previous example, Terraform is used to provision the VM and auxiliary resources on the Cloud Provider, while Ansible is used to deploy all the components (k8s, DT Operator and Easytrade) on the VM.
+### Monaco
+High-level description ...
 
 
-- [Welcome to the ACE-Box](#welcome-to-the-ace-box)
-  - [Installation](#installation)
-    - [Available use cases:](#available-use-cases)
-    - [Useful Terraform Commands](#useful-terraform-commands)
-  - [Alt: Bring-your-own-VM](#alt-bring-your-own-vm)
-  - [Default mode](#default-mode)
-  - [External use case](#external-use-case)
-  - [Configuration settings](#configuration-settings)
-    - [Resource Requirements](#resource-requirements)
-  - [Troubleshooting](#troubleshooting)
-  - [Accessing ACE Dashboard](#accessing-ace-dashboard)
-  - [Behind the scenes](#behind-the-scenes)
-  - [ACE-CLI](#ace-cli)
-  - [Licensing](#licensing)
+## Use-cases
+High-level description ...
+
+### Available use cases:
+
+  Use Case | k8s | OneAgent | Synth AG | Jenkins | Gitea | Registry | GitLab | AWX | Keptn | Dashboard | Notes |
+  -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- |
+  [`demo_release_validation_srg_gitlab`](user-skel/ansible_collections/ace_box/ace_box/roles/demo-release-validation-srg-gitlab/README.md) | x | x | x |  |  |  | x |  | x |  x | Demo flow for Release Validation using GitLab/Site Reliability Guardian |
+  [`demo_ar_workflows_ansible`](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-ansible/README.md) | x | x | | x | x | x | x | x |  | x | Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows |
+  [`demo_ar_workflows_gitlab`](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-gitlab/README.md) | x | x | | | | x |  | x |  | x | Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows |
+  `demo_monaco_gitops` | x | x | x | x | x | x |  |  |  | x | Demo flow for Application Onboarding using Jenkins/Gitea |
+
+  > Note: You can also enter a link to an external repository (e.g.: `https://github.com/my-org/my-ext-use-case.git`) if you want to load an external use case. See [External Use Case](#external-use-case) for more details and examples
+
+### External use case
+In addition to use cases provided natively by the ACE-Box, it is possible to source external use cases. This allows using the ACE-Box as a platform to develop own use cases, demos, trainings, etc.
+Check out [External Use Case](docs/external-use-case.md) documentation for more info.
 
 
 ## Installation
@@ -96,16 +125,15 @@ The recommended way of installing any ACE box version, local or cloud, is via Te
 5. Run `terraform apply`
 6. Grab a coffee, this process will take some time...
 
-### Available use cases:
+### Behind the scenes
+Spinning up an ACE-Box can be split into two main parts:
 
-  Use Case | k8s | OneAgent | Synth AG | Jenkins | Gitea | Registry | GitLab | AWX | Keptn | Dashboard | Notes |
-  -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- |
-  [`demo_release_validation_srg_gitlab`](user-skel/ansible_collections/ace_box/ace_box/roles/demo-release-validation-srg-gitlab/README.md) | x | x | x |  |  |  | x |  | x |  x | Demo flow for Release Validation using GitLab/Site Reliability Guardian |
-  [`demo_ar_workflows_ansible`](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-ansible/README.md) | x | x | | x | x | x | x | x |  | x | Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows |
-  [`demo_ar_workflows_gitlab`](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-gitlab/README.md) | x | x | | | | x |  | x |  | x | Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows |
-  `demo_monaco_gitops` | x | x | x | x | x | x |  |  |  | x | Demo flow for Application Onboarding using Jenkins/Gitea |
-
-  > Note: You can also enter a link to an external repository (e.g.: `https://github.com/my-org/my-ext-use-case.git`) if you want to load an external use case. See [External Use Case](#external-use-case) for more details and examples
+1) Deploying a VM: This happens automatically when you use the included Terraform projects or you can bring your own VM.
+2) After a VM is available, provisioners install the actual application (i.e. "ACE-Box" logic). This process itself consists of a couple steps:
+   1) Copying working directory: Everything in [user-skel](/user-skel) is copied to the VM
+   2) Package manager update: [init.sh](/user-skel/init.sh) is run. This runs an `apt-get` update and installs `Python3.9`, Ansible and the `ace-cli`
+   3) `ace prepare` is run, which asks for ACE-Box specific configurations (e.g. protocol, custom domain, ...)
+   4) Once the VM is prepared, the actual installation happens by running `ace enable USECASE_NAME|USECASE_URL`
 
 ### Useful Terraform Commands
 
@@ -120,12 +148,6 @@ Command  | Result
 Bringing your own Ubuntu Virtual Machine has not been tested, but should be possible.
 
 Check out [BYO VM](docs/byo-vm.md) documentation for more details.
-
-## External use case
-
-In addition to use cases provided natively by the ACE-Box, it is possible to source external use cases. This allows using the ACE-Box as a platform to develop own use cases, demos, trainings, etc.
-
-Check out [External Use Case](docs/external-use-case.md) documentation for more info.
 
 ## Configuration settings
 
@@ -151,18 +173,6 @@ For up to date information, check the currated role's Readme for more informatio
 ## Accessing ACE Dashboard
 At the end of the provisioning of any of the out of the box supported use cases, an ACE Dashboard gets created with more information on how to use the ACE-BOX. Check out [ACE Dashboard](Dashboard.md) for more details.
 
-## Behind the scenes
-Spinning up an ACE-Box can be split into two main parts:
-
-1) Deploying a VM: This happens automatically when you use the included Terraform projects or you can bring your own VM.
-2) After a VM is available, provisioners install the actual application (i.e. "ACE-Box" logic). This process itself consists of a couple steps:
-   1) Copying working directory: Everything in [user-skel](/user-skel) is copied to the VM
-   2) Package manager update: [init.sh](/user-skel/init.sh) is run. This runs an `apt-get` update and installs `Python3.9`, Ansible and the `ace-cli`
-   3) `ace prepare` is run, which asks for ACE-Box specific configurations (e.g. protocol, custom domain, ...)
-   4) Once the VM is prepared, the actual installation happens by running `ace enable USECASE_NAME|USECASE_URL`
-
-## ACE-CLI
-Check out the [ACE CLI](docs/ace-cli.md) page for more details.
 
 ## Licensing
 
