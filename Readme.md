@@ -128,31 +128,32 @@ The recommended way of installing any ACE box version, local or cloud, is via Te
 6. Grab a coffee, this process will take some time...
 
 ### Behind the scenes
-Spinning up an ACE-Box can be split into two main parts:
+Spinning up an ACE-Box instance can be split into two main parts:
 
 1) Deploying a VM: This happens automatically when you use the included Terraform projects or you can bring your own VM.
-2) After a VM is available, provisioners install the actual application (i.e. "ACE-Box" logic). This process itself consists of a couple steps:
-   1) Copying working directory: Everything in [user-skel](/user-skel) is copied to the VM
-   2) Package manager update: [init.sh](/user-skel/init.sh) is run. This runs an `apt-get` update and installs `Python3.9`, Ansible and the `ace-cli`
-   3) `ace prepare` is run, which asks for ACE-Box specific configurations (e.g. protocol, custom domain, ...)
-   4) Once the VM is prepared, the actual installation happens by running `ace enable USECASE_NAME|USECASE_URL`
+2) After a VM is available, the provisioners install the ACE-Box framework. This process itself consists in a couple steps:
+   1) Working directory copy: everything in [user-skel](/user-skel) is copied to the VM local filesystem
+   2) Package manager update: [init.sh](/user-skel/init.sh) is run. This runs an `apt-get` update and installs `Python3.9`, `Ansible` and the `ace-cli`
+   3) `ace prepare` command is run, which asks for ACE-Box specific configurations (e.g. protocol, custom domain, ...)
+   4) Once the VM is prepared, `ace enable USECASE_NAME|USECASE_URL` command is run to perform the actual deployment of the modules (e.g: softwares, applications, ..) and implement the configurations that have been defined in the use-case's configuration files
+
+
 
 ### Useful Terraform Commands
-
 Command  | Result
 -------- | -------
 `terraform destroy` | deletes any resources created by Terraform |
 `terraform plan -destroy` | view a speculative destroy plan, to see what the effect of destroying would be |
 `terraform show` | Outputs the resources created by Terraform. Useful to verify IP addresses and the dashboard URL. 
 
-## Alt: Bring-your-own-VM
 
+## Bring-your-own-VM
 Bringing your own Ubuntu Virtual Machine has not been tested, but should be possible.
 
 Check out [BYO VM](docs/byo-vm.md) documentation for more details.
 
-## Configuration settings
 
+## Configuration settings
 The ace-box comes with a certain number of features and settings that can be set/enabled/disabled. Adding and removing features will change the resource consumption. Most settings have default values and do not need to be set explicitly, but they can be overwritten if needed. Please refer to the ace cli instruction below.
 
 
