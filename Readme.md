@@ -31,12 +31,6 @@ The framework follows a declarative approach where modules, resources and config
 The ACE-Box framework is ideal for anybody who needs to create isolated testing environments, run demonstrations, or build reproducible deployment setups. It caters to those seeking to prototype new features, test new features and integrations, or deliver hands-on training in an efficient and portable manner.
 
 
-### Ace CLI
-High-level description ...
-
-Check out the [ACE CLI](docs/ace-cli.md) page for more details.
-
-
 ## Use-cases
 Within the ACE-Box framework, the term _use-case_ is used to identify a set of resources and configurations to be setup for reproducting a specific scenario and performing activities such as a feature showcase, demonstrations and hands-on trainings. The use-case includes a set of configuration files that are used by the ACE-Box to build all the needed assets and implement the necessary configurations on the systems.
 
@@ -75,6 +69,11 @@ Check out [External Use Case](docs/external-use-case.md) documentation for more 
 _Terraform_ is used for spinning up and configure the compute instance and all the needed resources within the Cloud Provider environment (AWS, GCP, Azure).
 _Ansible_ is used for setting up the various modules on top of the compute instance.
 Referring to the previous example, Terraform is used to provision the virtual machine and some auxiliary resources on the Cloud Provider environment, while Ansible is used to deploy the k8s cluster, Dynatrace operator and Easytrade application on the VM.
+
+### Ace CLI
+High-level description ...
+
+Check out the [ACE CLI](docs/ace-cli.md) page for more details.
 
 
 ## Installation
