@@ -8,15 +8,14 @@
 - [What is it?](#what-is-it)
 - [Who is it for?](#who-is-it-for)
 - [Use-cases](#use-cases)
-  - [Internal use cases](#available-use-cases)
-  - [External use-cases](#external-use-case)
+  - [Out-of-the-box use cases](#out-of-the-box-use-cases)
+  - [Custom use-cases](#custom-use-cases)
 - [Architecture](#architecture)
   - [ACE CLI](#ace-cli)
   - [ACE Dashboard](#ace-dashboard)
 - [Installation](#installation)
   - [Useful Terraform Commands](#useful-terraform-commands)
   - [Behind the scenes](#behind-the-scenes)
-- [Bring-your-own-VM](#alt-bring-your-own-vm)
 - [Default mode](#default-mode)
 - [Configuration settings](#configuration-settings)
   - [Resource Requirements](#resource-requirements)
@@ -47,11 +46,11 @@ The environment (VM + the modules installed on it) is automatically provisioned 
 SCREENSHOT OF EASYTRADE BEING MONITORED BY DYNATRACE
 
 
-### Internal use-cases:
-The ACE-Box framework comes with a set of use-cases which are referred as _internal use-cases_ which have been added in the past by the ACE-Box contributors.
+### Out-of-the-box use-cases:
+The ACE-Box framework comes with a set of use-cases which are referred as _out-of-the-box use-cases_ which have been added in the past by the ACE-Box contributors.
 It is possible to extend the internal use-cases ...
 
-The list of available internal use-cases is reported below:
+The list of available out-of-the-box use-cases is reported below:
 Use Case | k8s | OneAgent | Synth AG | Jenkins | Gitea | Registry | GitLab | AWX | Keptn | Dashboard | Notes |
 -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- |
 [`demo_release_validation_srg_gitlab`](user-skel/ansible_collections/ace_box/ace_box/roles/demo-release-validation-srg-gitlab/README.md) | x | x | x |  |  |  | x |  | x |  x | Demo flow for Release Validation using GitLab/Site Reliability Guardian |
@@ -59,10 +58,10 @@ Use Case | k8s | OneAgent | Synth AG | Jenkins | Gitea | Registry | GitLab | AWX
 [`demo_ar_workflows_gitlab`](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-gitlab/README.md) | x | x | | | | x |  | x |  | x | Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows |
 `demo_monaco_gitops` | x | x | x | x | x | x |  |  |  | x | Demo flow for Application Onboarding using Jenkins/Gitea |
 
-> Note: You can also enter a link to an external repository (e.g.: `https://github.com/my-org/my-ext-use-case.git`) if you want to load an external use case. See [External Use Case](#external-use-case) for more details and examples
+> Note: You can also enter a link to an external repository (e.g.: `https://github.com/my-org/my-ext-use-case.git`) if you want to load an custom use case. See [External Use Case](#external-use-case) for more details and examples
 
-### External use-cases
-In addition to the internal use-cases provided natively by the ACE-Box, it is possible to source external use cases. This allows using the ACE-Box as a platform to develop your own use cases, demonstrations, trainings, etc.
+### Custom use-cases
+In addition to the out-of-the-box use-cases provided natively by the ACE-Box, it is possible to source custom use cases. This allows using the ACE-Box as a platform to develop your own use cases, demonstrations, trainings, etc.
 
 Check out [External Use Case](docs/external-use-case.md) documentation for more info.
 
@@ -75,10 +74,10 @@ Referring to the previous example, Terraform is used to provision the virtual ma
 ### Ace CLI
 High-level description ...
 
+Check out the [ACE CLI](docs/ace-cli.md) page for more details.
+
 ### ACE Dashboard
 At the end of the provisioning of any of the out of the box supported use cases, an ACE Dashboard gets created with more information on how to use the ACE-BOX. Check out [ACE Dashboard](Dashboard.md) for more details.
-
-Check out the [ACE CLI](docs/ace-cli.md) page for more details.
 
 
 ## Installation
@@ -87,7 +86,7 @@ The recommended way of installing any ACE box version, local or cloud, is via Te
 1. Check prereqs:
      - Terraform installed
      - Dynatrace tenant (prod or sprint, dev not recommended)
-2. Go to folder `./terraform/<aws, azure or gcloud>/`
+2. Go to folder `./terraform/<aws, azure or gcloud>/` or check out [BYO VM](docs/byo-vm.md) documentation for more details on how to use a VM of your choice.
 3. Set required Terraform variables:
    1. Check out the `Readme.md` for your specific cloud provider to verify the provider-specific configuration that needs to be set
    2. Add ace-box specific information (see below for more details)
@@ -150,33 +149,7 @@ Spinning up an ACE-Box instance can be split into two main parts:
    4) Once the VM is prepared, `ace enable USECASE_NAME|USECASE_URL` command is run to perform the actual deployment of the modules (e.g: softwares, applications, ..) and implement the configurations that have been defined in the use-case's configuration files
 
 
-## Bring-your-own-VM
-Bringing your own Ubuntu Virtual Machine has not been tested, but should be possible.
-
-Check out [BYO VM](docs/byo-vm.md) documentation for more details.
-
-
-## Configuration settings
-The ace-box comes with a certain number of features and settings that can be set/enabled/disabled. Adding and removing features will change the resource consumption. Most settings have default values and do not need to be set explicitly, but they can be overwritten if needed. Please refer to the ace cli instruction below.
-
-### Resource Requirements
-Each feature requires a certain amount of resources - on top of the base microk8s requirements.
-The resource requirements below are measured using Dynatrace's Kubernetes monitoring
-Feature  | Kubernetes Resource Usage | 
--------- | ------- |
-GitLab | 11 mCores, 2GB RAM
-Jenkins | 1mCore, 1GB RAM
-Gitea | 2 mCores, 250MB RAM
-
-For up to date information, check the currated role's Readme for more information
-
-
-## Troubleshooting
-1. Make sure that the cloud account you are using for provisioning has sufficient permissions to create all the resources in the particular region
-   
-
 ## Licensing
-
 Please see `LICENSE` in repo root for license details.
 
 License headers can be added automatically be running `./tools/addlicenseheader.sh` (see file for details).
