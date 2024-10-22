@@ -7,8 +7,8 @@
 - [Who is it for?](#who-is-it-for)
 - [Architecture](#architecture)
 - [Use-cases](#use-cases)
-  - [Available use cases:](#available-use-cases)
-  - [External use-case](#external-use-case)
+  - [Internal use cases:](#available-use-cases)
+  - [External use-cases](#external-use-case)
 - [Installation](#installation)
   - [Useful Terraform Commands](#useful-terraform-commands)
 - [Alt: Bring-your-own-VM](#alt-bring-your-own-vm)
@@ -31,7 +31,16 @@ The framework follows a declarative approach where modules, resources and config
 The ACE-Box framework is ideal for anybody who needs to create isolated testing environments, run demonstrations, or build reproducible deployment setups. It caters to those seeking to prototype new features, test new features and integrations, or deliver hands-on training in an efficient and portable manner.
 
 
-### Example
+### Ace CLI
+High-level description ...
+
+Check out the [ACE CLI](docs/ace-cli.md) page for more details.
+
+
+## Use-cases
+Within the ACE-Box framework, the term _use-case_ is used to identify a set of resources and configurations to be setup for reproducting a specific scenario and performing activities such as a feature showcase, demonstrations and hands-on trainings. The use-case includes a set of configuration files that are used by the ACE-Box to build all the needed assets and implement the necessary configurations on the systems.
+
+### Use-case example
 You can configure the ACE-Box to spin up a virtual machine hosted on AWS and use different built-in modules to install on that machine the following components:
 - k8s (k3s)
 - Dynatrace Operator
@@ -42,36 +51,30 @@ The environment (VM + the modules installed on it) is automatically provisioned 
 SCREENSHOT OF EASYTRADE BEING MONITORED BY DYNATRACE
 
 
-## Architecture
-Terraform is used for spinning up and configure the compute instance and all the needed resources within the Cloud Provider environment (AWS, GCP, Azure).
-Ansible is used for setting up the various modules on top of the compute instance.
-Referring to the previous example, Terraform is used to provision the virtual machine and some auxiliary resources on the Cloud Provider environment, while Ansible is used to deploy the k8s cluster, Dynatrace operator and Easytrade application on the VM.
+### Internal use-cases:
+The ACE-Box framework comes with a set of use-cases which are referred as _internal use-cases_ which have been added in the past by the ACE-Box contributors.
+It is possible to extend the internal use-cases ...
 
-### Ace CLI
-High-level description ...
-Check out the [ACE CLI](docs/ace-cli.md) page for more details.
+The list of available internal use-cases is reported below:
+Use Case | k8s | OneAgent | Synth AG | Jenkins | Gitea | Registry | GitLab | AWX | Keptn | Dashboard | Notes |
+-- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- |
+[`demo_release_validation_srg_gitlab`](user-skel/ansible_collections/ace_box/ace_box/roles/demo-release-validation-srg-gitlab/README.md) | x | x | x |  |  |  | x |  | x |  x | Demo flow for Release Validation using GitLab/Site Reliability Guardian |
+[`demo_ar_workflows_ansible`](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-ansible/README.md) | x | x | | x | x | x | x | x |  | x | Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows |
+[`demo_ar_workflows_gitlab`](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-gitlab/README.md) | x | x | | | | x |  | x |  | x | Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows |
+`demo_monaco_gitops` | x | x | x | x | x | x |  |  |  | x | Demo flow for Application Onboarding using Jenkins/Gitea |
 
-### Monaco
-High-level description ...
+> Note: You can also enter a link to an external repository (e.g.: `https://github.com/my-org/my-ext-use-case.git`) if you want to load an external use case. See [External Use Case](#external-use-case) for more details and examples
 
+### External use-cases
+In addition to the internal use-cases provided natively by the ACE-Box, it is possible to source external use cases. This allows using the ACE-Box as a platform to develop your own use cases, demonstrations, trainings, etc.
 
-## Use-cases
-High-level description ...
-
-### Available use cases:
-
-  Use Case | k8s | OneAgent | Synth AG | Jenkins | Gitea | Registry | GitLab | AWX | Keptn | Dashboard | Notes |
-  -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- |
-  [`demo_release_validation_srg_gitlab`](user-skel/ansible_collections/ace_box/ace_box/roles/demo-release-validation-srg-gitlab/README.md) | x | x | x |  |  |  | x |  | x |  x | Demo flow for Release Validation using GitLab/Site Reliability Guardian |
-  [`demo_ar_workflows_ansible`](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-ansible/README.md) | x | x | | x | x | x | x | x |  | x | Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows |
-  [`demo_ar_workflows_gitlab`](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-gitlab/README.md) | x | x | | | | x |  | x |  | x | Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows |
-  `demo_monaco_gitops` | x | x | x | x | x | x |  |  |  | x | Demo flow for Application Onboarding using Jenkins/Gitea |
-
-  > Note: You can also enter a link to an external repository (e.g.: `https://github.com/my-org/my-ext-use-case.git`) if you want to load an external use case. See [External Use Case](#external-use-case) for more details and examples
-
-### External use case
-In addition to use cases provided natively by the ACE-Box, it is possible to source external use cases. This allows using the ACE-Box as a platform to develop own use cases, demos, trainings, etc.
 Check out [External Use Case](docs/external-use-case.md) documentation for more info.
+
+
+## Architecture
+_Terraform_ is used for spinning up and configure the compute instance and all the needed resources within the Cloud Provider environment (AWS, GCP, Azure).
+_Ansible_ is used for setting up the various modules on top of the compute instance.
+Referring to the previous example, Terraform is used to provision the virtual machine and some auxiliary resources on the Cloud Provider environment, while Ansible is used to deploy the k8s cluster, Dynatrace operator and Easytrade application on the VM.
 
 
 ## Installation
