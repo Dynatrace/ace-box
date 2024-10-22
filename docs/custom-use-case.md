@@ -1,10 +1,10 @@
-# External use case
+# Custom use case
 
-In addition to use cases provided natively by the ACE-Box, it is now possible to source external use cases. This allows using the ACE-Box as a platform to develop own use cases, demos, trainings, etc.
+In addition to use cases provided natively by the ACE-Box, it is now possible to source custom use cases. This allows using the ACE-Box as a platform to develop own use cases, demos, trainings, etc.
 
-An external use case can be sourced and provisioned by simply providing a link to the Git repository of the external use case. In order for the ACE-Box to understand such external use cases, they need to comply with a specific structure. Further information, a template, as well as examples of such a structure can be found [here](https://github.com/dynatrace-ace/ace-box-ext-template).
+An custom use case can be sourced and provisioned by simply providing a link to the Git repository of the custom use case. In order for the ACE-Box to understand such custom use cases, they need to comply with a specific structure. Further information, a template, as well as examples of such a structure can be found [here](https://github.com/dynatrace-ace/ace-box-ext-template).
 
-To enable an external use case the Terraform `use_case` variable has to be set to the Git repository URL. For example:
+To enable an custom use case the Terraform `use_case` variable has to be set to the Git repository URL. For example:
 
 ```
 ...
@@ -16,7 +16,7 @@ use_case = "https://<user>:<token>@github.com/my-org/my-ext-use-case.git"
 
 ## Versioning
 
-At one point, you probably want to create a hardened release of the external repository you're working on. This is particularly important when an external use case is used as part of a hands-on tarining, etc.
+At one point, you probably want to create a hardened release of the custom repository you're working on. This is particularly important when an custom use case is used as part of a hands-on tarining, etc.
 
 A specific ref (version or branch) can be targeted by appending `@my-version` it to the `use_case` variable, e.g.:
 
@@ -26,7 +26,7 @@ use_case = "https://<user>:<token>@github.com/my-org/my-ext-use-case.git@v1.0.0"
 
 ## Curated roles
 
-The following curated roles can be added to your external use case. See [template repository](https://github.com/dynatrace-ace/ace-box-ext-template) for examples.
+The following curated roles can be added to your custom use case. See [template repository](https://github.com/dynatrace-ace/ace-box-ext-template) for examples.
 
 |Role|Description|
 |---|---|
@@ -55,7 +55,7 @@ The following curated roles can be added to your external use case. See [templat
 |otel-collector|Installs an OpenTelemetry collector|
 |[repository](../user-skel/ansible_collections/ace_box/ace_box/roles/repository/Readme.md)|Initializes and publishes a local repository to Gitea or Gitlab|
 
-## Example external use cases
+## Example custom use cases
 
 |Name|Description|
 |---|---|
@@ -64,7 +64,7 @@ The following curated roles can be added to your external use case. See [templat
 
 ## Development
 
-When developing an external use case, it might be cumbersome to update/re-install an external use case from a remote repository. We therefore introduced a flag for `ace enable` that allows you to work on your use case locally (i.e. ACE-Box) while keeping the remote as well as ACE-Box roles in sync.
+When developing an custom use case, it might be cumbersome to update/re-install an custom use case from a remote repository. We therefore introduced a flag for `ace enable` that allows you to work on your use case locally (i.e. ACE-Box) while keeping the remote as well as ACE-Box roles in sync.
 
 Recommended development workflow:
 

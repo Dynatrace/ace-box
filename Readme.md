@@ -46,9 +46,9 @@ The environment (VM + the modules installed on it) is automatically provisioned 
 SCREENSHOT OF EASYTRADE BEING MONITORED BY DYNATRACE
 
 
-### Out-of-the-box use-cases:
+### Out-of-the-box use-cases
 The ACE-Box framework comes with a set of use-cases which are referred as _out-of-the-box use-cases_ which have been added in the past by the ACE-Box contributors.
-It is possible to extend the internal use-cases ...
+It is possible to extend the out-of-the-box use-cases ...
 
 The list of available out-of-the-box use-cases is reported below:
 Use Case | k8s | OneAgent | Synth AG | Jenkins | Gitea | Registry | GitLab | AWX | Keptn | Dashboard | Notes |
@@ -58,12 +58,12 @@ Use Case | k8s | OneAgent | Synth AG | Jenkins | Gitea | Registry | GitLab | AWX
 [`demo_ar_workflows_gitlab`](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-gitlab/README.md) | x | x | | | | x |  | x |  | x | Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows |
 `demo_monaco_gitops` | x | x | x | x | x | x |  |  |  | x | Demo flow for Application Onboarding using Jenkins/Gitea |
 
-> Note: You can also enter a link to an external repository (e.g.: `https://github.com/my-org/my-ext-use-case.git`) if you want to load an custom use case. See [External Use Case](#external-use-case) for more details and examples
+> Note: You can also enter a link to an external repository (e.g.: `https://github.com/my-org/my-ext-use-case.git`) if you want to load an custom use case. See [Custom Use Case](#custom-use-case) for more details and examples
 
 ### Custom use-cases
 In addition to the out-of-the-box use-cases provided natively by the ACE-Box, it is possible to source custom use cases. This allows using the ACE-Box as a platform to develop your own use cases, demonstrations, trainings, etc.
 
-Check out [External Use Case](docs/external-use-case.md) documentation for more info.
+Check out [Custom Use Case](docs/custom-use-case.md) documentation for more info.
 
 
 ## Architecture
@@ -113,7 +113,7 @@ The recommended way of installing any ACE box version, local or cloud, is via Te
         | dt_owner_email | string | yes |Required when using Dynatrace enviroments. Format:  name_surname-dynatrace_com. (replace "." with "_" and "@" with "-")
         | acebox_user | string | no | User, for which home directory will be provisioned (Default: "ace") |
         | use_case | string | no | Hardened use cases embedded in the ACE-Box. Options are:<ul><li>`demo_all` (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-all/README.md))</li><li>`demo_monaco_gitops`</li><li>`demo_ar_workflows_ansible` (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-ansible/README.md))</li><li>`demo_ar_workflows_gitlab` (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-gitlab/README.md))</li><li>`demo_release_validation_srg_gitlab` (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-release-validation-srg-gitlab/README.md))</li><li>URL to an external repository (see below)</li></ul>|
-        | extra_vars | map(string) | no | Additional variables that are passed and persisted on the VM. Variables can be sourced as `extra_vars.<variable key>` for e.g. external use cases |
+        | extra_vars | map(string) | no | Additional variables that are passed and persisted on the VM. Variables can be sourced as `extra_vars.<variable key>` for e.g. custom use cases |
         |dashboard_user|string|no|ACE-Box dashboard user (Default: "dynatrace")|
         |dashboard_password|string|no|ACE-Box dashboard password. If not set, a random password will be generated. The password can retrieved by running `terraform output dashboard_password`. **Note**: Output shows leading and trailing quotes that are not part of the password!|
 
