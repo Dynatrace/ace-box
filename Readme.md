@@ -5,10 +5,12 @@
 
 - [What is it?](#what-is-it)
 - [Who is it for?](#who-is-it-for)
-- [Architecture](#architecture)
 - [Use-cases](#use-cases)
   - [Internal use cases:](#available-use-cases)
   - [External use-cases](#external-use-case)
+- [Architecture](#architecture)
+  - [ACE CLI](#ace-cli)
+  - [ACE Dashboard](#ace-dashboard)
 - [Installation](#installation)
   - [Useful Terraform Commands](#useful-terraform-commands)
   - [Behind the scenes](#behind-the-scenes)
@@ -17,7 +19,7 @@
 - [Configuration settings](#configuration-settings)
   - [Resource Requirements](#resource-requirements)
 - [Troubleshooting](#troubleshooting)
-- [Accessing ACE Dashboard](#accessing-ace-dashboard)
+
 - [Licensing](#licensing)
 
 ## What is it?
