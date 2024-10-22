@@ -22,7 +22,7 @@
     status_code: 201
     body_format: json
     headers:
-      Authorization: "Bearer {{ mm_admin_token }}"
+      Authorization: "Bearer {{ mm_admin_token | default(mm_token) }}"
   register: mm_webhook_post_raw
 
 - set_fact:

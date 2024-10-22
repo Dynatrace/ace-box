@@ -18,8 +18,8 @@
     kind: Pod
     namespace: "{{ mattermost_namespace }}"
     label_selectors:
-      - app = mattermost
-      - installation.mattermost.com/resource = mattermost
+      - app.kubernetes.io/name = mattermost-team-edition
+      - app.kubernetes.io/instance = mattermost
   register: mm_pod
 
 - name: Create Token
