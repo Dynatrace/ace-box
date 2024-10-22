@@ -1,12 +1,14 @@
-# Welcome to the ACE-Box
-
-**Note**
+**Note:**
 > This product is not officially supported by Dynatrace.
+
+<br>
+
+# Welcome to the ACE-Box
 
 - [What is it?](#what-is-it)
 - [Who is it for?](#who-is-it-for)
 - [Use-cases](#use-cases)
-  - [Internal use cases:](#available-use-cases)
+  - [Internal use cases](#available-use-cases)
   - [External use-cases](#external-use-case)
 - [Architecture](#architecture)
   - [ACE CLI](#ace-cli)
@@ -19,7 +21,6 @@
 - [Configuration settings](#configuration-settings)
   - [Resource Requirements](#resource-requirements)
 - [Troubleshooting](#troubleshooting)
-
 - [Licensing](#licensing)
 
 ## What is it?
