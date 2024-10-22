@@ -11,14 +11,13 @@
   - [External use-cases](#external-use-case)
 - [Installation](#installation)
   - [Useful Terraform Commands](#useful-terraform-commands)
-- [Alt: Bring-your-own-VM](#alt-bring-your-own-vm)
+  - [Behind the scenes](#behind-the-scenes)
+- [Bring-your-own-VM](#alt-bring-your-own-vm)
 - [Default mode](#default-mode)
 - [Configuration settings](#configuration-settings)
   - [Resource Requirements](#resource-requirements)
 - [Troubleshooting](#troubleshooting)
 - [Accessing ACE Dashboard](#accessing-ace-dashboard)
-- [Behind the scenes](#behind-the-scenes)
-- [ACE-CLI](#ace-cli)
 - [Licensing](#licensing)
 
 ## What is it?
@@ -72,6 +71,9 @@ Referring to the previous example, Terraform is used to provision the virtual ma
 
 ### Ace CLI
 High-level description ...
+
+### ACE Dashboard
+At the end of the provisioning of any of the out of the box supported use cases, an ACE Dashboard gets created with more information on how to use the ACE-BOX. Check out [ACE Dashboard](Dashboard.md) for more details.
 
 Check out the [ACE CLI](docs/ace-cli.md) page for more details.
 
@@ -127,6 +129,13 @@ The recommended way of installing any ACE box version, local or cloud, is via Te
 5. Run `terraform apply`
 6. Grab a coffee, this process will take some time...
 
+### Useful Terraform Commands
+Command  | Result
+-------- | -------
+`terraform destroy` | deletes any resources created by Terraform |
+`terraform plan -destroy` | view a speculative destroy plan, to see what the effect of destroying would be |
+`terraform show` | Outputs the resources created by Terraform. Useful to verify IP addresses and the dashboard URL. 
+
 ### Behind the scenes
 Spinning up an ACE-Box instance can be split into two main parts:
 
@@ -138,15 +147,6 @@ Spinning up an ACE-Box instance can be split into two main parts:
    4) Once the VM is prepared, `ace enable USECASE_NAME|USECASE_URL` command is run to perform the actual deployment of the modules (e.g: softwares, applications, ..) and implement the configurations that have been defined in the use-case's configuration files
 
 
-
-### Useful Terraform Commands
-Command  | Result
--------- | -------
-`terraform destroy` | deletes any resources created by Terraform |
-`terraform plan -destroy` | view a speculative destroy plan, to see what the effect of destroying would be |
-`terraform show` | Outputs the resources created by Terraform. Useful to verify IP addresses and the dashboard URL. 
-
-
 ## Bring-your-own-VM
 Bringing your own Ubuntu Virtual Machine has not been tested, but should be possible.
 
@@ -155,7 +155,6 @@ Check out [BYO VM](docs/byo-vm.md) documentation for more details.
 
 ## Configuration settings
 The ace-box comes with a certain number of features and settings that can be set/enabled/disabled. Adding and removing features will change the resource consumption. Most settings have default values and do not need to be set explicitly, but they can be overwritten if needed. Please refer to the ace cli instruction below.
-
 
 ### Resource Requirements
 Each feature requires a certain amount of resources - on top of the base microk8s requirements.
@@ -172,10 +171,6 @@ For up to date information, check the currated role's Readme for more informatio
 ## Troubleshooting
 1. Make sure that the cloud account you are using for provisioning has sufficient permissions to create all the resources in the particular region
    
-
-## Accessing ACE Dashboard
-At the end of the provisioning of any of the out of the box supported use cases, an ACE Dashboard gets created with more information on how to use the ACE-BOX. Check out [ACE Dashboard](Dashboard.md) for more details.
-
 
 ## Licensing
 
