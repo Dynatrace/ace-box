@@ -15,13 +15,13 @@ For the details, please check this link: https://docs.k3s.io/
 ```
 
 The role will:
-- set ingress_class automatically to traefik, in order to configure accordingly the ingress for remaining modules
-- install helm
-- deploy and restart k3s
+- Configure `ingress_class` automatically to use traefik
+- Install helm
+- Deploy and restart k3s
 
 ### (Optional) Restart
 
-There is an
+There is a restart role that can be used if needed
 
 ```yaml
 - include_role:
