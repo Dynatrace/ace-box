@@ -7,14 +7,21 @@ For the details, please check this link: https://docs.k3s.io/
 
 ## Using the role
 
-### Deploying k3s
+### Deploy
 
 ```yaml
 - include_role:
     name: k3s
 ```
 
-### Restarting k3s is needed after gets deployed
+The role will:
+- set ingress_class automatically to traefik, in order to configure accordingly the ingress for remaining modules
+- install helm
+- deploy and restart k3s
+
+### (Optional) Restart
+
+There is an
 
 ```yaml
 - include_role:
