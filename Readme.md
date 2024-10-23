@@ -33,7 +33,13 @@ The ACE-Box framework is ideal for anybody who needs to create isolated testing 
 
 
 ## Use-cases
-Within the ACE-Box framework, the term _use-case_ is used to identify a set of resources and configurations to be setup for reproducting a specific scenario and performing activities such as a feature showcase, demonstrations and hands-on trainings. The use-case includes a set of configuration files that are used by the ACE-Box to build all the needed assets and implement the necessary configurations on the systems.
+Within the ACE-Box framework, a _use-case_ represents a scenario that requires the deployment of specific resources and configurations. These use-cases typically aim to reproduce real-world setups for purposes like feature demonstrations, hands-on training, or system testing. Each use-case is defined by a set of configuration files that ACE-Box uses to automatically deploy the necessary infrastructure and apply the required configurations on the systems.
+
+**Ansible roles** play a critical role in automating the setup and configuration of resources for each use-case. Ansible roles are modular units that define specific tasks, such as installing software, configuring environments, or managing services. By leveraging these roles, ACE-Box simplifies the process of provisioning and configuring environments, making the creation and execution of use-cases more efficient.
+
+For each use-case, the provided configuration files can reference out-of-the-box Ansible roles that are provided by the framework, which cover common tasks and scenarios. Leveraging out-of-the-box Ansible roles is recommended and ensures rapid and consistent deployments. The collection of out-of-the-box Ansible roles is contained into the [roles](/user-skel/ansible_collections/ace_box/ace_box/roles/) folder.
+
+If a particular use-case requires actions beyond the standard roles, custom Ansible roles can be defined to meet those specific requirements. These custom roles can be integrated into the use-case's configuration, giving users flexibility while still maintaining a structured, automated approach.
 
 ### Use-case example
 You can configure the ACE-Box to spin up a virtual machine hosted on AWS and use different built-in modules to install on that machine the following components:
@@ -47,8 +53,7 @@ SCREENSHOT OF EASYTRADE BEING MONITORED BY DYNATRACE
 
 
 ### Out-of-the-box use-cases
-The ACE-Box framework comes with a set of use-cases which are referred as _out-of-the-box use-cases_ which have been added in the past by the ACE-Box contributors.
-It is possible to extend the out-of-the-box use-cases ...
+The ACE-Box framework comes with a set of use-cases which are referred as _out-of-the-box use-cases_ which have been added from time to time by the ACE-Box contributors.
 
 The list of available out-of-the-box use-cases is reported below:
 Use Case | k8s | OneAgent | Synth AG | Jenkins | Gitea | Registry | GitLab | AWX | Keptn | Dashboard | Notes |
@@ -58,7 +63,7 @@ Use Case | k8s | OneAgent | Synth AG | Jenkins | Gitea | Registry | GitLab | AWX
 [`demo_ar_workflows_gitlab`](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-gitlab/README.md) | x | x | | | | x |  | x |  | x | Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows |
 `demo_monaco_gitops` | x | x | x | x | x | x |  |  |  | x | Demo flow for Application Onboarding using Jenkins/Gitea |
 
-> Note: You can also enter a link to an external repository (e.g.: `https://github.com/my-org/my-ext-use-case.git`) if you want to load an custom use case. See [Custom Use Case](#custom-use-case) for more details and examples
+> Note: It is possible to extend the out-of-the-box use-cases by ...
 
 ### Custom use-cases
 In addition to the out-of-the-box use-cases provided natively by the ACE-Box, it is possible to source custom use cases. This allows using the ACE-Box as a platform to develop your own use cases, demonstrations, trainings, etc.
@@ -69,7 +74,7 @@ Check out [Custom Use Case](docs/custom-use-case.md) documentation for more info
 ## Architecture
 _Terraform_ is used for spinning up and configure the compute instance and all the needed resources within the Cloud Provider environment (AWS, GCP, Azure).
 _Ansible_ is used for setting up the various modules on top of the compute instance.
-Referring to the previous example, Terraform is used to provision the virtual machine and some auxiliary resources on the Cloud Provider environment, while Ansible is used to deploy the k8s cluster, Dynatrace operator and Easytrade application on the VM.
+Referring to the [previous example](#use-case-example), Terraform is used to provision the virtual machine and some auxiliary resources on the Cloud Provider environment, while Ansible is used to deploy the k8s cluster, Dynatrace operator and Easytrade application on the VM.
 
 ### Ace CLI
 High-level description ...
