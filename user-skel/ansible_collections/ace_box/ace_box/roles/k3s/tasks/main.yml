@@ -1,3 +1,4 @@
+
 # Copyright 2024 Dynatrace LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,9 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#
-# Set ingress_class to traefik
-#
+################################
+# Set ingress_class to traefik #
+################################
 - include_role:
     name: config-v2
     tasks_from: set-var
@@ -47,7 +48,9 @@
     src: /etc/rancher/k3s/k3s.yaml
     dest: /home/{{ ace_box_user }}/.kube/config
 
-# Install helm via
+#################
+# Installs helm #
+#################
 - name: Install Helm
   become: true
   become_user: root
@@ -55,3 +58,13 @@
     name:
     - helm
     classic: yes
+
+###############
+# Restart k3s #
+###############
+- name: k3s restart
+  become: true
+  become_user: root
+  ansible.builtin.service:
+    name: k3s
+    state: restarted
