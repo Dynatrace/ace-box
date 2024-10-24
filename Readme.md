@@ -16,30 +16,24 @@
 - [Installation](#installation)
   - [Useful Terraform Commands](#useful-terraform-commands)
   - [Behind the scenes](#behind-the-scenes)
-- [Default mode](#default-mode)
-- [Configuration settings](#configuration-settings)
-  - [Resource Requirements](#resource-requirements)
-- [Troubleshooting](#troubleshooting)
 - [Licensing](#licensing)
+
+<br>
 
 ## What is it?
 The ACE-Box is a framework that can be used as a portable sandbox, demo and testing environment. It has been designed to simplify resource deployment and to streamline content creation.
 The ACE-box allows to deploy compute instances (usually cloud-hosted virtual machines) and to install modules on them. 
 The framework follows a declarative approach where modules, resources and configurations are defined in a set of configuration files.
 
+<br>
 
 ## Who is it for?
 The ACE-Box framework is ideal for anybody who needs to create isolated testing environments, run demonstrations, or build reproducible deployment setups. It caters to those seeking to prototype new features, test new features and integrations, or deliver hands-on training in an efficient and portable manner.
 
+<br>
 
 ## Use-cases
 Within the ACE-Box framework, a _use-case_ represents a scenario that requires the deployment of specific resources and configurations. These use-cases typically aim to reproduce real-world setups for purposes like feature demonstrations, hands-on training, or system testing. Each use-case is defined by a set of configuration files that ACE-Box uses to automatically deploy the necessary infrastructure and apply the required configurations on the systems.
-
-**Ansible roles** play a critical role in automating the setup and configuration of resources for each use-case. Ansible roles are modular units that define specific tasks, such as installing software, configuring environments, or managing services. By leveraging these roles, ACE-Box simplifies the process of provisioning and configuring environments, making the creation and execution of use-cases more efficient.
-
-For each use-case, the provided configuration files can reference out-of-the-box Ansible roles that are provided by the framework, which cover common tasks and scenarios. Leveraging out-of-the-box Ansible roles is recommended and ensures rapid and consistent deployments. The collection of out-of-the-box Ansible roles is contained into the [roles](/user-skel/ansible_collections/ace_box/ace_box/roles/) folder.
-
-If a particular use-case requires actions beyond the standard roles, custom Ansible roles can be defined to meet those specific requirements. These custom roles can be integrated into the use-case's configuration, giving users flexibility while still maintaining a structured, automated approach.
 
 ### Use-case example
 You can configure the ACE-Box to spin up a virtual machine hosted on AWS and use different built-in modules to install on that machine the following components:
@@ -50,7 +44,6 @@ You can configure the ACE-Box to spin up a virtual machine hosted on AWS and use
 The environment (VM + the modules installed on it) is automatically provisioned by the framework and it can be leveraged to showcase Dynatrace observability capabilities:
 
 SCREENSHOT OF EASYTRADE BEING MONITORED BY DYNATRACE
-
 
 ### Out-of-the-box use-cases
 The ACE-Box framework comes with a set of use-cases which are referred as _out-of-the-box use-cases_ which have been added from time to time by the ACE-Box contributors.
@@ -63,27 +56,25 @@ Use Case | k8s | OneAgent | Synth AG | Jenkins | Gitea | Registry | GitLab | AWX
 [`demo_ar_workflows_gitlab`](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-gitlab/README.md) | x | x | | | | x |  | x |  | x | Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows |
 `demo_monaco_gitops` | x | x | x | x | x | x |  |  |  | x | Demo flow for Application Onboarding using Jenkins/Gitea |
 
-> Note: It is possible to extend the out-of-the-box use-cases by ...
-
 ### Custom use-cases
 In addition to the out-of-the-box use-cases provided natively by the ACE-Box, it is possible to source custom use cases. This allows using the ACE-Box as a platform to develop your own use cases, demonstrations, trainings, etc.
 
 Check out [Custom Use Case](docs/custom-use-case.md) documentation for more info.
 
+<br>
 
 ## Architecture
 _Terraform_ is used for spinning up and configure the compute instance and all the needed resources within the Cloud Provider environment (AWS, GCP, Azure).
 _Ansible_ is used for setting up the various modules on top of the compute instance.
-Referring to the [previous example](#use-case-example), Terraform is used to provision the virtual machine and some auxiliary resources on the Cloud Provider environment, while Ansible is used to deploy the k8s cluster, Dynatrace operator and Easytrade application on the VM.
+Referring to the [previous example](#use-case-example), Terraform is used to provision the virtual machine and some auxiliary resources on the Cloud Provider environment, while Ansible roles are used to deploy the k8s cluster, Dynatrace operator and Easytrade application on the VM.
 
-### Ace CLI
-High-level description ...
-
+### ACE CLI
 Check out the [ACE CLI](docs/ace-cli.md) page for more details.
 
 ### ACE Dashboard
 At the end of the provisioning of any of the out of the box supported use cases, an ACE Dashboard gets created with more information on how to use the ACE-BOX. Check out [ACE Dashboard](Dashboard.md) for more details.
 
+<br>
 
 ## Installation
 The recommended way of installing any ACE box version, local or cloud, is via Terraform (scroll down for alternatives). Check the [Azure](terraform/azure/Readme.md), [AWS](terraform/aws/Readme.md) or [Google Cloud](terraform/gcloud/Readme.md) subfolders for additional instructions.
@@ -153,6 +144,7 @@ Spinning up an ACE-Box instance can be split into two main parts:
    3) `ace prepare` command is run, which asks for ACE-Box specific configurations (e.g. protocol, custom domain, ...)
    4) Once the VM is prepared, `ace enable USECASE_NAME|USECASE_URL` command is run to perform the actual deployment of the modules (e.g: softwares, applications, ..) and implement the configurations that have been defined in the use-case's configuration files
 
+<br>
 
 ## Licensing
 Please see `LICENSE` in repo root for license details.
