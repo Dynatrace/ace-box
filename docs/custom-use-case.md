@@ -84,7 +84,7 @@ roles/
 
 For more information, please see the [official Ansible documentation](https://docs.ansible.com/ansible/latest/user_guide/playbooks_reuse_roles.html).
 
-The `my-use-case` role can itself source other Ansible roles. Such roles can either be provided as part of the external repository or included from the ACE-Box default roles. A list of ACE-Box roles can be found [here](https://github.com/Dynatrace/ace-box#curated-roles). Please also see the `examples_roles` folder for examples.
+The `my-use-case` role can itself source other Ansible roles. Such roles can either be provided as part of the external repository or included from the ACE-Box default roles.
 
 Further information, a template, as well as examples of such a structure can be found here: [ace-box-ext-template](https://github.com/dynatrace-ace/ace-box-ext-template).
 
@@ -112,4 +112,4 @@ use_case = "https://<user>:<token>@github.com/my-org/my-ext-use-case.git@v1.0.0"
 <br>
 
 ## Contribute
-It is possible to extend the out-of-the-box use-cases/roles/demos by integrating the needed configuration files into the ACE-Box repo.
+It is possible to extend the out-of-the-box use-cases by integrating the needed configuration files into the ACE-Box repository.
