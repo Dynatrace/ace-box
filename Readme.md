@@ -8,7 +8,7 @@
 - [What is it?](#what-is-it)
 - [Who is it for?](#who-is-it-for)
 - [Use-cases](#use-cases)
-  - [Out-of-the-box use cases](#out-of-the-box-use-cases)
+  - [Out-of-the-box use-cases](#out-of-the-box-use-cases)
   - [Custom use-cases](#custom-use-cases)
 - [Architecture](#architecture)
   - [ACE CLI](#ace-cli)
@@ -49,7 +49,7 @@ SCREENSHOT OF EASYTRADE BEING MONITORED BY DYNATRACE
 The ACE-Box framework comes with a set of use-cases which are referred as _out-of-the-box use-cases_ which have been added from time to time by the ACE-Box contributors.
 
 The list of available out-of-the-box use-cases is reported below:
-Use Case | k8s | OneAgent | Synth AG | Jenkins | Gitea | Registry | GitLab | AWX | Keptn | Dashboard | Notes |
+use-case | k8s | OneAgent | Synth AG | Jenkins | Gitea | Registry | GitLab | AWX | Keptn | Dashboard | Notes |
 -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- |
 [`demo_release_validation_srg_gitlab`](user-skel/ansible_collections/ace_box/ace_box/roles/demo-release-validation-srg-gitlab/README.md) | x | x | x |  |  |  | x |  | x |  x | Demo flow for Release Validation using GitLab/Site Reliability Guardian |
 [`demo_ar_workflows_ansible`](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-ansible/README.md) | x | x | | x | x | x | x | x |  | x | Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows |
@@ -57,9 +57,9 @@ Use Case | k8s | OneAgent | Synth AG | Jenkins | Gitea | Registry | GitLab | AWX
 `demo_monaco_gitops` | x | x | x | x | x | x |  |  |  | x | Demo flow for Application Onboarding using Jenkins/Gitea |
 
 ### Custom use-cases
-In addition to the out-of-the-box use-cases provided natively by the ACE-Box, it is possible to source custom use cases. This allows using the ACE-Box as a platform to develop your own use cases, demonstrations, trainings, etc.
+In addition to the out-of-the-box use-cases provided natively by the ACE-Box, it is possible to source custom use-cases. This allows using the ACE-Box as a platform to develop your own use-cases, demonstrations, trainings, etc.
 
-Check out [Custom Use Case](docs/custom-use-case.md) documentation for more info.
+Check out [Custom use-case](docs/custom-use-case.md) documentation for more info.
 
 <br>
 
@@ -72,7 +72,7 @@ Referring to the [previous example](#use-case-example), Terraform is used to pro
 Check out the [ACE CLI](docs/ace-cli.md) page for more details.
 
 ### ACE Dashboard
-At the end of the provisioning of any of the out of the box supported use cases, an ACE Dashboard gets created with more information on how to use the ACE-BOX. Check out [ACE Dashboard](Dashboard.md) for more details.
+At the end of the provisioning of any of the out of the box supported use-cases, an ACE Dashboard gets created with more information on how to use the ACE-BOX. Check out [ACE Dashboard](Dashboard.md) for more details.
 
 <br>
 
@@ -108,20 +108,20 @@ The recommended way of installing any ACE box version, local or cloud, is via Te
         | dt_owner_team | string | yes | Required when using Dynatrace enviroments. Check with Dynatrace GCP/AWS admins for your specific team value.
         | dt_owner_email | string | yes |Required when using Dynatrace enviroments. Format:  name_surname-dynatrace_com. (replace "." with "_" and "@" with "-")
         | acebox_user | string | no | User, for which home directory will be provisioned (Default: "ace") |
-        | use_case | string | no | Hardened use cases embedded in the ACE-Box. Options are:<ul><li>`demo_all` (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-all/README.md))</li><li>`demo_monaco_gitops`</li><li>`demo_ar_workflows_ansible` (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-ansible/README.md))</li><li>`demo_ar_workflows_gitlab` (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-gitlab/README.md))</li><li>`demo_release_validation_srg_gitlab` (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-release-validation-srg-gitlab/README.md))</li><li>URL to an external repository (see below)</li></ul>|
-        | extra_vars | map(string) | no | Additional variables that are passed and persisted on the VM. Variables can be sourced as `extra_vars.<variable key>` for e.g. custom use cases |
+        | use_case | string | no | Hardened use-cases embedded in the ACE-Box. Options are:<ul><li>`demo_all` (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-all/README.md))</li><li>`demo_monaco_gitops`</li><li>`demo_ar_workflows_ansible` (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-ansible/README.md))</li><li>`demo_ar_workflows_gitlab` (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-gitlab/README.md))</li><li>`demo_release_validation_srg_gitlab` (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-release-validation-srg-gitlab/README.md))</li><li>URL to an external repository (see below)</li></ul>|
+        | extra_vars | map(string) | no | Additional variables that are passed and persisted on the VM. Variables can be sourced as `extra_vars.<variable key>` for e.g. custom use-cases |
         |dashboard_user|string|no|ACE-Box dashboard user (Default: "dynatrace")|
         |dashboard_password|string|no|ACE-Box dashboard password. If not set, a random password will be generated. The password can retrieved by running `terraform output dashboard_password`. **Note**: Output shows leading and trailing quotes that are not part of the password!|
 
         Please consult our dedicated readmes for [AWS](terraform/aws/Readme.md), [MS Azure](terraform/azure/Readme.md) and [Google Cloud](terraform/gcloud/Readme.md) specific variables.
 
-        > Note: `demo_all` requires extra variables. See [use case README](user-skel/ansible_collections/ace_box/ace_box/roles/demo-all/README.md) for details.
+        > Note: `demo_all` requires extra variables. See [use-case README](user-skel/ansible_collections/ace_box/ace_box/roles/demo-all/README.md) for details.
         
-        > Note: `demo_ar_workflows_ansible` requires extra variables. See [use case README](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-ansible/README.md) for details.
+        > Note: `demo_ar_workflows_ansible` requires extra variables. See [use-case README](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-ansible/README.md) for details.
 
-        > Note: `demo_ar_workflows_gitlab` requires extra variables. See [use case README](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-gitlab/README.md) for details.
+        > Note: `demo_ar_workflows_gitlab` requires extra variables. See [use-case README](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-gitlab/README.md) for details.
        
-        > Note: `demo_release_validation_srg_gitlab` requires extra variables. See [use case README](user-skel/ansible_collections/ace_box/ace_box/roles/demo-release-validation-srg-gitlab/README.md) for details.
+        > Note: `demo_release_validation_srg_gitlab` requires extra variables. See [use-case README](user-skel/ansible_collections/ace_box/ace_box/roles/demo-release-validation-srg-gitlab/README.md) for details.
 
 4. Run `terraform init`
 5. Run `terraform apply`
