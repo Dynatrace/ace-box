@@ -27,8 +27,8 @@ Ansible roles are modular units that define specific tasks, such as installing s
 
 
 ### Out-of-the-box Roles
-...
-For each custom use-case, the provided configuration files can reference out-of-the-box Ansible roles that are natively provided by the framework, which cover common tasks and scenarios. Leveraging out-of-the-box Ansible roles is recommended and ensures rapid and consistent deployments.
+Out-of-the-box Ansible roles are the roles that are natively provided by the ACE-Box framework, which cover common tasks and scenarios. Leveraging out-of-the-box Ansible roles is recommended and ensures rapid and consistent deployments.
+
 Check out the out-of-the-box roles [ReadMe](/user-skel/ansible_collections/ace_box/ace_box/roles/Readme.md) for the complete list of Ansible roles natively provided by the ACE-Box framework.
 
 
@@ -112,4 +112,4 @@ use_case = "https://<user>:<token>@github.com/my-org/my-ext-use-case.git@v1.0.0"
 <br>
 
 ## Contribute
-TODO: It is possible to extend the out-of-the-box use-cases/roles/demos by integrating the needed configuration files into the ACE-Box repo. 
+It is possible to extend the out-of-the-box use-cases/roles/demos by integrating the needed configuration files into the ACE-Box repo.
