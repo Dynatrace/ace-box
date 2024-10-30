@@ -32,6 +32,7 @@ unguard_deploy_user_simulator_cronjob: "false" # enable/disable user simulator c
 ```
 ### (Optional) To enable observability with Dynatrace OneAgent
 
+Include this role preferably prior to deploying Unguard
 ```yaml
 - include_role:
     name: dt-operator
