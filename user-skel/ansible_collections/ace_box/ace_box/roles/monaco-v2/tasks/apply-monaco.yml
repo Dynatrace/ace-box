@@ -33,5 +33,5 @@
 
 - name: Monaco - Apply Configuration for Project
   shell:
-    cmd: /usr/local/bin/monaco deploy {{ monaco_manifest_path }} {{ monaco_projects_argument }}
+    cmd: /usr/local/bin/monacov2 deploy {{ monaco_manifest_path }} {{ monaco_projects_argument }}
   environment: "{{ monaco_deploy_environment }}"

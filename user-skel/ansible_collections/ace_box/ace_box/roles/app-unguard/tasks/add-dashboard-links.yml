@@ -12,12 +12,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
----
-- name: Monaco - Download
-  become: true
-  become_user: root
-  get_url:
-    url: "https://github.com/dynatrace-oss/dynatrace-monitoring-as-code/releases/download/{{ monaco_version }}/monaco-linux-amd64"
-    dest: "/usr/local/bin/monacov2"
-    mode: +x
-    timeout: 300
+- name: Unguard - Add Dashboard Link
+  block:
+  - set_fact:
+      include_dashboard_value_file: "{{ role_path }}/templates/app-unguard-dashboard-link.yml.j2"
+
+  - include_role:
+      name: dashboard
+      tasks_from: template-values-file
+  when: unguard_addDashboardLink|bool == true
+
+- name: Unguard - Add Dashboard Preview
+  block:
+  - set_fact:
+      include_dashboard_value_file: "{{ role_path }}/templates/app-unguard-dashboard-preview.yml.j2"
+
+  - include_role:
+      name: dashboard
+      tasks_from: template-values-file
+  when: unguard_addDashboardPreview|bool == true
