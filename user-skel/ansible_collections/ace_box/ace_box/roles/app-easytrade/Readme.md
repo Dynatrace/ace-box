@@ -13,6 +13,7 @@ This role depends on the following roles to be deployed beforehand:
 ```yaml
 - include_role:
     name: k3s
+    name: k3s
 ```
 
 > Note: we highly recommend to use k3s, but it is also possible to use microk8s. More information below
