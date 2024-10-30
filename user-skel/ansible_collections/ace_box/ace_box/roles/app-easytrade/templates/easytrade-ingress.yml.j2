@@ -2,6 +2,9 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  annotations:
+    meta.helm.sh/release-name: easytrade
+    kubernetes.io/ingress.class: "{{ingress_class}}"
   labels:
     app: easytrade
   name: easytrade-ingress
