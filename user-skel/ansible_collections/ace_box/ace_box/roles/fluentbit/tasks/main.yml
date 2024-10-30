@@ -1,0 +1,46 @@
+# Copyright 2024 Dynatrace LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+---
+- include_role:
+    name: dt-access-token
+  vars:
+    access_token_var_name: "fluent_bit_dt_token"
+    access_token_scope: ["logs.ingest"]
+
+- set_fact:
+    dt_tenant_no_protocol: "{{ dynatrace_tenant_url | regex_search('[^\/\/]*$') }}"
+
+- name: Add fluent bit to repo
+  kubernetes.core.helm_repository:
+    name: fluent
+    repo_url: "https://fluent.github.io/helm-charts"
+
+- name: Replace DT_INGEST_TOKEN_PLACEHOLDER for fluentbit file
+  shell:
+    cmd: "sed -i 's,DT_INGEST_TOKEN_PLACEHOLDER,{{ fluent_bit_dt_token }},' {{ role_path }}/templates/fluent-bit-values.yaml"
+
+- name: Replace DT_INGEST_HOST_PLACEHOLDER for fluentbit file
+  shell:
+    cmd: "sed -i 's,DT_INGEST_HOST_PLACEHOLDER,{{ dt_tenant_no_protocol }},' {{ role_path }}/templates/fluent-bit-values.yaml"
+
+- name: Install Fluent Bit
+  kubernetes.core.helm:
+    name: fluent-bit
+    chart_ref: fluent/fluent-bit
+    release_namespace: dynatrace-fluent-bit
+    create_namespace: true
+    update_repo_cache: true
+    values_files:
+      - "{{ role_path }}/templates/fluent-bit-values.yaml"
