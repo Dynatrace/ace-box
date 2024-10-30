@@ -1,6 +1,29 @@
 # dt-operator
 
-This currated role can be used to deploy Dynatrace k8s operator (Dynakube) with a classic full-stack, cloud native full-stack or app-only injection deployment strategy. 
+This currated role deploys the Dynatrace Operator to monitor your Kubernetes cluster. Dynatrace provides different deployment options: `application-only + k8s-api`, `cloudNativeFullStack`, and `classicFullStack`. Notice that the prerequisites for each are different
+
+## Prerequisites
+
+### (RECOMMENDED) application-only + k8s-api or cloudNativeFullStack
+
+This role depends on the following roles to be deployed beforehand:
+
+```yaml
+- include_role:
+    name: k3s
+```
+
+> Note: if you deploy k3s, you don't need to deploy microk8s and viceversa
+
+### classicFullStack
+
+This role depends on the following roles to be deployed beforehand:
+```yaml
+- include_role:
+    name: microk8s
+```
+
+> Note: if you deploy microk8s, you don't need to deploy k3s and viceversa
 
 Dynatrace Operator manages classic full-stack injection after the following resources are deployed.
 
@@ -12,41 +35,56 @@ Dynatrace Operator manages classic full-stack injection after the following reso
 
 For the details, please check this link: https://www.dynatrace.com/support/help/shortlink/dto-deploy-options-k8s#classic
 
-## Using the role
 
-### Role Requirements
-This role depends on the following roles to be deployed beforehand:
-```yaml
-- include_role:
-    name: microk8s
-```
-
-### Deploying Dynatrace K8s Operator
+## Deploying Dynatrace K8s Operator
 
 ```yaml
 - include_role:
     name: dt-operator
 ```
-
-Variables that can be set are as follows:
+The Operator gets deployed in application only mode approach, check the `roles/dt-operator/defaults/main.yml`:
 
 ```yaml
----
-dt_operator_release: "v0.9.1" # the latest supported dynatrace operator release
-dt_operator_namespace: "dynatrace"
-host_group: "ace-box"
-operator_mode: "classicFullStack"
-cluster_name: "your-cluster-name"
+operator_mode: "applicationMonitoring"  # default & prefered deployment option
+dt_operator_release: "1.3.0-rc.0"       # operator release should be linked with the right operator mode
+log_monitoring: "fluentbit"
+edge_connect: false
 ```
 
-Possible values for operator_mode:
-- applicationMonitoring
-- classicFullStack
-- cloudNativeFullStack
+> Note: log monitoring is enabled by default, using the fluentbit collector and edge connect is disabled by default, but can be switched to 
+To deploy the Operator in application only mode (and default approach), variables can be set as follow:
 
-This role creates a namespace in the Kubernetes cluster and deploys the Dynatrace operator along with the Dynakube custom resource.
+```yaml
+- include_role:
+    name: dt-operator
+  vars:
+    edge_connect: true
+```
 
-### Other Tasks in the Role
+If you decide to use the classicFullStack approach, you need to specify the variables as follow:
+
+```yaml
+- include_role:
+    name: dt-operator
+  vars:
+    operator_mode: "classicFullStack"  
+    dt_operator_release: "1.2.2"
+```
+
+## Extra variables
+
+You can configure the cluster name and host group as follows:
+
+```yaml
+- include_role:
+    name: dt-operator
+  vars:
+    host_group: custom_host_group
+    cluster_name: custom_cluster_name
+```
+
+
+## Other Tasks in the Role
 
 "source-secrets" retrieves the Operator bearer token and stores it in the following variable:
 - `dt_operator_kube_bearer_token`
