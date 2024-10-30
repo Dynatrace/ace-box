@@ -92,3 +92,9 @@ variable "dashboard_password" {
   description = "ACE-Box dashboard password."
   default     = ""
 }
+
+variable "otel_export_enable" {
+  type        = bool
+  description = "Enable openetelemetry export to Dynatrace"
+  default     = false
+}
