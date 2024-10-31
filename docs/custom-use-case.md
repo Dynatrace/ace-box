@@ -55,7 +55,7 @@ use_case = "https://<user>:<personal-access-token>@github.com/dynatrace-ace/ace-
 
 Once the previous command finishes its execution, you should see the information needed to access your VM (ace-box)
 
-![](../assets/ace-box_dashboard.png)
+![](../assets/terraform-apply-output.png)
 
 > Note: if you can't see that information anymore, you can go back to the terraform directory where you did execute the command (`terraform apply`) and execute `terraform output` to see the command again.
 
