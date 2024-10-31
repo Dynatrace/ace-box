@@ -28,25 +28,28 @@ The framework follows a declarative approach where modules, resources and config
 <br>
 
 ## Who is it for?
-The ACE-Box framework is ideal for anybody who needs to create isolated testing environments, run demonstrations, or build reproducible deployment setups. It caters to those seeking to prototype new features, test new features and integrations, or deliver hands-on training in an efficient and portable manner.
+The ACE-Box is ideal for anybody who needs to create isolated testing environments, run demonstrations, or build reproducible deployment setups. It caters to those seeking to prototype new features, test new features and integrations, or deliver hands-on training in an efficient and portable manner.
 
 <br>
 
 ## Use-cases
-Within the ACE-Box framework, a _use-case_ represents a scenario that requires the deployment of specific resources and configurations. These use-cases typically aim to reproduce real-world setups for purposes like feature demonstrations, hands-on training, or system testing. Each use-case is defined by a set of configuration files that ACE-Box uses to automatically deploy the necessary infrastructure and apply the required configurations on the systems.
+A use-case aim to reproduce real-world setups for purposes like feature demonstrations, hands-on training, or system testing. Each use-case is defined by a set of configuration files that ACE-Box uses to automatically deploy the necessary infrastructure and apply the required configurations on the systems.
 
-### Use-case example
-You can configure the ACE-Box to spin up a virtual machine hosted on AWS and use different built-in modules to install on that machine the following components:
+### Use-case example: Basic Observability Demo
+
+The following use-case can be used to demo the Dynatrace Basic Observability features.
+
+The ACE-Box has been configured to spin up a VM and use different built-in modules to install on that machine the following components:
 - k8s (k3s)
 - Dynatrace Operator
 - Easytrade (demo app)
 
 The environment (VM + the modules installed on it) is automatically provisioned by the framework and it can be leveraged to showcase Dynatrace observability capabilities:
 
-SCREENSHOT OF EASYTRADE BEING MONITORED BY DYNATRACE
+![](./assets/use-case-example.png)
 
 ### Out-of-the-box use-cases
-The ACE-Box framework comes with a set of use-cases which are referred as _out-of-the-box use-cases_ which have been added from time to time by the ACE-Box contributors.
+The ACE-Box framework comes with a set of use-cases which are referred as _out-of-the-box use-cases_ which have been added from time to time by the ACE-Box contributors. 
 
 The list of available out-of-the-box use-cases is reported below:
 use-case | k8s | OneAgent | Synth AG | Jenkins | Gitea | Registry | GitLab | AWX | Keptn | Dashboard | Notes |

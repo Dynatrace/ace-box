@@ -16,8 +16,6 @@
 ## Introduction
 In addition to use-cases provided natively by the ACE-Box, it is now possible to create custom use-cases. This allows using the ACE-Box as a platform to develop your own scenarios, demonstrations, trainings, etc.
 
-A custom use-case can be sourced and provisioned by simply providing a link to an external Git repository where the configuration files are stored.
-
 <br>
 
 ## Ansible Roles
@@ -25,33 +23,83 @@ Ansible roles play a critical role in automating the setup and configuration of 
 
 Ansible roles are modular units that define specific tasks, such as installing software, configuring environments, or managing services. By leveraging these roles, ACE-Box simplifies the process of provisioning and configuring environments, making the creation and execution of use-cases more efficient.
 
-
 ### Out-of-the-box Roles
 Out-of-the-box Ansible roles are the roles that are natively provided by the ACE-Box framework, which cover common tasks and scenarios. Leveraging out-of-the-box Ansible roles is recommended and ensures rapid and consistent deployments.
 
 Check out the out-of-the-box roles [ReadMe](/user-skel/ansible_collections/ace_box/ace_box/roles/Readme.md) for the complete list of Ansible roles natively provided by the ACE-Box framework.
-
 
 ### Custom Roles
 If a particular use-case requires actions beyond the out-of-the-box roles, custom Ansible roles can be defined to meet those specific requirements. These custom roles can be integrated into the use-case's configuration, giving users flexibility while still maintaining a structured, automated approach.
 
 <br>
 
-## Development
+## Get Started
 
-TODO: step-by-step guide to build a custom use-case
+Let's breakdown into steps the way that the `Basic Observability Demo` has been created.
+
+1. Clone the custom use-case locally. Later on, you could either make changes locally or within the ace-box instance created. You will understand later what it is more convenient.
+
+```bash
+git clone https://github.com/dynatrace-ace/ace-box-ext-template.git
+```
+
+2. Follow the ace-box installation guide and for use case, select the ext-template.
+
+```bash
+use_case = "https://<user>:<personal-access-token>@github.com/dynatrace-ace/ace-box-ext-template.git"
+```
+
+Enable use-case as you would normally, e.g. `ace enable https://github.com/dynatrace-ace/ace-box-ext-template.git`. This will clone the repository to a _repos_ folder within the user's _home_ directory and initially enable the use-case. For example, in the case of `https://github.com/dynatrace-ace/ace-box-ext-template.git`, a new local repo will be created at _/home/ace/ace-box-ext-template_
+
+> Note: make sure to authenticate github with your user and creating a personal access token. Replace the placeholders above with your own values.
+
+3. Run `terraform apply` in order to create an "empty" ace-box. [Here](https://github.com/dynatrace-ace/ace-box-ext-template/blob/main/roles/my-use-case/tasks/main.yml) is where you can start working on your use case, and check the [repository structure](#repository-structure) for details on how it works.
+
+4. Once the previous command finishes its execution, you should see the information needed to access your VM (ace-box)
+
+![](../assets/ace-box_dashboard.png)
+
+> Note: if you can't see that information anymore, you can go back to the terraform directory where you did execute the command (`terraform apply`) and execute `terraform output` to see the command again.
+
+5. Notice how a key gets created for you to access the VM. You could either access via SSH, or what would be more convenient using an IDE such as [Remote Development](https://code.visualstudio.com/docs/remote/ssh) from VSCODE
+
+![](../assets/access_via_VSCODE.png)
 
 When developing an custom use-case, it might be cumbersome to update/re-install an custom use-case from a remote repository. We therefore introduced a flag for `ace enable` that allows you to work on your use-case locally (i.e. ACE-Box) while keeping the remote as well as ACE-Box roles in sync.
 
-Recommended development workflow:
+6. Re-run the enable command with the local flag, e.g. `ace enable https://github.com/dynatrace-ace/ace-box-ext-template.git --local`.
 
-1) Enable use-case as you would normally, e.g. `ace enable https://github.com/dynatrace-ace/ace-box-ext-template.git`. This will clone the repository to a _repos_ folder within the user's _home_ directory and initially enable the use-case. For example, in the case of `https://github.com/dynatrace-ace/ace-box-ext-template.git`, a new local repo will be created at _/home/ace/ace-box-ext-template_
-2) Make any required changes in the local repository (e.g. in _/home/ace/ace-box-ext-template_).
-3) Re-run the enable command with the local flag, e.g. `ace enable https://github.com/dynatrace-ace/ace-box-ext-template.git --local`. This will neither clone nor push, but enable the use with all the changes you made in step 2.
-4) When you're happy with your changes, commit and push changes from your local (e.g. in _/home/ace/ace-box-ext-template_) to the remote repository. Your changes are now published, hence from now on `ace enable ...` (without the `--local` flag) commands will include your changes.
+SCREENSHOT OF HELLO WORLD
 
-The `ace-box-ext-template` provides a template structure and examples of how to create a custom [ACE-Box](https://github.com/Dynatrace/ace-box) use-case.
+7. Add k3s role
 
+SCREENSHOT OF K3S ADDED
+
+8. Add extra vars. Needed for any Dynatrace related stuff.
+
+SCREENSHOT OF EXTRA VARS ADDED
+
+9. Add dt-operator role
+
+SCREENSHOT OF DT-OPERATOR
+
+10. Add easytrade 
+
+SCREENSHOT OF EASYTRADE
+
+11. When you're happy with your changes, commit and push changes from your local (e.g. in _/home/ace/ace-box-ext-template_) to the remote repository. Your changes are now published, hence from now on `ace enable ...` (without the `--local` flag) commands will include your changes.
+
+### Get Pro
+
+Let's extend our initial Basic Dynatrace Observability use-case, by using more OOTB & custom roles
+
+12. Add dashboard & gitlab
+
+13. Create dt token & oauth token
+
+14. Create DT configuration using Monaco, installing an App
+
+15. Extending it, shell script, use variables (what default variables are avaiblable, extra.vars from terraform), custom role 
 
 ### Custom Use-case Examples
 In the following you can find a list of custom use-cases:
@@ -86,10 +134,10 @@ For more information, please see the [official Ansible documentation](https://do
 
 The `my-use-case` role can itself source other Ansible roles. Such roles can either be provided as part of the external repository or included from the ACE-Box default roles.
 
-Further information, a template, as well as examples of such a structure can be found here: [ace-box-ext-template](https://github.com/dynatrace-ace/ace-box-ext-template).
-
 
 ### Repository Reference
+A custom use-case can be sourced and provisioned by simply providing a link to an external Git repository where the configuration files are stored.
+
 To enable an custom use-case the Terraform `use_case` variable has to point to the Git repository URL. For example:
 
 ```
