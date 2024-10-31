@@ -22,7 +22,7 @@
 
 ## What is it?
 The ACE-Box is a framework that can be used as a portable sandbox, demo and testing environment. It has been designed to simplify resource deployment and to streamline content creation.
-The ACE-box allows to deploy compute instances (usually cloud-hosted virtual machines) and to install modules on them. 
+The ACE-box allows to deploy compute instances (usually cloud-hosted VMs) and to install modules on them. 
 The framework follows a declarative approach where modules, resources and configurations are defined in a set of configuration files.
 
 <br>
@@ -37,18 +37,17 @@ A use-case aim to reproduce real-world setups for purposes like feature demonstr
 
 ### Use-case example: Basic Observability Demo
 
-The following use-case can be used to demo the Dynatrace Basic Observability features.
-
-The ACE-Box has been configured to spin up a VM and use different built-in modules to install on that machine the following components:
-- k8s (k3s)
-- Dynatrace Operator
-- Easytrade (demo app)
-
-The environment (VM + the modules installed on it) is automatically provisioned by the framework and it can be leveraged to showcase Dynatrace observability capabilities:
+The environment (VM + the modules installed on it) is automatically provisioned and it can be leveraged to showcase Dynatrace Observability capabilities:
 
 ![](./assets/use-case-example.png)
 
+The ACE-Box has been configured to spin up a VM and use different built-in modules to install on that machine the following components:
+- k8s, using a k3s distribution
+- Dynatrace Operator
+- Easytrade, demo app
+
 ### Out-of-the-box use-cases
+
 The ACE-Box framework comes with a set of use-cases which are referred as _out-of-the-box use-cases_ which have been added from time to time by the ACE-Box contributors. 
 
 The list of available out-of-the-box use-cases is reported below:
@@ -59,7 +58,10 @@ use-case | k8s | OneAgent | Synth AG | Jenkins | Gitea | Registry | GitLab | AWX
 [`demo_ar_workflows_gitlab`](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-gitlab/README.md) | x | x | | | | x |  | x |  | x | Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows |
 `demo_monaco_gitops` | x | x | x | x | x | x |  |  |  | x | Demo flow for Application Onboarding using Jenkins/Gitea |
 
+These use cases become handy to learn the concepts around a specific topic and to showcase features to customers. It is highly recommended to practice every presented demo/HoT.
+
 ### Custom use-cases
+
 In addition to the out-of-the-box use-cases provided natively by the ACE-Box, it is possible to source custom use-cases. This allows using the ACE-Box as a platform to develop your own use-cases, demonstrations, trainings, etc.
 
 Check out [Custom use-case](docs/custom-use-case.md) documentation for more info.

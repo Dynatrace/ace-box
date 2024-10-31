@@ -35,41 +35,41 @@ If a particular use-case requires actions beyond the out-of-the-box roles, custo
 
 ## Get Started
 
-Let's breakdown into steps the way that the `Basic Observability Demo` has been created.
+Let's create a custom use-case from scratch, in order to replicate the `Basic Observability Demo` previously presented.
 
-1. Clone the custom use-case locally. Later on, you could either make changes locally or within the ace-box instance created. You will understand later what it is more convenient.
+1. Clone the custom use-case locally. Later on, you could either make changes locally or within the ace-box instance.
 
 ```bash
 git clone https://github.com/dynatrace-ace/ace-box-ext-template.git
 ```
 
-2. Follow the ace-box installation guide and for use case, select the ext-template.
+2. Follow the ace-box installation guide and for use-case, select the external template.
 
 ```bash
 use_case = "https://<user>:<personal-access-token>@github.com/dynatrace-ace/ace-box-ext-template.git"
 ```
 
-Enable use-case as you would normally, e.g. `ace enable https://github.com/dynatrace-ace/ace-box-ext-template.git`. This will clone the repository to a _repos_ folder within the user's _home_ directory and initially enable the use-case. For example, in the case of `https://github.com/dynatrace-ace/ace-box-ext-template.git`, a new local repo will be created at _/home/ace/ace-box-ext-template_
-
 > Note: make sure to authenticate github with your user and creating a personal access token. Replace the placeholders above with your own values.
 
-3. Run `terraform apply` in order to create an "empty" ace-box. [Here](https://github.com/dynatrace-ace/ace-box-ext-template/blob/main/roles/my-use-case/tasks/main.yml) is where you can start working on your use case, and check the [repository structure](#repository-structure) for details on how it works.
+3. By following the previous installation, at one point you will be running the following command: `terraform apply`, in order to create an "empty" ace-box. [Here](https://github.com/dynatrace-ace/ace-box-ext-template/blob/main/roles/my-use-case/tasks/main.yml) is then where you can start working on your use case, and check the [repository structure](#repository-structure) for details on how it works.
 
-4. Once the previous command finishes its execution, you should see the information needed to access your VM (ace-box)
+Once the previous command finishes its execution, you should see the information needed to access your VM (ace-box)
 
 ![](../assets/ace-box_dashboard.png)
 
 > Note: if you can't see that information anymore, you can go back to the terraform directory where you did execute the command (`terraform apply`) and execute `terraform output` to see the command again.
 
-5. Notice how a key gets created for you to access the VM. You could either access via SSH, or what would be more convenient using an IDE such as [Remote Development](https://code.visualstudio.com/docs/remote/ssh) from VSCODE
+5. An SSH key gets created in order to access the ace-box. You could either access via SSH, or use an IDE such as [Remote Development](https://code.visualstudio.com/docs/remote/ssh) from Visual Studio.
 
 ![](../assets/access_via_VSCODE.png)
 
-When developing an custom use-case, it might be cumbersome to update/re-install an custom use-case from a remote repository. We therefore introduced a flag for `ace enable` that allows you to work on your use-case locally (i.e. ACE-Box) while keeping the remote as well as ACE-Box roles in sync.
+> Note: it is highly recommended to use an IDE, in order to work more comfortable and faster.
 
-6. Re-run the enable command with the local flag, e.g. `ace enable https://github.com/dynatrace-ace/ace-box-ext-template.git --local`.
+6. Access the ace-box by clicking in the remote tunnel configuration, and run the enable command with the local flag, e.g. `ace enable https://github.com/dynatrace-ace/ace-box-ext-template.git --local`.
 
-SCREENSHOT OF HELLO WORLD
+![](../assets/hello-world.png)
+
+
 
 7. Add k3s role
 
