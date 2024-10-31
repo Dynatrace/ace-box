@@ -69,37 +69,57 @@ Once the previous command finishes its execution, you should see the information
 
 ![](../assets/hello-world.png)
 
+7. We start with an empty Linux VM. We could start deploying our apps as process, but we decided to use Kubernetes. There is a curated [k3s role](https://github.com/Dynatrace/ace-box/tree/dev/user-skel/ansible_collections/ace_box/ace_box/roles/k3s) for the correspondant distribution. Follow the instructions to deploy k3s, then re-run the external use case (command step 6) in order to deploy k3s. Check if k3s is working by running a kubectl command:
 
+![](../assets/k3s.png)
 
-7. Add k3s role
+8. Next step would be to add Dynatrace monitoring to our ace-box. Let's add the extra-vars, that will be needed for authentication in the future and the [dt-operator](https://github.com/Dynatrace/ace-box/tree/dev/user-skel/ansible_collections/ace_box/ace_box/roles/dt-operator) role for the observability itself
 
-SCREENSHOT OF K3S ADDED
+![](../assets/operator.png)
 
-8. Add extra vars. Needed for any Dynatrace related stuff.
+9. After a few minutes, you should see the operator connected to Dynatrace, monitoring our k3s cluster
 
-SCREENSHOT OF EXTRA VARS ADDED
+![](../assets/cluster.png)
 
-9. Add dt-operator role
+10. Let's add a demo app. Check the [app-easytrade](https://github.com/Dynatrace/ace-box/tree/dev/user-skel/ansible_collections/ace_box/ace_box/roles/app-easytrade) role, read the instructions and add it into our custom use-case:
 
-SCREENSHOT OF DT-OPERATOR
+![](../assets/easytrade.png)
 
-10. Add easytrade 
+11. Check the ingress defined for easytrade-app in order to access externally to the demo app:
 
-SCREENSHOT OF EASYTRADE
+```bash
+ace@ace-box-4c9z:~$ kubectl get ingress -A
+NAMESPACE       NAME                CLASS    HOSTS                                 ADDRESS       PORTS   AGE
+easytrade-app   easytrade-ingress   <none>   easytrade-app.35.225.173.223.nip.io   10.128.0.20   80      113s
+```
 
-11. When you're happy with your changes, commit and push changes from your local (e.g. in _/home/ace/ace-box-ext-template_) to the remote repository. Your changes are now published, hence from now on `ace enable ...` (without the `--local` flag) commands will include your changes.
+12. Check if you are monitoring easytrade with Dynatrace (don't forget to check the logs too!)
 
-### Get Pro
+![](../assets/easytrade-dt.png)
+
+> Note: k3s uses traefik. 
+
+13. When you're happy with your changes, commit and push changes from your local (e.g. in _/home/ace/ace-box-ext-template_) to the remote repository. Your changes are now published, hence from now on `ace enable ...` (without the `--local` flag) commands will include your changes.
+
+### Get Pro (Coming soon...)
 
 Let's extend our initial Basic Dynatrace Observability use-case, by using more OOTB & custom roles
 
-12. Add dashboard & gitlab
+14. Add dashboard & gitlab
 
-13. Create dt token & oauth token
+_Coming soon..._
 
-14. Create DT configuration using Monaco, installing an App
+15. Create dt token & oauth token
 
-15. Extending it, shell script, use variables (what default variables are avaiblable, extra.vars from terraform), custom role 
+_Coming soon..._
+
+16. Create DT configuration using Monaco, installing an App
+
+_Coming soon..._
+
+17. Extending it, shell script, use variables (what default variables are avaiblable, extra.vars from terraform), custom role 
+
+_Coming soon..._
 
 ### Custom Use-case Examples
 In the following you can find a list of custom use-cases:
@@ -161,3 +181,28 @@ use_case = "https://<user>:<token>@github.com/my-org/my-ext-use-case.git@v1.0.0"
 
 ## Contribute
 It is possible to extend the out-of-the-box use-cases by integrating the needed configuration files into the ACE-Box repository.
+
+## Troubleshoot
+
+### known_hosts issue
+
+If you get the following error lines while trying to access the ace-box server:
+
+```log
+[10:04:38.930] Exec server for ssh-remote+35.225.173.223 failed: Error: Remote host key has changed, port forwarding is disabled
+[10:04:38.930] Error opening exec server for ssh-remote+35.225.173.223: Error: Remote host key has changed, port forwarding is disabled
+```
+
+Check also in that piece of logs, where the known_hosts are defined, for example:
+
+```log
+Offending ECDSA key in /Users/ignacio.goldman/.ssh/known_hosts:6
+```
+
+And run the following command locally in order to remove the known_hosts:
+
+```bash
+rm /Users/ignacio.goldman/.ssh/known_hosts
+```
+
+Then try to access again your VM
