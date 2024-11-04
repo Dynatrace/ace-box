@@ -84,11 +84,12 @@ At the end of the provisioning of any of the out of the box supported use-cases,
 ## Installation
 The recommended way of installing any ACE box version, local or cloud, is via Terraform (scroll down for alternatives). Check the [Azure](terraform/azure/Readme.md), [AWS](terraform/aws/Readme.md) or [Google Cloud](terraform/gcloud/Readme.md) subfolders for additional instructions.
 
-1. Check prereqs:
+1. Pre-requisites:
      - Terraform installed
      - Dynatrace tenant (prod or sprint, dev not recommended)
-2. Go to folder `./terraform/<aws, azure or gcloud>/` or check out [BYO VM](docs/byo-vm.md) documentation for more details on how to use a VM of your choice.
-3. Set required Terraform variables:
+2. Clone ace-box
+3. Go to folder `./terraform/<aws, azure or gcloud>/` or check out [BYO VM](docs/byo-vm.md) documentation for more details on how to use a VM of your choice.
+4. Set required Terraform variables:
    1. Check out the `Readme.md` for your specific cloud provider to verify the provider-specific configuration that needs to be set
    2. Add ace-box specific information (see below for more details)
    3. Set them by either
@@ -128,9 +129,9 @@ The recommended way of installing any ACE box version, local or cloud, is via Te
        
         > Note: `demo_release_validation_srg_gitlab` requires extra variables. See [use-case README](user-skel/ansible_collections/ace_box/ace_box/roles/demo-release-validation-srg-gitlab/README.md) for details.
 
-4. Run `terraform init`
-5. Run `terraform apply`
-6. Grab a coffee, this process will take some time...
+5. Run `terraform init`
+6. Run `terraform apply`
+7. Grab a coffee, this process will take some time...
 
 ### Useful Terraform Commands
 Command  | Result
