@@ -39,6 +39,7 @@
   kubernetes.core.helm:
     name: fluent-bit
     chart_ref: fluent/fluent-bit
+    chart_version: "{{fluentbit_chart_version}}"
     release_namespace: dynatrace-fluent-bit
     create_namespace: true
     update_repo_cache: true
