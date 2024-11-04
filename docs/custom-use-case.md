@@ -35,57 +35,101 @@ If a particular use-case requires actions beyond the out-of-the-box roles, custo
 
 ## Get Started
 
+### Part A: Prepare your repository & Spin up your ace-box
+
 Let's create a custom use-case from scratch, in order to replicate the `Basic Observability Demo` previously presented.
 
-1. Clone the custom use-case locally. Later on, you could either make changes locally or within the ace-box instance.
+1. Create a new repository using the [ext-template](https://github.com/dynatrace-ace/ace-box-ext-template) as a template.
+
+![](../assets/create-new-repo.png)
+
+2. Give your repository a name and make it part of the `dynatrace-ace` space
+
+![](../assets/repo-config.png)
+
+3. Clone your recently created repository locally. Later on, you could either make changes locally or within the ace-box instance.
 
 ```bash
-git clone https://github.com/dynatrace-ace/ace-box-ext-template.git
+git clone https://github.com/dynatrace-ace/basic-dt-demo.git
 ```
 
-2. Follow the ace-box installation guide and for use-case, select the external template.
+4. Follow the ace-box [installation guide](https://github.com/Dynatrace/ace-box?tab=readme-ov-file#installation) and for the `use-case` variable, configure it pointing to your custom use-case you are currently developing.
 
 ```bash
-use_case = "https://<user>:<personal-access-token>@github.com/dynatrace-ace/ace-box-ext-template.git"
+use_case = "https://<user>:<personal-access-token>@github.com/dynatrace-ace/basic-dt-demo.git"
 ```
 
-> Note: make sure to authenticate github with your user and creating a personal access token. Replace the placeholders above with your own values.
+> Note: you need to provide your github user and personal access token. Replace the placeholders above with your own values.
 
-3. By following the previous installation, at one point you will be running the following command: `terraform apply`, in order to create an "empty" ace-box. [Here](https://github.com/dynatrace-ace/ace-box-ext-template/blob/main/roles/my-use-case/tasks/main.yml) is then where you can start working on your use case, and check the [repository structure](#repository-structure) for details on how it works.
+5. Finish the [installation guide](https://github.com/Dynatrace/ace-box?tab=readme-ov-file#installation) and check the output of the terraform apply command with:
 
-Once the previous command finishes its execution, you should see the information needed to access your VM (ace-box)
+```bash
+terraform output 
+```
 
-![](../assets/terraform-apply-output.png)
+> Note: it should retrieve the IP & SSH key to access the VM (ace-box)
 
-> Note: if you can't see that information anymore, you can go back to the terraform directory where you did execute the command (`terraform apply`) and execute `terraform output` to see the command again.
+6. Access the ace-box. RECOMMENDED: use an IDE such as [Remote Development](https://code.visualstudio.com/docs/remote/ssh) from Visual Studio
 
-5. An SSH key gets created in order to access the ace-box. You could either access via SSH, or use an IDE such as [Remote Development](https://code.visualstudio.com/docs/remote/ssh) from Visual Studio.
+SSH config file example
 
-![](../assets/access_via_VSCODE.png)
+```yaml
+Host <your-ace-box-ip>
+HostName <your-ace-box-ip>
+IdentityFile <path-to-the-ssh-key>
+User ace
+```
 
-> Note: it is highly recommended to use an IDE, in order to work more comfortable and faster.
+7. Within the ace-box, run the following command:
 
-6. Access the ace-box by clicking in the remote tunnel configuration, and run the enable command with the local flag, e.g. `ace enable https://github.com/dynatrace-ace/ace-box-ext-template.git --local`.
+```bash
+ace enable https://github.com/dynatrace-ace/ace-box-ext-template.git --local
+```
 
 ![](../assets/hello-world.png)
 
-7. We start with an empty Linux VM. We could start deploying our apps as process, but we decided to use Kubernetes. There is a curated [k3s role](https://github.com/Dynatrace/ace-box/tree/dev/user-skel/ansible_collections/ace_box/ace_box/roles/k3s) for the correspondant distribution. Follow the instructions to deploy k3s, then re-run the external use case (command step 6) in order to deploy k3s. Check if k3s is working by running a kubectl command:
+What did just happen? 
+- Check the [repository structure](#repository-structure) for details on how it works. 
+- [Here](https://github.com/dynatrace-ace/ace-box-ext-template/blob/main/roles/my-use-case/tasks/main.yml) is then where you can start working on your use case
 
-![](../assets/k3s.png)
+### Part B: Build your use-case (Ansible)
 
-8. Next step would be to add Dynatrace monitoring to our ace-box. Let's add the extra-vars, that will be needed for authentication in the future and the [dt-operator](https://github.com/Dynatrace/ace-box/tree/dev/user-skel/ansible_collections/ace_box/ace_box/roles/dt-operator) role for the observability itself
+At this point, we have an empty ace-box (Linux VM), to start building on top of it. Check once again the already created [OOTB roles](#out-of-the-box-roles) to re-use content instead of creating from scratch.
 
-![](../assets/operator.png)
+8. We could run our apps as processes, but we decided to use a k8s distribution. Read the [k3s role](https://github.com/Dynatrace/ace-box/tree/dev/user-skel/ansible_collections/ace_box/ace_box/roles/k3s) documentation and add it to our custom use case
 
-9. After a few minutes, you should see the operator connected to Dynatrace, monitoring our k3s cluster
+```yaml
+- include_role:
+    name: k3s
+```
 
-![](../assets/cluster.png)
+9. In order to deploy k3s, re-run the ansible `main.yml` with following command:
 
-10. Let's add a demo app. Check the [app-easytrade](https://github.com/Dynatrace/ace-box/tree/dev/user-skel/ansible_collections/ace_box/ace_box/roles/app-easytrade) role, read the instructions and add it into our custom use-case:
+```bash
+ace enable https://github.com/dynatrace-ace/ace-box-ext-template.git --local
+```
 
-![](../assets/easytrade.png)
+10. Next step would be to add Dynatrace monitoring to our ace-box. Repeat step `8` & `9`, following the [dt-operator](https://github.com/Dynatrace/ace-box/tree/dev/user-skel/ansible_collections/ace_box/ace_box/roles/dt-operator) role.
 
-11. Check the ingress defined for easytrade-app in order to access externally to the demo app:
+```yaml
+- name: Install dt operator
+  include_role:
+    name: dt-operator
+```
+
+10. Let's add a demo app. Repeat step `8` & `9`, following the [app-easytrade](https://github.com/Dynatrace/ace-box/tree/dev/user-skel/ansible_collections/ace_box/ace_box/roles/app-easytrade) role.
+
+```yaml
+- include_role:
+    name: app-easytrade
+  vars:
+    easytrade_namespace: "easytrade-app"
+    easytrade_domain: "easytrade-app.{{ ingress_domain }}"
+    easytrade_deploy: true
+    easytrade_owner: "easytrade-hot-devs"
+```
+
+11. Check the ingress defined for `easytrade-app` in order to access externally to the demo app:
 
 ```bash
 ace@ace-box-4c9z:~$ kubectl get ingress -A
