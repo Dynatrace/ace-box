@@ -12,6 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+variable "azure_subscription_id" {
+  description = "Azure Subscription ID for provisioning the Azure resources"
+}
+
 variable "name_prefix" {
   description = "Prefix to distinguish the instance"
   default     = "ace-box-cloud"

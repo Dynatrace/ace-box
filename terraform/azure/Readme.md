@@ -33,6 +33,7 @@
 
     ```hcl
     azure_location          = "" # azure location where you want to provision the resources
+    azure_subscription_id   = "" # azure subscription id in which subcsription you want to provision the resources
     ```
 
     Check out `variables.tf` for a complete list of variables
