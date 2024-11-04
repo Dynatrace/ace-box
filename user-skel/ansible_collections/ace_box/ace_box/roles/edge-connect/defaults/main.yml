@@ -15,3 +15,4 @@
 ---
 cluster_ip: "{{hostvars[inventory_hostname]['ansible_default_ipv4']['address']}}"
 edge_connect_name: "edge-connect-k8s-hot"
+dynatrace_api_version: v1alpha1
