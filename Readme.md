@@ -97,6 +97,7 @@ The recommended way of installing any ACE box version, local or cloud, is via Te
           ```
           dt_tenant = "https://....dynatrace.com"
           dt_api_token = "dt0c01...."
+          use_case = "https://..../use-case.git"
           ...
           ```
       2. Or by setting environment variables:
