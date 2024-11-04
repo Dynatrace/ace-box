@@ -42,9 +42,9 @@ The environment (VM + the modules installed on it) is automatically provisioned 
 ![](./assets/use-case-example.png)
 
 The ACE-Box has been configured to spin up a VM and use different built-in modules to install on that machine the following components:
-- k8s, using a k3s distribution
+- Kubernetes
 - Dynatrace Operator
-- Easytrade, demo app
+- Easytrade Demo App
 
 ### Out-of-the-box use-cases
 

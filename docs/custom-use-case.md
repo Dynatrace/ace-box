@@ -83,7 +83,7 @@ User ace
 7. Within the ace-box, run the following command:
 
 ```bash
-ace enable https://github.com/dynatrace-ace/ace-box-ext-template.git --local
+ace enable https://github.com/dynatrace-ace/basic-dt-demo.git --local
 ```
 
 ![](../assets/hello-world.png)
@@ -106,7 +106,7 @@ At this point, we have an empty ace-box (Linux VM), to start building on top of 
 9. In order to deploy k3s, re-run the ansible `main.yml` with following command:
 
 ```bash
-ace enable https://github.com/dynatrace-ace/ace-box-ext-template.git --local
+ace enable https://github.com/dynatrace-ace/basic-dt-demo.git --local
 ```
 
 10. Next step would be to add Dynatrace monitoring to our ace-box. Repeat step `8` & `9`, following the [dt-operator](https://github.com/Dynatrace/ace-box/tree/dev/user-skel/ansible_collections/ace_box/ace_box/roles/dt-operator) role.
@@ -137,31 +137,30 @@ NAMESPACE       NAME                CLASS    HOSTS                              
 easytrade-app   easytrade-ingress   <none>   easytrade-app.35.225.173.223.nip.io   10.128.0.20   80      113s
 ```
 
-12. Check if you are monitoring easytrade with Dynatrace (don't forget to check the logs too!)
+### Part C: Closing Up
 
-![](../assets/easytrade-dt.png)
+[This](https://github.com/dynatrace-ace/ace-box-ext-template/blob/basic_demo/roles/my-use-case/tasks/main.yml) is how your `main.yml` should look like at the end of `Part B`
 
-> Note: k3s uses traefik. 
+12. When the ace-box gets created, the `basic-dt-demo` gets cloned under `/home/ace/repos/basic-dt-demo`. Once you're happy with your changes, commit and push changes to the remote repository. Now you could safely destroy the ace-box and recreate it and all resources will get created automatically.
 
-13. When you're happy with your changes, commit and push changes from your local (e.g. in _/home/ace/ace-box-ext-template_) to the remote repository. Your changes are now published, hence from now on `ace enable ...` (without the `--local` flag) commands will include your changes.
 
 ### Get Pro (Coming soon...)
 
 Let's extend our initial Basic Dynatrace Observability use-case, by using more OOTB & custom roles
 
-14. Add dashboard & gitlab
+13. Add dashboard & gitlab
 
 _Coming soon..._
 
-15. Create dt token & oauth token
+14. Create dt token & oauth token
 
 _Coming soon..._
 
-16. Create DT configuration using Monaco, installing an App
+15. Create DT configuration using Monaco, installing an App
 
 _Coming soon..._
 
-17. Extending it, shell script, use variables (what default variables are avaiblable, extra.vars from terraform), custom role 
+16. Extending it, shell script, use variables (what default variables are avaiblable, extra.vars from terraform), custom role 
 
 _Coming soon..._
 
