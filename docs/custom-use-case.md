@@ -18,7 +18,7 @@ Table Of Content:
 <br>
 
 # Introduction
-In addition to use-cases provided natively by the ACE-Box, it is now possible to create custom use-cases. This allows using the ACE-Box as a platform to develop your own scenarios, demonstrations, trainings, etc.
+In addition to use-cases provided natively by the ACE-Box, it is now possible to create custom use-cases. This capability allows using the ACE-Box as a platform to develop your own scenarios, demonstrations, trainings, etc.
 
 In the next sections you can find all the needed information to develop your own custom use-case from scratch.
 
@@ -30,7 +30,7 @@ In the next sections you can find all the needed information to develop your own
 
 ## Part A: Prepare your repository & spin up your ACE-Box
 
-Let's create a custom use-case from scratch, in order to replicate the `Basic Observability Demo` previously presented.
+Let's create a custom use-case from scratch, in order to replicate the `Basic Observability Demo` use-case previously presented.
 
 1. First of all, create a new repository using the [ext-template](https://github.com/dynatrace-ace/ace-box-ext-template) as a template.
 
@@ -44,7 +44,7 @@ Let's create a custom use-case from scratch, in order to replicate the `Basic Ob
 
 <br>
 
-3. Clone your recently created repository locally. Later on, you could either make changes locally or within the ACE-Box instance.
+3. Clone your recently created repository locally. Later on, you could either make changes locally or within the ACE-Box VM instance.
 
     ```bash
     git clone https://github.com/dynatrace-ace/basic-dt-demo.git
@@ -52,7 +52,7 @@ Let's create a custom use-case from scratch, in order to replicate the `Basic Ob
 
 <br>
 
-4. Now, follow the ACE-Box [installation guide](https://github.com/Dynatrace/ace-box?tab=readme-ov-file#installation) to spin up an ACE-Box instance. Be sure to configure the `use-case` variable within the `terraform.tfvars` file to point to the custom use-case you are currently developing:
+4. Now, follow the ACE-Box [installation guide](https://github.com/Dynatrace/ace-box?tab=readme-ov-file#installation) to spin up VM and deploy the modules configurations defined in the custom use-case template. <br>Be sure to configure the `use-case` variable within the `terraform.tfvars` file to point to the custom use-case repository that we are about to develop:
 
     ```bash
     use_case = "https://<user>:<personal-access-token>@github.com/dynatrace-ace/basic-dt-demo.git"
@@ -68,12 +68,12 @@ Let's create a custom use-case from scratch, in order to replicate the `Basic Ob
     terraform output 
     ```
 
-    > Note: it should retrieve the IP & SSH key to access the VM (ACE-Box)
+    > Note: it should retrieve the IP & SSH key to access the VM that has been just created (ACE-Box)
 
 <br>
 
-6. Access the ACE-Box.
-RECOMMENDED: use an IDE such as [Remote Development](https://code.visualstudio.com/docs/remote/ssh) from Visual Studio. <br> SSH config file example
+6. At this point, the framework has provisioned a VM on the selected Cloud Provider and it has automatically cloned our custom use-case repository (`basic-dt-demo`) under the `/home/ace/repos/basic-dt-demo` path. <br>Next step is to go ahead implementing our custom use-case directly from the newly-created machine and, for for this reason, it's required to access the VM via SSH. <br><br>
+**Recommended**: use an IDE such as [Remote Development](https://code.visualstudio.com/docs/remote/ssh) from Visual Studio for a more straight-forward and comfortable development experience. <br> SSH config file example:
 
     ```yaml
     Host <your-ace-box-ip>
@@ -84,7 +84,7 @@ RECOMMENDED: use an IDE such as [Remote Development](https://code.visualstudio.c
 
 <br>
 
-7. Within the ACE-Box, run the following command:
+7. Once you are successfully logged in into the ACE-Box VM, run the following command:
 
     ```bash
     ace enable https://github.com/dynatrace-ace/basic-dt-demo.git --local
@@ -158,8 +158,7 @@ More in detail, we’ll build our custom use-case incrementally, modifying the `
 ## Part C: Closing Up
 [This](https://github.com/dynatrace-ace/ace-box-ext-template/blob/basic_demo/roles/my-use-case/tasks/main.yml) is how your `main.yml` should look like at the end of `Part B`.
 
-12. When the ACE-Box gets created, the `basic-dt-demo` gets cloned under `/home/ace/repos/basic-dt-demo`.
-Once you're happy with your changes, commit and push changes to the remote repository. Now you could safely destroy the ACE-Box and recreate it and all resources will get created automatically.
+12. Once you're happy with your changes, commit and push changes to the remote repository. Now you could safely destroy the ACE-Box and recreate it and all the resources defined within the configuration files will get created automatically.
 
 <br>
 
