@@ -52,7 +52,7 @@ Let's create a custom use-case from scratch, in order to replicate the `Basic Ob
 
 <br>
 
-4. Now, follow the ACE-Box [installation guide](https://github.com/Dynatrace/ace-box?tab=readme-ov-file#installation) to spin up VM and deploy the modules configurations defined in the custom use-case template. <br>Be sure to configure the `use-case` variable within the `terraform.tfvars` file to point to the custom use-case repository that we are about to develop:
+4. Now, follow the ACE-Box [installation guide](https://github.com/Dynatrace/ace-box?tab=readme-ov-file#installation) to spin up a VM and deploy the modules and configurations defined in the custom use-case template (note: the template just contains a _"Hello World"_ output at this stage). <br>Be sure to configure the `use-case` variable within the `terraform.tfvars` file to point to the custom use-case repository that we are about to develop:
 
     ```bash
     use_case = "https://<user>:<personal-access-token>@github.com/dynatrace-ace/basic-dt-demo.git"
@@ -102,7 +102,7 @@ What did just happen?
 At this point, we have an empty ACE-Box (Linux VM) and we can start building our custom use-case on top of it.
 To do so, we are going to use `Ansible` and `Ansible Roles` to automate and simplify the process. Check out the [Ansible Roles](#ansible-roles) section for further details.
 
-More in detail, we’ll build our custom use-case incrementally, modifying the `my-use-case/tasks/main.yml` configuration file step-by-step to instruct the Ansible engine on what to deploy to the ACE-Box VM. After each step, we let the engine parse the updated file and apply the changes accordingly.
+More in detail, we’ll build our custom use-case incrementally, modifying the `my-use-case/tasks/main.yml` configuration file step-by-step to instruct the Ansible engine on what to deploy to the ACE-Box VM. After each step, we let the engine parse the updated file and deploy the changes accordingly.
 
 8. In order to replicate the `Basic Observability Demo`, we first need to deploy a k8s distribution. To do so, Read the [k3s role](https://github.com/Dynatrace/ace-box/tree/dev/user-skel/ansible_collections/ace_box/ace_box/roles/k3s) documentation and the following instructions to the add it to the `my-use-case/tasks/main.yml` file:
 
@@ -207,12 +207,14 @@ Ansible roles play a critical role in automating the setup and configuration of 
 They are modular units that define specific tasks, such as installing software, configuring environments, or managing services. By leveraging these roles, ACE-Box simplifies the process of provisioning and configuring environments, making the creation and execution of use-cases more efficient.
 
 ## Out-of-the-box Ansible Roles
-Out-of-the-box Ansible roles are the roles that are natively provided by the ACE-Box framework, which cover common tasks and scenarios. Leveraging out-of-the-box Ansible roles is recommended and ensures rapid and consistent deployments.
+Out-of-the-box Ansible roles are the roles that are natively provided by the ACE-Box framework, which cover common tasks and scenarios. Leveraging OOTB Ansible roles is recommended and ensures rapid and consistent deployments.
 
-Check out the out-of-the-box roles [ReadMe](/user-skel/ansible_collections/ace_box/ace_box/roles/Readme.md) for the complete list of Ansible roles natively provided by the ACE-Box framework.
+Referring to the [Basic Obsevability Demo](#part-b-build-your-custom-use-case-ansible) example, we have used several OOTB Ansible roles (`k3s`, `dt-operator` and `app-easytrade`) to deploy all the needed modules within the ACE-Box VM.
+
+Check out the OOTB roles [ReadMe](/user-skel/ansible_collections/ace_box/ace_box/roles/Readme.md) for the complete list of Ansible roles natively provided by the ACE-Box framework.
 
 ## Custom Ansible Roles
-If a particular use-case requires actions beyond the out-of-the-box roles, custom Ansible roles can be defined to meet those specific requirements. These custom roles can be integrated into the use-case's configuration, giving users flexibility while still maintaining a structured, automated approach.
+If a particular use-case requires actions beyond the OOTB roles, custom Ansible roles can be defined to meet those specific requirements. These custom roles can be integrated into the use-case's configuration, giving users flexibility while still maintaining a structured, automated approach.
 
 ## Repository structure
 In order for the ACE-Box to understand and properly deploy all the custom use-cases' modules using Ansible, it's mandatory that the custom use-case repository complies with the following folder structure:
@@ -227,15 +229,15 @@ roles/
     ...
 ```
 
-More specifically, a folder named `roles` needs to be available at the repository root, and it must include at least a `my-use-case` (literal, not renamed) sub-folder.
+More specifically, a folder named `roles` must to be available at the repository root, and it must include at least a `my-use-case` (literal, not renamed) sub-folder.
 
-This `roles` folder, as well as all subfolders and files included in it, is synchronized with the ACE-Box's Ansible workdir. Upon a successful content sync, Ansible engine tries to use this `my-use-case` folder as an Ansible role and executes all the instructions specified into the configuration files.
+This `roles` folder, as well as all subfolders and files included in it, is synchronized with the ACE-Box's Ansible working directory. Upon a successful content sync, Ansible engine tries to use this `my-use-case` folder as an Ansible role and executes all the instructions specified within the configuration files.
 
 Besides, it is possible to create other sub-folders to source additional custom Ansible roles:
 ```
 roles/
   my-use-case/
-  other-custom-ansible-role/
+  additional-custom-ansible-role/
   ...
 ```
 
