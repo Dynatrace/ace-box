@@ -101,6 +101,17 @@ export TF_VAR_dt_api_token=dt0c01....
 7. Run `terraform apply`
 8. Grab a coffee, this process will take some time...
 
+### Behind the scenes
+
+Spinning up an ACE-Box instance can be split into two main parts:
+
+1) Deploying a VM: This happens automatically when you use the included Terraform projects or you can bring your own VM.
+2) After a VM is available, the provisioners install the ACE-Box framework. This process itself consists in a couple steps:
+   1) Working directory copy: everything in [user-skel](/user-skel) is copied to the VM local filesystem
+   2) Package manager update: [init.sh](/user-skel/init.sh) is run. This runs an `apt-get` update and installs `Python3.9`, `Ansible` and the `ace-cli`
+   3) `ace prepare` command is run, which asks for ACE-Box specific configurations (e.g. protocol, custom domain, ...)
+   4) Once the VM is prepared, `ace enable USECASE_NAME|USECASE_URL` command is run to perform the actual deployment of the modules (e.g: softwares, applications, ..) and implement the configurations that have been defined in the use-case's configuration files
+
 ## Use-cases
 A use-case aim to reproduce real-world setups for purposes like feature demonstrations, hands-on training, or system testing. Each use-case is defined by a set of configuration files that ACE-Box uses to automatically deploy the necessary infrastructure and apply the required configurations on the systems.
 
@@ -155,15 +166,7 @@ Command  | Result
 `terraform plan -destroy` | view a speculative destroy plan, to see what the effect of destroying would be |
 `terraform show` | Outputs the resources created by Terraform. Useful to verify IP addresses and the dashboard URL. 
 
-### Behind the scenes
-Spinning up an ACE-Box instance can be split into two main parts:
 
-1) Deploying a VM: This happens automatically when you use the included Terraform projects or you can bring your own VM.
-2) After a VM is available, the provisioners install the ACE-Box framework. This process itself consists in a couple steps:
-   1) Working directory copy: everything in [user-skel](/user-skel) is copied to the VM local filesystem
-   2) Package manager update: [init.sh](/user-skel/init.sh) is run. This runs an `apt-get` update and installs `Python3.9`, `Ansible` and the `ace-cli`
-   3) `ace prepare` command is run, which asks for ACE-Box specific configurations (e.g. protocol, custom domain, ...)
-   4) Once the VM is prepared, `ace enable USECASE_NAME|USECASE_URL` command is run to perform the actual deployment of the modules (e.g: softwares, applications, ..) and implement the configurations that have been defined in the use-case's configuration files
 
 <br>
 
@@ -172,7 +175,7 @@ Please see `LICENSE` in repo root for license details.
 
 License headers can be added automatically be running `./tools/addlicenseheader.sh` (see file for details).
 
-### Oauth client scopes
+## Oauth client scopes
 
 The recommended scopes for the Oauth client are:
 
@@ -205,6 +208,6 @@ app-engine:edge-connects:delete
 app-settings:objects:read 
 ```
 
-### API token scopes
+## API token scopes
 
 Initial API token with scopes `apiTokens.read` and `apiTokens.write`. This token will be used by various roles to manage their own tokens.
