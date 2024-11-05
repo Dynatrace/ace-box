@@ -81,32 +81,74 @@ At the end of the provisioning of any of the out of the box supported use-cases,
 
 <br>
 
-## Installation
+## Get Started
 The recommended way of installing any ACE box version, local or cloud, is via Terraform (scroll down for alternatives). Check the [Azure](terraform/azure/Readme.md), [AWS](terraform/aws/Readme.md) or [Google Cloud](terraform/gcloud/Readme.md) subfolders for additional instructions.
 
-1. Pre-requisites:
-     - Terraform installed
+1. Pre-requisites
+     - Install [Terraform](https://www.terraform.io/)
      - Dynatrace tenant (prod or sprint, dev not recommended)
 2. Clone ace-box
-3. Go to folder `./terraform/<aws, azure or gcloud>/` or check out [BYO VM](docs/byo-vm.md) documentation for more details on how to use a VM of your choice.
-4. Set required Terraform variables:
-   1. Check out the `Readme.md` for your specific cloud provider to verify the provider-specific configuration that needs to be set
-   2. Add ace-box specific information (see below for more details)
-   3. Set them by either
-      1. adding `dt_tenant, dt_api_token, ...` to a `terraform.tfvars` file:
-          ```
-          dt_tenant = "https://....dynatrace.com"
-          dt_api_token = "dt0c01...."
-          use_case = "https://..../use-case.git"
-          ...
-          ```
-      2. Or by setting environment variables:
-          ```
-          export TF_VAR_dt_tenant=https://....dynatrace.com
-          export TF_VAR_dt_api_token=dt0c01....
-          ...
-          ```
-          For details and alternatives see https://www.terraform.io/docs/language/values/variables.html
+
+```bash
+git clone https://github.com/Dynatrace/ace-box.git
+```
+
+3. Go to folder `./terraform/<aws, azure or gcloud>/` and create a `terraform.tfvars` with the following information:
+
+```conf
+///////////////////////////////////////
+// mandatory for all cloud providers //
+///////////////////////////////////////
+// You can use prod, sprint or dev
+dt_tenant = "https://<tenant_id>.sprint.dynatracelabs.com"
+dt_api_token = "<tenant_api_token>"
+extra_vars = {
+  // You can use prod, sprint or dev tenants
+  dt_environment_url_gen3 = "https://<tenant_id>.sprint.apps.dynatracelabs.com"
+  // Respective sso for the stage
+  dt_oauth_sso_endpoint   = "https://sso-sprint.dynatracelabs.com/sso/oauth2/token"
+  // check scopes below
+  dt_oauth_client_id = "<client_id>"
+  dt_oauth_client_secret = "<client_secret>"
+  dt_oauth_account_urn = "urn:dtaccount:<id>"
+}
+
+//////////////
+// optional //
+//////////////
+// check 
+name_prefix = "my-ace-box-name"
+
+// Respective to the cloud provider
+acebox_size = "n2-standard-8"
+
+// Check: https://dynatrace.sharepoint.com/sites/SRSECOPS/SitePages/Tagging-Policy.aspx
+// Details of how to configure your VMs ownership
+dt_owner_team = "team-kriren-121276"
+dt_owner_email = "ignacio_goldman-dynatrace_com"
+
+// Commented out in our case, uncomment to use the Automated Release Validstion with SRG use case
+// use_case = demo_release_validation_srg_gitlab      
+
+// gcloud specific (check readme from other cloud providers for respective variables)
+gcloud_project = "<your-gcp-project>" # GCP Project you want to use
+gcloud_cred_file = "<file-name>.json" # location of the Service Account JSON created earlier
+gcloud_zone = "<gcloud-zone>" # zone where you want to provision the resources.
+```
+
+Additional notes:
+- Check out [BYO VM](docs/byo-vm.md) documentation in case you are not using a cloud provider to deploy the ace-box.
+- [dt API token scopes](#api-token-scopes)
+- [oauth token scopes](#oauth-token-scopes)
+- You can set everything (or at least sensitive data) as environment variables:
+
+```yaml
+export TF_VAR_dt_api_token=dt0c01....
+```
+
+4. Check out the `Readme.md` for your specific cloud provider to verify the provider-specific configuration that needs to be set. Please consult our dedicated readmes for [AWS](terraform/aws/Readme.md), [MS Azure](terraform/azure/Readme.md) and [Google Cloud](terraform/gcloud/Readme.md) specific variables.
+
+
     4. The following variables are available:
         | var | type | required | details |
         | --- | --- | -------- | ------- |
@@ -120,7 +162,7 @@ The recommended way of installing any ACE box version, local or cloud, is via Te
         |dashboard_user|string|no|ACE-Box dashboard user (Default: "dynatrace")|
         |dashboard_password|string|no|ACE-Box dashboard password. If not set, a random password will be generated. The password can retrieved by running `terraform output dashboard_password`. **Note**: Output shows leading and trailing quotes that are not part of the password!|
 
-        Please consult our dedicated readmes for [AWS](terraform/aws/Readme.md), [MS Azure](terraform/azure/Readme.md) and [Google Cloud](terraform/gcloud/Readme.md) specific variables.
+        
 
         > Note: `demo_all` requires extra variables. See [use-case README](user-skel/ansible_collections/ace_box/ace_box/roles/demo-all/README.md) for details.
         
@@ -157,3 +199,40 @@ Spinning up an ACE-Box instance can be split into two main parts:
 Please see `LICENSE` in repo root for license details.
 
 License headers can be added automatically be running `./tools/addlicenseheader.sh` (see file for details).
+
+### Oauth token scopes
+
+The recommended scopes for the Oauth token are:
+
+```yaml
+app-engine:apps:run 
+app-engine:apps:install 
+storage:events:read 
+storage:events:write 
+storage:metrics:read 
+storage:bizevents:read 
+storage:entities:read 
+storage:bizevents:write 
+automation:workflows:read 
+automation:workflows:write 
+automation:workflows:run 
+automation:rules:read 
+automation:rules:write 
+automation:workflows:admin 
+davis:analyzers:read 
+davis:analyzers:execute 
+storage:buckets:read 
+settings:objects:read 
+settings:objects:write 
+settings:schemas:read
+app-engine:apps:install 
+app-engine:edge-connects:connect
+app-engine:edge-connects:read
+app-engine:edge-connects:write
+app-engine:edge-connects:delete
+app-settings:objects:read 
+```
+
+### API token scopes
+
+Initial API token with scopes `apiTokens.read` and `apiTokens.write`. This token will be used by various roles to manage their own tokens.
