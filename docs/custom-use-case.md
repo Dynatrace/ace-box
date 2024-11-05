@@ -190,16 +190,6 @@ _Coming soon..._
 
 <br>
 
-# Custom Use-case Examples
-In the following you can find a list of custom use-cases:
-
-|Name|Description|
-|---|---|
-|[ace-box-sandbox-easytravel](https://github.com/dynatrace-ace/ace-box-sandbox-easytravel)|A simple ACE-Box with EasyTravel monitored by Dynatrace|
-[ace-box-ext-demo-auto-remediation-easytravel](https://github.com/dynatrace-ace/ace-box-ext-demo-auto-remediation-easytravel)|An auto remediation demo using Dynatrace, ServiceNow and Ansible|
-
-<br>
-
 # Ansible Roles
 _Ansible_ is used for automatically setting up and deploying modules on top of the compute instance (VM) created by the ACE-Box framework via Terraform.
 

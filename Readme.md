@@ -130,13 +130,17 @@ The ACE-Box has been configured to spin up a VM and use different built-in modul
 
 The ACE-Box framework comes with a set of use-cases which are referred as _out-of-the-box use-cases_ which have been added from time to time by the ACE-Box contributors. 
 
+Embedded into the ace-box as roles:
 - `demo_all` requires extra variables. See [use-case README](user-skel/ansible_collections/ace_box/ace_box/roles/demo-all/README.md) for details.
 - `demo_monaco_gitops`: Demo flow for Application Onboarding using Jenkins/Gitea
 - `demo_ar_workflows_ansible`: Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-ansible/README.md))
 - `demo_release_validation_srg_gitlab`: Demo flow for Release Validation using GitLab/Site Reliability Guardian (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-release-validation-srg-gitlab/README.md))
 - `demo_ar_workflows_gitlab`: Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-gitlab/README.md))
 
-These use cases become handy to learn the concepts around a specific topic and to showcase features to customers. It is highly recommended to practice every presented demo/HoT.
+And created externally as [custom](#custom-use-cases):
+- [Basic Observability Demo](https://github.com/dynatrace-ace/basic-dt-demo)
+- [ace-box-sandbox-easytravel](https://github.com/dynatrace-ace/ace-box-sandbox-easytravel): A simple ACE-Box with EasyTravel monitored by Dynatrace
+- [ace-box-ext-demo-auto-remediation-easytravel](https://github.com/dynatrace-ace/ace-box-ext-demo-auto-remediation-easytravel): An auto remediation demo using Dynatrace, ServiceNow and Ansible
 
 ### Custom use-cases
 
