@@ -12,7 +12,7 @@ This role depends on the following roles to be deployed beforehand:
 
 ```yaml
 - include_role:
-    name: k3s
+    name: microk8s
 ```
 
 > Note: we highly recommend to use k3s, but it is also possible to use microk8s. More information below
@@ -75,13 +75,15 @@ To enable monaco:
 
 ```
 
-### (Alternative) microk8s
+### (Optional) k3s compatibility
 
-If for some reason you are facing issues with k3s as the prerequisite, you can also deploy microk8s:
+In order to make easytrade work for k3s, add the following variable:
 
 ```yaml
 - include_role:
-    name: microk8s
+    name: app-easytrade
+  vars:
+    easytrade_ingress_class: "traefik"
 ```
 
 ### Add to ACE Dashboard
