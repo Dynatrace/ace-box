@@ -34,10 +34,9 @@ The ACE-Box is ideal for anybody who needs to create isolated testing environmen
 <br>
 
 ## Get Started
-The recommended way of installing any ACE box version, local or cloud, is via Terraform (scroll down for alternatives). Check the [Azure](terraform/azure/Readme.md), [AWS](terraform/aws/Readme.md) or [Google Cloud](terraform/gcloud/Readme.md) subfolders for additional instructions.
 
 1. Pre-requisites
-     - Install [Terraform](https://www.terraform.io/)
+     - [Terraform](https://www.terraform.io/)
      - Dynatrace tenant (prod or sprint, dev not recommended)
 2. Clone the ace-box
 
@@ -65,9 +64,9 @@ extra_vars = {
   dt_oauth_account_urn = "urn:dtaccount:<id>"
 }
 
-//////////////
-// optional //
-//////////////
+////////////////////////////
+// optional configuration //
+////////////////////////////
 // customize your instance name
 // name_prefix = "my-ace-box-name"
 
@@ -85,18 +84,19 @@ extra_vars = {
 ```
 
 Additional notes:
-- Check out [BYO VM](docs/byo-vm.md) documentation in case you are not using a cloud provider to deploy the ace-box.
-- [API token scopes](#api-token-scopes)
-- [Oauth token scopes](#oauth-token-scopes)
-- It is recommended to set variables (at least sensitive data) as environment variables:
+- [API token scopes](#api-token-scopes). Check how to create a Dynatrace API token [here](https://docs.dynatrace.com/docs/dynatrace-api/basics/dynatrace-api-authentication#create-token)
+- [Oauth client scopes](#oauth-client-scopes). Check how to create an Dynatrace Oauth client [here](https://docs.dynatrace.com/docs/manage/identity-access-management/access-tokens-and-oauth-clients/oauth-clients)
+- It is recommended to set the sensitive variables as environment variables:
 
 ```yaml
 export TF_VAR_dt_api_token=dt0c01....
 ```
 
-4. Check out the `Readme.md` for your specific cloud provider configuration that needs to be set. Please consult our dedicated readmes for [AWS](terraform/aws/Readme.md), [Azure](terraform/azure/Readme.md) and [GCP](terraform/gcloud/Readme.md).
+4. Check out the `Readme.md` for your specific cloud provider configuration that needs to be set. Please consult our dedicated readmes for [AWS](terraform/aws/Readme.md), [Azure](terraform/azure/Readme.md) and [GCP](terraform/gcloud/Readme.md). 
 
-5. You can add an [use case](#use-cases) also within the `terraform.tfvars`. Existing         
+> Note: Check out [BYO VM](docs/byo-vm.md) documentation in case you are not using a cloud provider to deploy the ace-box.
+
+5. You can configure specific [use case](#use-cases) within the `terraform.tfvars`. You can also configure them later on once the ace-box is up and running         
 6. Run `terraform init`
 7. Run `terraform apply`
 8. Grab a coffee, this process will take some time...
@@ -172,9 +172,9 @@ Please see `LICENSE` in repo root for license details.
 
 License headers can be added automatically be running `./tools/addlicenseheader.sh` (see file for details).
 
-### Oauth token scopes
+### Oauth client scopes
 
-The recommended scopes for the Oauth token are:
+The recommended scopes for the Oauth client are:
 
 ```yaml
 app-engine:apps:run 
