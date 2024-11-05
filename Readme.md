@@ -7,15 +7,16 @@
 
 - [What is it?](#what-is-it)
 - [Who is it for?](#who-is-it-for)
+- [Get Started](#get-started)
 - [Use-cases](#use-cases)
   - [Out-of-the-box use-cases](#out-of-the-box-use-cases)
   - [Custom use-cases](#custom-use-cases)
 - [Architecture](#architecture)
   - [ACE CLI](#ace-cli)
   - [ACE Dashboard](#ace-dashboard)
-- [Installation](#installation)
-  - [Useful Terraform Commands](#useful-terraform-commands)
-  - [Behind the scenes](#behind-the-scenes)
+
+- [Useful Terraform Commands](#useful-terraform-commands)
+- [Behind the scenes](#behind-the-scenes)
 - [Licensing](#licensing)
 
 <br>
@@ -31,6 +32,74 @@ The framework follows a declarative approach where modules, resources and config
 The ACE-Box is ideal for anybody who needs to create isolated testing environments, run demonstrations, or build reproducible deployment setups. It caters to those seeking to prototype new features, test new features and integrations, or deliver hands-on training in an efficient and portable manner.
 
 <br>
+
+## Get Started
+The recommended way of installing any ACE box version, local or cloud, is via Terraform (scroll down for alternatives). Check the [Azure](terraform/azure/Readme.md), [AWS](terraform/aws/Readme.md) or [Google Cloud](terraform/gcloud/Readme.md) subfolders for additional instructions.
+
+1. Pre-requisites
+     - Install [Terraform](https://www.terraform.io/)
+     - Dynatrace tenant (prod or sprint, dev not recommended)
+2. Clone the ace-box
+
+```bash
+git clone https://github.com/Dynatrace/ace-box.git
+```
+
+3. Go to folder `./terraform/<aws, azure or gcloud>/` and create a `terraform.tfvars` file with the following information:
+
+```conf
+///////////////////////////////////////
+// mandatory for all cloud providers //
+///////////////////////////////////////
+// You can use prod, sprint or dev
+dt_tenant = "https://<tenant_id>.sprint.dynatracelabs.com"
+dt_api_token = "<tenant_api_token>"
+extra_vars = {
+  // You can use prod, sprint or dev tenants
+  dt_environment_url_gen3 = "https://<tenant_id>.sprint.apps.dynatracelabs.com"
+  // Respective sso for the stage
+  dt_oauth_sso_endpoint   = "https://sso-sprint.dynatracelabs.com/sso/oauth2/token"
+  // check scopes below
+  dt_oauth_client_id = "<client_id>"
+  dt_oauth_client_secret = "<client_secret>"
+  dt_oauth_account_urn = "urn:dtaccount:<id>"
+}
+
+//////////////
+// optional //
+//////////////
+// customize your instance name
+// name_prefix = "my-ace-box-name"
+
+// Respective to the cloud provider. 
+// acebox_size = "n2-standard-8"
+
+// Check: https://dynatrace.sharepoint.com/sites/SRSECOPS/SitePages/Tagging-Policy.aspx
+// Details of how to configure your VMs ownership
+// dt_owner_team = "<dt_team>"
+// Format:  name_surname-dynatrace_com. (replace "." with "_" and "@" with "-")
+// dt_owner_email = "<dt_owner>"
+
+// Check below how to configure one
+// use_case = demo_release_validation_srg_gitlab
+```
+
+Additional notes:
+- Check out [BYO VM](docs/byo-vm.md) documentation in case you are not using a cloud provider to deploy the ace-box.
+- [API token scopes](#api-token-scopes)
+- [Oauth token scopes](#oauth-token-scopes)
+- It is recommended to set variables (at least sensitive data) as environment variables:
+
+```yaml
+export TF_VAR_dt_api_token=dt0c01....
+```
+
+4. Check out the `Readme.md` for your specific cloud provider configuration that needs to be set. Please consult our dedicated readmes for [AWS](terraform/aws/Readme.md), [Azure](terraform/azure/Readme.md) and [GCP](terraform/gcloud/Readme.md).
+
+5. You can add an [use case](#use-cases) also within the `terraform.tfvars`. Existing         
+6. Run `terraform init`
+7. Run `terraform apply`
+8. Grab a coffee, this process will take some time...
 
 ## Use-cases
 A use-case aim to reproduce real-world setups for purposes like feature demonstrations, hands-on training, or system testing. Each use-case is defined by a set of configuration files that ACE-Box uses to automatically deploy the necessary infrastructure and apply the required configurations on the systems.
@@ -50,13 +119,11 @@ The ACE-Box has been configured to spin up a VM and use different built-in modul
 
 The ACE-Box framework comes with a set of use-cases which are referred as _out-of-the-box use-cases_ which have been added from time to time by the ACE-Box contributors. 
 
-The list of available out-of-the-box use-cases is reported below:
-use-case | k8s | OneAgent | Synth AG | Jenkins | Gitea | Registry | GitLab | AWX | Keptn | Dashboard | Notes |
--- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- |
-[`demo_release_validation_srg_gitlab`](user-skel/ansible_collections/ace_box/ace_box/roles/demo-release-validation-srg-gitlab/README.md) | x | x | x |  |  |  | x |  | x |  x | Demo flow for Release Validation using GitLab/Site Reliability Guardian |
-[`demo_ar_workflows_ansible`](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-ansible/README.md) | x | x | | x | x | x | x | x |  | x | Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows |
-[`demo_ar_workflows_gitlab`](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-gitlab/README.md) | x | x | | | | x |  | x |  | x | Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows |
-`demo_monaco_gitops` | x | x | x | x | x | x |  |  |  | x | Demo flow for Application Onboarding using Jenkins/Gitea |
+`demo_all` requires extra variables. See [use-case README](user-skel/ansible_collections/ace_box/ace_box/roles/demo-all/README.md) for details.
+`demo_monaco_gitops`: Demo flow for Application Onboarding using Jenkins/Gitea
+`demo_ar_workflows_ansible`: Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-ansible/README.md))
+`demo_release_validation_srg_gitlab`: Demo flow for Release Validation using GitLab/Site Reliability Guardian (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-release-validation-srg-gitlab/README.md))
+`demo_ar_workflows_gitlab`: Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-gitlab/README.md))
 
 These use cases become handy to learn the concepts around a specific topic and to showcase features to customers. It is highly recommended to practice every presented demo/HoT.
 
@@ -80,101 +147,6 @@ Check out the [ACE CLI](docs/ace-cli.md) page for more details.
 At the end of the provisioning of any of the out of the box supported use-cases, an ACE Dashboard gets created with more information on how to use the ACE-BOX. Check out [ACE Dashboard](Dashboard.md) for more details.
 
 <br>
-
-## Get Started
-The recommended way of installing any ACE box version, local or cloud, is via Terraform (scroll down for alternatives). Check the [Azure](terraform/azure/Readme.md), [AWS](terraform/aws/Readme.md) or [Google Cloud](terraform/gcloud/Readme.md) subfolders for additional instructions.
-
-1. Pre-requisites
-     - Install [Terraform](https://www.terraform.io/)
-     - Dynatrace tenant (prod or sprint, dev not recommended)
-2. Clone ace-box
-
-```bash
-git clone https://github.com/Dynatrace/ace-box.git
-```
-
-3. Go to folder `./terraform/<aws, azure or gcloud>/` and create a `terraform.tfvars` with the following information:
-
-```conf
-///////////////////////////////////////
-// mandatory for all cloud providers //
-///////////////////////////////////////
-// You can use prod, sprint or dev
-dt_tenant = "https://<tenant_id>.sprint.dynatracelabs.com"
-dt_api_token = "<tenant_api_token>"
-extra_vars = {
-  // You can use prod, sprint or dev tenants
-  dt_environment_url_gen3 = "https://<tenant_id>.sprint.apps.dynatracelabs.com"
-  // Respective sso for the stage
-  dt_oauth_sso_endpoint   = "https://sso-sprint.dynatracelabs.com/sso/oauth2/token"
-  // check scopes below
-  dt_oauth_client_id = "<client_id>"
-  dt_oauth_client_secret = "<client_secret>"
-  dt_oauth_account_urn = "urn:dtaccount:<id>"
-}
-
-//////////////
-// optional //
-//////////////
-// check 
-name_prefix = "my-ace-box-name"
-
-// Respective to the cloud provider
-acebox_size = "n2-standard-8"
-
-// Check: https://dynatrace.sharepoint.com/sites/SRSECOPS/SitePages/Tagging-Policy.aspx
-// Details of how to configure your VMs ownership
-dt_owner_team = "team-kriren-121276"
-dt_owner_email = "ignacio_goldman-dynatrace_com"
-
-// Commented out in our case, uncomment to use the Automated Release Validstion with SRG use case
-// use_case = demo_release_validation_srg_gitlab      
-
-// gcloud specific (check readme from other cloud providers for respective variables)
-gcloud_project = "<your-gcp-project>" # GCP Project you want to use
-gcloud_cred_file = "<file-name>.json" # location of the Service Account JSON created earlier
-gcloud_zone = "<gcloud-zone>" # zone where you want to provision the resources.
-```
-
-Additional notes:
-- Check out [BYO VM](docs/byo-vm.md) documentation in case you are not using a cloud provider to deploy the ace-box.
-- [dt API token scopes](#api-token-scopes)
-- [oauth token scopes](#oauth-token-scopes)
-- You can set everything (or at least sensitive data) as environment variables:
-
-```yaml
-export TF_VAR_dt_api_token=dt0c01....
-```
-
-4. Check out the `Readme.md` for your specific cloud provider to verify the provider-specific configuration that needs to be set. Please consult our dedicated readmes for [AWS](terraform/aws/Readme.md), [MS Azure](terraform/azure/Readme.md) and [Google Cloud](terraform/gcloud/Readme.md) specific variables.
-
-
-    4. The following variables are available:
-        | var | type | required | details |
-        | --- | --- | -------- | ------- |
-        | dt_tenant | string | **yes** | Dynatrace environment URL |
-        | dt_api_token | string | **yes** | Initial API token with scopes `apiTokens.read` and `apiTokens.write`. This token will be used by various roles to manage their own tokens. |
-        | dt_owner_team | string | yes | Required when using Dynatrace enviroments. Check with Dynatrace GCP/AWS admins for your specific team value.
-        | dt_owner_email | string | yes |Required when using Dynatrace enviroments. Format:  name_surname-dynatrace_com. (replace "." with "_" and "@" with "-")
-        | acebox_user | string | no | User, for which home directory will be provisioned (Default: "ace") |
-        | use_case | string | no | Hardened use-cases embedded in the ACE-Box. Options are:<ul><li>`demo_all` (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-all/README.md))</li><li>`demo_monaco_gitops`</li><li>`demo_ar_workflows_ansible` (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-ansible/README.md))</li><li>`demo_ar_workflows_gitlab` (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-gitlab/README.md))</li><li>`demo_release_validation_srg_gitlab` (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-release-validation-srg-gitlab/README.md))</li><li>URL to an external repository (see below)</li></ul>|
-        | extra_vars | map(string) | no | Additional variables that are passed and persisted on the VM. Variables can be sourced as `extra_vars.<variable key>` for e.g. custom use-cases |
-        |dashboard_user|string|no|ACE-Box dashboard user (Default: "dynatrace")|
-        |dashboard_password|string|no|ACE-Box dashboard password. If not set, a random password will be generated. The password can retrieved by running `terraform output dashboard_password`. **Note**: Output shows leading and trailing quotes that are not part of the password!|
-
-        
-
-        > Note: `demo_all` requires extra variables. See [use-case README](user-skel/ansible_collections/ace_box/ace_box/roles/demo-all/README.md) for details.
-        
-        > Note: `demo_ar_workflows_ansible` requires extra variables. See [use-case README](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-ansible/README.md) for details.
-
-        > Note: `demo_ar_workflows_gitlab` requires extra variables. See [use-case README](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-gitlab/README.md) for details.
-       
-        > Note: `demo_release_validation_srg_gitlab` requires extra variables. See [use-case README](user-skel/ansible_collections/ace_box/ace_box/roles/demo-release-validation-srg-gitlab/README.md) for details.
-
-5. Run `terraform init`
-6. Run `terraform apply`
-7. Grab a coffee, this process will take some time...
 
 ### Useful Terraform Commands
 Command  | Result
