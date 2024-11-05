@@ -4,7 +4,7 @@ kind: Ingress
 metadata:
   annotations:
     meta.helm.sh/release-name: easytrade
-    kubernetes.io/ingress.class: "{{ingress_class}}"
+    kubernetes.io/ingress.class: {{easytrade_ingress_class}}
   labels:
     app: easytrade
   name: easytrade-ingress
