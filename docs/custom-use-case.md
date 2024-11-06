@@ -34,13 +34,13 @@ Let's create a custom use-case from scratch, in order to replicate the `Basic Ob
 
 1. First of all, create a new repository using the [ext-template](https://github.com/dynatrace-ace/ace-box-ext-template) as a template.
 
-   ![](../assets/create-new-repo.png)
+   <img src="../assets/create-new-repo.png" width="800">
 
 <br>
 
 2. Give your repository a name and make it part of the `dynatrace-ace` space
 
-   ![](../assets/repo-config.png)
+   <img src="../assets/repo-config.png" width="600">
 
 <br>
 
@@ -52,7 +52,7 @@ Let's create a custom use-case from scratch, in order to replicate the `Basic Ob
 
 <br>
 
-4. Now, follow the ACE-Box [installation guide](https://github.com/Dynatrace/ace-box?tab=readme-ov-file#installation) to spin up a VM and deploy the modules and configurations defined in the custom use-case template (note: the template just contains a _"Hello World"_ output at this stage). <br>Be sure to configure the `use-case` variable within the `terraform.tfvars` file to point to the custom use-case repository that we are about to develop:
+4. Now, follow the ACE-Box [installation guide](/Readme.md#get-started) to spin up a VM and deploy the modules and configurations defined in the custom use-case template. <br>Be sure to configure the `use-case` variable within the `terraform.tfvars` file to point to the custom use-case repository that we are about to develop:
 
     ```bash
     use_case = "https://<user>:<personal-access-token>@github.com/dynatrace-ace/basic-dt-demo.git"
@@ -62,7 +62,7 @@ Let's create a custom use-case from scratch, in order to replicate the `Basic Ob
 
 <br>
 
-5. Finish the [installation guide](https://github.com/Dynatrace/ace-box?tab=readme-ov-file#installation) and check the output of the terraform apply command with:
+5. Finish the [installation guide](/Readme.md#get-started) and check the output of the terraform apply command with:
 
     ```bash
     terraform output 
@@ -84,27 +84,24 @@ Let's create a custom use-case from scratch, in order to replicate the `Basic Ob
 
 <br>
 
-7. Once you are successfully logged in into the ACE-Box VM, run the following command:
-
-    ```bash
-    ace enable https://github.com/dynatrace-ace/basic-dt-demo.git --local
-    ```
-
-   ![](../assets/hello-world.png)
-
-What did just happen? 
-- Check the [repository structure](#repository-structure) for details on how it works. 
-- [Here](https://github.com/dynatrace-ace/ace-box-ext-template/blob/main/roles/my-use-case/tasks/main.yml) is then where you can start working on your use case
-
-<br>
-
 ## Part B: Build your custom use-case (Ansible)
-At this point, we have an empty ACE-Box (Linux VM) and we can start building our custom use-case on top of it.
+At this stage, we have an empty ACE-Box (Linux VM) and we can start building our custom use-case on top of it.
 To do so, we are going to use `Ansible` and `Ansible Roles` to automate and simplify the process. Check out the [Ansible Roles](#ansible-roles) section for further details.
 
 More in detail, we’ll build our custom use-case incrementally, modifying the `my-use-case/tasks/main.yml` configuration file step-by-step to instruct the Ansible engine on what to deploy to the ACE-Box VM. After each step, we let the engine parse the updated file and deploy the changes accordingly.
 
-8. In order to replicate the `Basic Observability Demo`, we first need to deploy a k8s distribution. To do so, Read the [k3s role](https://github.com/Dynatrace/ace-box/tree/dev/user-skel/ansible_collections/ace_box/ace_box/roles/k3s) documentation and the following instructions to the add it to the `my-use-case/tasks/main.yml` file:
+<br>
+
+7. After having successfully logged in into the ACE-Box VM, we are going to trigger a first run of the `main.yml` configuration file (which just contains a simple _"Hello World"_ print at this stage) to get familiar with the ACE-Box and Ansible. To let the Ansible engine parse the configuration file and implement the instructions run the following command on the terminal:
+
+    ```bash
+    ace enable https://github.com/dynatrace-ace/basic-dt-demo.git --local
+    ```
+   <img src="../assets/hello-world.png" width="600">
+
+<br>
+
+8. Now, in order to replicate the `Basic Observability Demo`, we first need to deploy a k8s distribution. To do so, Read the [k3s role](https://github.com/Dynatrace/ace-box/tree/dev/user-skel/ansible_collections/ace_box/ace_box/roles/k3s) documentation and the following instructions to the add it to the `main.yml` file:
 
     ```yaml
     - include_role:
@@ -113,7 +110,7 @@ More in detail, we’ll build our custom use-case incrementally, modifying the `
 
 <br>
 
-9. Now that we declared what we want to deploy on the VM, we need to deploy k3s by re-running the ansible `main.yml` with following command:
+9. Now that we declared what we want to deploy on the VM, we need to install k3s by running again the ansible `main.yml` leveraging on the same command we used at step `7`:
 
     ```bash
     ace enable https://github.com/dynatrace-ace/basic-dt-demo.git --local
@@ -158,7 +155,7 @@ More in detail, we’ll build our custom use-case incrementally, modifying the `
 ## Part C: Closing Up
 [This](https://github.com/dynatrace-ace/ace-box-ext-template/blob/basic_demo/roles/my-use-case/tasks/main.yml) is how your `main.yml` should look like at the end of `Part B`.
 
-12. Once you're happy with your changes, commit and push changes to the remote repository. Now you could safely destroy the ACE-Box and recreate it and all the resources defined within the configuration files will get created automatically.
+12. Once you're happy with your changes, commit and push changes to the remote repository. Now you could safely destroy the ACE-Box following the instructions contained in the [installation guide](/Readme.md#get-started). <br>Whenever you'll recreate it, all the resources and modules defined within the configuration files will get created automatically.
 
 <br>
 

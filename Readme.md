@@ -8,16 +8,17 @@
 - [What is it?](#what-is-it)
 - [Who is it for?](#who-is-it-for)
 - [Get Started](#get-started)
+- [Close-Up](#close-up)
 - [Use-cases](#use-cases)
   - [Out-of-the-box use-cases](#out-of-the-box-use-cases)
   - [Custom use-cases](#custom-use-cases)
 - [Architecture](#architecture)
   - [ACE CLI](#ace-cli)
   - [ACE Dashboard](#ace-dashboard)
-
-- [Useful Terraform Commands](#useful-terraform-commands)
-- [Behind the scenes](#behind-the-scenes)
+- [Oauth Client Scopes](#oauth-client-scopes)
+- [API Token Scopes](#api-token-scopes)
 - [Licensing](#licensing)
+
 
 <br>
 
@@ -40,77 +41,84 @@ The ACE-Box is ideal for anybody who needs to create isolated testing environmen
      - Dynatrace tenant (prod or sprint, dev not recommended)
 2. Clone the ace-box
 
-```bash
-git clone https://github.com/Dynatrace/ace-box.git
-```
+    ```bash
+    git clone https://github.com/Dynatrace/ace-box.git
+    ```
 
 3. Go to folder `./terraform/<aws, azure or gcloud>/` and create a `terraform.tfvars` file with the following information:
 
-```conf
-///////////////////////////////////////
-// mandatory for all cloud providers //
-///////////////////////////////////////
-// You can use prod, sprint or dev
-dt_tenant = "https://<tenant_id>.sprint.dynatracelabs.com"
-dt_api_token = "<tenant_api_token>"
-extra_vars = {
-  // You can use prod, sprint or dev tenants
-  dt_environment_url_gen3 = "https://<tenant_id>.sprint.apps.dynatracelabs.com"
-  // Respective sso for the stage
-  dt_oauth_sso_endpoint   = "https://sso-sprint.dynatracelabs.com/sso/oauth2/token"
-  // check scopes below
-  dt_oauth_client_id = "<client_id>"
-  dt_oauth_client_secret = "<client_secret>"
-  dt_oauth_account_urn = "urn:dtaccount:<id>"
-}
+    ```conf
+    ///////////////////////////////////////
+    // mandatory for all cloud providers //
+    ///////////////////////////////////////
+    // You can use prod, sprint or dev
+    dt_tenant = "https://<tenant_id>.sprint.dynatracelabs.com"
+    dt_api_token = "<tenant_api_token>"
+    extra_vars = {
+      // You can use prod, sprint or dev tenants
+      dt_environment_url_gen3 = "https://<tenant_id>.sprint.apps.dynatracelabs.com"
+      // Respective sso for the stage
+      dt_oauth_sso_endpoint   = "https://sso-sprint.dynatracelabs.com/sso/oauth2/token"
+      // check scopes below
+      dt_oauth_client_id = "<client_id>"
+      dt_oauth_client_secret = "<client_secret>"
+      dt_oauth_account_urn = "urn:dtaccount:<id>"
+    }
 
-////////////////////////////
-// optional configuration //
-////////////////////////////
-// customize your instance name
-// name_prefix = "my-ace-box-name"
+    ////////////////////////////
+    // optional configuration //
+    ////////////////////////////
+    // customize your instance name
+    // name_prefix = "my-ace-box-name"
 
-// Respective to the cloud provider. 
-// acebox_size = "n2-standard-8"
+    // Respective to the cloud provider. 
+    // acebox_size = "n2-standard-8"
 
-// Check: https://dynatrace.sharepoint.com/sites/SRSECOPS/SitePages/Tagging-Policy.aspx
-// Details of how to configure your VMs ownership
-// dt_owner_team = "<dt_team>"
-// Format:  name_surname-dynatrace_com. (replace "." with "_" and "@" with "-")
-// dt_owner_email = "<dt_owner>"
+    // Check: https://dynatrace.sharepoint.com/sites/SRSECOPS/SitePages/Tagging-Policy.aspx
+    // Details of how to configure your VMs ownership
+    // dt_owner_team = "<dt_team>"
+    // Format:  name_surname-dynatrace_com. (replace "." with "_" and "@" with "-")
+    // dt_owner_email = "<dt_owner>"
 
-// Check below how to configure one
-// use_case = demo_release_validation_srg_gitlab
-```
+    // Check below how to configure one
+    // use_case = demo_release_validation_srg_gitlab
+    ```
 
-Additional notes:
-- [API token scopes](#api-token-scopes). Check how to create a Dynatrace API token [here](https://docs.dynatrace.com/docs/dynatrace-api/basics/dynatrace-api-authentication#create-token)
-- [Oauth client scopes](#oauth-client-scopes). Check how to create an Dynatrace Oauth client [here](https://docs.dynatrace.com/docs/manage/identity-access-management/access-tokens-and-oauth-clients/oauth-clients)
-- It is recommended to set the sensitive variables as environment variables:
+    Additional notes:
+    - [API token scopes](#api-token-scopes). Check how to create a Dynatrace API token [here](https://docs.dynatrace.com/docs/dynatrace-api/basics/dynatrace-api-authentication#create-token)
+    - [Oauth client scopes](#oauth-client-scopes). Check how to create an Dynatrace Oauth client [here](https://docs.dynatrace.com/docs/manage/identity-access-management/access-tokens-and-oauth-clients/oauth-clients)
+    - It is recommended to set the sensitive variables as environment variables:
 
-```yaml
-export TF_VAR_dt_api_token=dt0c01....
-```
+    ```yaml
+    export TF_VAR_dt_api_token=dt0c01....
+    ```
 
 4. Check out the `Readme.md` for your specific cloud provider configuration that needs to be set. Please consult our dedicated readmes for [AWS](terraform/aws/Readme.md), [Azure](terraform/azure/Readme.md) and [GCP](terraform/gcloud/Readme.md). 
 
-> Note: Check out [BYO VM](docs/byo-vm.md) documentation in case you are not using a cloud provider to deploy the ace-box.
+    > Note: Check out [BYO VM](docs/byo-vm.md) documentation in case you are not using a cloud provider to deploy the ace-box.
 
 5. You can configure specific [use case](#use-cases) within the `terraform.tfvars`. You can also configure them later on once the ace-box is up and running         
 6. Run `terraform init`
-7. Run `terraform apply`
-8. Grab a coffee, this process will take some time...
+7. Run `terraform apply`. Grab a coffee, this process will take some time... <br>Behind the scenes, the ACE-Box framework is doing the following:
+    - Deploying a VM on the selected hyperscaler environment (Azure, AWS or GCP)
+    - Once the VM is available, the provisioners install the ACE-Box framework. This process itself consists in a couple steps:
+      - Working directory copy: everything in [user-skel](/user-skel) is copied to the VM local filesystem
+      - Package manager update: [init.sh](/user-skel/init.sh) is run. This runs an `apt-get` update and installs `Python3.9`, `Ansible` and the `ace-cli`
+      - `ace prepare` command is run, which asks for ACE-Box specific configurations (e.g. protocol, custom domain, ...)
+      - Once the VM is prepared, `ace enable USECASE_NAME|USECASE_URL` command is run to perform the actual deployment of the modules (e.g: softwares, applications, ..) and implement the configurations that have been defined in the use-case's configuration files
 
-### Behind the scenes
+>Additional Commands:
+  > - Once Terraform execution is completed, it is possible to check all the resources created by Terraform by running `terraform show`.
+  > - In addition, by running `terraform output` it is possible to check the Terraform outputs (which are useful to verify IP addresses and the dashboard URL)
 
-Spinning up an ACE-Box instance can be split into two main parts:
+<br>
 
-1) Deploying a VM: This happens automatically when you use the included Terraform projects or you can bring your own VM.
-2) After a VM is available, the provisioners install the ACE-Box framework. This process itself consists in a couple steps:
-   1) Working directory copy: everything in [user-skel](/user-skel) is copied to the VM local filesystem
-   2) Package manager update: [init.sh](/user-skel/init.sh) is run. This runs an `apt-get` update and installs `Python3.9`, `Ansible` and the `ace-cli`
-   3) `ace prepare` command is run, which asks for ACE-Box specific configurations (e.g. protocol, custom domain, ...)
-   4) Once the VM is prepared, `ace enable USECASE_NAME|USECASE_URL` command is run to perform the actual deployment of the modules (e.g: softwares, applications, ..) and implement the configurations that have been defined in the use-case's configuration files
+## Close-Up
+Once the resources created via the ACE-Box are not needed anymore, you can delete any resource created by the framework via Terraform by running `terraform destroy`.
+
+>Note: If you want to see what the effect of destroying would be, you could run `terraform plan -destroy` to have a speculative destroy plan.
+ 
+<br>
 
 ## Use-cases
 A use-case aim to reproduce real-world setups for purposes like feature demonstrations, hands-on training, or system testing. Each use-case is defined by a set of configuration files that ACE-Box uses to automatically deploy the necessary infrastructure and apply the required configurations on the systems.
@@ -119,7 +127,7 @@ A use-case aim to reproduce real-world setups for purposes like feature demonstr
 
 The environment (VM + the modules installed on it) is automatically provisioned and it can be leveraged to showcase Dynatrace Observability capabilities:
 
-![](./assets/use-case-example.png)
+<img src="./assets/use-case-example.png" width="600">
 
 The ACE-Box has been configured to spin up a VM and use different built-in modules to install on that machine the following components:
 - Kubernetes
@@ -163,23 +171,7 @@ At the end of the provisioning of any of the out of the box supported use-cases,
 
 <br>
 
-### Useful Terraform Commands
-Command  | Result
--------- | -------
-`terraform destroy` | deletes any resources created by Terraform |
-`terraform plan -destroy` | view a speculative destroy plan, to see what the effect of destroying would be |
-`terraform show` | Outputs the resources created by Terraform. Useful to verify IP addresses and the dashboard URL. 
-
-
-
-<br>
-
-## Licensing
-Please see `LICENSE` in repo root for license details.
-
-License headers can be added automatically be running `./tools/addlicenseheader.sh` (see file for details).
-
-## Oauth client scopes
+## Oauth Client Scopes
 
 The recommended scopes for the Oauth client are:
 
@@ -212,6 +204,13 @@ app-engine:edge-connects:delete
 app-settings:objects:read 
 ```
 
-## API token scopes
+## API Token Scopes
 
 Initial API token with scopes `apiTokens.read` and `apiTokens.write`. This token will be used by various roles to manage their own tokens.
+
+<br>
+
+## Licensing
+Please see `LICENSE` in repo root for license details.
+
+License headers can be added automatically be running `./tools/addlicenseheader.sh` (see file for details).
