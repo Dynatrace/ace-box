@@ -174,8 +174,6 @@ A list of already created custom use cases that can be used for demo or template
 | Use case                                     |  Description                                                     | Guide    | Prerequisites |
 | :---:                                        | :---:                                                            | :---:    | :---:         |
 | Basic Observability Demo                     | Basic DT Kubernetes Observability for Easytrade                  | [here](https://github.com/dynatrace-ace/basic-dt-demo)         | [here](https://github.com/dynatrace-ace/basic-dt-demo) |
-| ace-box-sandbox-easytravel                   | A simple ACE-Box with EasyTravel monitored by Dynatrace          | [here](https://github.com/dynatrace-ace/ace-box-sandbox-easytravel) | [here](https://github.com/dynatrace-ace/ace-box-sandbox-easytravel) |
-| ace-box-ext-demo-auto-remediation-easytravel | An auto remediation demo using Dynatrace, ServiceNow and Ansible | [here](https://github.com/dynatrace-ace/ace-box-ext-demo-auto-remediation-easytravel) | [here](https://github.com/dynatrace-ace/ace-box-ext-demo-auto-remediation-easytravel) |
 | Advanced Kubernetes Observability | coming soon... | coming soon... | coming soon... |
 | AppSec | coming soon... | coming soon... | coming soon... |
 | Dynatrace for Devs | coming soon... | coming soon... | coming soon... |
