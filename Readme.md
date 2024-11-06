@@ -200,7 +200,7 @@ use_case = "https://<user>:<token>@github.com/dynatrace-ace/basic-dt-demo.git"
 ## Architecture
 _Terraform_ is used for spinning up and configure the compute instance and all the needed resources within the Cloud Provider environment (AWS, GCP, Azure).
 _Ansible_ is used for setting up the various modules on top of the compute instance.
-Referring to the [previous example](#use-case-example), Terraform is used to provision the virtual machine and some auxiliary resources on the Cloud Provider environment, while Ansible roles are used to deploy the k8s cluster, Dynatrace operator and Easytrade application on the VM.
+Referring to the previous [Basic Observability Demo example](#use-case-example-basic-observability-demo), Terraform is used to provision the virtual machine and some auxiliary resources on the Cloud Provider environment, while Ansible roles are used to deploy the k8s cluster, Dynatrace operator and Easytrade application on the VM.
 
 ### ACE CLI
 Check out the [ACE CLI](docs/ace-cli.md) page for more details.
