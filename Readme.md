@@ -135,15 +135,24 @@ Embedded into the ace-box as roles:
 | :---:                               | :---:                                                                   | :---:    | :---:         |
 | `demo_monaco_gitops`                | Demo flow for Application Onboarding using Jenkins/Gitea                | [here](https://github.com/Dynatrace/ace-box/tree/dev/user-skel/ansible_collections/ace_box/ace_box/roles/demo-monaco-gitops) | None |
 | `demo_ar_workflows_ansible`         | Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows         | [here](https://github.com/Dynatrace/ace-box/tree/dev/user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-ansible) | [here](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-ansible/README.md) |
-| `demo_release_validation_srg_gitlab`| Demo flow for Release Validation using GitLab/Site Reliability Guardian | [here](https://github.com/Dynatrace/ace-box/blob/dev/user-skel/ansible_collections/ace_box/ace_box/roles/demo-release-validation-srg-gitlab/files/docs/README.md) |  [extra configuration](https://github.com/Dynatrace/ace-box/tree/dev/user-skel/ansible_collections/ace_box/ace_box/roles/demo-release-validation-srg-gitlab#prerequisites) |
+| `demo_release_validation_srg_gitlab`| Demo flow for Release Validation using GitLab/Site Reliability Guardian | [here](https://github.com/Dynatrace/ace-box/blob/dev/user-skel/ansible_collections/ace_box/ace_box/roles/demo-release-validation-srg-gitlab/files/docs/README.md) |  [here](https://github.com/Dynatrace/ace-box/tree/dev/user-skel/ansible_collections/ace_box/ace_box/roles/demo-release-validation-srg-gitlab#prerequisites) |
 | `demo_ar_workflows_gitlab`          | Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows         |  [here](https://github.com/Dynatrace/ace-box/tree/dev/user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-gitlab) | [here](https://github.com/Dynatrace/ace-box/tree/dev/user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-gitlab) |
 | `demo_all`                          | All demos                                                               |  None    |  [here](user-skel/ansible_collections/ace_box/ace_box/roles/demo-all/README.md)      |
 
 
+### How to enable OOTB use-cases?
+
+1. Specify the use case in your `terraform.tfvars`. For example:
+
 ```conf
-// Check below how to configure one
-// use_case = demo_monaco_gitops
+...
+use_case = demo_monaco_gitops
+...
 ```
+
+2. Check pre-requisites, version & compatibility & extra vars or config needed.
+
+3. Continue with the deployment of your ace-box...
 
 ### Custom use-cases
 
@@ -152,6 +161,11 @@ In addition to the out-of-the-box use-cases provided natively by the ACE-Box, it
 Check out [Custom use-case](docs/custom-use-case.md) documentation for more info.
 
 A list of already created custom use cases that can be used for demo or templates/ideas:
+
+| Use case                            |  Description                                                            | Guide    | Prerequisites |
+| :---:                               | :---:                                                                   | :---:    | :---:         |
+| | | |
+
 - [Basic Observability Demo](https://github.com/dynatrace-ace/basic-dt-demo)
 - [ace-box-sandbox-easytravel](https://github.com/dynatrace-ace/ace-box-sandbox-easytravel): A simple ACE-Box with EasyTravel monitored by Dynatrace
 - [ace-box-ext-demo-auto-remediation-easytravel](https://github.com/dynatrace-ace/ace-box-ext-demo-auto-remediation-easytravel): An auto remediation demo using Dynatrace, ServiceNow and Ansible
