@@ -86,27 +86,26 @@ extra_vars = {
 Additional notes:
 - [API token scopes](#api-token-scopes). Check how to create a Dynatrace API token [here](https://docs.dynatrace.com/docs/dynatrace-api/basics/dynatrace-api-authentication#create-token)
 - [Oauth client scopes](#oauth-client-scopes). Check how to create an Dynatrace Oauth client [here](https://docs.dynatrace.com/docs/manage/identity-access-management/access-tokens-and-oauth-clients/oauth-clients)
-- It is recommended to set the sensitive variables as environment variables:
+- It is recommended to set the sensitive variables as environment variables. More information in the terraform documentation [here](https://developer.hashicorp.com/terraform/language/values/variables#environment-variables)
 
 ```yaml
 export TF_VAR_dt_api_token=dt0c01....
 ```
 
-4. Check out the `Readme.md` for your specific cloud provider configuration that needs to be set. Please consult our dedicated readmes for [AWS](terraform/aws/Readme.md), [Azure](terraform/azure/Readme.md) and [GCP](terraform/gcloud/Readme.md). 
+4. Check out the `Readme.md` for your specific cloud provider configuration that needs to be set. Please consult our dedicated READMEs for [AWS](terraform/aws/Readme.md), [Azure](terraform/azure/Readme.md) and [GCP](terraform/gcloud/Readme.md). 
 
-> Note: Check out [BYO VM](docs/byo-vm.md) documentation in case you are not using a cloud provider to deploy the ace-box.
+> Note: Check out [BYO VM](docs/byo-vm.md) documentation in case you are not using any cloud provider to deploy the ace-box.
 
-5. You can configure specific [use case](#use-cases) within the `terraform.tfvars`. You can also configure them later on once the ace-box is up and running         
+5. You can configure a specific [use case](#use-cases) within the `terraform.tfvars`.
 6. Run `terraform init`
 7. Run `terraform apply`
-8. Grab a coffee, this process will take some time...
 
 ### Behind the scenes
 
 Spinning up an ACE-Box instance can be split into two main parts:
 
-1) Deploying a VM: This happens automatically when you use the included Terraform projects or you can bring your own VM.
-2) After a VM is available, the provisioners install the ACE-Box framework. This process itself consists in a couple steps:
+1) Deploying a VM: this happens automatically when you use the included Terraform projects or you can bring your own VM.
+2) After a VM is available, the provisioners install the ACE-Box framework. This process itself consists in the following steps:
    1) Working directory copy: everything in [user-skel](/user-skel) is copied to the VM local filesystem
    2) Package manager update: [init.sh](/user-skel/init.sh) is run. This runs an `apt-get` update and installs `Python3.9`, `Ansible` and the `ace-cli`
    3) `ace prepare` command is run, which asks for ACE-Box specific configurations (e.g. protocol, custom domain, ...)
@@ -131,11 +130,31 @@ The ACE-Box has been configured to spin up a VM and use different built-in modul
 The ACE-Box framework comes with a set of use-cases which are referred as _out-of-the-box use-cases_ which have been added from time to time by the ACE-Box contributors. 
 
 Embedded into the ace-box as roles:
+
+| Use case                            |  Description                                                            | Guide    | Prerequisites |
+| :---:                               | :---:                                                                   | :---:    | :---:         |
+| `demo_monaco_gitops`                | Demo flow for Application Onboarding using Jenkins/Gitea                |          |               |
+| `demo_ar_workflows_ansible`         | Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows         |          |               |
+| `demo_release_validation_srg_gitlab`| Demo flow for Release Validation using GitLab/Site Reliability Guardian |          |               |
+| `demo_ar_workflows_gitlab`          | Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows         |          |               |
+| `demo_all`                          | All demos                                                               |          |               |
+
+- `demo_monaco_gitops`: Demo flow for Application Onboarding using Jenkins/Gitea. More information about this use case [guide](https://github.com/Dynatrace/ace-box/tree/dev/user-skel/ansible_collections/ace_box/ace_box/roles/demo-monaco-gitops). Doesn't require extra vars
+- `demo_ar_workflows_ansible`: Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows. More information about this use case [here](https://github.com/Dynatrace/ace-box/tree/dev/user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-ansible). ATTENTION: Requires [extra configuration](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-ansible/README.md)
+- `demo_release_validation_srg_gitlab`: Demo flow for Release Validation using GitLab/Site Reliability Guardian. More information about this use case [here](https://github.com/Dynatrace/ace-box/blob/dev/user-skel/ansible_collections/ace_box/ace_box/roles/demo-release-validation-srg-gitlab/files/docs/README.md). ATTENTION: Requires [extra configuration](https://github.com/Dynatrace/ace-box/tree/dev/user-skel/ansible_collections/ace_box/ace_box/roles/demo-release-validation-srg-gitlab#prerequisites)
+- `demo_ar_workflows_gitlab`: Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows. More information about this use case [here] 
+
+
+
+(ATTENTION: Requires [extra configuration](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-gitlab/README.md))
+
 - `demo_all` requires extra variables. See [use-case README](user-skel/ansible_collections/ace_box/ace_box/roles/demo-all/README.md) for details.
-- `demo_monaco_gitops`: Demo flow for Application Onboarding using Jenkins/Gitea
-- `demo_ar_workflows_ansible`: Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-ansible/README.md))
-- `demo_release_validation_srg_gitlab`: Demo flow for Release Validation using GitLab/Site Reliability Guardian (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-release-validation-srg-gitlab/README.md))
-- `demo_ar_workflows_gitlab`: Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-gitlab/README.md))
+
+
+```conf
+// Check below how to configure one
+// use_case = demo_monaco_gitops
+```
 
 ### Custom use-cases
 
