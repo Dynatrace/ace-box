@@ -17,4 +17,5 @@
 hipstershop_namespace: "hipstershop"
 hipstershop_image_tag: "215"
 hipstershop_domain: "hipstershop.{{ ingress_domain }}"
-
+hipstershop_addDashboardLink: true
+hipstershop_addDashboardPreview: true

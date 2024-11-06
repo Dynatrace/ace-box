@@ -42,3 +42,6 @@
       easytravel:
         images:
           tag: "{{ easytravel_image_tag }}"
+
+- name: Add dashboard links
+  include_tasks: add-dashboard-links.yml

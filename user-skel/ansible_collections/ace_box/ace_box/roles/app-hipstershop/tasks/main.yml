@@ -46,3 +46,6 @@
   k8s:
     definition: "{{ lookup('kubernetes.core.kustomize', dir=role_path+'/files/kustomize') }}"
     state: present
+
+- name: Add dashboard links
+  include_tasks: add-dashboard-links.yml
