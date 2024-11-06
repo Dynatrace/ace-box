@@ -1,4 +1,4 @@
-Table Of Content:
+Table Of Contents:
 - [Introduction](#introduction)
 - [Get Started](#get-started)
   - [Part A: Prepare your repository & spin up your ACE-Box](#part-a-prepare-your-repository--spin-up-your-ace-box)
@@ -34,7 +34,7 @@ Let's create a custom use-case from scratch, in order to replicate the `Basic Ob
 
 1. First of all, create a new repository using the [ext-template](https://github.com/dynatrace-ace/ace-box-ext-template) as a template.
 
-   <img src="../assets/create-new-repo.png" width="800">
+   <img src="../assets/create-new-repo.png" width="900">
 
 <br>
 
@@ -97,7 +97,7 @@ More in detail, we’ll build our custom use-case incrementally, modifying the `
     ```bash
     ace enable https://github.com/dynatrace-ace/basic-dt-demo.git --local
     ```
-   <img src="../assets/hello-world.png" width="600">
+   <img src="../assets/hello-world.png" width="700">
 
 <br>
 

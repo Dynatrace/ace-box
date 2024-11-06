@@ -127,7 +127,7 @@ A use-case aim to reproduce real-world setups for purposes like feature demonstr
 
 The environment (VM + the modules installed on it) is automatically provisioned and it can be leveraged to showcase Dynatrace Observability capabilities:
 
-<img src="./assets/use-case-example.png" width="600">
+<img src="./assets/use-case-example.png" width="900">
 
 The ACE-Box has been configured to spin up a VM and use different built-in modules to install on that machine the following components:
 - Kubernetes
