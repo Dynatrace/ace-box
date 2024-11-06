@@ -84,20 +84,20 @@ The ACE-Box is ideal for anybody who needs to create isolated testing environmen
     // use_case = demo_release_validation_srg_gitlab
     ```
 
-    Additional notes:
-    - [API token scopes](#api-token-scopes). Check how to create a Dynatrace API token [here](https://docs.dynatrace.com/docs/dynatrace-api/basics/dynatrace-api-authentication#create-token)
-    - [Oauth client scopes](#oauth-client-scopes). Check how to create an Dynatrace Oauth client [here](https://docs.dynatrace.com/docs/manage/identity-access-management/access-tokens-and-oauth-clients/oauth-clients)
-    - It is recommended to set the sensitive variables as environment variables:
+Additional notes:
+- [API token scopes](#api-token-scopes). Check how to create a Dynatrace API token [here](https://docs.dynatrace.com/docs/dynatrace-api/basics/dynatrace-api-authentication#create-token)
+- [Oauth client scopes](#oauth-client-scopes). Check how to create an Dynatrace Oauth client [here](https://docs.dynatrace.com/docs/manage/identity-access-management/access-tokens-and-oauth-clients/oauth-clients)
+- It is recommended to set the sensitive variables as environment variables. More information in the terraform documentation [here](https://developer.hashicorp.com/terraform/language/values/variables#environment-variables)
 
     ```yaml
     export TF_VAR_dt_api_token=dt0c01....
     ```
 
-4. Check out the `Readme.md` for your specific cloud provider configuration that needs to be set. Please consult our dedicated readmes for [AWS](terraform/aws/Readme.md), [Azure](terraform/azure/Readme.md) and [GCP](terraform/gcloud/Readme.md). 
+4. Check out the `Readme.md` for your specific cloud provider configuration that needs to be set. Please consult our dedicated READMEs for [AWS](terraform/aws/Readme.md), [Azure](terraform/azure/Readme.md) and [GCP](terraform/gcloud/Readme.md). 
 
     > Note: Check out [BYO VM](docs/byo-vm.md) documentation in case you are not using a cloud provider to deploy the ace-box.
 
-5. You can configure specific [use case](#use-cases) within the `terraform.tfvars`. You can also configure them later on once the ace-box is up and running         
+5. You can configure a specific [use case](#use-cases) within the `terraform.tfvars`.
 6. Run `terraform init`
 7. Run `terraform apply`. Grab a coffee, this process will take some time... <br>Behind the scenes, the ACE-Box framework is doing the following:
     - Deploying a VM on the selected hyperscaler environment (Azure, AWS or GCP)
@@ -139,11 +139,29 @@ The ACE-Box has been configured to spin up a VM and use different built-in modul
 The ACE-Box framework comes with a set of use-cases which are referred as _out-of-the-box use-cases_ which have been added from time to time by the ACE-Box contributors. 
 
 Embedded into the ace-box as roles:
-- `demo_all` requires extra variables. See [use-case README](user-skel/ansible_collections/ace_box/ace_box/roles/demo-all/README.md) for details.
-- `demo_monaco_gitops`: Demo flow for Application Onboarding using Jenkins/Gitea
-- `demo_ar_workflows_ansible`: Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-ansible/README.md))
-- `demo_release_validation_srg_gitlab`: Demo flow for Release Validation using GitLab/Site Reliability Guardian (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-release-validation-srg-gitlab/README.md))
-- `demo_ar_workflows_gitlab`: Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows (ATTENTION: Requires [extra vars](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-gitlab/README.md))
+
+| Use case                            |  Description                                                            | Guide    | Prerequisites |
+| :---:                               | :---:                                                                   | :---:    | :---:         |
+| `demo_monaco_gitops`                | Demo flow for Application Onboarding using Jenkins/Gitea                | [here](https://github.com/Dynatrace/ace-box/tree/dev/user-skel/ansible_collections/ace_box/ace_box/roles/demo-monaco-gitops) | None |
+| `demo_ar_workflows_ansible`         | Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows         | [here](https://github.com/Dynatrace/ace-box/tree/dev/user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-ansible) | [here](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-ansible/README.md) |
+| `demo_release_validation_srg_gitlab`| Demo flow for Release Validation using GitLab/Site Reliability Guardian | [here](https://github.com/Dynatrace/ace-box/blob/dev/user-skel/ansible_collections/ace_box/ace_box/roles/demo-release-validation-srg-gitlab/files/docs/README.md) |  [here](https://github.com/Dynatrace/ace-box/tree/dev/user-skel/ansible_collections/ace_box/ace_box/roles/demo-release-validation-srg-gitlab#prerequisites) |
+| `demo_ar_workflows_gitlab`          | Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows         |  [here](https://github.com/Dynatrace/ace-box/tree/dev/user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-gitlab) | [here](https://github.com/Dynatrace/ace-box/tree/dev/user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-gitlab) |
+| `demo_all`                          | All demos                                                               |  None    |  [here](user-skel/ansible_collections/ace_box/ace_box/roles/demo-all/README.md)      |
+
+
+### How to enable OOTB use-cases?
+
+1. Specify the use case in your `terraform.tfvars`. For example:
+
+```conf
+...
+use_case = demo_monaco_gitops
+...
+```
+
+2. Check pre-requisites, version & compatibility & extra vars or config needed.
+
+3. Continue with the deployment of your ace-box...
 
 ### Custom use-cases
 
@@ -152,9 +170,30 @@ In addition to the out-of-the-box use-cases provided natively by the ACE-Box, it
 Check out [Custom use-case](docs/custom-use-case.md) documentation for more info.
 
 A list of already created custom use cases that can be used for demo or templates/ideas:
-- [Basic Observability Demo](https://github.com/dynatrace-ace/basic-dt-demo)
-- [ace-box-sandbox-easytravel](https://github.com/dynatrace-ace/ace-box-sandbox-easytravel): A simple ACE-Box with EasyTravel monitored by Dynatrace
-- [ace-box-ext-demo-auto-remediation-easytravel](https://github.com/dynatrace-ace/ace-box-ext-demo-auto-remediation-easytravel): An auto remediation demo using Dynatrace, ServiceNow and Ansible
+
+| Use case                                     |  Description                                                     | Guide    | Prerequisites |
+| :---:                                        | :---:                                                            | :---:    | :---:         |
+| Basic Observability Demo                     | Basic DT Kubernetes Observability for Easytrade                  | [here](https://github.com/dynatrace-ace/basic-dt-demo)         | [here](https://github.com/dynatrace-ace/basic-dt-demo) |
+| ace-box-sandbox-easytravel                   | A simple ACE-Box with EasyTravel monitored by Dynatrace          | [here](https://github.com/dynatrace-ace/ace-box-sandbox-easytravel) | [here](https://github.com/dynatrace-ace/ace-box-sandbox-easytravel) |
+| ace-box-ext-demo-auto-remediation-easytravel | An auto remediation demo using Dynatrace, ServiceNow and Ansible | [here](https://github.com/dynatrace-ace/ace-box-ext-demo-auto-remediation-easytravel) | [here](https://github.com/dynatrace-ace/ace-box-ext-demo-auto-remediation-easytravel) |
+| Advanced Kubernetes Observability | in progress... | in progress... | in progress... |
+| AppSec | in progress... | in progress... | in progress... |
+| Dynatrace for Devs | in progress... | in progress... | in progress... |
+| Automated Incident Mgmt | in progress... | in progress... | in progress... |
+
+### How to enable custom use-cases?
+
+1. Specify the use case in your `terraform.tfvars` **pointing to the external repository**. For example:
+
+```conf
+...
+use_case = "https://<user>:<token>@github.com/dynatrace-ace/basic-dt-demo.git"
+...
+```
+
+2. Check pre-requisites, version & compatibility & extra vars or config needed.
+
+3. Continue with the deployment of your ace-box...
 
 <br>
 
