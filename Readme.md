@@ -162,13 +162,15 @@ Check out [Custom use-case](docs/custom-use-case.md) documentation for more info
 
 A list of already created custom use cases that can be used for demo or templates/ideas:
 
-| Use case                            |  Description                                                            | Guide    | Prerequisites |
-| :---:                               | :---:                                                                   | :---:    | :---:         |
-| | | |
-
-- [Basic Observability Demo](https://github.com/dynatrace-ace/basic-dt-demo)
-- [ace-box-sandbox-easytravel](https://github.com/dynatrace-ace/ace-box-sandbox-easytravel): A simple ACE-Box with EasyTravel monitored by Dynatrace
-- [ace-box-ext-demo-auto-remediation-easytravel](https://github.com/dynatrace-ace/ace-box-ext-demo-auto-remediation-easytravel): An auto remediation demo using Dynatrace, ServiceNow and Ansible
+| Use case                                     |  Description                                                     | Guide    | Prerequisites |
+| :---:                                        | :---:                                                            | :---:    | :---:         |
+| Basic Observability Demo                     | Basic DT Kubernetes Observability for Easytrade                  | [here](https://github.com/dynatrace-ace/basic-dt-demo)         | [here](https://github.com/dynatrace-ace/basic-dt-demo) |
+| ace-box-sandbox-easytravel                   | A simple ACE-Box with EasyTravel monitored by Dynatrace          | [here](https://github.com/dynatrace-ace/ace-box-sandbox-easytravel) | [here](https://github.com/dynatrace-ace/ace-box-sandbox-easytravel) |
+| ace-box-ext-demo-auto-remediation-easytravel | An auto remediation demo using Dynatrace, ServiceNow and Ansible | [here](https://github.com/dynatrace-ace/ace-box-ext-demo-auto-remediation-easytravel) | [here](https://github.com/dynatrace-ace/ace-box-ext-demo-auto-remediation-easytravel) |
+| Advanced Kubernetes Observability | in progress... | in progress... | in progress... |
+| AppSec | in progress... | in progress... | in progress... |
+| Dynatrace for Devs | in progress... | in progress... | in progress... |
+| Automated Incident Mgmt | in progress... | in progress... | in progress... |
 
 <br>
 
