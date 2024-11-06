@@ -172,6 +172,20 @@ A list of already created custom use cases that can be used for demo or template
 | Dynatrace for Devs | in progress... | in progress... | in progress... |
 | Automated Incident Mgmt | in progress... | in progress... | in progress... |
 
+### How to enable custom use-cases?
+
+1. Specify the use case in your `terraform.tfvars` **pointing to the external repository**. For example:
+
+```conf
+...
+use_case = "https://<user>:<token>@github.com/dynatrace-ace/basic-dt-demo.git"
+...
+```
+
+2. Check pre-requisites, version & compatibility & extra vars or config needed.
+
+3. Continue with the deployment of your ace-box...
+
 <br>
 
 ## Architecture
