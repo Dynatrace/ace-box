@@ -133,14 +133,14 @@ Embedded into the ace-box as roles:
 
 | Use case                            |  Description                                                            | Guide    | Prerequisites |
 | :---:                               | :---:                                                                   | :---:    | :---:         |
-| `demo_monaco_gitops`                | Demo flow for Application Onboarding using Jenkins/Gitea                |          |               |
-| `demo_ar_workflows_ansible`         | Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows         |          |               |
+| `demo_monaco_gitops`                | Demo flow for Application Onboarding using Jenkins/Gitea                | [here](https://github.com/Dynatrace/ace-box/tree/dev/user-skel/ansible_collections/ace_box/ace_box/roles/demo-monaco-gitops) | None |
+| `demo_ar_workflows_ansible`         | Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows         | [here](https://github.com/Dynatrace/ace-box/tree/dev/user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-ansible) | [here](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-ansible/README.md) |
 | `demo_release_validation_srg_gitlab`| Demo flow for Release Validation using GitLab/Site Reliability Guardian |          |               |
 | `demo_ar_workflows_gitlab`          | Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows         |          |               |
 | `demo_all`                          | All demos                                                               |          |               |
 
-- `demo_monaco_gitops`: Demo flow for Application Onboarding using Jenkins/Gitea. More information about this use case [guide](https://github.com/Dynatrace/ace-box/tree/dev/user-skel/ansible_collections/ace_box/ace_box/roles/demo-monaco-gitops). Doesn't require extra vars
-- `demo_ar_workflows_ansible`: Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows. More information about this use case [here](https://github.com/Dynatrace/ace-box/tree/dev/user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-ansible). ATTENTION: Requires [extra configuration](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-ansible/README.md)
+
+- `demo_ar_workflows_ansible`: Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows. More information about this use case . ATTENTION: Requires [here](user-skel/ansible_collections/ace_box/ace_box/roles/demo-ar-workflows-ansible/README.md)
 - `demo_release_validation_srg_gitlab`: Demo flow for Release Validation using GitLab/Site Reliability Guardian. More information about this use case [here](https://github.com/Dynatrace/ace-box/blob/dev/user-skel/ansible_collections/ace_box/ace_box/roles/demo-release-validation-srg-gitlab/files/docs/README.md). ATTENTION: Requires [extra configuration](https://github.com/Dynatrace/ace-box/tree/dev/user-skel/ansible_collections/ace_box/ace_box/roles/demo-release-validation-srg-gitlab#prerequisites)
 - `demo_ar_workflows_gitlab`: Demo flow for Auto Remediation using Gitlab/Dynatrace Workflows. More information about this use case [here] 
 
