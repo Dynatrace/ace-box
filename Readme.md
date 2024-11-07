@@ -45,43 +45,18 @@ The ACE-Box is ideal for anybody who needs to create isolated testing environmen
     git clone https://github.com/Dynatrace/ace-box.git
     ```
 
-3. Go to folder `./terraform/<aws, azure or gcloud>/` and create a `terraform.tfvars` file with the following information:
+3. Go to folder `./terraform/<aws, azure or gcloud>/` and create a `terraform.tfvars` file with the following mandatory information:
 
     ```conf
-    ///////////////////////////////////////
-    // mandatory for all cloud providers //
-    ///////////////////////////////////////
-    // You can use prod, sprint or dev
-    dt_tenant = "https://<tenant_id>.sprint.dynatracelabs.com"
+    dt_tenant = "https://<tenant_id>.sprint.dynatracelabs.com" // You can use prod, sprint or dev
     dt_api_token = "<tenant_api_token>"
     extra_vars = {
-      // You can use prod, sprint or dev tenants
-      dt_environment_url_gen3 = "https://<tenant_id>.sprint.apps.dynatracelabs.com"
-      // Respective sso for the stage
-      dt_oauth_sso_endpoint   = "https://sso-sprint.dynatracelabs.com/sso/oauth2/token"
-      // check scopes below
-      dt_oauth_client_id = "<client_id>"
+      dt_environment_url_gen3 = "https://<tenant_id>.sprint.apps.dynatracelabs.com" // You can use prod, sprint or dev tenants
+      dt_oauth_sso_endpoint   = "https://sso-sprint.dynatracelabs.com/sso/oauth2/token" // Respective sso for the stage
+      dt_oauth_client_id = "<client_id>" // check scopes below
       dt_oauth_client_secret = "<client_secret>"
       dt_oauth_account_urn = "urn:dtaccount:<id>"
     }
-
-    ////////////////////////////
-    // optional configuration //
-    ////////////////////////////
-    // customize your instance name
-    // name_prefix = "my-ace-box-name"
-
-    // Respective to the cloud provider. 
-    // acebox_size = "n2-standard-8"
-
-    // Check: https://dynatrace.sharepoint.com/sites/SRSECOPS/SitePages/Tagging-Policy.aspx
-    // Details of how to configure your VMs ownership
-    // dt_owner_team = "<dt_team>"
-    // Format:  name_surname-dynatrace_com. (replace "." with "_" and "@" with "-")
-    // dt_owner_email = "<dt_owner>"
-
-    // Check below how to configure one
-    // use_case = demo_release_validation_srg_gitlab
     ```
 
 Additional notes:
@@ -92,6 +67,8 @@ Additional notes:
     ```yaml
     export TF_VAR_dt_api_token=dt0c01....
     ```
+
+- Check for optional additional ace-box terraform.tfvars configuration [here]()
 
 4. Check out the `Readme.md` for your specific cloud provider configuration that needs to be set. Please consult our dedicated READMEs for [AWS](terraform/aws/Readme.md), [Azure](terraform/azure/Readme.md) and [GCP](terraform/gcloud/Readme.md). 
 
@@ -110,13 +87,7 @@ Additional notes:
 >Additional Commands:
   > - Once Terraform execution is completed, it is possible to check all the resources created by Terraform by running `terraform show`.
   > - In addition, by running `terraform output` it is possible to check the Terraform outputs (which are useful to verify IP addresses and the dashboard URL)
-
-<br>
-
-## Close-Up
-Once the resources created via the ACE-Box are not needed anymore, you can delete any resource created by the framework via Terraform by running `terraform destroy`.
-
->Note: If you want to see what the effect of destroying would be, you could run `terraform plan -destroy` to have a speculative destroy plan.
+  > - Once the resources created via the ACE-Box are not needed anymore, you can delete any resource created by the framework via Terraform by running `terraform destroy`.
  
 <br>
 
@@ -246,6 +217,18 @@ app-settings:objects:read
 Initial API token with scopes `apiTokens.read` and `apiTokens.write`. This token will be used by various roles to manage their own tokens.
 
 <br>
+
+## ACE-Box Additional terraform.tfvars
+
+You can personalize your ace-box with the following optional variables, by adding them in your `terraform.tfvars` file:
+
+```conf
+// name_prefix = "my-ace-box-name" // customize your instance name
+// acebox_size = "n2-standard-8" // Respective to the cloud provider
+// dt_owner_team = "<dt_team>" // Follow your organizations cloud cost best practices of tagging resources
+// dt_owner_email = "<dt_owner>" // Format:  name_surname-dynatrace_com. (replace "." with "_" and "@" with "-")
+// use_case = demo_release_validation_srg_gitlab // As described in the use-cases section
+```
 
 ## Licensing
 Please see `LICENSE` in repo root for license details.
