@@ -16,11 +16,11 @@
 # app deployment parameters
 easytrade_namespace: "easytrade"
 easytrade_domain: "easytrade.{{ ingress_domain }}"
-easytrade_image_tag: "d863a2e"
+easytrade_image_tag: "8831949"
 easytrade_addDashboardLink: true
 easytrade_addDashboardPreview: true
 easytrade_build_version: "1.0.0"
 easytrade_release_stage: "staging"
 easytrade_deploy: true
 easytrade_owner: "ace-box"
-easytrade_ingress_class: "public"
+easytrade_ingress_class: "{{ ingress_class }}"
