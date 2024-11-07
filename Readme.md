@@ -167,7 +167,7 @@ use_case = "https://<user>:<token>@github.com/dynatrace-ace/basic-dt-demo.git"
 
 3. Continue with the deployment of your ace-box...
 
-> Note: you can use the [ACE CLI](https://github.com/Dynatrace/ace-box/blob/dev/docs/ace-cli.md#ace-cli) `ace enable <use case>` command to prepares the ACE-Box for a use case by installing set of components after the ace-box has been deployed.
+> Note: you can use the [ACE-CLI](https://github.com/Dynatrace/ace-box/blob/dev/docs/ace-cli.md#ace-cli) `ace enable <use case>` command to prepares the ACE-Box for a use case by installing set of components after the ace-box has been deployed.
 
 <br>
 
