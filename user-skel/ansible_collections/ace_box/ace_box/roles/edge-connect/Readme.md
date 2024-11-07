@@ -26,3 +26,19 @@ Extend your dt-operator role to
   vars:
     edge_connect: true
 ```
+
+### (Optional) Generate credentials for edge-connect
+
+In order to automatically provision a workflow with an action involving edge-connect, you need to generate beforehand the edge-connect connection within Dynatrace. To do that, you need the credentials to authenticate, for later on, using them in a monaco config file.
+
+You can grab the credentials with the following task:
+
+```yaml
+- include_role:
+    name: edge-connect
+    tasks_from: generate-credentials
+```
+
+The credentials can be used in your Ansible code (I.e. set them as environment variables in Gitlab) with the following values:
+- k8s_cluster_uid
+- edge_connect_token
