@@ -7,11 +7,15 @@ Check the [EasyTrade documentation](https://github.com/Dynatrace/easytrade/blob/
 ## Using the role
 
 ### Role Requirements
+
 This role depends on the following roles to be deployed beforehand:
+
 ```yaml
 - include_role:
-    name: microk8s
+    name: k3s
 ```
+
+> Note: we highly recommend to use k3s, but it is also possible to use microk8s. More information below
 
 ### Deploying EasyTrade
 
@@ -71,15 +75,13 @@ To enable monaco:
 
 ```
 
-### (Optional) k3s compatibility
+### (Alternative) microk8s
 
-In order to make easytrade work for k3s, add the following variable:
+If for some reason you are facing issues with k3s as the prerequisite, you can also deploy microk8s:
 
 ```yaml
 - include_role:
-    name: app-easytrade
-  vars:
-    easytrade_ingress_class: "traefik"
+    name: microk8s
 ```
 
 ### Add to ACE Dashboard
