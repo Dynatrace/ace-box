@@ -183,4 +183,5 @@ module "provisioner" {
   extra_vars         = var.extra_vars
   dashboard_user     = var.dashboard_user
   dashboard_password = local.dashboard_password
+  otel_export_enable = var.otel_export_enable
 }

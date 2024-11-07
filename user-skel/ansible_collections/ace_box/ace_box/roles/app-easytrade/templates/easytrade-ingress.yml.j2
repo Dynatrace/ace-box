@@ -2,6 +2,8 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  annotations:
+    meta.helm.sh/release-name: easytrade
   labels:
     app: easytrade
   name: easytrade-ingress
