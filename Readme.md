@@ -96,6 +96,7 @@ A use-case aim to reproduce real-world setups for purposes like feature demonstr
 
 ### Use-case example: Basic Observability Demo
 
+
 The environment (VM + the modules installed on it) is automatically provisioned and it can be leveraged to showcase Dynatrace Observability capabilities:
 
 <img src="./assets/use-case-example.png" width="900">
@@ -134,6 +135,8 @@ use_case = demo_monaco_gitops
 
 3. Continue with the deployment of your ace-box...
 
+> Note: you can use the [ACE CLI](https://github.com/Dynatrace/ace-box/blob/dev/docs/ace-cli.md#ace-cli) `ace enable <use case>` command to prepares the ACE-Box for a use case by installing set of components after the ace-box has been deployed.
+
 ### Custom use-cases
 
 In addition to the out-of-the-box use-cases provided natively by the ACE-Box, it is possible to source custom use-cases. This allows using the ACE-Box as a platform to develop your own use-cases, demonstrations, trainings, etc.
@@ -163,6 +166,8 @@ use_case = "https://<user>:<token>@github.com/dynatrace-ace/basic-dt-demo.git"
 2. Check pre-requisites, version & compatibility & extra vars or config needed.
 
 3. Continue with the deployment of your ace-box...
+
+> Note: you can use the [ACE CLI](https://github.com/Dynatrace/ace-box/blob/dev/docs/ace-cli.md#ace-cli) `ace enable <use case>` command to prepares the ACE-Box for a use case by installing set of components after the ace-box has been deployed.
 
 <br>
 
