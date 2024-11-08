@@ -53,4 +53,5 @@
       TENANT_TOKEN: "{{ monaco_api_token }}"
       CLIENT_ID: "{{ extra_vars.dt_oauth_client_id }}"
       CLIENT_SECRET: "{{ extra_vars.dt_oauth_client_secret }}"
+      SLACK_TOKEN: "{{ extra_vars.slack_bot_token | default('abc123') }}"
 
