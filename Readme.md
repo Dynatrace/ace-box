@@ -96,15 +96,16 @@ A use-case aim to reproduce real-world setups for purposes like feature demonstr
 
 ### Use-case example: Basic Observability Demo
 
-
-The environment (VM + the modules installed on it) is automatically provisioned and it can be leveraged to showcase Dynatrace Observability capabilities:
-
-<img src="./assets/use-case-example.png" width="900">
-
-The ACE-Box has been configured to spin up a VM and use different built-in modules to install on that machine the following components:
-- Kubernetes
+It is intended to create all necessary resources for a Basic Kubernetes Observability Demo, by configuring the ACE-Box to spin up the following resources:
+- Kubernetes (k3s) platform
 - Dynatrace Operator
 - Easytrade Demo App
+
+For a step-by-step guide on how this use-case has been built, follow the [custom use case](#custom-use-cases) documentation.
+
+Every use-case comes along with:
+- [guide](): to understand how to run the scenario and other important details.
+- [prerequisites](): pre-requisites, version & compatibility & extra vars or config needed.
 
 ### Out-of-the-box use-cases
 
@@ -176,8 +177,8 @@ _Terraform_ is used for spinning up and configure the compute instance and all t
 _Ansible_ is used for setting up the various modules on top of the compute instance.
 Referring to the previous [Basic Observability Demo example](#use-case-example-basic-observability-demo), Terraform is used to provision the virtual machine and some auxiliary resources on the Cloud Provider environment, while Ansible roles are used to deploy the k8s cluster, Dynatrace operator and Easytrade application on the VM.
 
-### ACE CLI
-Check out the [ACE CLI](docs/ace-cli.md) page for more details.
+### ACE-CLI
+Check out the [ACE-CLI](docs/ace-cli.md) page for more details.
 
 ### ACE Dashboard
 At the end of the provisioning of any of the out of the box supported use-cases, an ACE Dashboard gets created with more information on how to use the ACE-BOX. Check out [ACE Dashboard](Dashboard.md) for more details.
@@ -223,7 +224,7 @@ Initial API token with scopes `apiTokens.read` and `apiTokens.write`. This token
 
 <br>
 
-## ACE-Box Additional terraform.tfvars
+## Additional terraform.tfvars
 
 You can personalize your ace-box with the following optional variables, by adding them in your `terraform.tfvars` file:
 
