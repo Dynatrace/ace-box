@@ -18,38 +18,6 @@
     skip_synthetic_monitor: "true"
     monaco_projects_list: ""
 
-- name: Source Kubernetes endpoint
-  kubernetes.core.k8s_info:
-    kind: Service
-    name: "kubernetes"
-    namespace: "default"
-  register: kubernetes_svc_data
-
-- set_fact:
-    kubernetes_api_endpoint: "https://{{ kubernetes_svc_data.resources[0].spec.clusterIP }}"
-
-- name: Source Dynatrace Operator ServiceAccount
-  kubernetes.core.k8s_info:
-    kind: ServiceAccount
-    name: "dynatrace-kubernetes-monitoring"
-    namespace: "dynatrace"
-  register: dt_operator_sa_data
-
-- debug:
-    msg: "{{ dt_operator_sa_data.resources | length > 0 }}"
-
-- name: Source Dynatrace Operator Secret
-  kubernetes.core.k8s_info:
-    kind: Secret
-    name: "{{ dt_operator_sa_data.resources[0].secrets[0].name }}"
-    namespace: "dynatrace"
-  register: dt_operator_secret_data
-  when: dt_operator_sa_data.resources | length > 0
-
-- set_fact:
-    dt_operator_kube_bearer_token: "{{ dt_operator_secret_data.resources[0].data.token | b64decode }}"
-  when: dt_operator_secret_data.resources is defined and dt_operator_secret_data.resources | length > 0
-
 - name: Source Private Synthetic Node ID
   include_role:
     name: dt-activegate-classic
@@ -68,11 +36,8 @@
   vars:
     monaco_project: "{{ monaco_projects_list }}"
     monaco_projects_root: "{{ monaco_projects_folder }}"
-
     monaco_environment:
       INGRESS_DOMAIN: "{{ ingress_domain }}"
       APP_NAMESPACE: "{{ hipstershop_namespace }}"
-      KUBE_API_ENDPOINT: "{{ kubernetes_api_endpoint }}"
-      KUBE_BEARER_TOKEN: "{{ dt_operator_kube_bearer_token | default(None) }}"
       SKIP_SYNTH: "{{ skip_synthetic_monitor }}"
       SYNTH_NODE_ID: "{{ dt_synthetic_node_id | default(None) }}"

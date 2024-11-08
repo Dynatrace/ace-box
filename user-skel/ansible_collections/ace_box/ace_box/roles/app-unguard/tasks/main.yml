@@ -33,35 +33,98 @@
 - name: Deploy Unguard
   kubernetes.core.helm:
     name: unguard
-    chart_ref: "{{ role_path }}/files/repos/unguard/helm/unguard"
+    chart_ref: "oci://ghcr.io/dynatrace-oss/unguard/chart/unguard"
     release_namespace: "{{ unguard_namespace }}"
     create_namespace: true
     wait: true
     wait_timeout: 10m
     values:
+      tracing: 
+        enabled: true
+      localDev:
+        enabled: false
+      profileService:
+        deployment:
+          container:
+            image:
+              tag: "{{ unguard_image_tag }}"
+      statusService:
+        deployment:
+          container:
+            image:
+              tag: "{{ unguard_image_tag }}"
+      maliciousLoadGenerator: 
+        deployment:
+          container:
+            image:
+              tag: "{{ unguard_image_tag }}"
+      adService:
+        deployment:
+          container:
+            image:
+              tag: "{{ unguard_image_tag }}"
+      frontend: 
+        deployment:
+          container:
+            image:
+              tag: "{{ unguard_image_tag }}"
+      microblogService: 
+        deployment:
+          container:
+            image:
+              tag: "{{ unguard_image_tag }}"
+      proxyService: 
+        deployment:
+          container:
+            image:
+              tag: "{{ unguard_image_tag }}"
+      userAuthService: 
+        deployment:
+          container:
+            image:
+              tag: "{{ unguard_image_tag }}"
+      userSimulator:
+        cronJob:
+          jobTemplate: 
+            container:
+              image:
+                tag: "{{ unguard_image_tag }}"
+              env: 
+                SIMULATE_PRIVATE_RANGES: "{{ unguard_simulate_private_ranges }}"
 
-      ingress:
-        domain: "{{ ingress_domain }}"
-        class: "{{ ingress_class }}"
-      unguard:
-        profileService:
-          tag: "{{ unguard_image_tag }}"
-        statusService:
-          tag: "{{ unguard_image_tag }}"
-        maliciousLoadGenerator: 
-          tag: "{{ unguard_image_tag }}"
-        adService:
-          tag: "{{ unguard_image_tag }}"
-        frontend: 
-          tag: "{{ unguard_image_tag }}"
-        microblogService: 
-          tag: "{{ unguard_image_tag }}"
-        proxyService: 
-          tag: "{{ unguard_image_tag }}"
-        userAuthService: 
-          tag: "{{ unguard_image_tag }}"
-        userSimulator:
-          tag: "{{ unguard_image_tag }}"
-          simulatePrivateRanges: "{{ unguard_simulate_private_ranges }}"
-        userSimulatorCronJob:
-          deploy: "{{ unguard_deploy_user_simulator_cronjob }}"
+
+- name: Create Ingress for Unguard
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Ingress
+      metadata:
+        name: "unguard"
+        namespace: "{{ unguard_namespace }}"
+        annotations:
+          kubernetes.io/ingress.class: "{{ ingress_class }}"
+        labels:
+          app: unguard
+      spec:
+        rules:
+          - host: "{{ unguard_domain }}"
+            http:
+                paths:
+                  - path: /ui
+                    pathType: Prefix
+                    backend:
+                      service:
+                        name: unguard-frontend
+                        port:
+                          number: 80
+                  - path: /ad-service
+                    pathType: Prefix
+                    backend:
+                      service:
+                        name: unguard-ad-service
+                        port:
+                          number: 80
+
+- name: Add dashboard links
+  include_tasks: add-dashboard-links.yml

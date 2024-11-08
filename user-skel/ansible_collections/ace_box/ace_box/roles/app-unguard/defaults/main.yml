@@ -15,7 +15,10 @@
 ---
 # app deployment parameters
 unguard_namespace: "unguard"
-unguard_image_tag: "0.6.2"
+unguard_image_tag: "0.9.3"
 unguard_simulate_private_ranges: "true"
 unguard_deploy_user_simulator_cronjob: "false"
+unguard_domain: "unguard.{{ ingress_domain }}"
+unguard_addDashboardLink: true
+unguard_addDashboardPreview: true
 
