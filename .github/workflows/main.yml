@@ -19,7 +19,7 @@ jobs:
         use_case: [
           {
             name: "use_case_1",
-            url: "https://eemrdog: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@github.com/dynatrace-ace/ace-box-ext-hot-aiops-2024.git@mattermost",
+            url: "https://github.com/dynatrace-ace/ace-box-ext-hot-aiops-2024.git@mattermost",
             extra_vars: '{
               "dt_environment_url_gen3": "https://ifj51418.sprint.apps.dynatracelabs.com",
               "dt_oauth_sso_endpoint": "https://sso-sprint.dynatracelabs.com/sso/oauth2/token",
@@ -31,7 +31,7 @@ jobs:
           },
           {
             name: "use_case_2",
-            url: "https://eemrdog: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@github.com/dynatrace-ace/ace-box-ext-hot-aiops-2024.git@another-use-case",
+            url: "https://github.com/dynatrace-ace/ace-box-ext-hot-aiops-2024.git@another-use-case",
             extra_vars: '{
               "dt_environment_url_gen3": "https://ifj51418.sprint.apps.dynatracelabs.com",
               "dt_oauth_sso_endpoint": "https://sso-sprint.dynatracelabs.com/sso/oauth2/token",
@@ -44,7 +44,7 @@ jobs:
           },
           {
             name: "use_case_3",
-            url: "https://eemrdog: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@github.com/dynatrace-ace/ace-box-ext-hot-aiops-2024.git@third-use-case",
+            url: "https://github.com/dynatrace-ace/ace-box-ext-hot-aiops-2024.git@third-use-case",
             extra_vars: '{
               "dt_environment_url_gen3": "https://ifj51418.sprint.apps.dynatracelabs.com",
               "dt_oauth_sso_endpoint": "https://sso-sprint.dynatracelabs.com/sso/oauth2/token",
