@@ -73,9 +73,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # - name: Set Custom Domain
-      #   id: set_custom_domain
-      #   run: echo "::set-output name=custom_domain::${{ matrix.use_case.name }}.ace-innovation.info"
+      - name: Set Custom Domain
+        id: set_custom_domain
+        run: echo "custom_domain=${{ matrix.use_case.name }}.ace-innovation.info" >> $GITHUB_OUTPUT
 
       - id: 'auth'
         uses: 'google-github-actions/auth@v2'
@@ -102,7 +102,7 @@ jobs:
 
       - name: Set Use Case URL
         id: set_use_case_url
-        run: echo "::set-output name=use_case_url::https://${{ secrets.GH_USERNAME }}:${{ secrets.GH_PAT }}@github.com/${{ matrix.use_case.repo }}.git@${{ matrix.use_case.version }}"
+        run: echo "use_case_url=https://${{ secrets.GH_USERNAME }}:${{ secrets.GH_PAT }}@github.com/${{ matrix.use_case.repo }}.git@${{ matrix.use_case.version }}" >> $GITHUB_OUTPUT
 
 
       # - name: Merge Extra Vars
@@ -137,4 +137,4 @@ jobs:
         if: success()
         uses: hmarr/auto-approve-action@v2
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GH_PAT }}
