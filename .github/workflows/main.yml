@@ -24,11 +24,11 @@ jobs:
       TF_VAR_skip_domain_workspace_alignment: "true"
       TF_VAR_extra_vars: |
         {
-          "dt_environment_url_gen3": ${{ vars.DT_URL_GEN3 }},
-          "dt_oauth_sso_endpoint": ${{ vars.DT_OAUTH_SSO_ENDPOINT }},
+          "dt_environment_url_gen3": "${{ vars.DT_URL_GEN3 }}",
+          "dt_oauth_sso_endpoint": "${{ vars.DT_OAUTH_SSO_ENDPOINT }}",
           "dt_oauth_client_id": "${{ secrets.DT_OAUTH_CLIENT_ID }}",
           "dt_oauth_client_secret": "${{ secrets.DT_OAUTH_CLIENT_SECRET }}",
-          "dt_oauth_account_urn": "${{ secrets.DT_OAUTH_ACCOUNT_URN }}"
+          "dt_oauth_account_urn": "${{ secrets.DT_OAUTH_ACCOUNT_URN }}",
         }
 
     strategy:
