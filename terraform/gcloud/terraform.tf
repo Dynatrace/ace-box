@@ -13,6 +13,10 @@
 # limitations under the License.
 
 terraform {
+    backend "gcs" {
+    bucket = "ace-box-tf-state"
+    prefix = "ace-box"
+  }
 }
 
 provider "google" {
