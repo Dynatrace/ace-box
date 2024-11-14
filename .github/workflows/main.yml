@@ -77,8 +77,13 @@ jobs:
       #   run: echo "::set-output name=custom_domain::${{ matrix.use_case.name }}.ace-innovation.info"
 
       - name: Create Backend Config
-        run: echo "${{ matrix.backend_config }}" > backend.tfvars
-        working-directory: ${{ matrix.working_directory }}
+        run: |
+          echo 'terraform {
+            backend "gcs" {
+              bucket = "${{ matrix.backend_config.bucket }}"
+              prefix = "${{ matrix.backend_config.prefix }}"
+            }
+          }' > ${{ matrix.working_directory }}/backend.tf
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v1
@@ -91,7 +96,7 @@ jobs:
       #     echo "::set-output name=extra_vars::$(jq -s '.[0] * .[1]' <<< '${{ env.TF_VAR_extra_vars }} ${{ fromJSON(matrix.use_case.extra_vars) }}')"
 
       - name: Terraform Init
-        run: terraform init -backend-config="bucket=${{ matrix.backend_config.bucket }}" -backend-config="prefix=${{ matrix.backend_config.prefix }}"
+        run: terraform init 
         working-directory: ${{ matrix.working_directory }}
 
       - name: Terraform Plan
