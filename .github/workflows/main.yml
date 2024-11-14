@@ -109,7 +109,7 @@ jobs:
         working-directory: ${{ matrix.working_directory }}
 
       - name: Terraform Plan
-        run: terraform plan -out=tfplan -replace="null_resource.provisioner_ace_enable" -var="gcloud_project=${{ matrix.gcloud_project }}" -var="gcloud_zone=${{ matrix.gcloud_zone }}" -var="acebox_size=${{ matrix.acebox_size }}" -var="managed_zone_name=${{ matrix.managed_zone_name }}"
+        run: terraform plan -out=tfplan -replace="null_resource.provisioner_ace_enable" -var="gcloud_project=${{ matrix.gcloud_project }}" -var="gcloud_zone=${{ matrix.gcloud_zone }}" -var="acebox_size=${{ matrix.acebox_size }}" -var="managed_zone_name=${{ matrix.managed_zone_name }}" -var="use_case=${{ matrix.use_case.url }}"
         working-directory: ${{ matrix.working_directory }}
 
       - name: Terraform Apply
