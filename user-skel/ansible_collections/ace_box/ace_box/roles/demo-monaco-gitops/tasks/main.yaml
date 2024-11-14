@@ -23,6 +23,9 @@
 
 - include_role:
     name: dt-operator
+  vars:
+    dt_operator_release: "v1.2.3"
+    operator_mode: "classicFullStack" 
 
 - include_role:
     name: monaco-v2
