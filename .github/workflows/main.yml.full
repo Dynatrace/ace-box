@@ -32,7 +32,7 @@ jobs:
 
     strategy:
       matrix:
-        provider: [gcloud] #[aws, azure, gcloud]
+        provider: [aws, gcloud] #[aws, azure, gcloud]
         use_case: [
           {
             name: "cert-associate",
@@ -44,23 +44,23 @@ jobs:
           }
         ]
         include:
-          # - provider: aws
-          #   working_directory: ./terraform/aws
-          #   aws_region: "us-east-2"
-          #   aws_instance_type: "t3.xlarge" 
-          #   disk_size: 60
-          #   acebox_user: "ubuntu"           
-          #   associate_eip: "false"
-          #   ingress_protocol: "https"
-          #   route53_zone_name: "gtm-innovation.com"
-          #   route53_private_zone: "false"
-          #   skip_domain_workspace_alignment: "true"
-          #   backend_config: |
-          #     bucket         = "your-terraform-state-bucket"
-          #     key            = "path/to/terraform.tfstate"
-          #     region         = "us-east-2"
-          #     encrypt        = true
-          #     dynamodb_table = "your-lock-table"
+          - provider: aws
+            working_directory: ./terraform/aws
+            aws_region: "us-east-2"
+            aws_instance_type: "t3.xlarge" 
+            disk_size: 60
+            acebox_user: "ubuntu"           
+            associate_eip: "false"
+            ingress_protocol: "https"
+            route53_zone_name: "gtm-innovation.com"
+            route53_private_zone: "false"
+            skip_domain_workspace_alignment: "true"
+            backend_config: |
+              bucket         = "your-terraform-state-bucket"
+              key            = "path/to/terraform.tfstate"
+              region         = "us-east-2"
+              encrypt        = true
+              dynamodb_table = "your-lock-table"
           - provider: gcloud
             working_directory: ./terraform/gcloud
             gcloud_project: "acl-gsi" #"myGCPProject" # GCP Project you want to use
