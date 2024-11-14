@@ -91,7 +91,7 @@ jobs:
       #     echo "::set-output name=extra_vars::$(jq -s '.[0] * .[1]' <<< '${{ env.TF_VAR_extra_vars }} ${{ fromJSON(matrix.use_case.extra_vars) }}')"
 
       - name: Terraform Init
-        run: terraform init -backend-config=backend.tfvars
+        run: terraform init -backend-config="bucket=${{ matrix.backend_config.bucket }}" -backend-config="prefix=${{ matrix.backend_config.prefix }}"
         working-directory: ${{ matrix.working_directory }}
 
       - name: Terraform Plan
