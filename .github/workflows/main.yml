@@ -72,9 +72,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set Custom Domain
-        id: set_custom_domain
-        run: echo "::set-output name=custom_domain::${{ matrix.use_case.name }}.ace-innovation.info"
+      # - name: Set Custom Domain
+      #   id: set_custom_domain
+      #   run: echo "::set-output name=custom_domain::${{ matrix.use_case.name }}.ace-innovation.info"
 
       - name: Create Backend Config
         run: echo "${{ matrix.backend_config }}" > backend.tfvars
@@ -83,7 +83,7 @@ jobs:
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v1
         with:
-          terraform_version: 1.0.0
+          terraform_version: latest
 
       # - name: Merge Extra Vars
       #   id: merge_extra_vars
