@@ -85,10 +85,10 @@ jobs:
         with:
           terraform_version: 1.0.0
 
-      - name: Merge Extra Vars
-        id: merge_extra_vars
-        run: |
-          echo "::set-output name=extra_vars::$(jq -s '.[0] * .[1]' <<< '${{ env.TF_VAR_extra_vars }} ${{ fromJSON(matrix.use_case.extra_vars) }}')"
+      # - name: Merge Extra Vars
+      #   id: merge_extra_vars
+      #   run: |
+      #     echo "::set-output name=extra_vars::$(jq -s '.[0] * .[1]' <<< '${{ env.TF_VAR_extra_vars }} ${{ fromJSON(matrix.use_case.extra_vars) }}')"
 
       - name: Terraform Init
         run: terraform init -backend-config=backend.tfvars
