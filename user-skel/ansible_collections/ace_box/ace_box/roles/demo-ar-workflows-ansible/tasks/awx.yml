@@ -206,6 +206,9 @@
     controller_password: "{{ awx_admin_password }}"
     controller_username: "{{ awx_admin_username }}"
   register: canary_reset_template
+  retries: 5
+  delay: 30
+  until: canary_reset_template is not failed
 
 - name: Create canary deployment template
   awx.awx.job_template:
@@ -227,6 +230,9 @@
     controller_password: "{{ awx_admin_password }}"
     controller_username: "{{ awx_admin_username }}"
   register: canary_template
+  retries: 5
+  delay: 30
+  until: canary_template is not failed
 
 - set_fact:
     demo_ar_workflows_ansible_template_id: "{{ canary_template.id }}"
