@@ -37,10 +37,6 @@ jobs:
           {
             name: "cert-associate",
             url: "https://github.com/dynatrace-ace/ace-box-ext-cert-associate",
-          },
-          {
-            name: "demo-ar-workflows-gitlab",
-            url: "demo_ar_workflows_gitlab",
           }
         ]
         include:
