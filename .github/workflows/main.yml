@@ -65,8 +65,8 @@ jobs:
             managed_zone_name: "ace-innovation-info"
             skip_domain_workspace_alignment: "true"
             backend_config: |
-              bucket = "your-terraform-state-bucket"
-              prefix = "path/to/terraform.tfstate"
+              bucket = "ace-box-tf-state"
+              prefix = "ace-box"
 
     steps:
       - name: Checkout repository
