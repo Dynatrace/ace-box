@@ -70,11 +70,20 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       # - name: Set Custom Domain
       #   id: set_custom_domain
       #   run: echo "::set-output name=custom_domain::${{ matrix.use_case.name }}.ace-innovation.info"
+
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS_JSON }}'
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v2'
+      - name: 'Use gcloud CLI'
+        run: 'gcloud info'
 
       - name: Create Backend Config
         run: |
