@@ -37,7 +37,8 @@ jobs:
         use_case: [
           {
             name: "cert-associate",
-            url: "https://github.com/dynatrace-ace/ace-box-ext-cert-associate",
+            repo: "dynatrace-ace/ace-box-ext-cert-associate",
+            version: "v1.2.8"
           }
         ]
         include:
@@ -99,6 +100,11 @@ jobs:
         with:
           terraform_version: latest
 
+      - name: Set Use Case URL
+        id: set_use_case_url
+        run: echo "::set-output name=use_case_url::https://${{ secrets.GH_USERNAME }}:${{ secrets.GH_PAT }}@github.com/${{ matrix.use_case.repo }}.git@${{ matrix.use_case.version }}"
+
+
       # - name: Merge Extra Vars
       #   id: merge_extra_vars
       #   run: |
@@ -109,7 +115,7 @@ jobs:
         working-directory: ${{ matrix.working_directory }}
 
       - name: Terraform Plan
-        run: terraform plan -out=tfplan -replace="null_resource.provisioner_ace_enable" -var="gcloud_project=${{ matrix.gcloud_project }}" -var="gcloud_zone=${{ matrix.gcloud_zone }}" -var="acebox_size=${{ matrix.acebox_size }}" -var="managed_zone_name=${{ matrix.managed_zone_name }}" -var="use_case=${{ matrix.use_case.url }}"
+        run: terraform plan -out=tfplan -replace="null_resource.provisioner_ace_enable" -var="gcloud_project=${{ matrix.gcloud_project }}" -var="gcloud_zone=${{ matrix.gcloud_zone }}" -var="acebox_size=${{ matrix.acebox_size }}" -var="managed_zone_name=${{ matrix.managed_zone_name }}" -var="use_case=${{ steps.set_use_case_url.outputs.use_case_url }}"
         working-directory: ${{ matrix.working_directory }}
 
       - name: Terraform Apply
