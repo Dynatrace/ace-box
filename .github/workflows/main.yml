@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      DESTROY_RESOURCES: "false" # Set to "true" to enable resource destruction
+      DESTROY_RESOURCES: "true" # Set to "true" to enable resource destruction
       TF_VAR_dt_tenant: ${{ vars.DT_TENANT }}
       TF_VAR_dt_api_token: ${{ secrets.DT_API_TOKEN }}
       TF_VAR_otel_export_enable: "true"
