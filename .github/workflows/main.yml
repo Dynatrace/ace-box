@@ -132,7 +132,7 @@ jobs:
 
       - name: Conditional Terraform Destroy
         if: always() && env.DESTROY_RESOURCES == 'true'
-        run: terraform destroy -auto-approve -var="region=${{ matrix.region }}" -var="instance_type=${{ matrix.instance_type }}" -var="disk_size=${{ matrix.disk_size }}" -var="acebox_user=${{ matrix.acebox_user }}" -var="associate_eip=${{ matrix.associate_eip }}" -var="custom_domain=${{ steps.set_custom_domain.outputs.custom_domain }}" -var="ingress_protocol=${{ matrix.ingress_protocol }}" -var="route53_zone_name=${{ matrix.route53_zone_name }}" -var="route53_private_zone=${{ matrix.route53_private_zone }}" -var="skip_domain_workspace_alignment=${{ matrix.skip_domain_workspace_alignment }}" -var="extra_vars=${{ steps.merge_extra_vars.outputs.extra_vars }}" -var="use_case=${{ matrix.use_case.url }}"
+        run: terraform destroy -auto-approve  -var="gcloud_project=${{ matrix.gcloud_project }}" -var="gcloud_zone=${{ matrix.gcloud_zone }}" -var="acebox_size=${{ matrix.acebox_size }}" -var="managed_zone_name=${{ matrix.managed_zone_name }}" -var="use_case=${{ steps.set_use_case_url.outputs.use_case_url }}"
         working-directory: ${{ matrix.working_directory }}
 
       - name: Approve PR
