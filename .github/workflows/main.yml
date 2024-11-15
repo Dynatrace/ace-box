@@ -134,8 +134,24 @@ jobs:
         run: terraform destroy -auto-approve  -var="gcloud_project=${{ matrix.gcloud_project }}" -var="gcloud_zone=${{ matrix.gcloud_zone }}" -var="acebox_size=${{ matrix.acebox_size }}" -var="managed_zone_name=${{ matrix.managed_zone_name }}" -var="use_case=${{ steps.set_use_case_url.outputs.use_case_url }}"
         working-directory: ${{ matrix.working_directory }}
 
-      - name: Approve PR
+      - name: Update PR Status
         if: success()
-        uses: hmarr/auto-approve-action@v2
+        uses: actions/github-script@v4
         with:
-          github-token: ${{ secrets.GH_PAT }}
+          script: |
+            const { context } = require('@actions/github');
+            const prNumber = context.payload.pull_request.number;
+            const repo = context.repo.repo;
+            const owner = context.repo.owner;
+            await github.issues.createComment({
+              owner,
+              repo,
+              issue_number: prNumber,
+              body: 'All checks have passed. This PR is ready for review.'
+            });
+            await github.pulls.update({
+              owner,
+              repo,
+              pull_number: prNumber,
+              state: 'open'
+            });
