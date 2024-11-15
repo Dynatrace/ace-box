@@ -90,8 +90,8 @@ jobs:
         run: |
           echo 'terraform {
             backend "gcs" {
-              bucket = "ace-box-tf-state"
-              prefix = "ace-box"
+              bucket = "${{ matrix.backend_config.bucket }}"
+              prefix = "${{ matrix.backend_config.prefix }}"
             }
           }' > ${{ matrix.working_directory }}/backend.tf
           echo "backend.tf created"
