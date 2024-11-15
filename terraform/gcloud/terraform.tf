@@ -12,12 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# terraform {
-#     backend "gcs" {
-#     bucket = "ace-box-tf-state"
-#     prefix = "ace-box"
-#   }
-# }
+terraform {
+}
 
 provider "google" {
   project = var.gcloud_project
