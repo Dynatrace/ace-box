@@ -1,9 +1,9 @@
 name: CI
 
 on:
-  push:
-    branches:
-      - eemrdog-actions
+  # push:
+  #   branches:
+  #     - eemrdog-actions
 
   pull_request:
     branches:
@@ -135,7 +135,7 @@ jobs:
         working-directory: ${{ matrix.working_directory }}
 
       - name: Update PR Status
-        if: success()
+        if: github.event_name == 'pull_request' && success()
         uses: actions/github-script@v4
         with:
           script: |
