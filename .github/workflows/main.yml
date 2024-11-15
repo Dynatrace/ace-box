@@ -90,10 +90,12 @@ jobs:
         run: |
           echo 'terraform {
             backend "gcs" {
-              bucket = "${{ matrix.backend_config.bucket }}"
-              prefix = "${{ matrix.backend_config.prefix }}"
+              bucket = "ace-box-tf-state"
+              prefix = "ace-box"
             }
           }' > ${{ matrix.working_directory }}/backend.tf
+          echo "backend.tf created"
+          cat ${{ matrix.working_directory }}/backend.tf
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v1
