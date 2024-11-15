@@ -65,9 +65,8 @@ jobs:
             gcloud_zone: "europe-west1-b" # zone
             acebox_size: "n2-standard-16"
             managed_zone_name: "ace-innovation-info"
-            backend_config: |
-              bucket = "ace-box-tf-state"
-              prefix = "ace-box"
+            backend_config_bucket: "ace-box-tf-state"
+            backend_config_prefix: "ace-box"
 
     steps:
       - name: Checkout repository
@@ -90,8 +89,8 @@ jobs:
         run: |
           echo 'terraform {
             backend "gcs" {
-              bucket = "${{ matrix.backend_config.bucket }}"
-              prefix = "${{ matrix.backend_config.prefix }}"
+              bucket = "${{ matrix.backend_config_bucket }}"
+              prefix = "${{ matrix.backend_config_prefix }}"
             }
           }' > ${{ matrix.working_directory }}/backend.tf
           echo "backend.tf created"
