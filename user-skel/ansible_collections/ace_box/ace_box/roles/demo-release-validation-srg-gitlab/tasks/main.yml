@@ -23,6 +23,9 @@
 
 - include_role:
     name: dt-operator
+  vars:
+    dt_operator_release: "v1.2.3"
+    operator_mode: "classicFullStack" 
 
 - include_role:
     name: monaco-v2
@@ -51,27 +54,82 @@
         "logs.ingest",
       ]
 
-- name: Monaco - Cleanup potential conflicting Monaco resources
-  shell:
-    cmd: |
-      sed -e "s/\$RELEASE_STAGE/$RELEASE_STAGE_STAGING/g" -e "s/\$DEMO_IDENTIFIER/$DEMO_IDENTIFIER/g" -e "s/\$RELEASE_PRODUCT/$RELEASE_PRODUCT/g" {{ role_path }}/files/monaco/delete-app.yaml > {{ role_path }}/files/monaco/delete-app-staging-optimized.yaml
-      sed -e "s/\$RELEASE_STAGE/$RELEASE_STAGE_PROD/g" -e "s/\$DEMO_IDENTIFIER/$DEMO_IDENTIFIER/g" -e "s/\$RELEASE_PRODUCT/$RELEASE_PRODUCT/g" {{ role_path }}/files/monaco/delete-app.yaml > {{ role_path }}/files/monaco/delete-app-prod-optimized.yaml
-      MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco delete --manifest {{ role_path }}/files/monaco/manifest.yaml --file {{ role_path }}/files/monaco/delete-app-prod-optimized.yaml --group production
-      MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco delete --manifest {{ role_path }}/files/monaco/manifest.yaml --file {{ role_path }}/files/monaco/delete-app-staging-optimized.yaml --group staging
-      sleep 15 # wait for the deletion to be completed before the dependent configs are deleted
-      sed -e "s/\$DEMO_IDENTIFIER/$DEMO_IDENTIFIER/g" {{ role_path }}/files/monaco/delete-infra.yaml > {{ role_path }}/files/monaco/delete-infra-optimized.yaml
-      MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco delete --manifest {{ role_path }}/files/monaco/manifest.yaml --file {{ role_path }}/files/monaco/delete-infra-optimized.yaml --group production
-      MONACO_FEAT_AUTOMATION_RESOURCES=1 monaco delete --manifest {{ role_path }}/files/monaco/manifest.yaml --file {{ role_path }}/files/monaco/delete-infra-optimized.yaml --group staging
-  environment:
-    DT_PLATFORM_TENANT_URL: "{{ extra_vars.dt_environment_url_gen3.rstrip('/') }}"
-    DT_API_TOKEN: "{{ monaco_cleanup_api_token }}"
-    DT_OAUTH_CLIENT_ID: "{{ extra_vars.dt_oauth_client_id }}"
-    DT_OAUTH_CLIENT_SECRET: "{{ extra_vars.dt_oauth_client_secret }}"
-    DT_OAUTH_SSO_ENDPOINT: "{{ extra_vars.dt_oauth_sso_endpoint.rstrip('/') }}"
-    DEMO_IDENTIFIER: "{{ demo_identifier }}"
-    RELEASE_STAGE_STAGING: "simplenode-gitlab-staging"
-    RELEASE_STAGE_PROD: "simplenode-gitlab-prod"
-    RELEASE_PRODUCT: "simplenodeservice"
+- set_fact:
+    demo_rel_val_release_stage: "simplenode-gitlab-staging"
+    demo_rel_val_release_product: "simplenodeservice"
+    demo_rel_val_identifier: "{{ demo_identifier }}"
+
+- name: Template Helm values file
+  ansible.builtin.template:
+    src: "{{ role_path }}/files/monaco/templates/delete-app.yaml.j2"
+    dest: "{{ role_path }}/files/monaco/delete-app-staging.yaml"
+    owner: "{{ ace_box_user }}"
+    group: "{{ ace_box_user }}"
+    mode: '0644'
+
+- set_fact:
+    demo_rel_val_release_stage: "simplenode-gitlab-prod"
+
+- name: Template Helm values file
+  ansible.builtin.template:
+    src: "{{ role_path }}/files/monaco/templates/delete-app.yaml.j2"
+    dest: "{{ role_path }}/files/monaco/delete-app-production.yaml"
+    owner: "{{ ace_box_user }}"
+    group: "{{ ace_box_user }}"
+    mode: '0644'
+
+- name: Template Helm values file
+  ansible.builtin.template:
+    src: "{{ role_path }}/files/monaco/templates/delete-infra.yaml.j2"
+    dest: "{{ role_path }}/files/monaco/delete-infra.yaml"
+    owner: "{{ ace_box_user }}"
+    group: "{{ ace_box_user }}"
+    mode: '0644'
+
+- set_fact:
+    monaco_projects_folder: "{{ role_path }}/files/monaco"
+
+- name: Monaco - Delete Config App Staging
+  include_role:
+    name: monaco-v2
+    tasks_from: delete-monaco
+  vars:
+    monaco_manifest_path: "{{ monaco_projects_folder }}/manifest.yaml"
+    monaco_delete_path: "{{ monaco_projects_folder }}/delete-app-staging.yaml"
+    monaco_environment:
+      DT_PLATFORM_TENANT_URL: "{{ extra_vars.dt_environment_url_gen3.rstrip('/') }}"
+      DT_API_TOKEN: "{{ monaco_cleanup_api_token }}"
+      DT_OAUTH_CLIENT_ID: "{{ extra_vars.dt_oauth_client_id }}"
+      DT_OAUTH_CLIENT_SECRET: "{{ extra_vars.dt_oauth_client_secret }}"
+      DT_OAUTH_SSO_ENDPOINT: "{{ extra_vars.dt_oauth_sso_endpoint }}"
+
+- name: Monaco - Delete Config App Prod
+  include_role:
+    name: monaco-v2
+    tasks_from: delete-monaco
+  vars:
+    monaco_manifest_path: "{{ monaco_projects_folder }}/manifest.yaml"
+    monaco_delete_path: "{{ monaco_projects_folder }}/delete-app-production.yaml"
+    monaco_environment:
+      DT_PLATFORM_TENANT_URL: "{{ extra_vars.dt_environment_url_gen3.rstrip('/') }}"
+      DT_API_TOKEN: "{{ monaco_cleanup_api_token }}"
+      DT_OAUTH_CLIENT_ID: "{{ extra_vars.dt_oauth_client_id }}"
+      DT_OAUTH_CLIENT_SECRET: "{{ extra_vars.dt_oauth_client_secret }}"
+      DT_OAUTH_SSO_ENDPOINT: "{{ extra_vars.dt_oauth_sso_endpoint }}"
+
+- name: Monaco - Delete Config Infra
+  include_role:
+    name: monaco-v2
+    tasks_from: delete-monaco
+  vars:
+    monaco_manifest_path: "{{ monaco_projects_folder }}/manifest.yaml"
+    monaco_delete_path: "{{ monaco_projects_folder }}/delete-infra.yaml"
+    monaco_environment:
+      DT_PLATFORM_TENANT_URL: "{{ extra_vars.dt_environment_url_gen3.rstrip('/') }}"
+      DT_API_TOKEN: "{{ monaco_cleanup_api_token }}"
+      DT_OAUTH_CLIENT_ID: "{{ extra_vars.dt_oauth_client_id }}"
+      DT_OAUTH_CLIENT_SECRET: "{{ extra_vars.dt_oauth_client_secret }}"
+      DT_OAUTH_SSO_ENDPOINT: "{{ extra_vars.dt_oauth_sso_endpoint }}"
 
 - include_role:
     name: otel-collector
