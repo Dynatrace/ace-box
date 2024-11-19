@@ -7,9 +7,55 @@ on:
       - dev
   
   workflow_dispatch: # Allows manual triggering of the workflow
+    inputs:
+      use_cases:
+        description: 'Enter the use cases to run (comma-separated)'
+        required: true
+        default: '[demo_ar_workflows_gitlab,demo_ar_workflows_ansible]'
+        type: string
+      providers:
+        description: 'Select the providers to run (comma-separated)'
+        required: true
+        default: '[gcloud]'
+        type: string
 
 jobs:
+
+  preparation:
+    runs-on: ubuntu-latest
+    env:
+      DEFAULT_USE_CASES: '[\"demo_ar_workflows_gitlab\"]' # '[\"demo_ar_workflows_gitlab\",\"demo_ar_workflows_ansible\"]'
+      DEFAULT_PROVIDERS: '[\"gcloud\"]'
+    outputs:
+      use_cases: ${{ steps.set_outputs.outputs.use_cases }}
+      providers: ${{ steps.set_outputs.outputs.providers }}
+    steps:
+      - name: Parse Inputs
+        id: parse_inputs
+        run: |
+          echo ${{ github.event.inputs.use_cases }}
+          echo ${{ env.DEFAULT_USE_CASES }}
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "use_cases=$(echo '${{ github.event.inputs.use_cases }}' )" >> "$GITHUB_ENV"
+            echo "providers=$(echo '${{ github.event.inputs.providers }}' )" >> "$GITHUB_ENV"
+          else
+            echo "use_cases=${{ env.DEFAULT_USE_CASES }}" >> "$GITHUB_ENV"
+            echo "providers=${{ env.DEFAULT_PROVIDERS }}" >> "$GITHUB_ENV"
+          fi
+        shell: bash
+      - name: Set Outputs
+        id: set_outputs
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "use_cases=$(echo '${{ github.event.inputs.use_cases }}' )" >> "$GITHUB_OUTPUT"
+            echo "providers=$(echo '${{ github.event.inputs.providers }}' )" >> "$GITHUB_OUTPUT"
+          else
+            echo "use_cases=${{ env.DEFAULT_USE_CASES }}" >> "$GITHUB_OUTPUT"
+            echo "providers=${{ env.DEFAULT_PROVIDERS }}" >> "$GITHUB_OUTPUT"
+          fi
+          cat "$GITHUB_OUTPUT"
   test:
+    needs: preparation
     runs-on: ubuntu-latest
 
     env:
@@ -25,22 +71,14 @@ jobs:
           "dt_oauth_sso_endpoint": "${{ vars.DT_OAUTH_SSO_ENDPOINT }}",
           "dt_oauth_client_id": "${{ secrets.DT_OAUTH_CLIENT_ID }}",
           "dt_oauth_client_secret": "${{ secrets.DT_OAUTH_CLIENT_SECRET }}",
-          "dt_oauth_account_urn": "${{ secrets.DT_OAUTH_ACCOUNT_URN }}",
+          "dt_oauth_account_urn": "${{ vars.DT_OAUTH_ACCOUNT_URN }}",
         }
 
     strategy:
       matrix:
-        provider: [gcloud] #[aws, azure, gcloud]
-        use_case: [
-          {
-            name: "cert_obs",
-            repo: "dynatrace-ace/ace-box-ext-cert-observability",
-            version: "main"
-          },
-          {
-            name: "demo_ar_workflows_gitlab"
-          }
-        ]
+        provider: ${{ fromJson(needs.preparation.outputs.providers) }}
+        use_case: ${{ fromJson(needs.preparation.outputs.use_cases) }}
+
         include:
           # - provider: aws
           #   working_directory: ./terraform/aws
@@ -68,12 +106,13 @@ jobs:
             backend_config_bucket: "ace-box-tf-state"
 
     steps:
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set Custom Domain
         id: set_custom_domain
-        run: echo "custom_domain=${{ matrix.use_case.name }}.ace-innovation.info" >> $GITHUB_OUTPUT
+        run: echo "custom_domain=${{ matrix.use_case }}.ace-innovation.info" >> $GITHUB_OUTPUT
 
       - id: 'auth'
         uses: 'google-github-actions/auth@v2'
@@ -90,7 +129,7 @@ jobs:
           echo 'terraform {
             backend "gcs" {
               bucket = "${{ matrix.backend_config_bucket }}"
-              prefix = "ace-box/${{ matrix.use_case.name }}"
+              prefix = "ace-box/${{ matrix.use_case }}"
             }
           }' > ${{ matrix.working_directory }}/backend.tf
           echo "backend.tf created"
@@ -101,26 +140,12 @@ jobs:
         with:
           terraform_version: latest
 
-      - name: Set Use Case URL
-        id: set_use_case_url
-        run: |
-          if [[ "${{ matrix.use_case.repo }}" != "" ]]; then
-            echo "use_case_url=https://${{ secrets.GH_USERNAME }}:${{ secrets.GH_PAT }}@github.com/${{ matrix.use_case.repo }}.git@${{ matrix.use_case.version }}" >> $GITHUB_OUTPUT
-          else
-            echo "use_case_url=${{ matrix.use_case.name }}" >> $GITHUB_OUTPUT
-          fi
-
-      # - name: Merge Extra Vars
-      #   id: merge_extra_vars
-      #   run: |
-      #     echo "::set-output name=extra_vars::$(jq -s '.[0] * .[1]' <<< '${{ env.TF_VAR_extra_vars }} ${{ fromJSON(matrix.use_case.extra_vars) }}')"
-
       - name: Terraform Init
         run: terraform init 
         working-directory: ${{ matrix.working_directory }}
 
       - name: Terraform Plan
-        run: terraform plan -out=tfplan -lock=false -replace="null_resource.provisioner_ace_enable" -var="gcloud_project=${{ matrix.gcloud_project }}" -var="gcloud_zone=${{ matrix.gcloud_zone }}" -var="acebox_size=${{ matrix.acebox_size }}" -var="managed_zone_name=${{ matrix.managed_zone_name }}" -var="use_case=${{ steps.set_use_case_url.outputs.use_case_url }}"
+        run: terraform plan -out=tfplan -lock=false -replace="null_resource.provisioner_ace_enable" -var="gcloud_project=${{ matrix.gcloud_project }}" -var="gcloud_zone=${{ matrix.gcloud_zone }}" -var="acebox_size=${{ matrix.acebox_size }}" -var="managed_zone_name=${{ matrix.managed_zone_name }}" -var="use_case=${{ matrix.use_case }}"
         working-directory: ${{ matrix.working_directory }}
 
       - name: Terraform Apply
@@ -135,7 +160,7 @@ jobs:
               exit $exit_code
             fi
             echo "Retrying terraform apply... ($count/$retries)"
-            terraform plan -out=tfplan -lock=false -replace="null_resource.provisioner_ace_enable" -var="gcloud_project=${{ matrix.gcloud_project }}" -var="gcloud_zone=${{ matrix.gcloud_zone }}" -var="acebox_size=${{ matrix.acebox_size }}" -var="managed_zone_name=${{ matrix.managed_zone_name }}" -var="use_case=${{ steps.set_use_case_url.outputs.use_case_url }}"
+            terraform plan -out=tfplan -lock=false -replace="null_resource.provisioner_ace_enable" -var="gcloud_project=${{ matrix.gcloud_project }}" -var="gcloud_zone=${{ matrix.gcloud_zone }}" -var="acebox_size=${{ matrix.acebox_size }}" -var="managed_zone_name=${{ matrix.managed_zone_name }}" -var="use_case=${{ matrix.use_case }}"
             sleep 10
           done
         working-directory: ${{ matrix.working_directory }}
@@ -148,7 +173,7 @@ jobs:
 
       - name: Conditional Terraform Destroy
         if: always() && env.DESTROY_RESOURCES == 'true'
-        run: terraform destroy -auto-approve -lock=false  -var="gcloud_project=${{ matrix.gcloud_project }}" -var="gcloud_zone=${{ matrix.gcloud_zone }}" -var="acebox_size=${{ matrix.acebox_size }}" -var="managed_zone_name=${{ matrix.managed_zone_name }}" -var="use_case=${{ steps.set_use_case_url.outputs.use_case_url }}"
+        run: terraform destroy -auto-approve -lock=false  -var="gcloud_project=${{ matrix.gcloud_project }}" -var="gcloud_zone=${{ matrix.gcloud_zone }}" -var="acebox_size=${{ matrix.acebox_size }}" -var="managed_zone_name=${{ matrix.managed_zone_name }}" -var="use_case=${{ matrix.use_case }}"
         working-directory: ${{ matrix.working_directory }}
 
   update-pr-status:
