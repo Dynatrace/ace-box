@@ -51,7 +51,7 @@
     tasks_from: source-node-id
 
 - include_role:
-    name: microk8s
+    name: private-registry
     tasks_from: source-registry-url
   when: registry_url is not defined
 

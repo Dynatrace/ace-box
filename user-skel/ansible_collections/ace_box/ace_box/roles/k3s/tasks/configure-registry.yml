@@ -12,16 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-delete:
-  
-  # project - infrastructure
-  - type: auto-tag
-    name: environment-$DEMO_IDENTIFIER  
-  - type: auto-tag
-    name: app-$DEMO_IDENTIFIER    
-  - type: request-attributes
-    name: LTN-$DEMO_IDENTIFIER
-  - type: request-attributes
-    name: TSN-$DEMO_IDENTIFIER
-  - type: request-attributes
-    name: LSN-$DEMO_IDENTIFIER
+- name: Source registry url
+  include_role:
+    name: private-registry
+    tasks_from: source-registry-url
+
+- name: Creating file /etc/rancher/k3s/registries.yaml
+  become: true
+  become_user: root
+  copy:
+    dest: "/etc/rancher/k3s/registries.yaml"
+    content: |
+      mirrors:
+        "{{ registry_url }}":
+          endpoint:
+            - "http://{{ registry_url }}"

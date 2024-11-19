@@ -22,6 +22,3 @@
   kubernetes.core.k8s:
     state: present
     src: "/home/{{ ace_box_user }}/registry-resources.yaml"
-
-- include_tasks:
-      file: configure-registry.yml
