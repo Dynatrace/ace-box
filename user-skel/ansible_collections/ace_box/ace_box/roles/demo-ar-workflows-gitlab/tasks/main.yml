@@ -45,7 +45,7 @@
 # k8s
 #
 - include_role:
-    name: microk8s
+    name: k3s
 
 - include_role:
     name: dt-operator
