@@ -68,6 +68,10 @@ controller:
               - key: "GIT_PROTOCOL"
                 value: "{{ ingress_protocol }}"
 {% endif %}
+{% if ingress_class is defined and ingress_class != "" %}
+              - key: "INGRESS_CLASS"
+                value: "{{ ingress_class }}"
+{% endif %}
 {% if ingress_domain is defined and ingress_domain != "" %}
               - key: "INGRESS_DOMAIN"
                 value: "{{ ingress_domain }}"
