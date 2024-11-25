@@ -34,7 +34,7 @@
   become: true
   become_user: root
   shell:
-    cmd: "curl -sfL https://get.k3s.io | K3S_KUBECONFIG_MODE=\"644\" sh -"
+    cmd: "curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION={{ k3s_version }} K3S_KUBECONFIG_MODE=\"644\" sh -"
 
 - name: pip install kubernetes 
   pip:
@@ -66,6 +66,14 @@
     - helm
     classic: yes
 
+- include_role:
+    name: docker
+
+- include_role: 
+    name: private-registry
+
+- include_tasks: configure-registry.yml
+
 ###############
 # Restart k3s #
 ###############
@@ -75,8 +83,3 @@
   ansible.builtin.service:
     name: k3s
     state: restarted
-
-- include_role: 
-    name: private-registry
-
-- include_tasks: configure-registry.yml
