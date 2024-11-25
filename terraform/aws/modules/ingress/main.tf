@@ -49,12 +49,11 @@ data "aws_route53_zone" "aws_zone" {
   private_zone = var.route53_private_zone
 }
 
-
 #
 # ACM 
 #
-
 resource "aws_acm_certificate" "wildcard" {
+  count             = local.is_custom_domain ? 1 : 0
   domain_name       = "*.${local.custom_domain}"
   validation_method = "DNS"
 
@@ -64,13 +63,13 @@ resource "aws_acm_certificate" "wildcard" {
 }
 
 resource "aws_route53_record" "wildcard_cert_validation" {
-  for_each = {
-    for dvo in aws_acm_certificate.wildcard.domain_validation_options : dvo.domain_name => {
+  for_each = local.is_custom_domain ? {
+    for dvo in aws_acm_certificate.wildcard[0].domain_validation_options : dvo.domain_name => {
       name   = dvo.resource_record_name
       type   = dvo.resource_record_type
       record = dvo.resource_record_value
     }
-  }
+  } : {}
 
   zone_id = data.aws_route53_zone.aws_zone[0].zone_id
   name    = each.value.name
@@ -80,7 +79,8 @@ resource "aws_route53_record" "wildcard_cert_validation" {
 }
 
 resource "aws_acm_certificate_validation" "wildcard" {
-  certificate_arn         = aws_acm_certificate.wildcard.arn
+  count                 = local.is_custom_domain ? 1 : 0
+  certificate_arn       = aws_acm_certificate.wildcard[count.index].arn
   validation_record_fqdns = [for record in aws_route53_record.wildcard_cert_validation : record.fqdn]
 }
 
@@ -167,17 +167,19 @@ resource "aws_lb_listener" "http" {
 }
 
 resource "aws_lb_listener" "https" {
+  count             = local.is_custom_domain ? 1 : 0
   load_balancer_arn = aws_lb.acebox-lb.arn
   port              = "443"
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06"
-  certificate_arn   = aws_acm_certificate.wildcard.arn
+  certificate_arn   = aws_acm_certificate.wildcard[count.index].arn
 
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.acebox-tg-https.arn
   }
 }
+
 resource "aws_route53_record" "ace_box" {
   count = local.is_custom_domain ? 1 : 0
 
