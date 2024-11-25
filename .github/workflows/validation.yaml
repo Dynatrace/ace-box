@@ -5,6 +5,7 @@ on:
   pull_request:
     branches:
       - dev
+      - test
   
   workflow_dispatch: # Allows manual triggering of the workflow
     inputs:
@@ -46,6 +47,7 @@ jobs:
     outputs:
       use_cases: ${{ steps.set_outputs.outputs.use_cases }}
       providers: ${{ steps.set_outputs.outputs.providers }}
+      destroy_resources: ${{ steps.set_outputs.outputs.destroy_resources }}
     steps:
       - name: Parse Inputs
         id: parse_inputs
@@ -55,9 +57,15 @@ jobs:
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             echo "use_cases=$(echo '${{ github.event.inputs.use_cases }}' )" >> "$GITHUB_ENV"
             echo "providers=$(echo '${{ github.event.inputs.providers }}' )" >> "$GITHUB_ENV"
+            echo "destroy_resources=$(echo '${{ github.event.inputs.destroy_resources }}' )" >> "$GITHUB_ENV"
           else
             echo "use_cases=${{ env.DEFAULT_USE_CASES }}" >> "$GITHUB_ENV"
             echo "providers=${{ env.DEFAULT_PROVIDERS }}" >> "$GITHUB_ENV"
+            if [[ "${{ github.base_ref }}" == "dev" ]]; then
+              echo "destroy_resources=true" >> "$GITHUB_ENV"
+            elif [[ "${{ github.base_ref }}" == "test" ]]; then
+              echo "destroy_resources=false" >> "$GITHUB_ENV"
+            fi
           fi
         shell: bash
       - name: Set Outputs
@@ -66,18 +74,24 @@ jobs:
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             echo "use_cases=$(echo '${{ github.event.inputs.use_cases }}' )" >> "$GITHUB_OUTPUT"
             echo "providers=$(echo '${{ github.event.inputs.providers }}' )" >> "$GITHUB_OUTPUT"
+            echo "destroy_resources=$(echo '${{ github.event.inputs.destroy_resources }}' )" >> "$GITHUB_OUTPUT"
           else
             echo "use_cases=${{ env.DEFAULT_USE_CASES }}" >> "$GITHUB_OUTPUT"
             echo "providers=${{ env.DEFAULT_PROVIDERS }}" >> "$GITHUB_OUTPUT"
+            if [[ "${{ github.base_ref }}" == "dev" ]]; then
+              echo "destroy_resources=true" >> "$GITHUB_OUTPUT"
+            elif [[ "${{ github.base_ref }}" == "test" ]]; then
+              echo "destroy_resources=false" >> "$GITHUB_OUTPUT"
+            fi
           fi
-          cat "$GITHUB_OUTPUT"
+        shell: bash
 
   test:
     needs: preparation
     runs-on: self-hosted
 
     env:
-      DESTROY_RESOURCES: ${{ github.event.inputs.destroy_resources }} # Set to "true" to enable resource destruction
+      DESTROY_RESOURCES: ${{ needs.preparation.outputs.destroy_resources }} # Set to "true" to enable resource destruction
       TF_VAR_dt_tenant: ${{ vars.DT_TENANT }}
       TF_VAR_dt_api_token: ${{ secrets.DT_API_TOKEN }}
       TF_VAR_otel_export_enable: "true"
