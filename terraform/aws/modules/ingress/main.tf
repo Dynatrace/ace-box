@@ -145,17 +145,18 @@ resource "aws_lb_target_group" "acebox-tg-https" {
     unhealthy_threshold = 2
   }
 }
+
 resource "aws_lb_target_group_attachment" "acebox-tg-http-attach" {
   count             = local.is_custom_domain ? length(var.aws_instance_ids) : 0
   target_group_arn  = aws_lb_target_group.acebox-tg-http[count.index].arn
-  target_id         = element(keys(var.aws_instance_ids), count.index)
+  target_id         = element(values(var.aws_instance_ids), count.index)
   port              = 80
 }
 
 resource "aws_lb_target_group_attachment" "acebox-tg-https-attach" {
   count             = local.is_custom_domain ? length(var.aws_instance_ids) : 0
   target_group_arn  = aws_lb_target_group.acebox-tg-https[count.index].arn
-  target_id         = element(keys(var.aws_instance_ids), count.index)
+  target_id         = element(values(var.aws_instance_ids), count.index)
   port              = 443
 }
 
