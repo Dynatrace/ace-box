@@ -18,10 +18,18 @@
   set_fact:
     app_url: "{{ ingress_protocol }}://{{ application_domain }}"
 
+- name: Debug the application URL
+  debug:
+    msg: "Application URL to health check: {{ app_url }}"
+
 - name: Check application availability with curl
   command: "curl -I -L {{ app_url }}"
   register: curl_response
   failed_when: curl_response.rc != 0
+
+- name: Debug the curl response
+  debug:
+    msg: "curl response: {{ curl_response }}"
 
 - name: Check if application is accessible
   debug:
@@ -32,3 +40,38 @@
   fail:
     msg: "Application is not accessible via {{ ingress_protocol }}. Response: {{ curl_response.stdout }}"
   when: curl_response.rc != 0
+
+
+- name: Check SSL certificate validity
+  shell: |
+    echo | openssl s_client -connect {{ app_url | regex_replace('^https?://', '') }}:443 -servername {{ app_url | regex_replace('^https?://', '') }} 2>/dev/null | openssl x509 -noout -dates -subject -issuer -ext subjectAltName
+  when: app_url is search("https")
+  register: ssl_check
+  failed_when: ssl_check.rc != 0
+
+- name: Debug SSL certificate validity
+  debug:
+    msg: "{{ ssl_check.stdout }}"
+  when: app_url is search("https")
+
+- name: Extract certificate domains
+  set_fact:
+    cert_domains: "{{ ssl_check.stdout | regex_findall('DNS:([^,]+)') }}"
+  when: app_url is search("https")
+
+- name: Check if certificate matches the domain name
+  set_fact:
+    domain_match: "{{ cert_domains | select('match', '^' + (app_url | regex_replace('^https?://', '') | regex_replace('^.*?\\.', '*\\.')).replace('*', '.*') + '$') | list | length > 0 }}"
+  debug:
+    msg: "Certificate domains: {{ cert_domains }}"
+  when: app_url is search("https")
+
+
+# - name: Debug expected domain
+#   debug:
+#     msg: "Expected domain: {{ app_url | regex_replace('^https?://', '') }}"
+
+- name: Fail if SSL certificate does not match the domain name
+  fail:
+    msg: "SSL certificate does not match the domain name. Certificate domains: {{ cert_domains }}"
+  when: app_url is search("https") and not domain_match

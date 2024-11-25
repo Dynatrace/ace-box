@@ -39,5 +39,9 @@
     tasks_from: template-values-file
 
 # Health validation for AWX
-- include_tasks:
-    file: health-check.yml
+- ansible.builtin.include_tasks: source-configuration.yml
+
+- include_role:
+    name: health-check
+  vars:
+    application_domain: "{{ awx_ingress_data.resources[0].spec.rules[0].host }}"
