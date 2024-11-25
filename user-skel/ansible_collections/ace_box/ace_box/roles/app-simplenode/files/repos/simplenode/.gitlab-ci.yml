@@ -139,6 +139,7 @@ deployment-staging:
       --set domain="$INGRESS_DOMAIN" 
       --set version="$RELEASE_VERSION" 
       --set build_version="$RELEASE_BUILD_VERSION" 
+      --set ingress.class="$INGRESS_CLASS"
       --namespace "$RELEASE_STAGE" --create-namespace 
       --wait
     - sleep 150
