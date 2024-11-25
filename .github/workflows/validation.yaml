@@ -24,6 +24,14 @@ on:
         default: '["gcloud"]'
         type: string
 
+      destroy_resources:
+        description: 'Set to "true" to enable resource destruction'
+        required: true
+        default: 'false'
+        type: string
+        
+
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
   cancel-in-progress: true
@@ -69,7 +77,7 @@ jobs:
     runs-on: self-hosted
 
     env:
-      DESTROY_RESOURCES: "false" # Set to "true" to enable resource destruction
+      DESTROY_RESOURCES: ${{ github.event.inputs.destroy_resources }} # Set to "true" to enable resource destruction
       TF_VAR_dt_tenant: ${{ vars.DT_TENANT }}
       TF_VAR_dt_api_token: ${{ secrets.DT_API_TOKEN }}
       TF_VAR_otel_export_enable: "true"

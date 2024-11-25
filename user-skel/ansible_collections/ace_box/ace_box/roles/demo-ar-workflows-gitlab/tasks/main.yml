@@ -16,30 +16,30 @@
 #
 # Use-case specific overwrites
 #
-- name: Overwrite .gitlab-ci.yml
-  ansible.builtin.copy:
-    src: "{{ role_path }}/files/.gitlab-ci.yml"
-    dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/.gitlab-ci.yml"
+# - name: Overwrite .gitlab-ci.yml
+#   ansible.builtin.copy:
+#     src: "{{ role_path }}/files/.gitlab-ci.yml"
+#     dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/.gitlab-ci.yml"
 
-- name: Overwrite .gitlab
-  ansible.builtin.copy:
-    src: "{{ role_path }}/files/.gitlab/"
-    dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/.gitlab/"
+# - name: Overwrite .gitlab
+#   ansible.builtin.copy:
+#     src: "{{ role_path }}/files/.gitlab/"
+#     dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/.gitlab/"
 
-- name: Overwrite dynatrace.attachrules.yaml
-  ansible.builtin.copy:
-    src: "{{ role_path }}/files/dynatrace.attachrules.yaml"
-    dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/dynatrace/dynatrace.attachrules.yaml"
+# - name: Overwrite dynatrace.attachrules.yaml
+#   ansible.builtin.copy:
+#     src: "{{ role_path }}/files/dynatrace.attachrules.yaml"
+#     dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/dynatrace/dynatrace.attachrules.yaml"
 
-- block:
-    - name: Delete existing Monaco configurations
-      ansible.builtin.file:
-        state: absent
-        path: "{{ role_path }}/../app-simplenode/files/repos/simplenode/monaco/"
-    - name: Overwrite Monaco configurations
-      ansible.builtin.copy:
-        src: "{{ role_path }}/files/monaco"
-        dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/"
+# - block:
+#     - name: Delete existing Monaco configurations
+#       ansible.builtin.file:
+#         state: absent
+#         path: "{{ role_path }}/../app-simplenode/files/repos/simplenode/monaco/"
+#     - name: Overwrite Monaco configurations
+#       ansible.builtin.copy:
+#         src: "{{ role_path }}/files/monaco"
+#         dest: "{{ role_path }}/../app-simplenode/files/repos/simplenode/"
 
 #
 # k8s
@@ -47,69 +47,69 @@
 - include_role:
     name: microk8s
 
-- include_role:
-    name: dt-operator
+# - include_role:
+#     name: dt-operator
 
 #
 # Monaco
 #
-- include_role:
-    name: monaco-v2
+# - include_role:
+#     name: monaco-v2
 
 #
 # Gitlab
 #
-- include_tasks:
-    file: deploy-gitlab.yml
-  vars:
-    git_username: "root"
-    git_password: "{{ gitlab_password }}"
+# - include_tasks:
+#     file: deploy-gitlab.yml
+#   vars:
+#     git_username: "root"
+#     git_password: "{{ gitlab_password }}"
 
 #
 # Simplenodeservice + load generator
 #
-- name: Source Gitlab endpoint
-  include_role:
-    name: gitlab
-    tasks_from: source-endpoints
+# - name: Source Gitlab endpoint
+#   include_role:
+#     name: gitlab
+#     tasks_from: source-endpoints
 
-- include_role:
-    name: app-simplenode
-  vars:
-    git_username: "root"
-    git_password: "{{ gitlab_password }}"
-    git_domain: "{{ gitlab_domain }}"
-    git_endpoint: '{{ gitlab_internal_endpoint | regex_replace("http://") }}'
-    git_org_name: "{{ dt_ar_gitlab_group }}"
-    repo_name: "{{ dt_ar_gitlab_repo_name }}"
+# - include_role:
+#     name: app-simplenode
+#   vars:
+#     git_username: "root"
+#     git_password: "{{ gitlab_password }}"
+#     git_domain: "{{ gitlab_domain }}"
+#     git_endpoint: '{{ gitlab_internal_endpoint | regex_replace("http://") }}'
+#     git_org_name: "{{ dt_ar_gitlab_group }}"
+#     repo_name: "{{ dt_ar_gitlab_repo_name }}"
 
-- include_tasks:
-    file: trigger-initial-deployment.yml
+# - include_tasks:
+#     file: trigger-initial-deployment.yml
 
-- include_role:
-    name: load-generator
-  vars:
-    load_gen_endpoint: "{{ ingress_protocol }}://simplenodeservice-canary-gitlab.{{ ingress_domain }}/api/invoke?url=https://www.dynatrace.com"
-    load_gen_namespace: "canary-gitlab"
+# - include_role:
+#     name: load-generator
+#   vars:
+#     load_gen_endpoint: "{{ ingress_protocol }}://simplenodeservice-canary-gitlab.{{ ingress_domain }}/api/invoke?url=https://www.dynatrace.com"
+#     load_gen_namespace: "canary-gitlab"
 
 #
 # Docs
 #
-- set_fact:
-    dt_ar_gitlab_docs_repo_src: "{{ role_path }}/files/docs"
+# - set_fact:
+#     dt_ar_gitlab_docs_repo_src: "{{ role_path }}/files/docs"
 
-- name: Publish docs
-  include_role:
-    name: repository
-  vars:
-    git_username: "root"
-    git_password: "{{ gitlab_password }}"
-    git_domain: "{{ gitlab_domain }}"
-    git_remote: "gitlab"
-    git_org: "{{ dt_ar_gitlab_group }}"
-    git_repo: "{{ dt_ar_gitlab_docs_repo_name }}"
-    repo_src: "{{ dt_ar_gitlab_docs_repo_src }}"
-    track_upstream: true
+# - name: Publish docs
+#   include_role:
+#     name: repository
+#   vars:
+#     git_username: "root"
+#     git_password: "{{ gitlab_password }}"
+#     git_domain: "{{ gitlab_domain }}"
+#     git_remote: "gitlab"
+#     git_org: "{{ dt_ar_gitlab_group }}"
+#     git_repo: "{{ dt_ar_gitlab_docs_repo_name }}"
+#     repo_src: "{{ dt_ar_gitlab_docs_repo_src }}"
+#     track_upstream: true
 
 #
 # Dasboard
@@ -129,8 +129,16 @@
 # Deploy Monaco at the very end, as the chances are the highest that
 # the ACE-Box host group is available by then.
 #
-- include_tasks:
-    file: deploy-dt-configuration.yml
 
-- include_tasks:
-    file: health-check.yml
+# - include_tasks:
+#     file: deploy-dt-configuration.yml
+
+- include_role:
+    name: app-easytrade
+
+# - include_role:
+#     name: health-check
+#   vars:
+#     app_url: "{{ role_path_abs }}/templates/demo-ar-workflows-gitlab-dashboard.yml.j2"
+
+
