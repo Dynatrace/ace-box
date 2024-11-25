@@ -46,8 +46,8 @@
 - name: Add dashboard links
   include_tasks: add-dashboard-links.yml
 
-# health check
-- name: Include health check tasks
-  include_tasks: health-check.yml
+
+- include_role:
+    name: health-check
   vars:
     application_domain: "{{ easytravel_domain }}"
