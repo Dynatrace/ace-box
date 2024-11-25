@@ -66,15 +66,24 @@
       certmanager:
         install: false
       gitlab-runner:
+        rbac:
+          create: true
+          clusterWideAccess: true
+          rules:
+          - apiGroups: ["*"]
+            resources: ["*"]
+            verbs: ["*"]
         gitlabUrl: "{{ ingress_protocol }}://gitlab.{{ ingress_domain }}"
         # https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#docker-in-docker-with-tls-enabled-in-kubernetes
         runners:
+          serviceAccountName: gitlab-gitlab-runner
           config: |
             [[runners]]
               pre_clone_script = 'cat /etc/resolv.conf | sed -r "s/^(search.*|options.*)/#\1/" > /tmp/resolv && cat /tmp/resolv > /etc/resolv.conf'
               [runners.kubernetes]
                 image = "ubuntu:20.04"
                 privileged = true
+                service_account = "gitlab-gitlab-runner"
               [[runners.kubernetes.volumes.empty_dir]]
                 name = "docker-certs"
                 mount_path = "/certs/client"

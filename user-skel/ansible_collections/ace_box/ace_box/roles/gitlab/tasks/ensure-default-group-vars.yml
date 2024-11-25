@@ -64,6 +64,7 @@
     gitlab_var_value: "{{ item.value }}"
   loop:
     - { key: "INGRESS_DOMAIN", value: "{{ ingress_domain }}" }
+    - { key: "INGRESS_CLASS", value: "{{ ingress_class }}" }
     - { key: "INGRESS_PROTOCOL", value: "{{ ingress_protocol }}" }
     - { key: "KEPTN_API_TOKEN", value: "{{ keptn_api_token | default(None) }}" }
     - {
