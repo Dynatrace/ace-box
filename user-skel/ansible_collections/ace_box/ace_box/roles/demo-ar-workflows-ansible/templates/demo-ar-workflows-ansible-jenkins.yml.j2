@@ -73,6 +73,7 @@ controller:
         - script: >
             pipelineJob('{{ demo_jenkins_folder }}/4. Shift traffic') {
               parameters {
+                stringParam('OLD_WEIGHT')
                 stringParam('CANARY_WEIGHT')
                 stringParam('REMEDIATION_ACTION')
                 stringParam('REMEDIATION_TYPE')

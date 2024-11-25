@@ -21,12 +21,18 @@
       vars:
         payload:
           parameter:
+            - name: OLD_WEIGHT
+              value: "{{ item.oldWeight }}"
             - name: CANARY_WEIGHT
               value: "{{ item.canaryWeight }}"
             - name: REMEDIATION_ACTION
               value: "{{ remediation_template_id }}"
             - name: REMEDIATION_TYPE
               value: "ansible"
+            - name: RELEASE_PRODUCT
+              value: "simplenodeservice"
+            - name: RELEASE_STAGE
+              value: "canary-jenkins"
       ansible.builtin.uri:
         url: "{{ jenkins_url }}"
         method: POST
@@ -38,9 +44,12 @@
           json: "{{ payload | to_json }}"
         status_code: 201
       loop:
-        - canaryWeight: 30
-        - canaryWeight: 70
-        - canaryWeight: 100
+        - oldWeight: 70
+          canaryWeight: 30
+        - oldWeight: 30
+          canaryWeight: 70
+        - oldWeight: 0
+          canaryWeight: 100
       loop_control:
         pause: 120
 
@@ -48,8 +57,18 @@
       vars:
         payload:
           parameter:
+            - name: OLD_WEIGHT
+              value: "100"
             - name: CANARY_WEIGHT
               value: "0"
+            - name: REMEDIATION_ACTION
+              value: "NA"
+            - name: REMEDIATION_TYPE
+              value: "ansible"
+            - name: RELEASE_PRODUCT
+              value: "simplenodeservice"
+            - name: RELEASE_STAGE
+              value: "canary-jenkins"
       ansible.builtin.uri:
         url: "{{ jenkins_url }}"
         method: POST

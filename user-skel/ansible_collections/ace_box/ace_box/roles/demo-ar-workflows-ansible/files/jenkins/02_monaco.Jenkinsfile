@@ -58,7 +58,7 @@ pipeline {
                 }
             }
         }
-        stage('Dynatrace configuration event') {
+        /*stage('Dynatrace configuration event') {
             steps {
                 script {
                     // Give Dynatrace a couple seconds to tag host according to current config
@@ -74,7 +74,7 @@ pipeline {
                     )
                 }
             }
-        }
+        }*/
     }
 }
 
