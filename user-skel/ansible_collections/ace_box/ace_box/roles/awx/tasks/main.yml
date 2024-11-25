@@ -37,3 +37,7 @@
 - include_role:
     name: dashboard
     tasks_from: template-values-file
+
+# Health validation for AWX
+- include_tasks:
+    file: health-check.yml

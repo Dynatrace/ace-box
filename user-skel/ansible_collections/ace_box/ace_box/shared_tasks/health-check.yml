@@ -1,0 +1,18 @@
+- name: Set Application URL
+  set_fact:
+    app_url: "{{ ingress_protocol }}://{{ application_domain }}"
+
+- name: Check application availability with curl
+  command: "curl -I -L {{ app_url }}"
+  register: curl_response
+  failed_when: curl_response.rc != 0
+
+- name: Check if application is accessible
+  debug:
+    msg: "Application is accessible via {{ ingress_protocol }}. Response: {{ curl_response.stdout }}"
+  when: curl_response.rc == 0
+
+- name: Fail if application is not accessible
+  fail:
+    msg: "Application is not accessible via {{ ingress_protocol }}. Response: {{ curl_response.stdout }}"
+  when: curl_response.rc != 0

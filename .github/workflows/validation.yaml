@@ -11,18 +11,27 @@ on:
       use_cases:
         description: 'Enter the use cases to run (comma-separated)'
         required: true
-        default: '[demo_ar_workflows_gitlab,demo_ar_workflows_ansible]'
+        default: '["demo_ar_workflows_gitlab","demo_ar_workflows_ansible"]'
         type: string
+      # custom_use_cases:
+      #   description: 'Enter the custom use cases with GitHub URLs to run (comma-separated)'
+      #   required: false
+      #   default: '[""]'
+      #   type: string
       providers:
         description: 'Select the providers to run (comma-separated)'
         required: true
-        default: '[gcloud]'
+        default: '["gcloud"]'
         type: string
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
 
 jobs:
 
   preparation:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     env:
       DEFAULT_USE_CASES: '[\"demo_ar_workflows_gitlab\"]' # '[\"demo_ar_workflows_gitlab\",\"demo_ar_workflows_ansible\"]'
       DEFAULT_PROVIDERS: '[\"gcloud\"]'
@@ -54,12 +63,13 @@ jobs:
             echo "providers=${{ env.DEFAULT_PROVIDERS }}" >> "$GITHUB_OUTPUT"
           fi
           cat "$GITHUB_OUTPUT"
+
   test:
     needs: preparation
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     env:
-      DESTROY_RESOURCES: "true" # Set to "true" to enable resource destruction
+      DESTROY_RESOURCES: "false" # Set to "true" to enable resource destruction
       TF_VAR_dt_tenant: ${{ vars.DT_TENANT }}
       TF_VAR_dt_api_token: ${{ secrets.DT_API_TOKEN }}
       TF_VAR_otel_export_enable: "true"
@@ -78,7 +88,6 @@ jobs:
       matrix:
         provider: ${{ fromJson(needs.preparation.outputs.providers) }}
         use_case: ${{ fromJson(needs.preparation.outputs.use_cases) }}
-
         include:
           # - provider: aws
           #   working_directory: ./terraform/aws
@@ -97,6 +106,8 @@ jobs:
           #     region         = "us-east-2"
           #     encrypt        = true
           #     dynamodb_table = "your-lock-table"
+          
+          # gcloud test with https and SSL certificates
           - provider: gcloud
             working_directory: ./terraform/gcloud
             gcloud_project: "acl-gsi" #"myGCPProject" # GCP Project you want to use
@@ -104,32 +115,77 @@ jobs:
             acebox_size: "n2-standard-16"
             managed_zone_name: "ace-innovation-info"
             backend_config_bucket: "ace-box-tf-state"
+            backend_config_prefix: "ace-box/ssl-enabled"
+          # gcloud test with http
+          - provider: gcloud
+            working_directory: ./terraform/gcloud
+            gcloud_project: "acl-gsi" #"myGCPProject" # GCP Project you want to use
+            gcloud_zone: "europe-west1-b" # zone
+            acebox_size: "n2-standard-16"
+            backend_config_bucket: "ace-box-tf-state"
+            backend_config_prefix: "ace-box/no-ssl"
 
     steps:
 
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y unzip nodejs
+
       - name: Set Custom Domain
         id: set_custom_domain
         run: echo "custom_domain=${{ matrix.use_case }}.ace-innovation.info" >> $GITHUB_OUTPUT
 
-      - id: 'auth'
+      # gcloud specific steps
+      - name: 'auth'
+        if: matrix.provider == 'gcloud'
         uses: 'google-github-actions/auth@v2'
         with:
           credentials_json: '${{ secrets.GCP_CREDENTIALS_JSON }}'
+
       - name: 'Set up Cloud SDK'
+        if: matrix.provider == 'gcloud'
         uses: 'google-github-actions/setup-gcloud@v2'
 
       - name: 'Use gcloud CLI'
+        if: matrix.provider == 'gcloud'
         run: 'gcloud info'
 
-      - name: Create Backend Config
+      - name: Create Backend Config for gcloud
+        if: matrix.provider == 'gcloud'
         run: |
           echo 'terraform {
             backend "gcs" {
               bucket = "${{ matrix.backend_config_bucket }}"
-              prefix = "ace-box/${{ matrix.use_case }}"
+              prefix = "${{ matrix.backend_config_prefix }}/${{ matrix.use_case }}"
+            }
+          }' > ${{ matrix.working_directory }}/backend.tf
+          echo "backend.tf created"
+          cat ${{ matrix.working_directory }}/backend.tf
+
+
+      # aws specific steps
+      - name: Configure AWS Credentials
+        if: matrix.provider == 'aws'
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ matrix.aws_region }}
+
+      - name: Create Backend Config for aws
+        if: matrix.provider == 'aws'
+        run: |
+          echo 'terraform {
+            backend "s3" {
+              bucket         = "${{ matrix.backend_config_bucket }}"
+              key            = "${{ matrix.backend_config_key }}"
+              region         = "${{ matrix.backend_config_region }}"
+              encrypt        = true
+              dynamodb_table = "${{ matrix.backend_config_dynamodb_table }}"
             }
           }' > ${{ matrix.working_directory }}/backend.tf
           echo "backend.tf created"
@@ -178,7 +234,7 @@ jobs:
 
   update-pr-status:
     needs: test
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     if: github.event_name == 'pull_request'
     steps:
       - name: Update PR Status

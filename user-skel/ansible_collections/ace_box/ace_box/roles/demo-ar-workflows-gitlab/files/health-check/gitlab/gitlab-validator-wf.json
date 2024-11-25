@@ -1,0 +1,60 @@
+{
+    "title": "{{ .name }}",
+    "description": "{{ .wf_description }}",
+    "isPrivate": "{{ .wf_isPrivate }}",
+    "schemaVersion": 3,
+    "type": "STANDARD",
+    "trigger": {
+      "eventTrigger": {
+        "isActive": true,
+        "filterQuery": "event.type == \"usecase.validation.trigger\"",
+        "uniqueExpression": null,
+        "triggerConfiguration": {
+          "type": "event",
+          "value": {
+            "query": "event.type == \"usecase.validation.trigger\"",
+            "eventType": "bizevents"
+          }
+        }
+      }
+    },
+    "tasks": {
+      "get_pipeline_status": {
+        "name": "get_pipeline_status",
+        "action": "dynatrace.gitlab.connector:gitlab-get-pipeline-status",
+        "description": "Get pipeline status using pipeline id from previous action output",
+        "input": {
+          "branchId": "main",
+          "projectId": "1",
+          "connection": "{{ .gitlab_connection_id }}",
+          "pipelineId": "1"
+        },
+        "position": {
+          "x": 0,
+          "y": 1
+        },
+        "predecessors": []
+      },
+      "send_result_bizevent": {
+        "name": "send_result_bizevent",
+        "action": "dynatrace.automations:run-javascript",
+        "description": "Build a custom task running js Code",
+        "input": {
+          "script": "import { businessEventsClient } from \"@dynatrace-sdk/client-classic-environment-v2\";\n// optional import of sdk modules\nimport { execution } from '@dynatrace-sdk/automation-utils';\n\nexport default async function ({ execution_id }) {\n  // your code goes here\n  // e.g. get the current execution\n  const ex = await execution(execution_id);\n  console.log('Automated script execution on behalf of', ex.trigger);\n\n  // get the result of task 'my_task'. 'my_task' must be a predecessor.\n  var myResult = await ex.result('get_pipeline_status');\n\n  // log the result object\n  console.log('The whole result object: ', myResult);\n  console.log('only one variable: ', myResult.pipeline.status)\n  \n  const data = await businessEventsClient.ingest({\n  type: \"application/cloudevent+json\",\n  body: {\n    specversion: \"1.0\",\n    id: \"1\",\n    source: \"custom.source\",\n    type: \"usecase.validation.result\",\n    component: \"gitlab\",\n    result: myResult.pipeline.status,\n    dataschema: \"http://dynatrace.com/schema/bizevents/generic/1.0\",\n  },\n});\n  \n  return { triggeredBy: ex.trigger };\n}\n"
+        },
+        "position": {
+          "x": 0,
+          "y": 2
+        },
+        "predecessors": [
+          "get_pipeline_status"
+        ],
+        "conditions": {
+          "states": {
+            "get_pipeline_status": "OK"
+          }
+        }
+      }
+    }
+
+  }

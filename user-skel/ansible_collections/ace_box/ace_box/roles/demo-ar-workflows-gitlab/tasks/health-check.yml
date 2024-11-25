@@ -1,0 +1,18 @@
+
+- set_fact:
+    role_path_abs: "{{ role_path }}"
+
+- name: Monaco - Deploy Gitlab Health Validation configuration
+  include_role:
+    name: monaco-v2
+    tasks_from: apply-monaco
+  vars:
+    monaco_manifest_path: "{{ role_path_abs }}/files/health-check/manifest.yaml"
+    monaco_environment:
+      DT_PLATFORM_TENANT_URL: "{{ extra_vars.dt_environment_url_gen3.rstrip('/') }}"
+      DT_API_TOKEN: "{{ monaco_api_token }}"
+      DT_OAUTH_CLIENT_ID: "{{ extra_vars.dt_oauth_client_id }}"
+      DT_OAUTH_CLIENT_SECRET: "{{ extra_vars.dt_oauth_client_secret }}"
+      DT_OAUTH_SSO_ENDPOINT: "{{ extra_vars.dt_oauth_sso_endpoint }}"
+      GITLAB_EXTERNAL_ENDPOINT: "{{ gitlab_external_endpoint }}"
+      GITLAB_PRIVATE_TOKEN: "{{ gitlab_personal_access_token }}"

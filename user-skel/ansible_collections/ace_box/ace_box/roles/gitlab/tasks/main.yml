@@ -108,3 +108,7 @@
 - include_role:
     name: dashboard
     tasks_from: template-values-file
+
+# Health validation for Gitlab
+- include_tasks:
+    file: health-check.yml
