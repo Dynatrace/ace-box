@@ -25,5 +25,5 @@ output "ingress_domain" {
 }
 
 output "alb_security_group_id" {
-  value = module.alb_security_group.security_group_id
+  value = local.is_custom_domain ? module.alb_security_group[0].security_group_id : ""
 }
