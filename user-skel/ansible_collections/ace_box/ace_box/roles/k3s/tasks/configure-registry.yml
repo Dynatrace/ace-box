@@ -27,3 +27,7 @@
         "{{ registry_url }}":
           endpoint:
             - "http://{{ registry_url }}"
+
+- include_role:
+    name: docker
+    tasks_from: ensure-insecure-registry
