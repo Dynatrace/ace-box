@@ -18,7 +18,9 @@ Following variables can be set when applying the role:
 ```yaml
 ---
 k3s_version: "v1.29.10+k3s1" # Check https://github.com/k3s-io/k3s/releases
+k3s_pod_limit: 110 #Change node pod limit. WARNING: ONLY CHANGE IF NEEDED - Experimental Feature
 ```
+> Note: Changing the pod limit to any value other than 110 is an experimental feature that should only be used when needed! Ensure that the VM has sufficient resources to cater for high pod count (CPU, Memory, Disk). You can consult the Dynatrace Kubernetes App for actual count and resource utilisation information
 
 The role will:
 - Configure `ingress_class` automatically to use `traefik`
