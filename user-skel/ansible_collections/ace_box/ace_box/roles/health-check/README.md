@@ -7,11 +7,6 @@ This role is used to deploy a health check service for the Ace-Box roles
 ```yaml
 - include_role:
     name: health-check
-```
-
-Variables that can be set are as follows:
-
-```yaml
----
-app_url: "https://dashboard.ingress-domain.com"
+  vars:
+    application_domain: "dashboard.{{ ingress_domain }}"
 ```
