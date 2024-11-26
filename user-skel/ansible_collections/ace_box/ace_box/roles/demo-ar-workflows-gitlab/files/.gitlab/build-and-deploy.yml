@@ -59,6 +59,8 @@ Deploy:
         --set ingress.canaryWeight=$CANARY_WEIGHT \
         --set dt_release_product=$RELEASE_PRODUCT \
         --set dt_owner="$RELEASE_PRODUCT-$RELEASE_STAGE" \
+        --set ingress.class="$INGRESS_CLASS" \
+        --set ingress.mode=canary \
         --namespace $RELEASE_STAGE --create-namespace \
         --wait
     - sleep 150

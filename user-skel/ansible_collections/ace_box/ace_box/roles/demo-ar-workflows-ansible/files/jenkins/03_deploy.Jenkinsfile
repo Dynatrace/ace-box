@@ -65,6 +65,8 @@ pipeline {
                     --set build_version=${env.RELEASE_BUILD_VERSION} \
                     --set ingress.isCanary=${env.IS_CANARY} \
                     --set ingress.canaryWeight=${env.CANARY_WEIGHT} \
+                    --set ingress.class=\"${env.INGRESS_CLASS}\" \
+                    --set ingress.mode=canary \
                     --set dt_release_product=\"${env.RELEASE_PRODUCT}\" \
                     --set dt_owner=\"demo-ar-workflows-ansible\" \
                     --set dt_tags=\"${env.DT_TAGS}\" \
@@ -74,7 +76,7 @@ pipeline {
                 }
             }
         }
-        stage('Dynatrace deployment event') {
+        /*stage('Dynatrace deployment event') {
             steps {
                 script {
                     sleep(time:120, unit:'SECONDS')
@@ -91,7 +93,7 @@ pipeline {
                     )
                 }
             }
-        }
+        }*/
     }
 }
 

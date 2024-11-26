@@ -12,13 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Private registry configuration
-  ansible.builtin.template:
-    src: registry.yaml.j2
-    dest: "/home/{{ ace_box_user }}/registry-resources.yaml"
-    mode: 0600
-
-- name: Install resources private
-  kubernetes.core.k8s:
-    state: present
-    src: "/home/{{ ace_box_user }}/registry-resources.yaml"
+---
+k3s_version: "v1.29.10+k3s1"

@@ -76,6 +76,7 @@ workflow:
       --set build_version="$RELEASE_BUILD_VERSION" 
       --set environment="$RELEASE_STAGE" 
       --set dt_owner="$RELEASE_PRODUCT-$DEMO_IDENTIFIER" 
+      --set ingress.class="$INGRESS_CLASS"
       --namespace "$RELEASE_STAGE" --create-namespace 
       --wait
     - sleep 150

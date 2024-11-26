@@ -13,14 +13,9 @@
 # limitations under the License.
 
 - name: Source registry url
-  kubernetes.core.k8s_info:
-    kind: Service
-    name: "docker-registry-service"
-    namespace: "default"
-  register: container_registry_svc_data
-
-- set_fact:
-    registry_url: "{{ container_registry_svc_data.resources[0].spec.clusterIP }}:{{ container_registry_svc_data.resources[0].spec.ports[0].port }}"
+  include_role:
+    name: private-registry
+    tasks_from: source-registry-url
 
 - name: Creating file /etc/rancher/k3s/registries.yaml
   become: true
@@ -32,3 +27,7 @@
         "{{ registry_url }}":
           endpoint:
             - "http://{{ registry_url }}"
+
+- include_role:
+    name: docker
+    tasks_from: ensure-insecure-registry

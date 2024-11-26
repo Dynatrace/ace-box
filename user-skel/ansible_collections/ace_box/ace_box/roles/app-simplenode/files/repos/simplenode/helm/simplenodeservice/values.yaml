@@ -27,5 +27,6 @@ dt_owner: ace-box
 
 ingress:
   class: public # microk8s >1.20 expects class "public"
+  mode: regular # set to canary to indicate this is a canary demo
   canaryWeight: 100
   isCanary: false
