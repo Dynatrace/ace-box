@@ -33,9 +33,9 @@ on:
         
 
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
-  cancel-in-progress: true
+# concurrency:
+#   group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+#   cancel-in-progress: true
 
 jobs:
 
@@ -89,6 +89,9 @@ jobs:
   test:
     needs: preparation
     runs-on: self-hosted
+    # concurrency:
+    #   group: ${{ github.workflow }}-${{ github.ref }}
+    #   cancel-in-progress: true
 
     env:
       DESTROY_RESOURCES: ${{ needs.preparation.outputs.destroy_resources }} # Set to "true" to enable resource destruction
