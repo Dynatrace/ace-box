@@ -110,10 +110,11 @@ jobs:
       matrix:
         provider: ${{ fromJson(needs.preparation.outputs.providers) }}
         use_case: ${{ fromJson(needs.preparation.outputs.use_cases) }}
+        ssl_enabled: [true, false]
         include:          
           # gcloud test with https and SSL certificates
           - provider: gcloud
-            use_case: demo_ar_workflows_gitlab
+            ssl_enabled: true
             working_directory: ./terraform/gcloud
             gcloud_project: "acl-gsi" #"myGCPProject" # GCP Project you want to use
             gcloud_zone: "europe-west1-b" # zone
@@ -123,7 +124,7 @@ jobs:
             backend_config_prefix: "ace-box/ssl-enabled"
           # gcloud test with http
           - provider: gcloud
-            use_case: demo_ar_workflows_gitlab
+            ssl_enabled: false
             working_directory: ./terraform/gcloud
             gcloud_project: "acl-gsi" #"myGCPProject" # GCP Project you want to use
             gcloud_zone: "europe-west1-b" # zone
