@@ -110,7 +110,26 @@ jobs:
       matrix:
         provider: ${{ fromJson(needs.preparation.outputs.providers) }}
         use_case: ${{ fromJson(needs.preparation.outputs.use_cases) }}
-        include:
+        include:          
+          # gcloud test with https and SSL certificates
+          - provider: gcloud
+            working_directory: ./terraform/gcloud
+            gcloud_project: "acl-gsi" #"myGCPProject" # GCP Project you want to use
+            gcloud_zone: "europe-west1-b" # zone
+            acebox_size: "n2-standard-16"
+            managed_zone_name: "ace-innovation-info"
+            backend_config_bucket: "ace-box-tf-state"
+            backend_config_prefix: "ace-box/ssl-enabled"
+            ssl_enabled: true
+          # gcloud test with http
+          - provider: gcloud
+            working_directory: ./terraform/gcloud
+            gcloud_project: "acl-gsi" #"myGCPProject" # GCP Project you want to use
+            gcloud_zone: "europe-west1-b" # zone
+            acebox_size: "n2-standard-16"
+            backend_config_bucket: "ace-box-tf-state"
+            backend_config_prefix: "ace-box/no-ssl"
+            ssl_enabled: false
           # - provider: aws
           #   working_directory: ./terraform/aws
           #   aws_region: "us-east-2"
@@ -128,25 +147,6 @@ jobs:
           #     region         = "us-east-2"
           #     encrypt        = true
           #     dynamodb_table = "your-lock-table"
-          
-          # gcloud test with https and SSL certificates
-          - provider: gcloud
-            working_directory: ./terraform/gcloud
-            gcloud_project: "acl-gsi" #"myGCPProject" # GCP Project you want to use
-            gcloud_zone: "europe-west1-b" # zone
-            acebox_size: "n2-standard-16"
-            managed_zone_name: "ace-innovation-info"
-            backend_config_bucket: "ace-box-tf-state"
-            backend_config_prefix: "ace-box/ssl-enabled"
-          # gcloud test with http
-          - provider: gcloud
-            working_directory: ./terraform/gcloud
-            gcloud_project: "acl-gsi" #"myGCPProject" # GCP Project you want to use
-            gcloud_zone: "europe-west1-b" # zone
-            acebox_size: "n2-standard-16"
-            backend_config_bucket: "ace-box-tf-state"
-            backend_config_prefix: "ace-box/no-ssl"
-
     steps:
 
       - name: Checkout repository

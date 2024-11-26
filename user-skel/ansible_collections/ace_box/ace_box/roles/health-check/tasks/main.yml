@@ -62,6 +62,9 @@
 - name: Check if certificate matches the domain name
   set_fact:
     domain_match: "{{ cert_domains | select('match', '^' + (app_url | regex_replace('^https?://', '') | regex_replace('^.*?\\.', '*\\.')).replace('*', '.*') + '$') | list | length > 0 }}"
+  when: app_url is search("https")
+    
+- name: Debug SSL certificate domains
   debug:
     msg: "Certificate domains: {{ cert_domains }}"
   when: app_url is search("https")
