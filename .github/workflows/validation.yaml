@@ -110,6 +110,7 @@ jobs:
         }
 
     strategy:
+      max-parallel: 4
       matrix:
         provider: ${{ fromJson(needs.preparation.outputs.providers) }}
         use_case: ${{ fromJson(needs.preparation.outputs.use_cases) }}
