@@ -116,3 +116,9 @@
 - include_role:
     name: dashboard
     tasks_from: template-values-file
+
+# health check
+- include_role:
+    name: health-check
+  vars:
+    application_domain: "gitea.{{ ingress_domain }}"

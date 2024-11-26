@@ -109,6 +109,8 @@
     name: dashboard
     tasks_from: template-values-file
 
-# Health validation for Gitlab
-- include_tasks:
-    file: health-check.yml
+# health check
+- include_role:
+    name: health-check
+  vars:
+    application_domain: "gitlab.{{ ingress_domain }}"
