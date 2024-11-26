@@ -149,6 +149,10 @@ jobs:
           #     dynamodb_table = "your-lock-table"
     steps:
 
+      - name: Print provider and use_case
+        run: |
+          echo "Provider: ${{ matrix.provider }}, Use Case: ${{ matrix.use_case }}"
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
