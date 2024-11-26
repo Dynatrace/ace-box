@@ -113,6 +113,7 @@ jobs:
         include:          
           # gcloud test with https and SSL certificates
           - provider: gcloud
+            use_case: demo_ar_workflows_gitlab
             working_directory: ./terraform/gcloud
             gcloud_project: "acl-gsi" #"myGCPProject" # GCP Project you want to use
             gcloud_zone: "europe-west1-b" # zone
@@ -120,16 +121,15 @@ jobs:
             managed_zone_name: "ace-innovation-info"
             backend_config_bucket: "ace-box-tf-state"
             backend_config_prefix: "ace-box/ssl-enabled"
-            ssl_enabled: true
           # gcloud test with http
           - provider: gcloud
+            use_case: demo_ar_workflows_gitlab
             working_directory: ./terraform/gcloud
             gcloud_project: "acl-gsi" #"myGCPProject" # GCP Project you want to use
             gcloud_zone: "europe-west1-b" # zone
             acebox_size: "n2-standard-16"
             backend_config_bucket: "ace-box-tf-state"
             backend_config_prefix: "ace-box/no-ssl"
-            ssl_enabled: false
           # - provider: aws
           #   working_directory: ./terraform/aws
           #   aws_region: "us-east-2"
