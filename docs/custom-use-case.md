@@ -72,7 +72,7 @@ Let's create a custom use-case from scratch, in order to replicate the `Basic Ob
 
 <br>
 
-6. At this point, the framework has provisioned a VM on the selected Cloud Provider and it has automatically cloned our custom use-case repository (`basic-dt-demo`) under the `/home/ace/repos/basic-dt-demo` path. <br>Next step is to go ahead implementing our custom use-case directly from the newly-created machine and, for for this reason, it's required to access the VM via SSH. <br><br>
+6. At this point, the framework has provisioned a VM on the selected Cloud Provider and it has automatically cloned our custom use-case repository (`basic-dt-demo`) under the `/home/repos/repos/basic-dt-demo` path. <br>Next step is to go ahead implementing our custom use-case directly from the newly-created machine and, for for this reason, it's required to access the VM via SSH. <br><br>
 **Recommended**: use an IDE such as [Remote Development](https://code.visualstudio.com/docs/remote/ssh) from Visual Studio for a more straight-forward and comfortable development experience. <br> SSH config file example:
 
     ```yaml
@@ -92,16 +92,24 @@ More in detail, we’ll build our custom use-case incrementally, modifying the `
 
 <br>
 
-7. After having successfully logged in into the ACE-Box VM, we are going to trigger a first run of the `main.yml` configuration file (which just contains a simple _"Hello World"_ print at this stage) to get familiar with the ACE-Box and Ansible. To let the Ansible engine parse the configuration file and implement the instructions run the following command on the terminal:
+7. After having successfully logged in into the ACE-Box VM, we are going to trigger a first run of the `main.yml` configuration file (which just contains a simple _"Hello World"_ print at this stage) to get familiar with the ACE-Box and Ansible.
+
+    To let the Ansible engine parse the configuration file and implement the instructions, run the following command on the terminal:
 
     ```bash
     ace enable https://github.com/dynatrace-ace/basic-dt-demo.git --local
     ```
-   <img src="../assets/hello-world.png" width="700">
+   <img src="../assets/hello-world.png" width="700"><br><br>
+
+    **Note**:
+
+    The `ace enable --local` command does not clone the repository again, but it works with the local repository (which is at `/home/repos/ace-box-ext-template`) and enables the latest changes made during the use-case development. Furthermore, the command does not synchronize any local updates with the remote repository.
+    
+    The `ace enable --local` command is particularly useful during use-case development, as it allows to test and iterate on their changes without overwriting the work or interacting with the remote repository unnecessarily.
 
 <br>
 
-8. Now, in order to replicate the `Basic Observability Demo`, we first need to deploy a k8s distribution. To do so, Read the [k3s role](https://github.com/Dynatrace/ace-box/tree/dev/user-skel/ansible_collections/ace_box/ace_box/roles/k3s) documentation and the following instructions to the add it to the `main.yml` file:
+8. Now, in order to replicate the `Basic Observability Demo`, we first need to deploy a k8s distribution. To do so, Read the [k3s role](https://github.com/Dynatrace/ace-box/tree/dev/user-skel/ansible_collections/ace_box/ace_box/roles/k3s) documentation and add the following instructions to the `main.yml` file:
 
     ```yaml
     - include_role:
@@ -121,33 +129,27 @@ More in detail, we’ll build our custom use-case incrementally, modifying the `
 10. Next step would be to add Dynatrace monitoring to our ACE-Box. Repeat step `8` & `9`, but this time following the [dt-operator](https://github.com/Dynatrace/ace-box/tree/dev/user-skel/ansible_collections/ace_box/ace_box/roles/dt-operator) role instructions:
 
     ```yaml
-    - name: Install dt operator
       include_role:
         name: dt-operator
     ```
 
 <br>
 
-10. Let's add a demo app. Repeat step `8` & `9`, but this time following the [app-easytrade](https://github.com/Dynatrace/ace-box/tree/dev/user-skel/ansible_collections/ace_box/ace_box/roles/app-easytrade) role instructions:
+11. Let's add a demo app. Repeat step `8` & `9`, but this time following the [app-easytrade](https://github.com/Dynatrace/ace-box/tree/dev/user-skel/ansible_collections/ace_box/ace_box/roles/app-easytrade) role instructions:
 
     ```yaml
     - include_role:
         name: app-easytrade
-      vars:
-        easytrade_namespace: "easytrade-app"
-        easytrade_domain: "easytrade-app.{{ ingress_domain }}"
-        easytrade_deploy: true
-        easytrade_owner: "easytrade-hot-devs"
-    ```
+    ```   
 
 <br>
 
-11. Check the ingress defined for `easytrade-app` in order to access externally to the demo app:
+12. Check the ingress defined for `easytrade-app` in order to access externally to the demo app:
 
     ```bash
     ace@ace-box-4c9z:~$ kubectl get ingress -A
-    NAMESPACE       NAME                CLASS    HOSTS                                 ADDRESS       PORTS   AGE
-    easytrade-app   easytrade-ingress   <none>   easytrade-app.35.225.173.223.nip.io   10.128.0.20   80      113s
+    NAMESPACE   NAME                CLASS    HOSTS                             ADDRESS       PORTS   AGE
+    easytrade   easytrade-ingress   <none>   easytrade.35.225.173.223.nip.io   10.128.0.20   80      113s
     ```
 
 <br>
@@ -155,7 +157,7 @@ More in detail, we’ll build our custom use-case incrementally, modifying the `
 ## Part C: Closing Up
 [This](https://github.com/dynatrace-ace/ace-box-ext-template/blob/basic_demo/roles/my-use-case/tasks/main.yml) is how your `main.yml` should look like at the end of `Part B`.
 
-12. Once you're happy with your changes, commit and push changes to the remote repository. Now you could safely destroy the ACE-Box following the instructions contained in the [installation guide](/Readme.md#get-started). <br>Whenever you'll recreate it, all the resources and modules defined within the configuration files will get created automatically.
+13. Once you're happy with your changes, commit and push changes to the remote repository. Now you could safely destroy the ACE-Box following the instructions contained in the [installation guide](/Readme.md#get-started). <br>Whenever you'll recreate it, all the resources and modules defined within the configuration files will get created automatically.
 
 <br>
 
@@ -163,25 +165,29 @@ More in detail, we’ll build our custom use-case incrementally, modifying the `
 
 Let's extend our initial Basic Dynatrace Observability use-case, by using more OOTB & custom roles
 
-13. Add dashboard & gitlab
+14. Add dashboard & gitlab
 
 _Coming soon..._
 
 <br>
 
-14. Create dt token & oauth token
+15. Create dt token & oauth token
 
 _Coming soon..._
 
 <br>
 
-15. Create DT configuration using Monaco, installing an App
+16. Create DT configuration using Monaco, installing an App
 
 _Coming soon..._
 
 <br>
 
-16. Extending it, shell script, use variables (what default variables are avaiblable, extra.vars from terraform), custom role 
+17. Extending it, shell script, use variables (what default variables are avaiblable, extra.vars from terraform), custom role 
+
+_Coming soon..._
+
+18. What are and how to use Ansible variables
 
 _Coming soon..._
 
@@ -199,6 +205,10 @@ Out-of-the-box Ansible roles are the roles that are natively provided by the ACE
 Referring to the [Basic Obsevability Demo](#part-b-build-your-custom-use-case-ansible) example, we have used several OOTB Ansible roles (`k3s`, `dt-operator` and `app-easytrade`) to deploy all the needed modules within the ACE-Box VM.
 
 Check out the OOTB roles [ReadMe](/user-skel/ansible_collections/ace_box/ace_box/roles/Readme.md) for the complete list of Ansible roles natively provided by the ACE-Box framework.
+
+All the information and the instructions to use an OOTB Ansible role are contained in the ReadMe file located within the folder where the role is defined.
+
+For example, [dt-operator ReadMe](/user-skel/ansible_collections/ace_box/ace_box/roles/dt-operator/Readme.md) contains all the instructions to use and the `dt-operator` role.
 
 ## Custom Ansible Roles
 If a particular use-case requires actions beyond the OOTB roles, custom Ansible roles can be defined to meet those specific requirements. These custom roles can be integrated into the use-case's configuration, giving users flexibility while still maintaining a structured, automated approach.
