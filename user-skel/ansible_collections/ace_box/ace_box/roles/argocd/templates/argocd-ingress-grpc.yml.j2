@@ -5,7 +5,11 @@ metadata:
   name: argocd-server-grpc-ingress
   namespace: argocd
   annotations:
-    nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+    {% if kubernetes_flavour == 'microk8s' %}
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    {% elif kubernetes_flavour == 'k3s' %}
+    traefik.ingress.kubernetes.io/router.entrypoints: "web"
+    {% endif %}
 spec:
   ingressClassName: "{{ ingress_class }}"
   rules:
