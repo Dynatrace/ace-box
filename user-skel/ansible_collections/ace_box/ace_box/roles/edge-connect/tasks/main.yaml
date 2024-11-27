@@ -58,20 +58,20 @@
     src: "{{ role_path }}/templates/edgeconnect.yaml"
   delay: 5
 
-- name: Request a DT OAuth access token
-  ansible.builtin.uri:
-    url: "{{ extra_vars.dt_oauth_sso_endpoint }}"
-    method: POST
-    status_code: 200
-    headers:
-      Content-Type: "application/x-www-form-urlencoded"
-    body_format: form-urlencoded
-    body:
-      grant_type: "client_credentials"
-      client_id: "{{ extra_vars.dt_oauth_client_id }}"
-      client_secret: "{{ extra_vars.dt_oauth_client_secret }}"
-      scope: "app-engine:apps:install"
-      resource: "{{ extra_vars.dt_oauth_account_urn }}"
-  register: auth_response_raw
-- set_fact:
-    dt_oauth_access_token: "{{ auth_response_raw.json.access_token }}"
+# - name: Request a DT OAuth access token
+#   ansible.builtin.uri:
+#     url: "{{ extra_vars.dt_oauth_sso_endpoint }}"
+#     method: POST
+#     status_code: 200
+#     headers:
+#       Content-Type: "application/x-www-form-urlencoded"
+#     body_format: form-urlencoded
+#     body:
+#       grant_type: "client_credentials"
+#       client_id: "{{ extra_vars.dt_oauth_client_id }}"
+#       client_secret: "{{ extra_vars.dt_oauth_client_secret }}"
+#       scope: "app-engine:apps:install"
+#       resource: "{{ extra_vars.dt_oauth_account_urn }}"
+#   register: auth_response_raw
+# - set_fact:
+#     dt_oauth_access_token: "{{ auth_response_raw.json.access_token }}"

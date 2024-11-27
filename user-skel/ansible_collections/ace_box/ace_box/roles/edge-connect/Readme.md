@@ -11,14 +11,9 @@ This role depends on the following roles to be deployed beforehand:
     name: k3s
 ```
 
-```yaml
-- include_role:
-    name: dt-operator
-```
-
 ### Deploying edge-connect
 
-Extend your dt-operator role to 
+Edge-connect gets installed along with the Dynatrace Operator. In order to deploy edge-connect, add the following variable to the dt-operator role:
 
 ```yaml
 - include_role:
@@ -42,3 +37,24 @@ You can grab the credentials with the following task:
 The credentials can be used in your Ansible code (I.e. set them as environment variables in Gitlab) with the following values:
 - k8s_cluster_uid
 - edge_connect_token
+
+For example:
+
+```yaml
+- name: Gitlab - Additional Environment Variables
+  include_role:
+    name: gitlab
+    tasks_from: ensure-group-var
+  vars:
+    gitlab_var_key: "{{ item.key }}"
+    gitlab_var_value: "{{ item.value }}"
+  loop:
+    - {
+        key: "K8S_TOKEN",
+        value: "{{token_workflow_config.stdout}}",
+      }
+    - {
+        key: "K8S_UID",
+        value: "{{k8s_cluster_uid.stdout}}",
+      }
+```
