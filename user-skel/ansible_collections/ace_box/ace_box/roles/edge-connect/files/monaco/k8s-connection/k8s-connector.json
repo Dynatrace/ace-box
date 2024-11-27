@@ -1,0 +1,6 @@
+{
+    "name": "edge-connect-k8s-hot",
+    "namespace": "dynatrace",
+    "uid": "{{.k8sUid}}",
+    "token": "{{.k8sToken}}"
+  }

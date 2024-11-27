@@ -24,21 +24,15 @@ Edge-connect gets installed along with the Dynatrace Operator. In order to deplo
 
 ### (Optional) Generate credentials for edge-connect
 
-In order to automatically provision a workflow with an action involving edge-connect, you need to generate beforehand the edge-connect connection within Dynatrace. To do that, you need the credentials to authenticate, for later on, using them in a monaco config file.
+In order to use edge-connect in a Kubernetes Workflow Action, a connection setting is needed. The previous commmand will automatically generate a connection for you that you can use in a Kubernetes Workflow Action.
 
-You can grab the credentials with the following task:
+If you want to provision the Kubernetes Workflow Action via monaco, then you need also the connection as-code, in order to reference one configuration with the other. Then you need to store the connection variables in environment variables.
 
-```yaml
-- include_role:
-    name: edge-connect
-    tasks_from: generate-credentials
-```
-
-The credentials can be used in your Ansible code (I.e. set them as environment variables in Gitlab) with the following values:
+The credentials generated after running the previous command are:
 - k8s_cluster_uid
 - edge_connect_token
 
-For example:
+Meaning that you can use them and store them as environment variables in another tool. I.e. for Gitlab:
 
 ```yaml
 - name: Gitlab - Additional Environment Variables
@@ -58,3 +52,5 @@ For example:
         value: "{{k8s_cluster_uid.stdout}}",
       }
 ```
+
+Then you can use them as variables for your configuration-as-code (Monaco). You can use the template `edge-connect/files/monaco/k8s-connector`

@@ -1,0 +1,17 @@
+configs:
+- id: k8s_connector
+  config:
+    parameters:
+        k8sToken:
+          type: environment
+          name: K8S_TOKEN
+        k8sUid:
+          type: environment
+          name: K8S_UID
+    template: k8s-connector.json
+    skip: true
+  type:
+    settings:
+      schema: app:dynatrace.kubernetes.connector:connection
+      schemaVersion: 0.1.8
+      scope: environment
