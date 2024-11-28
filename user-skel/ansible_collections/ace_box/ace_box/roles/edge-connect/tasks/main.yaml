@@ -1,7 +1,3 @@
-# #
-# https://dynatrace-docs-preview.spine-dev.internal.dynatracelabs.com/pr-1966/docs/platform-modules/automations/workflows/actions/kubernetes-automation/kubernetes-workflows-setup#define-service-account
-# #
-
 - name: edge connect service account
   kubernetes.core.k8s:
     state: present
@@ -16,10 +12,6 @@
   kubernetes.core.k8s:
     state: present
     src: "{{ role_path }}/templates/edgeconnect-rolebinding.yaml"
-
-##
-# https://dynatrace-docs-preview.spine-dev.internal.dynatracelabs.com/pr-1966/docs/setup-and-configuration/setup-on-k8s/guides/operation/edgeconnect/edge-connect-provision#create-oauth-client
-##
 
 - set_fact:
     dt_tenant_gen3_no_protocol: "{{ extra_vars.dt_environment_url_gen3 | regex_search('[^\/\/]*$') }}"
