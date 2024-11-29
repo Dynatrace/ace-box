@@ -12,7 +12,7 @@ This role depends on the following roles to be deployed beforehand:
 
 ```yaml
 - include_role:
-    name: k3s
+    name: microk8s
 ```
 
 > Note: we highly recommend to use k3s, but it is also possible to use microk8s. More information below
@@ -73,15 +73,6 @@ To enable monaco:
     name: app-easytrade
     tasks_from: apply-dt-configuration
 
-```
-
-### (Alternative) microk8s
-
-If for some reason you are facing issues with k3s as the prerequisite, you can also deploy microk8s:
-
-```yaml
-- include_role:
-    name: microk8s
 ```
 
 ### Add to ACE Dashboard
