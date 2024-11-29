@@ -22,7 +22,7 @@
     var_value_to_set: true
 
 - include_role:
-    name: microk8s
+    name: k3s
 
 - include_role:
     name: dt-activegate-classic

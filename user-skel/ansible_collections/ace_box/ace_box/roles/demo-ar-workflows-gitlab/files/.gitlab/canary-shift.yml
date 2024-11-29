@@ -29,16 +29,14 @@ stages:
 Canary Shift:
   image: dtzar/helm-kubectl
   stage: canary-shift
-  before_script:
-    - export CANARY_NAME=$(kubectl -n $RELEASE_STAGE get ingress -o=jsonpath='{.items[?(@.metadata.annotations.nginx\.ingress\.kubernetes\.io/canary=="true")].metadata.name}')
-    - export CURRENT_CANARY_WEIGHT=$(kubectl -n $RELEASE_STAGE get ingress -o=jsonpath='{.items[?(@.metadata.annotations.nginx\.ingress\.kubernetes\.io/canary=="true")].metadata.annotations.nginx\.ingress\.kubernetes\.io/canary-weight}')
   script:
     - |
-      CANARY_WEIGHT_INCREMENT="$((($CANARY_WEIGHT-$CURRENT_CANARY_WEIGHT)/$CANARY_STEPS))"
+      CANARY_WEIGHT_INCREMENT="$((($CANARY_WEIGHT)/$CANARY_STEPS))"
 
       set_canary_weight () {
-        kubectl -n $RELEASE_STAGE annotate ingress $CANARY_NAME nginx.ingress.kubernetes.io/canary-weight="$1" --overwrite
-        echo "Canary weighting of $CANARY_NAME set to $1"
+        echo "$1 $2"
+        kubectl -n $RELEASE_STAGE patch TraefikService simplenodeservice --type merge -p "{\"spec\": {\"weighted\": {\"services\": [{\"name\": \"simplenodeservice-0\", \"weight\": $1 , \"kind\": \"Service\", \"port\": 80 },{\"name\": \"simplenodeservice-1\", \"weight\": $2 , \"kind\": \"Service\", \"port\": 80}]}}}"
+        echo "Canary weighting set to v1 $1 - v2 $2"
       }
 
       send_configuration_change_event () {
@@ -55,14 +53,15 @@ Canary Shift:
       do
         if [ "$i" -eq "$CANARY_STEPS" ]
         then
-          set_canary_weight $CANARY_WEIGHT
+          set_canary_weight 0 $CANARY_WEIGHT
           send_configuration_change_event $CANARY_WEIGHT
           break
         fi
 
-        NEW_CANARY_WEIGHT="$(($CURRENT_CANARY_WEIGHT+($i*$CANARY_WEIGHT_INCREMENT)))"
+        NEW_CANARY_WEIGHT="$((($i*$CANARY_WEIGHT_INCREMENT)))"
 
-        set_canary_weight "$NEW_CANARY_WEIGHT"
+        TARGET_V1_WEIGHT="$(((100-$NEW_CANARY_WEIGHT)))"
+        set_canary_weight "$TARGET_V1_WEIGHT" "$NEW_CANARY_WEIGHT"
         send_configuration_change_event "$NEW_CANARY_WEIGHT"
         
         echo "Sleeping $CANARY_STEPS_DELAY seconds..."

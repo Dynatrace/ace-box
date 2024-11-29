@@ -55,6 +55,7 @@ pipeline {
                     --set build_version=${env.RELEASE_BUILD_VERSION} \
                     --set dt_tags=\"${env.DT_TAGS}\" \
                     --set dt_custom_prop=\"${env.DT_CUSTOM_PROP}\" \
+                    --set ingress.class=${env.INGRESS_CLASS} \
                     --namespace ${env.RELEASE_STAGE} --create-namespace \
                     --wait"
                 }

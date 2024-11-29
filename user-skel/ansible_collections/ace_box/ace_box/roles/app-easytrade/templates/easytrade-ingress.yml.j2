@@ -4,11 +4,13 @@ kind: Ingress
 metadata:
   annotations:
     meta.helm.sh/release-name: easytrade
-    kubernetes.io/ingress.class: {{easytrade_ingress_class}}
   labels:
     app: easytrade
   name: easytrade-ingress
+  annotations:
+    meta.helm.sh/release-name: easytrade
 spec:
+  ingressClassName: "{{ easytrade_ingress_class }}"
   rules:
   - host: "{{ easytrade_domain }}"
     http:
@@ -19,4 +21,4 @@ spec:
             port: 
               number: 80
         path: /
-        pathType: ImplementationSpecific
+        pathType: Prefix

@@ -67,10 +67,10 @@ module "security_group" {
   vpc_id      = module.vpc.vpc_id
 
   ingress_cidr_blocks = ["0.0.0.0/0"]
-  ingress_rules       = ["ssh-tcp"]
+  ingress_rules       = ["http-80-tcp", "https-443-tcp", "ssh-tcp"]
   egress_rules        = ["all-all"]
 
-  ingress_with_source_security_group_id = [
+  ingress_with_source_security_group_id = module.ingress.is_custom_domain ? [
     {
       rule                     = "http-80-tcp"
       source_security_group_id = module.ingress.alb_security_group_id
@@ -79,9 +79,9 @@ module "security_group" {
       rule                     = "https-443-tcp"
       source_security_group_id = module.ingress.alb_security_group_id
     }
-  ]
-
+  ] : []
 }
+
 
 #
 # SSH key
@@ -155,6 +155,7 @@ module "provisioner" {
   extra_vars         = var.extra_vars
   dashboard_user     = var.dashboard_user
   dashboard_password = local.dashboard_password
+  otel_export_enable = var.otel_export_enable
 
   depends_on = [
     aws_instance.acebox

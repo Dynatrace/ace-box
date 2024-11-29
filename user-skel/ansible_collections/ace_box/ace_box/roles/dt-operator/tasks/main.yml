@@ -50,6 +50,20 @@
     retries: 20
     delay: 5
     until: dt_operator is not failed
+  when: operator_mode != "applicationMonitoring"
+
+- name: Add stable chart repo
+  kubernetes.core.helm:
+    name: dynatrace-operator
+    chart_ref: "oci://public.ecr.aws/dynatrace/dynatrace-operator"
+    # set_values:
+    #   - value: imageRef.repository=gcr.io/dynatrace-marketplace-prod/dynatrace-operator
+    #     value_type: string
+    release_namespace: dynatrace
+    create_namespace: true
+    atomic: true
+    chart_version: "{{dt_operator_release}}"
+  when: operator_mode == "applicationMonitoring"
 
 - block:
   - name: Download CSI manifest
@@ -65,7 +79,7 @@
     retries: 20
     delay: 5
     until: dt_operator_csi is not failed
-    when: operator_mode != "classicFullStack"
+  when: operator_mode != "applicationMonitoring"
 
 - block:
   - name: Template Dynakube manifest
@@ -84,6 +98,7 @@
     delay: 20
     until: dynakube is not failed
 
+- block:
   - name: Wait for at least one Dynatrace OneAgent pod to be created
     kubernetes.core.k8s_info:
       kind: Pod
@@ -94,7 +109,6 @@
     until: dt_oneagent_pods_creation.resources | length > 0
     retries: 20
     delay: 20
-
   - name: Wait for at least one Dynatrace ActiveGate pod to be created
     kubernetes.core.k8s_info:
       kind: Pod
@@ -105,7 +119,6 @@
     until: dt_activegate_pods_creation.resources | length > 0
     retries: 20
     delay: 20
-
   - name: Ensure all Dynatrace OneAgent pods are in Running state and ready
     kubernetes.core.k8s_info:
       kind: Pod
@@ -117,7 +130,6 @@
       dt_oneagent_pods.resources | selectattr('status.phase', 'equalto', 'Running') | map(attribute='status.containerStatuses') | selectattr('0.ready', 'equalto', true) | length == dt_oneagent_pods.resources | length
     retries: 20
     delay: 20
-
   - name: Ensure all Dynatrace ActiveGate pods are in Running state and ready
     kubernetes.core.k8s_info:
       kind: Pod
@@ -129,3 +141,8 @@
       dt_activegate_pods.resources | selectattr('status.phase', 'equalto', 'Running') | map(attribute='status.containerStatuses') | selectattr('0.ready', 'equalto', true) | length == dt_activegate_pods.resources | length
     retries: 20
     delay: 20
+  when: operator_mode == "classicFullStack"
+
+- include_role:
+    name: fluentbit
+  when: log_monitoring == "fluentbit"

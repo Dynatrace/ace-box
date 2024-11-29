@@ -14,6 +14,10 @@
 
 ---
 
+- name: Install Monaco
+  include_role:
+    name: monaco-v2
+
 - include_role:
     name: dt-access-token
   vars:
@@ -44,11 +48,10 @@
     tasks_from: apply-monaco
   vars:
     monaco_manifest_path: "{{ monaco_projects_folder }}/manifest.yaml"
-    monaco_project: "{{ item }}"
     monaco_environment:
       TENANT_URL: "{{ extra_vars.dt_environment_url_gen3.rstrip('/') }}"
       TENANT_TOKEN: "{{ monaco_api_token }}"
       CLIENT_ID: "{{ extra_vars.dt_oauth_client_id }}"
       CLIENT_SECRET: "{{ extra_vars.dt_oauth_client_secret }}"
-  loop: "{{ monaco_projects }}"
+      SLACK_TOKEN: "{{ extra_vars.slack_bot_token | default('abc123') }}"
 

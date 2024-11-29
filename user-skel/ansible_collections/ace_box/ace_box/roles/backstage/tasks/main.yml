@@ -105,7 +105,7 @@
 # TBD: From new registry role
 #
 - include_role:
-    name: microk8s
+    name: private-registry
     tasks_from: source-registry-url
 
 - set_fact:

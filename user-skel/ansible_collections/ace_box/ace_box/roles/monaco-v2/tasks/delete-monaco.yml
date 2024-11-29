@@ -26,5 +26,5 @@
 
 - name: Monaco - Delete Configuration
   shell:
-    cmd: /usr/local/bin/monaco delete --manifest {{ monaco_manifest_path }} --file {{ monaco_delete_path }}
+    cmd: /usr/local/bin/monacov2 delete --manifest {{ monaco_manifest_path }} --file {{ monaco_delete_path }}
   environment: "{{ monaco_deploy_environment }}"

@@ -13,10 +13,15 @@
 # limitations under the License.
 
 ---
-dt_operator_release: "v1.2.2"
+operator_mode: "applicationMonitoring"  # default & prefered deployment option
+dt_operator_release: "1.3.0-rc.0"       # operator release should be linked with the right operator mode
+log_monitoring: "fluentbit"
+
+# operator_mode: "classicFullStack"  
+# dt_operator_release: "1.2.2"
+
 dt_operator_namespace: "dynatrace"
 host_group: "ace-box"
 dt_operator_dt_access_token_name: "ace_box_dt_operator_api_token"
 dt_operator_dt_data_ingest_token_name: "ace_box_dt_operator_ingest_token"
-operator_mode: "classicFullStack"
 cluster_name: dynakube

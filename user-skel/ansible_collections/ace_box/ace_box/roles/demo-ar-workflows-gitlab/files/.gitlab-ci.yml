@@ -64,6 +64,7 @@ Initial Deployment Build 1:
     SIMPLENODE_BUILD_NUMBER: "1"
     IS_CANARY: "false"
     CANARY_WEIGHT: "0"
+    INGRESS_MODE: "canary"
 
 Initial Deployment Build 4:
   stage: initial-deployment
@@ -82,6 +83,7 @@ Initial Deployment Build 4:
     SIMPLENODE_BUILD_NUMBER: "4"
     IS_CANARY: "true"
     CANARY_WEIGHT: "0"
+    INGRESS_MODE: "canary"
 
 canary-shift:
   stage: canary-shift

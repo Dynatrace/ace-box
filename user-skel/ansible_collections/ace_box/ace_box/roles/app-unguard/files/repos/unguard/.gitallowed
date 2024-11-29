@@ -1,2 +1,0 @@
-# Allow RSA keys in user-auth-service/keys
-src/user-auth-service/keys/*

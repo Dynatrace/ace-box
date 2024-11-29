@@ -13,6 +13,13 @@
 # limitations under the License.
 
 ---
+- include_role:
+    name: config-v2
+    tasks_from: set-var
+  vars:
+    var_key_to_set: "kubernetes_flavour"
+    var_value_to_set: "microk8s"
+
 - name: Install microk8s
   become: true
   become_user: root

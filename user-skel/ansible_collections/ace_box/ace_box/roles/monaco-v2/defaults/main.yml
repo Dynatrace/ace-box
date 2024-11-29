@@ -13,5 +13,5 @@
 # limitations under the License.
 
 ---
-monaco_version: "v2.6.0"
+monaco_version: "v2.16.2"
 monaco_dt_access_token_name: "ace_box_monaco_api_token"

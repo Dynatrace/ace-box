@@ -172,3 +172,9 @@ variable "vpc_enable_nat_gateway" {
   type        = bool
   default     = false
 }
+
+variable "otel_export_enable" {
+  type        = bool
+  description = "Enable openetelemetry export to Dynatrace"
+  default     = false
+}
