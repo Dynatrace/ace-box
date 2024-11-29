@@ -48,17 +48,15 @@ The Operator gets deployed in application only mode approach, check the `roles/d
 operator_mode: "applicationMonitoring"  # default & prefered deployment option
 dt_operator_release: "1.3.0-rc.0"       # operator release should be linked with the right operator mode
 log_monitoring: "fluentbit"
-edge_connect: false
 ```
 
-> Note: log monitoring is enabled by default, using the fluentbit collector and edge connect is disabled by default, but can be switched to 
+> Note: log monitoring is enabled by default, using the fluentbit collector. You can change the value of `log_monitoring` to `none`, in order to skip the deployent of the fluentbit collector.
+
 To deploy the Operator in application only mode (and default approach), variables can be set as follow:
 
 ```yaml
 - include_role:
     name: dt-operator
-  vars:
-    edge_connect: true
 ```
 
 If you decide to use the classicFullStack approach, you need to specify the variables as follow:
@@ -69,7 +67,10 @@ If you decide to use the classicFullStack approach, you need to specify the vari
   vars:
     operator_mode: "classicFullStack"  
     dt_operator_release: "1.2.2"
+    log_monitoring: "oneagent"
 ```
+
+> Note: by switching the `log_monitoring` variable to oneagent, it will skip the fluentbit collector deployment, as the logs are getting collected by the OneAgent itself.
 
 ## Extra variables
 

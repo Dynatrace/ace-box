@@ -146,7 +146,3 @@
 - include_role:
     name: fluentbit
   when: log_monitoring == "fluentbit"
-
-- include_role:
-    name: edge-connect
-  when: edge_connect == true
