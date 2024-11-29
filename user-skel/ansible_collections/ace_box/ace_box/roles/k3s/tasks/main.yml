@@ -30,11 +30,26 @@
     var_key_to_set: "kubernetes_flavour"
     var_value_to_set: "k3s"
 
+- name: Ensures /etc/rancher/k3s dir exists
+  become: true
+  become_user: root
+  file: 
+    path: "/etc/rancher/k3s"
+    state: directory
+
+- name: Template k3s kubelet.config
+  become: true
+  become_user: root
+  ansible.builtin.template:
+    src: kubelet.config.j2
+    dest: "/etc/rancher/k3s/kubelet.config"
+    mode: 0600
+
 - name: Install k3s
   become: true
   become_user: root
   shell:
-    cmd: "curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION={{ k3s_version }} K3S_KUBECONFIG_MODE=\"644\" sh -"
+    cmd: "curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION={{ k3s_version }} K3S_KUBECONFIG_MODE=\"644\" INSTALL_K3S_EXEC=\"--kubelet-arg=config=/etc/rancher/k3s/kubelet.config\" sh -"
 
 - name: pip install kubernetes 
   pip:
