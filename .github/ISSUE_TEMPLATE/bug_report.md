@@ -7,6 +7,9 @@ assignees: ''
 
 ---
 
+**No references to Dynatrace internal tickets or sensitive information**
+Linking Dynatrace Community and public stackoverflow is ok.
+
 **Describe the bug**
 A clear and concise description of what the bug is.
 
