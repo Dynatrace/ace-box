@@ -5,8 +5,8 @@ on:
   pull_request:
     branches:
       - dev
-      - dev-core
       - test
+      - demo-envs
   
   workflow_dispatch: # Allows manual triggering of the workflow
     inputs:
@@ -15,11 +15,6 @@ on:
         required: true
         default: '["demo_ar_workflows_gitlab","demo_ar_workflows_ansible"]'
         type: string
-      # custom_use_cases:
-      #   description: 'Enter the custom use cases with GitHub URLs to run (comma-separated)'
-      #   required: false
-      #   default: '[""]'
-      #   type: string
       providers:
         description: 'Select the providers to run (comma-separated)'
         required: true
@@ -29,7 +24,7 @@ on:
       destroy_resources:
         description: 'Set to "true" to enable resource destruction'
         required: true
-        default: 'false'
+        default: 'true'
         type: string
         
 
@@ -64,7 +59,7 @@ jobs:
             echo "providers=${{ env.DEFAULT_PROVIDERS }}" >> "$GITHUB_ENV"
             if [[ "${{ github.base_ref }}" == "dev" ]]; then
               echo "destroy_resources=true" >> "$GITHUB_ENV"
-            elif [[ "${{ github.base_ref }}" == "test" ]]; then
+            elif [[ "${{ github.base_ref }}" == "test" || "${{ github.base_ref }}" == "demo-envs" ]]; then
               echo "destroy_resources=false" >> "$GITHUB_ENV"
             fi
           fi
@@ -81,7 +76,7 @@ jobs:
             echo "providers=${{ env.DEFAULT_PROVIDERS }}" >> "$GITHUB_OUTPUT"
             if [[ "${{ github.base_ref }}" == "dev" ]]; then
               echo "destroy_resources=true" >> "$GITHUB_OUTPUT"
-            elif [[ "${{ github.base_ref }}" == "test" ]]; then
+            elif [[ "${{ github.base_ref }}" == "test" || "${{ github.base_ref }}" == "demo-envs" ]]; then
               echo "destroy_resources=false" >> "$GITHUB_OUTPUT"
             fi
           fi
