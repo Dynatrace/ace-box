@@ -15,7 +15,7 @@
 ---
 operator_mode: "applicationMonitoring"  # default & prefered deployment option
 dt_operator_release: "1.3.0-rc.0"       # operator release should be linked with the right operator mode
-log_monitoring: "fluentbit"
+log_monitoring: "off"
 
 # operator_mode: "classicFullStack"  
 # dt_operator_release: "1.2.2"

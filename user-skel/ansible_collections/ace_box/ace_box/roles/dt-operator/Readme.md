@@ -47,10 +47,10 @@ The Operator gets deployed in application only mode approach, check the `roles/d
 ```yaml
 operator_mode: "applicationMonitoring"  # default & prefered deployment option
 dt_operator_release: "1.3.0-rc.0"       # operator release should be linked with the right operator mode
-log_monitoring: "fluentbit"
+log_monitoring: "off"
 ```
 
-> Note: log monitoring is enabled by default, using the fluentbit collector. You can change the value of `log_monitoring` to `none`, in order to skip the deployent of the fluentbit collector.
+> Note: log monitoring is disabled by default, using the fluentbit collector. You can change the value of `log_monitoring` to `fluentbit`, in order to add the deployent of the fluentbit collector.
 
 To deploy the Operator in application only mode (and default approach), variables can be set as follow:
 
