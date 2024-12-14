@@ -51,15 +51,16 @@
           class: "{{ ingress_class }}"
           tls:
             enabled: false
-          # annotations:
-          #   # If GitLab is ran behind TLS-terminating load balancer, the following
-          #   # headers need to be provided either as ingress annotations or the
-          #   # external load balancer.
-          #   nginx.ingress.kubernetes.io/configuration-snippet: |
-          #     proxy_set_header x-forwarded-port 443;
-          #     proxy_set_header x-forwarded-scheme https;
-          #     proxy_set_header x-forwarded-proto https;
-          #     proxy_set_header x-forwarded-ssl on;
+          annotations: |
+            {% if ingress_class == 'nginx' %}
+            nginx.ingress.kubernetes.io/configuration-snippet: |
+              proxy_set_header x-forwarded-port 443;
+              proxy_set_header x-forwarded-scheme https;
+              proxy_set_header x-forwarded-proto https;
+              proxy_set_header x-forwarded-ssl on;
+            {% elif ingress_class == 'traefik' %}
+            traefik.ingress.kubernetes.io/forwarded-proto: "https"
+            {% endif %}
         initialRootPassword:
           secret: "{{ gitlab_root_creds_secret_name }}"
           key: password
