@@ -15,4 +15,5 @@ AWX:
     extra_settings:
     - setting: CSRF_TRUSTED_ORIGINS
       value:
-        - "{{ ingress_protocol }}://{{ awx_ingress_domain }}"
+        - "http://{{ awx_ingress_domain }}"
+        - "https://{{ awx_ingress_domain }}"
