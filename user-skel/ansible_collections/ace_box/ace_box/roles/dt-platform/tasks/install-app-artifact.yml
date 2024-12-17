@@ -37,22 +37,22 @@
     - set_fact:
         dt_oauth_access_token: "{{ auth_response_raw.json.access_token }}"
 
-- include_role:
-    name: dt-platform
-    tasks_from: validate-app-version
-  vars:
-    dt_environment_url_gen3: "{{ extra_vars.dt_environment_url_gen3 }}"
-    dt_oauth_sso_endpoint: "{{ extra_vars.dt_oauth_sso_endpoint }}"
-    dt_oauth_client_id: "{{ extra_vars.dt_oauth_client_id }}"
-    dt_oauth_client_secret: "{{ extra_vars.dt_oauth_client_secret }}"
-    dt_oauth_account_urn: "{{ extra_vars.dt_oauth_account_urn }}"
+# - include_role:
+#     name: dt-platform
+#     tasks_from: validate-app-version
+#   vars:
+#     dt_environment_url_gen3: "{{ extra_vars.dt_environment_url_gen3 }}"
+#     dt_oauth_sso_endpoint: "{{ extra_vars.dt_oauth_sso_endpoint }}"
+#     dt_oauth_client_id: "{{ extra_vars.dt_oauth_client_id }}"
+#     dt_oauth_client_secret: "{{ extra_vars.dt_oauth_client_secret }}"
+#     dt_oauth_account_urn: "{{ extra_vars.dt_oauth_account_urn }}"
 
-- block:
-    - debug:
-        msg: "{{ dt_app_version }} of {{ dt_app_id }} is installed in target environment already. Skipping installation."
-    - set_fact:
-        dt_app_id: "{{ dt_app_id }}"
-  when: dt_app_version is defined and dt_app_version is not none
+# - block:
+#     - debug:
+#         msg: "{{ dt_app_version }} of {{ dt_app_id }} is installed in target environment already. Skipping installation."
+#     - set_fact:
+#         dt_app_id: "{{ dt_app_id }}"
+#   when: dt_app_version is defined and dt_app_version is not none
 
 - block:
     - name: "Install app {{ dt_app_id }}"
@@ -65,6 +65,7 @@
           Authorization: "Bearer {{ dt_oauth_access_token }}"
         src: "{{ dt_app_artifact_path }}"
       register: post_apps_response_raw
+ 
     - set_fact:
         dt_app_id: "{{ post_apps_response_raw.json.id }}"
   when: dt_app_version is not defined or dt_app_version is none
