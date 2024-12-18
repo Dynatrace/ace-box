@@ -45,7 +45,3 @@ There is a restart role that can be used if needed - it is also called when k3s 
     name: k3s
     tasks_from: restart
 ```
-
-### Example
-
-The k8s HoT is the first HoT based on k3s. Check how it has been installed [here](https://github.com/dynatrace-ace/ace-box-ext-hot-k8s/blob/k3s-on-ace-box/roles/my-use-case/tasks/main.yml)
