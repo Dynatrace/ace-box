@@ -46,7 +46,7 @@ The Operator gets deployed in application only mode approach, check the `roles/d
 
 ```yaml
 operator_mode: "applicationMonitoring"  # default & prefered deployment option
-dt_operator_release: "1.3.0-rc.0"       # operator release should be linked with the right operator mode
+dt_operator_release: "1.4.0"       # operator release should be linked with the right operator mode
 log_monitoring: "off"
 ```
 
@@ -66,7 +66,7 @@ If you decide to use the classicFullStack approach, you need to specify the vari
     name: dt-operator
   vars:
     operator_mode: "classicFullStack"  
-    dt_operator_release: "1.2.2"
+    dt_operator_release: "v1.2.2"
     log_monitoring: "oneagent"
 ```
 
