@@ -12,30 +12,39 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aggregator-service-envs
+data:
+  OFFER_SERVICE_PROTOCOL: "http"
+  OFFER_SERVICE_HOST: "offerservice"
+  OFFER_SERVICE_PORT: "8080"
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: calculationservice
+  name: aggregator-service
 spec:
   selector:
     matchLabels:
-      app: calculationservice
+      app: aggregator-service
   template:
     metadata:
       labels:
-        app: calculationservice
+        app: aggregator-service
     spec:
       containers:
-        - name: calculationservice
-          image: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/calculationservice:8831949
+        - name: aggregator-service
+          image: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/aggregator-service:8831949
           env: []
           envFrom:
             - configMapRef:
-                name: rabbitmq-vars
+                name: aggregator-service-envs
           resources:
             requests:
               cpu: 10m
-              memory: 25Mi
+              memory: 30Mi
             limits:
-              memory: 25Mi
+              memory: 30Mi
 

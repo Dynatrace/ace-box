@@ -26,7 +26,7 @@
     - name: Clone the Easytrade repository with the full contents of the latest commit on the default branch
       ansible.builtin.git:
         repo: 'https://github.com/Dynatrace/easytrade.git'
-        dest: "{{ role_path }}/files"
+        dest: "{{ role_path }}/files/easytrade"
         version: 'HEAD'  # Use the latest commit on the default branch
         depth: 1
       register: git_clone
