@@ -27,13 +27,16 @@ spec:
     spec:
       containers:
         - name: feature-flag-service
-          image: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/feature-flag-service:d863a2e
+          image: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/feature-flag-service:8831949
           ports:
             - containerPort: 8080
+          env: []
           resources:
             requests:
-              cpu: 150m
-              memory: 100Mi
+              cpu: 30m
+              memory: 450Mi
+            limits:
+              memory: 450Mi
 ---
 apiVersion: v1
 kind: Service
@@ -47,3 +50,4 @@ spec:
     - name: feature-flag-service
       port: 8080
       targetPort: 8080
+

@@ -19,7 +19,7 @@ EasyTrade consists of the following services/components:
 | Service                                                          | Proxy port | Proxy endpoint               |
 | ---------------------------------------------------------------- | ---------- | ---------------------------- |
 | [Account service](./docs/accountservice.md)                      | 80         | `/accountservice`            |
-| [Aggregator service](./docs/aggregatorservice.md)                | 80         | `---`                        |
+| [Aggregator service](./docs/aggregator-service.md)                | 80         | `---`                        |
 | [Broker service](./docs/broker-service.md)                       | 80         | `/broker-service`            |
 | [Calculation service](./docs/calculationservice.md)              | 80         | `---`                        |
 | [Credit card order service](./docs/credit-card-order-service.md) | 80         | `/credit-card-order-service` |

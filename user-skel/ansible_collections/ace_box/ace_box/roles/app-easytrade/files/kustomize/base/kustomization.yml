@@ -26,55 +26,58 @@ patches:
 
 images:
 - name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/accountservice
-  newTag: "d863a2e"
+  newTag: "8831949"
 
-- name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/aggregatorservice
-  newTag: "d863a2e"
+- name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/aggregator-service
+  newTag: "8831949"
 
 - name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/broker-service
-  newTag: "d863a2e"
+  newTag: "8831949"
 
 - name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/calculationservice
-  newTag: "d863a2e"
+  newTag: "8831949"
 
 - name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/contentcreator
-  newTag: "d863a2e"
+  newTag: "8831949"
 
 - name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/credit-card-order-service
-  newTag: "d863a2e"
+  newTag: "8831949"
 
 - name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/db
-  newTag: "d863a2e"
+  newTag: "8831949"
 
 - name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/engine
-  newTag: "d863a2e"
+  newTag: "8831949"
 
 - name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/feature-flag-service
-  newTag: "d863a2e"
+  newTag: "8831949"
 
 - name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/frontend
-  newTag: "d863a2e"
+  newTag: "8831949"
 
 - name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/frontendreverseproxy
-  newTag: "d863a2e"
+  newTag: "8831949"
 
 - name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/loadgen
-  newTag: "d863a2e"
+  newTag: "8831949"
 
 - name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/loginservice
-  newTag: "d863a2e"
+  newTag: "8831949"
 
 - name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/manager
-  newTag: "d863a2e"
+  newTag: "8831949"
 
 - name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/offerservice
-  newTag: "d863a2e"
+  newTag: "8831949"
 
 - name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/pricing-service
-  newTag: "d863a2e"
+  newTag: "8831949"
+
+- name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/problem-operator
+  newTag: "8831949"
 
 - name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/rabbitmq
-  newTag: "d863a2e"
+  newTag: "8831949"
 
 - name: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/third-party-service
-  newTag: "d863a2e"
+  newTag: "8831949"
