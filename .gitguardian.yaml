@@ -1,0 +1,5 @@
+secret:
+  ignored_matches:
+  - match: d670f070d6e1a1912a21bd62ab04d2cb490d62d34af75e858193abf497ba25da
+    name: dummy-secret1
+version: 2
