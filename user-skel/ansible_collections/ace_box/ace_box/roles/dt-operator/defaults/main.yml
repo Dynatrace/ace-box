@@ -14,11 +14,11 @@
 
 ---
 operator_mode: "applicationMonitoring"  # default & prefered deployment option
-dt_operator_release: "1.4.0"       # operator release should be linked with the right operator mode
+dt_operator_release: "1.4.0"            # format without v for helm
 log_monitoring: "off"
 
 # operator_mode: "classicFullStack"  
-# dt_operator_release: "1.2.2"
+# dt_operator_release: "v1.2.2"         # format with v
 
 dt_operator_namespace: "dynatrace"
 host_group: "ace-box"
