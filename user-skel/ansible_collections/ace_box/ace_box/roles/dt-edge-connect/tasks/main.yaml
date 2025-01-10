@@ -52,5 +52,5 @@
 
 - name: Generate credentials
   include_role:
-    name: edge-connect
+    name: dt-edge-connect
     tasks_from: generate-credentials
