@@ -80,3 +80,9 @@
       - "Dashboard URL: {{ ingress_protocol }}://dashboard.{{ ingress_domain }}"
       - "Dashboard username: {{ dashboard_user }}"
       - "Dashboard password: {{ dashboard_password }}"
+
+# health check
+- include_role:
+    name: health-check
+  vars:
+    application_domain: "dashboard.{{ ingress_domain }}"
