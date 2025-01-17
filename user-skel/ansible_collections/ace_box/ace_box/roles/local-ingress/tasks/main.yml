@@ -25,3 +25,4 @@
       local_port: "{{ local_ingress_port | default('8080')}}"
       ingress:
         domain: "{{ local_ingress_domain }}"
+        class: "{{ local_ingress_class | default(ingress_class) }}"
