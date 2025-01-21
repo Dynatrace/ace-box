@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
         - name: rabbitmq
-          image: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/rabbitmq:8831949
+          image: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/rabbitmq:4d5adb3
           ports:
             - containerPort: 5672
             - containerPort: 15672

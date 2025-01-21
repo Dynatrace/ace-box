@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
         - name: frontendreverseproxy
-          image: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/frontendreverseproxy:8831949
+          image: europe-docker.pkg.dev/dynatrace-demoability/docker/easytrade/frontendreverseproxy:4d5adb3
           ports:
             - containerPort: 80
           env: []
