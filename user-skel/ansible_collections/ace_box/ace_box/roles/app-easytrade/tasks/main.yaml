@@ -70,3 +70,9 @@
 
 - name: Add dashboard links
   include_tasks: add-dashboard-links.yml
+
+# health check
+- include_role:
+    name: health-check
+  vars:
+    application_domain: "{{ easytrade_domain }}"
