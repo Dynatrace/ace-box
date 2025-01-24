@@ -34,11 +34,11 @@ spec:
           fi
         env:
         - name: FRONTEND_ADDR
-          value: "frontend:80"
+          value: "{{ ingress_protocol }}://{{ hipstershop_domain }}"
       containers:
       - name: main
         args:
         - 'locust --host="${FRONTEND_ADDR}" --headless -u "${USERS}" 2>&1'
         env:
         - name: FRONTEND_ADDR
-          value: "frontend:80"
+          value: "{{ ingress_protocol }}://{{ hipstershop_domain }}"
