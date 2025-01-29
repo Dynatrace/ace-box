@@ -220,7 +220,10 @@ app-engine:edge-connects:connect
 app-engine:edge-connects:read
 app-engine:edge-connects:write
 app-engine:edge-connects:delete
-app-settings:objects:read 
+app-settings:objects:read
+hub:catalog:read
+document:documents:write 
+document:documents:read
 ```
 
 ## API Token Scopes
