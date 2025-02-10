@@ -223,6 +223,7 @@ jobs:
         working-directory: ${{ matrix.working_directory }}
 
       - name: Terraform Apply
+        if: always() && needs.preparation.outputs.destroy_resources == true
         run: |
           retries=2
           count=0
