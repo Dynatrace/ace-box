@@ -23,23 +23,23 @@
     msg: "Application URL to health check: {{ app_url }}"
 
 - name: Check application availability with curl
-  command: "curl -I -L {{ app_url }}"
+  command: "curl -o /dev/null -s -w \"%{http_code}\" {{ app_url }}"
   register: curl_response
   failed_when: curl_response.rc != 0
 
-- name: Debug the curl response
-  debug:
-    msg: "curl response: {{ curl_response }}"
+# - name: Debug the curl response
+#   debug:
+#     msg: "curl response: {{ curl_response }}"
 
 - name: Check if application is accessible
   debug:
     msg: "Application is accessible via {{ ingress_protocol }}. Response: {{ curl_response.stdout }}"
-  when: curl_response.rc == 0
+  when: curl_response.rc == 0 and curl_response.stdout | int in range(200, 400)
 
 - name: Fail if application is not accessible
   fail:
     msg: "Application is not accessible via {{ ingress_protocol }}. Response: {{ curl_response.stdout }}"
-  when: curl_response.rc != 0
+  when: curl_response.rc != 0 or curl_response.stdout | int not in range(200, 400)
 
 
 - name: Check SSL certificate validity
@@ -49,10 +49,10 @@
   register: ssl_check
   failed_when: ssl_check.rc != 0
 
-- name: Debug SSL certificate validity
-  debug:
-    msg: "{{ ssl_check.stdout }}"
-  when: app_url is search("https")
+# - name: Debug SSL certificate validity
+#   debug:
+#     msg: "{{ ssl_check.stdout }}"
+#   when: app_url is search("https")
 
 - name: Extract certificate domains
   set_fact:
@@ -64,10 +64,10 @@
     domain_match: "{{ cert_domains | select('match', '^' + (app_url | regex_replace('^https?://', '') | regex_replace('^.*?\\.', '*\\.')).replace('*', '.*') + '$') | list | length > 0 }}"
   when: app_url is search("https")
     
-- name: Debug SSL certificate domains
-  debug:
-    msg: "Certificate domains: {{ cert_domains }}"
-  when: app_url is search("https")
+# - name: Debug SSL certificate domains
+#   debug:
+#     msg: "Certificate domains: {{ cert_domains }}"
+#   when: app_url is search("https")
 
 
 # - name: Debug expected domain
