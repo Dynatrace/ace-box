@@ -155,3 +155,4 @@
     name: health-check
   vars:
     application_domain: "{{ jenkins_domain }}"
+  when: not jenkins_skip_install

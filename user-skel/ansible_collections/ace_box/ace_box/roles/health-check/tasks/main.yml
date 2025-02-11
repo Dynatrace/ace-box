@@ -49,10 +49,10 @@
   register: ssl_check
   failed_when: ssl_check.rc != 0
 
-# - name: Debug SSL certificate validity
-#   debug:
-#     msg: "{{ ssl_check.stdout }}"
-#   when: app_url is search("https")
+- name: Debug SSL certificate validity
+  debug:
+    msg: "{{ ssl_check.stdout }}"
+  when: app_url is search("https")
 
 - name: Extract certificate domains
   set_fact:
@@ -64,15 +64,15 @@
     domain_match: "{{ cert_domains | select('match', '^' + (app_url | regex_replace('^https?://', '') | regex_replace('^.*?\\.', '*\\.')).replace('*', '.*') + '$') | list | length > 0 }}"
   when: app_url is search("https")
     
-# - name: Debug SSL certificate domains
-#   debug:
-#     msg: "Certificate domains: {{ cert_domains }}"
-#   when: app_url is search("https")
+- name: Debug SSL certificate domains
+  debug:
+    msg: "Certificate domains: {{ cert_domains }}"
+  when: app_url is search("https")
 
 
-# - name: Debug expected domain
-#   debug:
-#     msg: "Expected domain: {{ app_url | regex_replace('^https?://', '') }}"
+- name: Debug expected domain
+  debug:
+    msg: "Expected domain: {{ app_url | regex_replace('^https?://', '') }}"
 
 - name: Fail if SSL certificate does not match the domain name
   fail:
