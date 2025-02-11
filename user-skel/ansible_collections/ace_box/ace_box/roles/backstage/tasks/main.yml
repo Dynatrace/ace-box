@@ -176,3 +176,9 @@
     name: dashboard
   vars:
     include_dashboard_value_file: "{{ backstage_dashboard_value_file }}"
+
+# health check
+- include_role:
+    name: health-check
+  vars:
+    application_domain: "{{ backstage_domain }}"

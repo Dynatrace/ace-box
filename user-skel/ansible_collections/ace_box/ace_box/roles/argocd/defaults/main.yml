@@ -14,3 +14,4 @@
 
 ---
 argocd_namespace: "argocd"
+argocd_domain: "argocd.{{ ingress_domain }}"

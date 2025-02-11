@@ -86,50 +86,50 @@
     group: "{{ ace_box_user }}"
     mode: '0644'
 
-- set_fact:
-    monaco_projects_folder: "{{ role_path }}/files/monaco"
+# - set_fact:
+#     monaco_projects_folder: "{{ role_path }}/files/monaco"
 
-- name: Monaco - Delete Config App Staging
-  include_role:
-    name: monaco-v2
-    tasks_from: delete-monaco
-  vars:
-    monaco_manifest_path: "{{ monaco_projects_folder }}/manifest.yaml"
-    monaco_delete_path: "{{ monaco_projects_folder }}/delete-app-staging.yaml"
-    monaco_environment:
-      DT_PLATFORM_TENANT_URL: "{{ extra_vars.dt_environment_url_gen3.rstrip('/') }}"
-      DT_API_TOKEN: "{{ monaco_cleanup_api_token }}"
-      DT_OAUTH_CLIENT_ID: "{{ extra_vars.dt_oauth_client_id }}"
-      DT_OAUTH_CLIENT_SECRET: "{{ extra_vars.dt_oauth_client_secret }}"
-      DT_OAUTH_SSO_ENDPOINT: "{{ extra_vars.dt_oauth_sso_endpoint }}"
+# - name: Monaco - Delete Config App Staging
+#   include_role:
+#     name: monaco-v2
+#     tasks_from: delete-monaco
+#   vars:
+#     monaco_manifest_path: "{{ monaco_projects_folder }}/manifest.yaml"
+#     monaco_delete_path: "{{ monaco_projects_folder }}/delete-app-staging.yaml"
+#     monaco_environment:
+#       DT_PLATFORM_TENANT_URL: "{{ extra_vars.dt_environment_url_gen3.rstrip('/') }}"
+#       DT_API_TOKEN: "{{ monaco_cleanup_api_token }}"
+#       DT_OAUTH_CLIENT_ID: "{{ extra_vars.dt_oauth_client_id }}"
+#       DT_OAUTH_CLIENT_SECRET: "{{ extra_vars.dt_oauth_client_secret }}"
+#       DT_OAUTH_SSO_ENDPOINT: "{{ extra_vars.dt_oauth_sso_endpoint }}"
 
-- name: Monaco - Delete Config App Prod
-  include_role:
-    name: monaco-v2
-    tasks_from: delete-monaco
-  vars:
-    monaco_manifest_path: "{{ monaco_projects_folder }}/manifest.yaml"
-    monaco_delete_path: "{{ monaco_projects_folder }}/delete-app-production.yaml"
-    monaco_environment:
-      DT_PLATFORM_TENANT_URL: "{{ extra_vars.dt_environment_url_gen3.rstrip('/') }}"
-      DT_API_TOKEN: "{{ monaco_cleanup_api_token }}"
-      DT_OAUTH_CLIENT_ID: "{{ extra_vars.dt_oauth_client_id }}"
-      DT_OAUTH_CLIENT_SECRET: "{{ extra_vars.dt_oauth_client_secret }}"
-      DT_OAUTH_SSO_ENDPOINT: "{{ extra_vars.dt_oauth_sso_endpoint }}"
+# - name: Monaco - Delete Config App Prod
+#   include_role:
+#     name: monaco-v2
+#     tasks_from: delete-monaco
+#   vars:
+#     monaco_manifest_path: "{{ monaco_projects_folder }}/manifest.yaml"
+#     monaco_delete_path: "{{ monaco_projects_folder }}/delete-app-production.yaml"
+#     monaco_environment:
+#       DT_PLATFORM_TENANT_URL: "{{ extra_vars.dt_environment_url_gen3.rstrip('/') }}"
+#       DT_API_TOKEN: "{{ monaco_cleanup_api_token }}"
+#       DT_OAUTH_CLIENT_ID: "{{ extra_vars.dt_oauth_client_id }}"
+#       DT_OAUTH_CLIENT_SECRET: "{{ extra_vars.dt_oauth_client_secret }}"
+#       DT_OAUTH_SSO_ENDPOINT: "{{ extra_vars.dt_oauth_sso_endpoint }}"
 
-- name: Monaco - Delete Config Infra
-  include_role:
-    name: monaco-v2
-    tasks_from: delete-monaco
-  vars:
-    monaco_manifest_path: "{{ monaco_projects_folder }}/manifest.yaml"
-    monaco_delete_path: "{{ monaco_projects_folder }}/delete-infra.yaml"
-    monaco_environment:
-      DT_PLATFORM_TENANT_URL: "{{ extra_vars.dt_environment_url_gen3.rstrip('/') }}"
-      DT_API_TOKEN: "{{ monaco_cleanup_api_token }}"
-      DT_OAUTH_CLIENT_ID: "{{ extra_vars.dt_oauth_client_id }}"
-      DT_OAUTH_CLIENT_SECRET: "{{ extra_vars.dt_oauth_client_secret }}"
-      DT_OAUTH_SSO_ENDPOINT: "{{ extra_vars.dt_oauth_sso_endpoint }}"
+# - name: Monaco - Delete Config Infra
+#   include_role:
+#     name: monaco-v2
+#     tasks_from: delete-monaco
+#   vars:
+#     monaco_manifest_path: "{{ monaco_projects_folder }}/manifest.yaml"
+#     monaco_delete_path: "{{ monaco_projects_folder }}/delete-infra.yaml"
+#     monaco_environment:
+#       DT_PLATFORM_TENANT_URL: "{{ extra_vars.dt_environment_url_gen3.rstrip('/') }}"
+#       DT_API_TOKEN: "{{ monaco_cleanup_api_token }}"
+#       DT_OAUTH_CLIENT_ID: "{{ extra_vars.dt_oauth_client_id }}"
+#       DT_OAUTH_CLIENT_SECRET: "{{ extra_vars.dt_oauth_client_secret }}"
+#       DT_OAUTH_SSO_ENDPOINT: "{{ extra_vars.dt_oauth_sso_endpoint }}"
 
 - include_role:
     name: otel-collector

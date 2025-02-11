@@ -48,3 +48,9 @@
     name: dashboard
   vars:
     include_dashboard_value_file: "{{ argocd_dashboard_value_file }}"
+
+# health check
+- include_role:
+    name: health-check
+  vars:
+    application_domain: "{{ argocd_domain }}"

@@ -14,3 +14,4 @@
 
 ---
 backstage_templates_gitlab_group: "backstage-templates"
+backstage_domain: "backstage.{{ ingress_domain }}"
