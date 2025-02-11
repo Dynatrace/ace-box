@@ -133,7 +133,7 @@ jobs:
             acebox_size: "n2-standard-16"
             managed_zone_name: "ace-innovation-info"
             backend_config_bucket: "ace-box-tf-state"
-            backend_config_prefix: "ace-box/ssl-enabled"
+            backend_config_prefix: "ace-box/https"
           # gcloud test with http
         #   - provider: gcloud
         #     working_directory: ./terraform/gcloud
@@ -141,7 +141,7 @@ jobs:
         #     gcloud_zone: "europe-west1-b" # zone
         #     acebox_size: "n2-standard-16"
         #     backend_config_bucket: "ace-box-tf-state"
-        #     backend_config_prefix: "ace-box/no-ssl"
+        #     backend_config_prefix: "ace-box/http"
 
     steps:
 
