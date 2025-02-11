@@ -8,5 +8,5 @@ This role is used to deploy a health check service for the Ace-Box roles
 - include_role:
     name: health-check
   vars:
-    application_domain: "dashboard.{{ ingress_domain }}"
+    application_domain: "{{ gitlab_domain }}"
 ```

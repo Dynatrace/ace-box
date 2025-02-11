@@ -154,4 +154,4 @@
 - include_role:
     name: health-check
   vars:
-    application_domain: "jenkins.{{ ingress_domain }}"
+    application_domain: "{{ jenkins_domain }}"

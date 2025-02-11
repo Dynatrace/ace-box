@@ -7,7 +7,7 @@ controller:
     passwordKey: jenkins_password
   ingress:
     enabled: true
-    hostName: jenkins.{{ ingress_domain }}
+    hostName: {{ jenkins_domain }}
     annotations:
       kubernetes.io/ingress.class: {{ ingress_class }}
 {% if ingress_protocol is defined and ingress_protocol == "https" %}

@@ -77,7 +77,7 @@
 - name: Print some dashboard config
   debug:
     msg:
-      - "Dashboard URL: {{ ingress_protocol }}://dashboard.{{ ingress_domain }}"
+      - "Dashboard URL: {{ ingress_protocol }}://{{ dashboard_domain }}"
       - "Dashboard username: {{ dashboard_user }}"
       - "Dashboard password: {{ dashboard_password }}"
 
@@ -85,4 +85,4 @@
 - include_role:
     name: health-check
   vars:
-    application_domain: "dashboard.{{ ingress_domain }}"
+    application_domain: {{ dashboard_domain }}"
