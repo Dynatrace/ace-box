@@ -85,4 +85,4 @@
 - include_role:
     name: health-check
   vars:
-    application_domain: {{ dashboard_domain }}"
+    application_domain: "{{ dashboard_domain }}"
