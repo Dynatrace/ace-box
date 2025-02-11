@@ -84,7 +84,7 @@ jobs:
 
   test:
     needs: preparation
-    runs-on: self-hosted
+    runs-on: codebuild-acebox-runners-${{ github.run_id }}-${{ github.run_attempt }}
 
     env:
       DESTROY_RESOURCES: ${{ needs.preparation.outputs.destroy_resources }} # Set to "true" to enable resource destruction
@@ -252,7 +252,7 @@ jobs:
 
   update-pr-status:
     needs: test
-    runs-on: self-hosted
+    runs-on: codebuild-acebox-runners-${{ github.run_id }}-${{ github.run_attempt }}
     if: github.event_name == 'pull_request'
     steps:
       - name: Update PR Status
