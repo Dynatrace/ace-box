@@ -33,6 +33,10 @@
   args:
     chdir: /tmp/
 
+- name: Generate VSCode password
+  set_fact:
+    vscode_password: "{{ lookup('password', '/dev/null length=15 chars=ascii_letters') }}"
+
 - name: Configure VSCode
   ansible.builtin.template:
     src: config.yaml.j2

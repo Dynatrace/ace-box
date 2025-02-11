@@ -16,7 +16,7 @@
 vscode_version: "4.96.4"
 vscode_domain: "vscode.{{ ingress_domain }}"
 vscode_namespace: "vscode"
-vscode_password: "vscode123!"
+vscode_password: ""
 vscode_flavour: "kubernetes" # change to "vm" for a fully enabled dev environment
 vscode_extensions:
   - "vscjava.vscode-java-pack"
