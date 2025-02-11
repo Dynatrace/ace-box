@@ -59,32 +59,32 @@
     demo_rel_val_release_product: "simplenodeservice"
     demo_rel_val_identifier: "{{ demo_identifier }}"
 
-- name: Template Helm values file
-  ansible.builtin.template:
-    src: "{{ role_path }}/files/monaco/templates/delete-app.yaml.j2"
-    dest: "{{ role_path }}/files/monaco/delete-app-staging.yaml"
-    owner: "{{ ace_box_user }}"
-    group: "{{ ace_box_user }}"
-    mode: '0644'
+# - name: Template Helm values file
+#   ansible.builtin.template:
+#     src: "{{ role_path }}/files/monaco/templates/delete-app.yaml.j2"
+#     dest: "{{ role_path }}/files/monaco/delete-app-staging.yaml"
+#     owner: "{{ ace_box_user }}"
+#     group: "{{ ace_box_user }}"
+#     mode: '0644'
 
-- set_fact:
-    demo_rel_val_release_stage: "simplenode-gitlab-prod"
+# - set_fact:
+#     demo_rel_val_release_stage: "simplenode-gitlab-prod"
 
-- name: Template Helm values file
-  ansible.builtin.template:
-    src: "{{ role_path }}/files/monaco/templates/delete-app.yaml.j2"
-    dest: "{{ role_path }}/files/monaco/delete-app-production.yaml"
-    owner: "{{ ace_box_user }}"
-    group: "{{ ace_box_user }}"
-    mode: '0644'
+# - name: Template Helm values file
+#   ansible.builtin.template:
+#     src: "{{ role_path }}/files/monaco/templates/delete-app.yaml.j2"
+#     dest: "{{ role_path }}/files/monaco/delete-app-production.yaml"
+#     owner: "{{ ace_box_user }}"
+#     group: "{{ ace_box_user }}"
+#     mode: '0644'
 
-- name: Template Helm values file
-  ansible.builtin.template:
-    src: "{{ role_path }}/files/monaco/templates/delete-infra.yaml.j2"
-    dest: "{{ role_path }}/files/monaco/delete-infra.yaml"
-    owner: "{{ ace_box_user }}"
-    group: "{{ ace_box_user }}"
-    mode: '0644'
+# - name: Template Helm values file
+#   ansible.builtin.template:
+#     src: "{{ role_path }}/files/monaco/templates/delete-infra.yaml.j2"
+#     dest: "{{ role_path }}/files/monaco/delete-infra.yaml"
+#     owner: "{{ ace_box_user }}"
+#     group: "{{ ace_box_user }}"
+#     mode: '0644'
 
 # - set_fact:
 #     monaco_projects_folder: "{{ role_path }}/files/monaco"
