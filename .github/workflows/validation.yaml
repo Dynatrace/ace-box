@@ -76,6 +76,7 @@ jobs:
     outputs:
       use_cases: ${{ steps.set_outputs.outputs.use_cases }}
       providers: ${{ steps.set_outputs.outputs.providers }}
+      destroy_resources: ${{ steps.set_outputs.outputs.destroy_resources }}
     steps:
       - name: Parse Inputs
         id: parse_inputs
@@ -85,9 +86,15 @@ jobs:
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             echo "use_cases=$(echo '${{ github.event.inputs.use_cases }}' )" >> "$GITHUB_ENV"
             echo "providers=$(echo '${{ github.event.inputs.providers }}' )" >> "$GITHUB_ENV"
+            echo "destroy_resources=$(echo '${{ github.event.inputs.destroy_resources }}' )" >> "$GITHUB_ENV"
           else
             echo "use_cases=${{ env.DEFAULT_USE_CASES }}" >> "$GITHUB_ENV"
             echo "providers=${{ env.DEFAULT_PROVIDERS }}" >> "$GITHUB_ENV"
+            if [[ "${{ github.base_ref }}" == "dev" ]]; then
+              echo "destroy_resources=true" >> "$GITHUB_ENV"
+            elif [[ "${{ github.base_ref }}" == "test" || "${{ github.base_ref }}" == "demo-envs" ]]; then
+              echo "destroy_resources=false" >> "$GITHUB_ENV"
+            fi
           fi
         shell: bash
       - name: Set Outputs
@@ -96,9 +103,15 @@ jobs:
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             echo "use_cases=$(echo '${{ github.event.inputs.use_cases }}' )" >> "$GITHUB_OUTPUT"
             echo "providers=$(echo '${{ github.event.inputs.providers }}' )" >> "$GITHUB_OUTPUT"
+            echo "destroy_resources=$(echo '${{ github.event.inputs.destroy_resources }}' )" >> "$GITHUB_OUTPUT"
           else
             echo "use_cases=${{ env.DEFAULT_USE_CASES }}" >> "$GITHUB_OUTPUT"
             echo "providers=${{ env.DEFAULT_PROVIDERS }}" >> "$GITHUB_OUTPUT"
+            if [[ "${{ github.base_ref }}" == "dev" ]]; then
+              echo "destroy_resources=true" >> "$GITHUB_OUTPUT"
+            elif [[ "${{ github.base_ref }}" == "test" || "${{ github.base_ref }}" == "demo-envs" ]]; then
+              echo "destroy_resources=false" >> "$GITHUB_OUTPUT"
+            fi
           fi
         shell: bash
 
@@ -107,7 +120,7 @@ jobs:
     runs-on: spot #codebuild-acebox-runners-${{ github.run_id }}-${{ github.run_attempt }}
 
     env:
-      DESTROY_RESOURCES: ${{  github.event.inputs.destroy_resources }} # Set to "true" to enable resource destruction
+      DESTROY_RESOURCES: ${{ needs.preparation.outputs.destroy_resources }} # Set to "true" to enable resource destruction
       TF_VAR_dt_tenant: ${{ github.event.inputs.dt_tenant != '' && github.event.inputs.dt_tenant || vars.DT_TENANT }}
       TF_VAR_dt_api_token: ${{ github.event.inputs.dt_api_token != '' && github.event.inputs.dt_api_token || secrets.DT_API_TOKEN }}
       TF_VAR_custom_domain: ${{ github.event.inputs.custom_domain != '' && github.event.inputs.custom_domain || '' }}
@@ -204,7 +217,7 @@ jobs:
       - name: Create Backend Config for gcloud
         if: matrix.provider == 'gcloud'
         run: |
-          if [ ${{ env.DESTROY_RESOURCES }} == false ] || [ -n "${{ github.event.inputs.custom_domain }}" ]; then
+          if [ ${{ env.DESTROY_RESOURCES }} == 'false' ] || [ -n "${{ github.event.inputs.custom_domain }}" ]; then
             prefix="${{ matrix.backend_config_prefix }}/${{ matrix.use_case }}/${{ github.event.inputs.custom_domain }}"
           else
             prefix="${{ matrix.backend_config_prefix }}/${{ matrix.use_case }}/${{ github.run_id }}"
