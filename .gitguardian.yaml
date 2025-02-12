@@ -6,4 +6,6 @@ secret:
     name: userxxx
   - match: passxxx
     name: passxxx
+  - match: vscode123!
+    name: vscode-dummy
 version: 2
