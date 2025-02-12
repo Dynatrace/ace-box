@@ -299,7 +299,12 @@ jobs:
       - name: Delete GCS objects with specific prefix
         if: always() && env.DESTROY_RESOURCES == 'true' && matrix.provider == 'gcloud'
         run: |
-          gsutil rm -r gs://${{ matrix.backend_config_bucket }}/${{ matrix.backend_config_prefix }}/${{ matrix.use_case }}/${{ github.run_id }}
+          if [ -n "${{ github.event.inputs.custom_domain }}" ]; then
+            prefix="${{ matrix.backend_config_prefix }}/${{ matrix.use_case }}/${{ github.event.inputs.custom_domain }}"
+          else
+            prefix="${{ matrix.backend_config_prefix }}/${{ matrix.use_case }}/${{ github.run_id }}"
+          fi
+          gsutil rm -r gs://${{ matrix.backend_config_bucket }}/${prefix}
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS_JSON }}
 
