@@ -23,7 +23,7 @@ on:
       destroy_resources:
         description: 'Set to "true" to enable resource destruction'
         required: true
-        default: true
+        default: 'true'
         type: string
       custom_domain:
         description: "Custom Domain Name"
@@ -279,12 +279,12 @@ jobs:
           # Example: curl -f http://your-service-url/health || exit 1
 
       - name: Conditional Terraform Destroy
-        if: always() && ${{ env.DESTROY_RESOURCES }} == true
+        if: always() && ${{ env.DESTROY_RESOURCES }} == 'true'
         run: terraform destroy -auto-approve -lock=false  -var="gcloud_project=${{ matrix.gcloud_project }}" -var="gcloud_zone=${{ matrix.gcloud_zone }}" -var="acebox_size=${{ matrix.acebox_size }}" -var="managed_zone_name=${{ matrix.managed_zone_name }}" -var="use_case=${{ matrix.use_case }}"
         working-directory: ${{ matrix.working_directory }}
 
       - name: Delete GCS objects with specific prefix
-        if: always() && ${{ env.DESTROY_RESOURCES }} == true && matrix.provider == 'gcloud'
+        if: always() && ${{ env.DESTROY_RESOURCES }} == 'true' && matrix.provider == 'gcloud'
         run: |
           gsutil rm -r gs://${{ matrix.backend_config_bucket }}/${{ matrix.backend_config_prefix }}/${{ matrix.use_case }}/${{ github.run_id }}
         env:
