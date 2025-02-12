@@ -123,7 +123,7 @@ jobs:
       DESTROY_RESOURCES: ${{ needs.preparation.outputs.destroy_resources }} # Set to "true" to enable resource destruction
       TF_VAR_dt_tenant: ${{ github.event.inputs.dt_tenant || vars.DT_TENANT }}
       TF_VAR_dt_api_token: ${{ github.event.inputs.dt_api_token || secrets.DT_API_TOKEN }}
-      TF_VAR_custom_domain: ${{ github.event.inputs.custom_domain || "" }}
+      TF_VAR_custom_domain: ${{ github.event.inputs.custom_domain || '' }}
       TF_VAR_otel_export_enable: "true"
       TF_VAR_name_prefix: "gh-actions-ace-box"
       TF_VAR_skip_domain_workspace_alignment: "true"
