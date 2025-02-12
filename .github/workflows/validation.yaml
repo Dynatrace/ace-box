@@ -174,10 +174,17 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y unzip nodejs
 
-      # - name: Set Custom Domain
-      #   id: set_custom_domain
-      #   run: echo "custom_domain=${{ matrix.use_case }}.ace-innovation.info" >> $GITHUB_OUTPUT
-
+      - name: Debug Environment Variables
+        run: |
+          echo "DESTROY_RESOURCES=${{ env.DESTROY_RESOURCES }}"
+          echo "TF_VAR_dt_tenant=${{ env.TF_VAR_dt_tenant }}"
+          echo "TF_VAR_dt_api_token=${{ env.TF_VAR_dt_api_token }}"
+          echo "TF_VAR_custom_domain=${{ env.TF_VAR_custom_domain }}"
+          echo "TF_VAR_otel_export_enable=${{ env.TF_VAR_otel_export_enable }}"
+          echo "TF_VAR_name_prefix=${{ env.TF_VAR_name_prefix }}"
+          echo "TF_VAR_skip_domain_workspace_alignment=${{ env.TF_VAR_skip_domain_workspace_alignment }}"
+          echo "TF_VAR_extra_vars=${{ env.TF_VAR_extra_vars }}"
+          
       # gcloud specific steps
       - name: 'auth'
         if: matrix.provider == 'gcloud'
