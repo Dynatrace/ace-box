@@ -178,7 +178,7 @@ jobs:
           echo 'terraform {
             backend "gcs" {
               bucket = "${{ matrix.backend_config_bucket }}"
-              prefix = "${{ matrix.backend_config_prefix }}/${{ matrix.use_case }}"
+              prefix = "${{ matrix.backend_config_prefix }}/${{ matrix.use_case }}/${{ github.run_id }}"
             }
           }' > ${{ matrix.working_directory }}/backend.tf
           echo "backend.tf created"
@@ -249,6 +249,13 @@ jobs:
         if: always() && env.DESTROY_RESOURCES == 'true'
         run: terraform destroy -auto-approve -lock=false  -var="gcloud_project=${{ matrix.gcloud_project }}" -var="gcloud_zone=${{ matrix.gcloud_zone }}" -var="acebox_size=${{ matrix.acebox_size }}" -var="managed_zone_name=${{ matrix.managed_zone_name }}" -var="use_case=${{ matrix.use_case }}"
         working-directory: ${{ matrix.working_directory }}
+
+      - name: Delete GCS bucket
+        if: always() && env.DESTROY_RESOURCES == 'true' && matrix.provider == 'gcloud'
+        run: |
+          gsutil rm -r gs://${{ matrix.backend_config_bucket }}
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS_JSON }}
 
   update-pr-status:
     needs: test
