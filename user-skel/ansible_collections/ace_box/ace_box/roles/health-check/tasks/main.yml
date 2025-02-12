@@ -25,6 +25,9 @@
 - name: Check application availability with curl
   command: "curl -o /dev/null -s -w \"%{http_code}\" {{ app_url }}"
   register: curl_response
+  until: curl_response.rc == 0 and curl_response.stdout | int in range(200, 400)
+  retries: 5
+  delay: 10
   failed_when: curl_response.rc != 0
 
 # - name: Debug the curl response
