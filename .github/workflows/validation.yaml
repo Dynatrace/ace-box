@@ -190,7 +190,6 @@ jobs:
       - name: Debug Environment Variables
         run: |
           echo "DESTROY_RESOURCES=${{ env.DESTROY_RESOURCES }}"
-          echo "destroy_res = ${{ github.event.inputs.destroy_resources }}"
           echo "TF_VAR_dt_tenant=${{ env.TF_VAR_dt_tenant }}"
           echo "TF_VAR_dt_api_token=${{ env.TF_VAR_dt_api_token }}"
           echo "TF_VAR_custom_domain=${{ env.TF_VAR_custom_domain }}"

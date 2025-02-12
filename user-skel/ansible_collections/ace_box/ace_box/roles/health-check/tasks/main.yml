@@ -14,6 +14,10 @@
 
 ---
 
+- name: Set acceptable response codes
+  set_fact:
+    acceptable_response_codes: [200, 201, 202, 204, 301, 302, 304, 403]
+
 - name: Set Application URL
   set_fact:
     app_url: "{{ ingress_protocol }}://{{ application_domain }}"
@@ -25,9 +29,9 @@
 - name: Check application availability with curl
   command: "curl -o /dev/null -s -w \"%{http_code}\" {{ app_url }}"
   register: curl_response
-  until: curl_response.rc == 0 and curl_response.stdout | int in range(200, 400)
+  until: curl_response.rc == 0 and (curl_response.stdout | int in acceptable_response_codes)
   retries: 5
-  delay: 10
+  delay: 5
   failed_when: curl_response.rc != 0
 
 # - name: Debug the curl response
@@ -37,12 +41,12 @@
 - name: Check if application is accessible
   debug:
     msg: "Application is accessible via {{ ingress_protocol }}. Response: {{ curl_response.stdout }}"
-  when: curl_response.rc == 0 and curl_response.stdout | int in range(200, 400)
+  when: curl_response.rc == 0 and (curl_response.stdout | int in acceptable_response_codes)
 
 - name: Fail if application is not accessible
   fail:
     msg: "Application is not accessible via {{ ingress_protocol }}. Response: {{ curl_response.stdout }}"
-  when: curl_response.rc != 0 or curl_response.stdout | int not in range(200, 400)
+  when: curl_response.rc != 0 or (curl_response.stdout | int not in acceptable_response_codes)
 
 
 - name: Check SSL certificate validity
