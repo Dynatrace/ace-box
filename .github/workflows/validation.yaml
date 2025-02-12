@@ -167,7 +167,7 @@ jobs:
             acebox_size: "n2-standard-16"
             managed_zone_name: "ace-innovation-info"
             backend_config_bucket: "ace-box-tf-state"
-            backend_config_prefix: "ace-box/http"
+            backend_config_prefix: "http"
           # gcloud test with http
         #   - provider: gcloud
         #     working_directory: ./terraform/gcloud
@@ -209,10 +209,15 @@ jobs:
       - name: Create Backend Config for gcloud
         if: matrix.provider == 'gcloud'
         run: |
+          if [ env.DESTROY_RESOURCES == 'false' ]; then
+            prefix="${{ matrix.backend_config_prefix }}/${{ matrix.use_case }}/${{ github.event.inputs.custom_domain }}"
+          else
+            prefix="${{ matrix.backend_config_prefix }}/${{ matrix.use_case }}/${{ github.run_id }}"
+          fi
           echo 'terraform {
             backend "gcs" {
               bucket = "${{ matrix.backend_config_bucket }}"
-              prefix = "${{ matrix.backend_config_prefix }}/${{ matrix.use_case }}/${{ github.run_id }}"
+              prefix = "'$prefix'"
             }
           }' > ${{ matrix.working_directory }}/backend.tf
           echo "backend.tf created"
