@@ -49,7 +49,7 @@ jobs:
   destroy_sprint:
     runs-on: spot
     steps:
-      - name: Call Validation Workflow for Sprint
+      - name: Call validation workflow for destroying Sprint environment
         uses: ./.github/workflows/validation.yaml
         with:
           use_cases: ${{ github.event.inputs.use_cases_for_both }}
@@ -64,7 +64,7 @@ jobs:
     needs: destroy_sprint
     runs-on: spot
     steps:
-      - name: Call Validation Workflow for Sprint
+      - name: Call validation workflow for provisioning Sprint environment
         uses: ./.github/workflows/validation.yaml
         with:
           use_cases: ${{ github.event.inputs.use_cases_for_both }}
@@ -79,7 +79,7 @@ jobs:
     needs: deploy_sprint
     runs-on: spot
     steps:
-      - name: Call Validation Workflow for Live
+      - name: Call validation workflow for destroying Live environment
         uses: ./.github/workflows/validation.yaml
         with:
           use_cases: ${{ github.event.inputs.use_cases_for_both }}
@@ -94,7 +94,7 @@ jobs:
     needs: destroy_live
     runs-on: spot
     steps:
-      - name: Call Validation Workflow for Live
+      - name: Call validation workflow for provisioning Live environment
         uses: ./.github/workflows/validation.yaml
         with:
           use_cases: ${{ github.event.inputs.use_cases_for_both }}
