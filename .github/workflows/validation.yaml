@@ -25,7 +25,11 @@ on:
         required: true
         default: 'true'
         type: string
-        
+      custom_domain:
+        description: "Custom Domain Name"
+        required: false
+        default: ""
+
       # optional params for manual run
       dt_tenant:
         description: "Dynatrace Tenant"
@@ -39,10 +43,7 @@ on:
         description: "Dynatrace Environment URL Gen3"
         required: false
         default: ""
-      custom_domain:
-        description: "Custom Domain Name"
-        required: false
-        default: ""
+
       # dt_oauth_sso_endpoint:
       #   description: "Dynatrace OAuth SSO Endpoint"
       #   required: false
@@ -195,7 +196,7 @@ jobs:
       - name: Create Backend Config for gcloud
         if: matrix.provider == 'gcloud'
         run: |
-          if [ ${{ github.event.inputs.destroy_resources }} == 'false' ]; then
+          if [ "${{ github.event.inputs.destroy_resources }}" == "false" ] || [ -n "${{ github.event.inputs.custom_domain }}" ]; then
             prefix="${{ matrix.backend_config_prefix }}/${{ matrix.use_case }}/${{ github.event.inputs.custom_domain }}"
           else
             prefix="${{ matrix.backend_config_prefix }}/${{ matrix.use_case }}/${{ github.run_id }}"
