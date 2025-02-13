@@ -297,12 +297,12 @@ jobs:
           # Example: curl -f http://your-service-url/health || exit 1
 
       - name: Conditional Terraform Destroy
-        if: always() && env.DESTROY_RESOURCES  == true
+        if: always() && env.DESTROY_RESOURCES  != false
         run: terraform destroy -auto-approve -lock=false  -var="gcloud_project=${{ matrix.gcloud_project }}" -var="gcloud_zone=${{ matrix.gcloud_zone }}" -var="acebox_size=${{ matrix.acebox_size }}" -var="managed_zone_name=${{ matrix.managed_zone_name }}" -var="use_case=${{ matrix.use_case }}"
         working-directory: ${{ matrix.working_directory }}
 
       - name: Delete GCS objects with specific prefix
-        if: always() && env.DESTROY_RESOURCES == true && matrix.provider == 'gcloud'
+        if: always() && env.DESTROY_RESOURCES != false && matrix.provider == 'gcloud'
         run: |
           if [ -n "${{ github.event.inputs.custom_domain }}" ]; then
             prefix="${{ matrix.backend_config_prefix }}/${{ matrix.use_case }}/${{ github.event.inputs.custom_domain }}"
