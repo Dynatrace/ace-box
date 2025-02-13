@@ -1,4 +1,4 @@
-name: Deploy Demo Environments
+name: Deploy demo environments
 
 on:
 
@@ -27,7 +27,7 @@ on:
         required: true
         default: "https://xxo38725.sprint.dynatracelabs.com"      
       dt_url_gen3_sprint:
-        description: "Dynatrace tenant (Gen2) for Sprint Environment"
+        description: "Dynatrace platform tenant (Gen3) for Sprint Environment"
         required: true
         default: "https://xxo38725.sprint.apps.dynatracelabs.com"   
 
@@ -35,13 +35,13 @@ on:
       custom_domain_live:
         description: "Custom Domain Name for Live Environment"
         required: true
-        default: "demo-sprint.ace-innovation.info"
+        default: "demo-live.ace-innovation.info"
       dt_tenant_live:
-        description: "Dynatrace tenant (Gen2) for Sprint Environment"
+        description: "Dynatrace tenant (Gen2) for Live Environment"
         required: true
         default: "https://dhg95339.sprint.dynatracelabs.com"      
       dt_url_gen3_live:
-        description: "Dynatrace tenant (Gen2) for Sprint Environment"
+        description: "Dynatrace platform tenant (Gen3) for Live Environment"
         required: true
         default: "https://dhg95339.sprint.apps.dynatracelabs.com"     
 
@@ -49,16 +49,17 @@ jobs:
   destroy_sprint:
     runs-on: spot
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Call validation workflow for destroying Sprint environment
-        uses: ./.github/workflows/validation.yaml
-        with:
-          use_cases: ${{ github.event.inputs.use_cases_for_both }}
-          providers: ${{ github.event.inputs.providers_for_both }}
-          destroy_resources: 'true'
-          custom_domain: ${{ github.event.inputs.custom_domain_sprint }}
-          dt_tenant: ${{ github.event.inputs.dt_tenant_sprint }}
-          dt_api_token: ${{ secrets.DT_API_TOKEN_SPRINT_xxo38725 }}
-          dt_url_gen3: ${{ github.event.inputs.dt_url_gen3_sprint }}
+        run: |
+          curl -X POST \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            https://api.github.com/repos/${{ github.repository }}/actions/workflows/validation.yaml/dispatches \
+            -d '{"ref":"main","inputs":{"use_cases":"${{ github.event.inputs.use_cases_for_both }}","providers":"${{ github.event.inputs.providers_for_both }}","destroy_resources":"true","custom_domain":"${{ github.event.inputs.custom_domain_sprint }}","dt_tenant":"${{ github.event.inputs.dt_tenant_sprint }}","dt_api_token":"${{ secrets.DT_API_TOKEN_SPRINT_xxo38725 }}","dt_url_gen3":"${{ github.event.inputs.dt_url_gen3_sprint }}"}}'
+
 
   deploy_sprint:
     needs: destroy_sprint
