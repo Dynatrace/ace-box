@@ -6,7 +6,7 @@ on:
     branches:
       - dev
 
-  workflow_call: # Allows manual triggering of the workflow
+  workflow_call:
     inputs:
       use_cases:
         description: 'Enter the use cases to run (comma-separated). Example: ["demo_ar_workflows_gitlab","demo_ar_workflows_ansible"]'
@@ -43,9 +43,47 @@ on:
         description: "Dynatrace API Token"
         required: false
 
-# concurrency:
-#   group: ${{ github.workflow }}-${{ github.run_id }}
-#   cancel-in-progress: false
+
+  workflow_dispatch: # Allows manual triggering of the workflow
+    inputs:
+      use_cases:
+        description: 'Enter the use cases to run (comma-separated). Example: ["demo_ar_workflows_gitlab","demo_ar_workflows_ansible"]'
+        required: true
+        default: '["demo_all"]'
+        type: string
+      providers:
+        description: 'Select the providers to run (comma-separated). Example: ["gcloud","aws"]'
+        required: true
+        default: '["gcloud"]'
+        type: string
+
+      destroy_resources:
+        description: 'Set to "true" to enable resource destruction'
+        required: true
+        default: true
+        type: boolean
+      custom_domain:
+        description: "Custom Domain Name"
+        required: false
+        type: string
+
+      # optional params for manual run
+      dt_tenant:
+        description: "Dynatrace Tenant"
+        required: false
+        type: string
+      dt_url_gen3:
+        description: "Dynatrace Environment URL Gen3"
+        required: false
+        type: string
+
+      dt_api_token:
+        description: "Dynatrace API Token"
+        required: false
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.run_id }}
+  cancel-in-progress: false
 
 jobs:
 
@@ -64,36 +102,18 @@ jobs:
         run: |
           echo ${{ github.event.inputs.use_cases }}
           echo ${{ env.DEFAULT_USE_CASES }}
-          if [[ "${{ github.event_name }}" == "workflow_call" ]]; then
-            echo "use_cases=$(echo '${{ github.event.inputs.use_cases }}' )" >> "$GITHUB_ENV"
-            echo "providers=$(echo '${{ github.event.inputs.providers }}' )" >> "$GITHUB_ENV"
-            echo "destroy_resources=$(echo ${{ github.event.inputs.destroy_resources }} )" >> "$GITHUB_ENV"
-          else
-            echo "use_cases=${{ env.DEFAULT_USE_CASES }}" >> "$GITHUB_ENV"
-            echo "providers=${{ env.DEFAULT_PROVIDERS }}" >> "$GITHUB_ENV"
-            if [[ "${{ github.base_ref }}" == "dev" ]]; then
-              echo "destroy_resources=true" >> "$GITHUB_ENV"
-            elif [[ "${{ github.base_ref }}" == "test" || "${{ github.base_ref }}" == "demo-envs" ]]; then
-              echo "destroy_resources=false" >> "$GITHUB_ENV"
-            fi
-          fi
+          echo "use_cases=$(echo '${{ github.event.inputs.use_cases }}' )" >> "$GITHUB_ENV"
+          echo "providers=$(echo '${{ github.event.inputs.providers }}' )" >> "$GITHUB_ENV"
+          echo "destroy_resources=$(echo ${{ github.event.inputs.destroy_resources }} )" >> "$GITHUB_ENV"
+
         shell: bash
       - name: Set Outputs
         id: set_outputs
         run: |
-          if [[ "${{ github.event_name }}" == "workflow_call" ]]; then
-            echo "use_cases=$(echo '${{ github.event.inputs.use_cases }}' )" >> "$GITHUB_OUTPUT"
-            echo "providers=$(echo '${{ github.event.inputs.providers }}' )" >> "$GITHUB_OUTPUT"
-            echo "destroy_resources=$(echo ${{ github.event.inputs.destroy_resources }} )" >> "$GITHUB_OUTPUT"
-          else
-            echo "use_cases=${{ env.DEFAULT_USE_CASES }}" >> "$GITHUB_OUTPUT"
-            echo "providers=${{ env.DEFAULT_PROVIDERS }}" >> "$GITHUB_OUTPUT"
-            if [[ "${{ github.base_ref }}" == "dev" ]]; then
-              echo "destroy_resources=true" >> "$GITHUB_OUTPUT"
-            elif [[ "${{ github.base_ref }}" == "test" || "${{ github.base_ref }}" == "demo-envs" ]]; then
-              echo "destroy_resources=false" >> "$GITHUB_OUTPUT"
-            fi
-          fi
+          echo "use_cases=$(echo '${{ github.event.inputs.use_cases }}' )" >> "$GITHUB_OUTPUT"
+          echo "providers=$(echo '${{ github.event.inputs.providers }}' )" >> "$GITHUB_OUTPUT"
+          echo "destroy_resources=$(echo ${{ github.event.inputs.destroy_resources }} )" >> "$GITHUB_OUTPUT"
+
         shell: bash
 
   apply:
