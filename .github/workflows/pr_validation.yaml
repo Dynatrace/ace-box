@@ -49,7 +49,7 @@ env:
   DEFAULT_USE_CASES: '[\"demo_all\"]'
   DEFAULT_PROVIDERS: '[\"gcloud\"]'
   DESTROY_RESOURCES: true
-  DEFAULT_CUSTOM_DOMAIN: ""
+  DEFAULT_CUSTOM_DOMAIN: "demo-sprint-2.ace-innovation.info"
   DT_TENANT: ${{ vars.DT_TENANT }}
   DT_URL_GEN3: ${{ vars.DT_URL_GEN3 }}
   DT_API_TOKEN: ${{ secrets.DT_API_TOKEN }}
