@@ -1,0 +1,64 @@
+name: Deploy demo environments
+
+on:
+
+  pull_request:
+    branches:
+      - dev
+
+  workflow_dispatch: # Allows manual triggering of the workflow
+    inputs:
+      use_cases:
+        description: 'Enter the use cases to run (comma-separated). Example: ["demo_ar_workflows_gitlab","demo_ar_workflows_ansible"]'
+        required: true
+        default: '["demo_all"]'
+        type: string
+      providers:
+        description: 'Select the providers to run (comma-separated). Example: ["gcloud","aws"]'
+        required: true
+        default: '["gcloud"]'
+        type: string
+
+      destroy_resources:
+        description: 'Set to "true" to enable resource destruction'
+        required: true
+        default: true
+        type: boolean
+
+      custom_domain:
+        description: "Custom Domain Name"
+        required: false
+        default: ""
+
+      # optional params for manual run
+      dt_tenant:
+        description: "Dynatrace Tenant"
+        required: false
+        default: ""
+      dt_api_token:
+        description: "Dynatrace API Token"
+        required: false
+        default: ""
+      dt_url_gen3:
+        description: "Dynatrace Environment URL Gen3"
+        required: false
+        default: ""
+
+
+jobs:
+  test_demo_usecases:
+    uses: ./.github/workflows/validation.yaml
+    with:
+      use_cases: ${{ github.event.inputs.use_cases }}
+      providers: ${{ github.event.inputs.providers }}
+      destroy_resources: ${{ github.event.inputs.destroy_resources }}
+      custom_domain: ${{ github.event.inputs.custom_domain }}
+      dt_tenant: ${{  github.event.inputs.dt_tenant != '' && github.event.inputs.dt_tenant || vars.DT_TENANT }}
+      dt_url_gen3: ${{ github.event.inputs.dt_url_gen3 != '' && github.event.inputs.dt_url_gen3 || vars.DT_URL_GEN3 }}
+      dt_oauth_sso_endpoint: ${{ vars.DT_OAUTH_SSO_ENDPOINT }}
+      dt_oauth_account_urn: ${{ vars.DT_OAUTH_ACCOUNT_URN }}
+    secrets:
+      dt_api_token: ${{ github.event.inputs.dt_api_token != '' && github.event.inputs.dt_api_token || secrets.DT_API_TOKEN }}
+      gcp_credentials_json: '${{ secrets.GCP_CREDENTIALS_JSON }}'
+      dt_oauth_client_id: ${{ secrets.DT_OAUTH_CLIENT_ID }}
+      dt_oauth_client_secret: ${{ secrets.DT_OAUTH_CLIENT_SECRET }}
