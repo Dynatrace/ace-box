@@ -56,7 +56,7 @@ jobs:
         run: |
           curl -X POST \
             -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${{ secrets.GH_TOKEN }}" \
+            -H "Authorization: Bearer ${{ secrets.GH_PAT }}" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
             https://api.github.com/repos/${{ github.repository }}/actions/workflows/validation.yaml/dispatches \
             -d '{"ref":"dev","inputs":{"use_cases":"${{ github.event.inputs.use_cases_for_both }}","providers":"${{ github.event.inputs.providers_for_both }}","destroy_resources":"true","custom_domain":"${{ github.event.inputs.custom_domain_sprint }}","dt_tenant":"${{ github.event.inputs.dt_tenant_sprint }}","dt_api_token":"${{ secrets.DT_API_TOKEN_SPRINT_xxo38725 }}","dt_url_gen3":"${{ github.event.inputs.dt_url_gen3_sprint }}"}}'
