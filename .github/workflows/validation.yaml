@@ -2,6 +2,10 @@ name: Reusable usecase validations
 
 on:
 
+  pull_request:
+    branches:
+      - dev
+
   workflow_call: # Allows manual triggering of the workflow
     inputs:
       use_cases:
@@ -18,8 +22,8 @@ on:
       destroy_resources:
         description: 'Set to "true" to enable resource destruction'
         required: true
-        default: 'true'
-        type: string
+        default: true
+        type: boolean
       custom_domain:
         description: "Custom Domain Name"
         required: false
@@ -35,7 +39,6 @@ on:
         required: false
         type: string
 
-    secrets:
       dt_api_token:
         description: "Dynatrace API Token"
         required: false
@@ -64,7 +67,7 @@ jobs:
           if [[ "${{ github.event_name }}" == "workflow_call" ]]; then
             echo "use_cases=$(echo '${{ github.event.inputs.use_cases }}' )" >> "$GITHUB_ENV"
             echo "providers=$(echo '${{ github.event.inputs.providers }}' )" >> "$GITHUB_ENV"
-            echo "destroy_resources=$(echo '${{ github.event.inputs.destroy_resources }}' )" >> "$GITHUB_ENV"
+            echo "destroy_resources=$(echo ${{ github.event.inputs.destroy_resources }} )" >> "$GITHUB_ENV"
           else
             echo "use_cases=${{ env.DEFAULT_USE_CASES }}" >> "$GITHUB_ENV"
             echo "providers=${{ env.DEFAULT_PROVIDERS }}" >> "$GITHUB_ENV"
@@ -81,7 +84,7 @@ jobs:
           if [[ "${{ github.event_name }}" == "workflow_call" ]]; then
             echo "use_cases=$(echo '${{ github.event.inputs.use_cases }}' )" >> "$GITHUB_OUTPUT"
             echo "providers=$(echo '${{ github.event.inputs.providers }}' )" >> "$GITHUB_OUTPUT"
-            echo "destroy_resources=$(echo '${{ github.event.inputs.destroy_resources }}' )" >> "$GITHUB_OUTPUT"
+            echo "destroy_resources=$(echo ${{ github.event.inputs.destroy_resources }} )" >> "$GITHUB_OUTPUT"
           else
             echo "use_cases=${{ env.DEFAULT_USE_CASES }}" >> "$GITHUB_OUTPUT"
             echo "providers=${{ env.DEFAULT_PROVIDERS }}" >> "$GITHUB_OUTPUT"
@@ -194,7 +197,7 @@ jobs:
       - name: Create Backend Config for gcloud
         if: matrix.provider == 'gcloud'
         run: |
-          if [ ${{ env.DESTROY_RESOURCES }} == 'false' ] || [ -n "${{ github.event.inputs.custom_domain }}" ]; then
+          if [ ${{ env.DESTROY_RESOURCES }} == false ] || [ -n "${{ github.event.inputs.custom_domain }}" ]; then
             prefix="${{ matrix.backend_config_prefix }}/${{ matrix.use_case }}/${{ github.event.inputs.custom_domain }}"
           else
             prefix="${{ matrix.backend_config_prefix }}/${{ matrix.use_case }}/${{ github.run_id }}"
@@ -270,12 +273,12 @@ jobs:
           # Example: curl -f http://your-service-url/health || exit 1
 
       - name: Conditional Terraform Destroy
-        if: always() && env.DESTROY_RESOURCES  == 'true'
+        if: always() && env.DESTROY_RESOURCES  == true
         run: terraform destroy -auto-approve -lock=false  -var="gcloud_project=${{ matrix.gcloud_project }}" -var="gcloud_zone=${{ matrix.gcloud_zone }}" -var="acebox_size=${{ matrix.acebox_size }}" -var="managed_zone_name=${{ matrix.managed_zone_name }}" -var="use_case=${{ matrix.use_case }}"
         working-directory: ${{ matrix.working_directory }}
 
       - name: Delete GCS objects with specific prefix
-        if: always() && env.DESTROY_RESOURCES == 'true' && matrix.provider == 'gcloud'
+        if: always() && env.DESTROY_RESOURCES == true && matrix.provider == 'gcloud'
         run: |
           if [ -n "${{ github.event.inputs.custom_domain }}" ]; then
             prefix="${{ matrix.backend_config_prefix }}/${{ matrix.use_case }}/${{ github.event.inputs.custom_domain }}"
