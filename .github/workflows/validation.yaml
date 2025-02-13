@@ -93,7 +93,7 @@ jobs:
           fi
         shell: bash
 
-  test:
+  apply:
     needs: preparation
     runs-on: spot #codebuild-acebox-runners-${{ github.run_id }}-${{ github.run_attempt }}
 
@@ -287,7 +287,7 @@ jobs:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS_JSON }}
 
   update-pr-status:
-    needs: test
+    needs: apply
     runs-on: spot #codebuild-acebox-runners-${{ github.run_id }}-${{ github.run_attempt }}
     if: github.event_name == 'pull_request'
     steps:

@@ -55,10 +55,6 @@ on:
 
 jobs:
   destroy_sprint:
-    # strategy:
-    #   matrix:
-    #     provider: ${{ fromJson(needs.preparation.outputs.providers) }}
-    #     use_case: ${{ fromJson(needs.preparation.outputs.use_cases) }}
     uses: ./.github/workflows/validation.yaml
     with:
       use_cases: ${{ github.event.inputs.use_cases_for_both }}
@@ -68,4 +64,39 @@ jobs:
       dt_tenant: ${{ github.event.inputs.dt_tenant_sprint }}
       dt_url_gen3: ${{ github.event.inputs.dt_url_gen3_sprint }}
     secrets: inherit
-      # dt_api_token: ${{ secrets.DT_API_TOKEN_SPRINT_XXO38725 }}
+
+  deploy_sprint:
+    needs: destroy_sprint
+    uses: ./.github/workflows/validation.yaml
+    with:
+      use_cases: ${{ github.event.inputs.use_cases_for_both }}
+      providers: ${{ github.event.inputs.providers_for_both }}
+      destroy_resources: false
+      custom_domain: ${{ github.event.inputs.custom_domain_sprint }}
+      dt_tenant: ${{ github.event.inputs.dt_tenant_sprint }}
+      dt_url_gen3: ${{ github.event.inputs.dt_url_gen3_sprint }}
+    secrets: inherit
+
+  destroy_live:
+    needs: deploy_sprint
+    uses: ./.github/workflows/validation.yaml
+    with:
+      use_cases: ${{ github.event.inputs.use_cases_for_both }}
+      providers: ${{ github.event.inputs.providers_for_both }}
+      destroy_resources: true
+      custom_domain: ${{ github.event.inputs.custom_domain_live }}
+      dt_tenant: ${{ github.event.inputs.dt_tenant_live }}
+      dt_url_gen3: ${{ github.event.inputs.dt_url_gen3_live }}
+    secrets: inherit
+
+  deploy_live:
+    needs: destroy_live
+    uses: ./.github/workflows/validation.yaml
+    with:
+      use_cases: ${{ github.event.inputs.use_cases_for_both }}
+      providers: ${{ github.event.inputs.providers_for_both }}
+      destroy_resources: false
+      custom_domain: ${{ github.event.inputs.custom_domain_live }}
+      dt_tenant: ${{ github.event.inputs.dt_tenant_live }}
+      dt_url_gen3: ${{ github.event.inputs.dt_url_gen3_live }}
+    secrets: inherit
