@@ -50,8 +50,8 @@ env:
   DEFAULT_PROVIDERS: '[\"gcloud\"]'
   DESTROY_RESOURCES: true
   DEFAULT_CUSTOM_DOMAIN: ""
-  DT_TENANT: ${{ secrets.DT_TENANT }}
-  DT_URL_GEN3: ${{ secrets.DT_URL_GEN3 }}
+  DT_TENANT: ${{ vars.DT_TENANT }}
+  DT_URL_GEN3: ${{ vars.DT_URL_GEN3 }}
   DT_API_TOKEN: ${{ secrets.DT_API_TOKEN }}
 
 jobs:
