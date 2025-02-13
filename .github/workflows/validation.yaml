@@ -43,7 +43,9 @@ on:
       dt_api_token:
         description: "Dynatrace API Token"
         required: false
-        # type: string
+      credentials_json:
+        description: "GCP Credentials JSON"
+        required: false
 
 
   workflow_dispatch: # Allows manual triggering of the workflow
