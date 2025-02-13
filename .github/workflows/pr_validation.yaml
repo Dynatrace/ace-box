@@ -96,7 +96,7 @@ jobs:
     with:
       use_cases: ${{ needs.set_env_vars.outputs.use_cases }}
       providers: ${{ needs.set_env_vars.outputs.providers }}
-      destroy_resources: ${{ fromJson(needs.set_env_vars.outputs.destroy_resources) }}
+      destroy_resources: ${{ needs.set_env_vars.outputs.destroy_resources == 'true' }}
       custom_domain: ${{ needs.set_env_vars.outputs.custom_domain }}
       dt_tenant: ${{ needs.set_env_vars.outputs.dt_tenant }}
       dt_url_gen3: ${{ needs.set_env_vars.outputs.dt_url_gen3 }}
