@@ -44,7 +44,8 @@ on:
       dt_api_token:
         description: "Dynatrace API Token"
         required: false
-
+        type: string
+        
     secrets:
       gcp_credentials_json:
         description: "GCP Credentials JSON"
