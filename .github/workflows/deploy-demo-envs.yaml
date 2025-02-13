@@ -64,7 +64,7 @@ jobs:
       dt_tenant: ${{ github.event.inputs.dt_tenant_sprint }}
       dt_url_gen3: ${{ github.event.inputs.dt_url_gen3_sprint }}
 
-    secrets: inherit
+    secrets:
       dt_api_token: ${{ secrets.DT_API_TOKEN_SPRINT_XXO38725 }}
 
   # deploy_sprint:
