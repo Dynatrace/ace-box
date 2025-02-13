@@ -185,7 +185,7 @@ jobs:
         if: matrix.provider == 'gcloud'
         uses: 'google-github-actions/auth@v2'
         with:
-          credentials_json: ${{ secrets.gcp_credentials_json }}
+          credentials_json: ${{ secrets.gcp_credentials_json != '' && secrets.gcp_credentials_json || secrets.GCP_CREDENTIALS_JSON }}
 
       - name: 'Set up Cloud SDK'
         if: matrix.provider == 'gcloud'
@@ -288,7 +288,7 @@ jobs:
           fi
           gsutil rm -r gs://${{ matrix.backend_config_bucket }}/${prefix}
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.gcp_credentials_json }}
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.gcp_credentials_json != '' && secrets.gcp_credentials_json || secrets.GCP_CREDENTIALS_JSON }}
 
   update-pr-status:
     needs: apply
