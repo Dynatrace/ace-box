@@ -13,6 +13,7 @@ on:
         required: true
         default: '["demo_all"]'
         type: string
+      
       providers:
         description: 'Select the providers to run (comma-separated). Example: ["gcloud","aws"]'
         required: true
@@ -29,21 +30,24 @@ on:
         description: "Custom Domain Name"
         required: false
         default: ""
+        type: string
 
       # optional params for manual run
       dt_tenant:
         description: "Dynatrace Tenant"
         required: false
         default: ""
+        type: string
       dt_api_token:
         description: "Dynatrace API Token"
         required: false
         default: ""
+        type: string
       dt_url_gen3:
         description: "Dynatrace Environment URL Gen3"
         required: false
         default: ""
-
+        type: string
 
 env:
   DEFAULT_USE_CASES: '[\"demo_all\"]'
