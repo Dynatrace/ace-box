@@ -72,7 +72,7 @@ jobs:
     outputs:
       use_cases: ${{ steps.set_outputs.outputs.use_cases }}
       providers: ${{ steps.set_outputs.outputs.providers }}
-      destroy_resources: ${{ steps.set_outputs.outputs.destroy_resources }}
+      # destroy_resources: ${{ steps.set_outputs.outputs.destroy_resources }}
     steps:
       - name: Parse Inputs
         id: parse_inputs
@@ -98,7 +98,7 @@ jobs:
     runs-on: spot #codebuild-acebox-runners-${{ github.run_id }}-${{ github.run_attempt }}
 
     env:
-      DESTROY_RESOURCES: ${{ inputs.destroy_resources }} # Set to "true" to enable resource destruction
+      # DESTROY_RESOURCES: ${{ inputs.destroy_resources }} # Set to "true" to enable resource destruction
       TF_VAR_dt_tenant: ${{ inputs.dt_tenant != '' && inputs.dt_tenant || vars.DT_TENANT }}
       TF_VAR_dt_api_token: ${{ secrets.dt_api_token }}
       TF_VAR_custom_domain: ${{ inputs.custom_domain != '' && inputs.custom_domain || '' }}
@@ -167,7 +167,7 @@ jobs:
 
       - name: Debug Environment Variables
         run: |
-          echo "DESTROY_RESOURCES=${{ env.DESTROY_RESOURCES }}"
+          echo "destroy_resources=${{ inputs.destroy_resources }}"
           echo "TF_VAR_dt_tenant=${{ env.TF_VAR_dt_tenant }}"
           echo "TF_VAR_dt_api_token=${{ env.TF_VAR_dt_api_token }}"
           echo "TF_VAR_custom_domain=${{ env.TF_VAR_custom_domain }}"
@@ -194,7 +194,7 @@ jobs:
       - name: Create Backend Config for gcloud
         if: matrix.provider == 'gcloud'
         run: |
-          if [ ${{ env.DESTROY_RESOURCES }} == false ] || [ -n "${{ inputs.custom_domain }}" ]; then
+          if [ ${{ inputs.destroy_resources }} == false ] || [ -n "${{ inputs.custom_domain }}" ]; then
             prefix="${{ matrix.backend_config_prefix }}/${{ matrix.use_case }}/${{ inputs.custom_domain }}"
           else
             prefix="${{ matrix.backend_config_prefix }}/${{ matrix.use_case }}/${{ github.run_id }}"
@@ -270,12 +270,12 @@ jobs:
           # Example: curl -f http://your-service-url/health || exit 1
 
       - name: Conditional Terraform Destroy
-        if: always() && env.DESTROY_RESOURCES != false
+        if: always() && inputs.destroy_resources != false
         run: terraform destroy -auto-approve -lock=false  -var="gcloud_project=${{ matrix.gcloud_project }}" -var="gcloud_zone=${{ matrix.gcloud_zone }}" -var="acebox_size=${{ matrix.acebox_size }}" -var="managed_zone_name=${{ matrix.managed_zone_name }}" -var="use_case=${{ matrix.use_case }}"
         working-directory: ${{ matrix.working_directory }}
 
       - name: Delete GCS objects with specific prefix
-        if: always() && env.DESTROY_RESOURCES != false && matrix.provider == 'gcloud'
+        if: always() && inputs.destroy_resources != false && matrix.provider == 'gcloud'
         run: |
           if [ -n "${{ inputs.custom_domain }}" ]; then
             prefix="${{ matrix.backend_config_prefix }}/${{ matrix.use_case }}/${{ inputs.custom_domain }}"
