@@ -46,8 +46,8 @@ on:
 
 
 env:
-  DEFAULT_USE_CASES: '["demo_all"]'
-  DEFAULT_PROVIDERS: '["gcloud"]'
+  DEFAULT_USE_CASES: '[\"demo_all\"]'
+  DEFAULT_PROVIDERS: '[\"gcloud\"]'
   DESTROY_RESOURCES: true
   DEFAULT_CUSTOM_DOMAIN: ""
   DT_TENANT: ${{ secrets.DT_TENANT }}
