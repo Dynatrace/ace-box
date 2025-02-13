@@ -38,6 +38,15 @@ on:
         description: "Dynatrace Environment URL Gen3"
         required: false
         type: string
+      dt_oauth_sso_endpoint:
+        description: "Dynatrace OAuth SSO Endpoint"
+        required: false
+        type: string
+      dt_oauth_account_urn:
+        description: "Dynatrace OAuth Account URN"
+        required: false
+        type: string
+
 
     secrets:
       dt_api_token:
@@ -46,43 +55,11 @@ on:
       gcp_credentials_json:
         description: "GCP Credentials JSON"
         required: false
-
-
-  workflow_dispatch: # Allows manual triggering of the workflow
-    inputs:
-      use_cases:
-        description: 'Enter the use cases to run (comma-separated). Example: ["demo_ar_workflows_gitlab","demo_ar_workflows_ansible"]'
-        required: true
-        default: '["demo_all"]'
-        type: string
-      providers:
-        description: 'Select the providers to run (comma-separated). Example: ["gcloud","aws"]'
-        required: true
-        default: '["gcloud"]'
-        type: string
-
-      destroy_resources:
-        description: 'Set to "true" to enable resource destruction'
-        required: true
-        default: true
-        type: boolean
-      custom_domain:
-        description: "Custom Domain Name"
+      dt_oauth_client_id:
+        description: "Dynatrace OAuth Client ID"
         required: false
-        type: string
-
-      # optional params for manual run
-      dt_tenant:
-        description: "Dynatrace Tenant"
-        required: false
-        type: string
-      dt_url_gen3:
-        description: "Dynatrace Environment URL Gen3"
-        required: false
-        type: string
-
-      dt_api_token:
-        description: "Dynatrace API Token"
+      dt_oauth_client_secret:
+        description: "Dynatrace OAuth Client Secret"
         required: false
 
 concurrency:
@@ -104,11 +81,11 @@ jobs:
       - name: Parse Inputs
         id: parse_inputs
         run: |
-          echo ${{ github.event.inputs.use_cases }}
+          echo ${{ inputs.use_cases }}
           echo ${{ env.DEFAULT_USE_CASES }}
           echo "use_cases=$(echo '${{ inputs.use_cases }}' )" >> "$GITHUB_ENV"
           echo "providers=$(echo '${{ inputs.providers }}' )" >> "$GITHUB_ENV"
-          echo "destroy_resources=$(echo ${{ inputs.destroy_resources }} )" >> "$GITHUB_ENV"
+      # echo "destroy_resources=$(echo ${{ inputs.destroy_resources }} )" >> "$GITHUB_ENV"
 
         shell: bash
       - name: Set Outputs
@@ -116,7 +93,7 @@ jobs:
         run: |
           echo "use_cases=$(echo '${{ inputs.use_cases }}' )" >> "$GITHUB_OUTPUT"
           echo "providers=$(echo '${{ inputs.providers }}' )" >> "$GITHUB_OUTPUT"
-          echo "destroy_resources=$(echo ${{ inputs.destroy_resources }} )" >> "$GITHUB_OUTPUT"
+      # echo "destroy_resources=$(echo ${{ inputs.destroy_resources }} )" >> "$GITHUB_OUTPUT"
 
         shell: bash
 
@@ -125,20 +102,20 @@ jobs:
     runs-on: spot #codebuild-acebox-runners-${{ github.run_id }}-${{ github.run_attempt }}
 
     env:
-      DESTROY_RESOURCES: ${{ needs.preparation.outputs.destroy_resources }} # Set to "true" to enable resource destruction
-      TF_VAR_dt_tenant: ${{ github.event.inputs.dt_tenant != '' && github.event.inputs.dt_tenant || vars.DT_TENANT }}
-      TF_VAR_dt_api_token: ${{ github.event.inputs.dt_api_token != '' && github.event.inputs.dt_api_token || secrets.DT_API_TOKEN }}
-      TF_VAR_custom_domain: ${{ github.event.inputs.custom_domain != '' && github.event.inputs.custom_domain || '' }}
+      DESTROY_RESOURCES: ${{ inputs.destroy_resources }} # Set to "true" to enable resource destruction
+      TF_VAR_dt_tenant: ${{ inputs.dt_tenant != '' && inputs.dt_tenant || vars.DT_TENANT }}
+      TF_VAR_dt_api_token: ${{ secrets.dt_api_token != '' && secrets.dt_api_token || inputs.dt_api_token }}
+      TF_VAR_custom_domain: ${{ inputs.custom_domain != '' && inputs.custom_domain || '' }}
       TF_VAR_otel_export_enable: "true"
       TF_VAR_name_prefix: "gh-actions-ace-box"
       TF_VAR_skip_domain_workspace_alignment: "true"
       TF_VAR_extra_vars: |
         {
-          "dt_environment_url_gen3": "${{ github.event.inputs.dt_url_gen3 != '' && github.event.inputs.dt_url_gen3 || vars.DT_URL_GEN3 }}",
-          "dt_oauth_sso_endpoint": "${{ vars.DT_OAUTH_SSO_ENDPOINT }}",
-          "dt_oauth_client_id": "${{ secrets.DT_OAUTH_CLIENT_ID }}",
-          "dt_oauth_client_secret": "${{ secrets.DT_OAUTH_CLIENT_SECRET }}",
-          "dt_oauth_account_urn": "${{ vars.DT_OAUTH_ACCOUNT_URN }}",
+          "dt_environment_url_gen3": "${{ inputs.dt_url_gen3 != '' && inputs.dt_url_gen3 || vars.DT_URL_GEN3 }}",
+          "dt_oauth_sso_endpoint": "${{ inputs.dt_oauth_sso_endpoint }}",
+          "dt_oauth_client_id": "${{ secrets.dt_oauth_client_id }}",
+          "dt_oauth_client_secret": "${{ secrets.dt_oauth_client_secret }}",
+          "dt_oauth_account_urn": "${{ inputs.dt_oauth_account_urn }}",
         }
 
     strategy:
@@ -221,8 +198,8 @@ jobs:
       - name: Create Backend Config for gcloud
         if: matrix.provider == 'gcloud'
         run: |
-          if [ ${{ env.DESTROY_RESOURCES }} == false ] || [ -n "${{ github.event.inputs.custom_domain }}" ]; then
-            prefix="${{ matrix.backend_config_prefix }}/${{ matrix.use_case }}/${{ github.event.inputs.custom_domain }}"
+          if [ ${{ env.DESTROY_RESOURCES }} == false ] || [ -n "${{ inputs.custom_domain }}" ]; then
+            prefix="${{ matrix.backend_config_prefix }}/${{ matrix.use_case }}/${{ inputs.custom_domain }}"
           else
             prefix="${{ matrix.backend_config_prefix }}/${{ matrix.use_case }}/${{ github.run_id }}"
           fi
@@ -304,14 +281,14 @@ jobs:
       - name: Delete GCS objects with specific prefix
         if: always() && env.DESTROY_RESOURCES != false && matrix.provider == 'gcloud'
         run: |
-          if [ -n "${{ github.event.inputs.custom_domain }}" ]; then
-            prefix="${{ matrix.backend_config_prefix }}/${{ matrix.use_case }}/${{ github.event.inputs.custom_domain }}"
+          if [ -n "${{ inputs.custom_domain }}" ]; then
+            prefix="${{ matrix.backend_config_prefix }}/${{ matrix.use_case }}/${{ inputs.custom_domain }}"
           else
             prefix="${{ matrix.backend_config_prefix }}/${{ matrix.use_case }}/${{ github.run_id }}"
           fi
           gsutil rm -r gs://${{ matrix.backend_config_bucket }}/${prefix}
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS_JSON }}
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.gcp_credentials_json }}
 
   update-pr-status:
     needs: apply

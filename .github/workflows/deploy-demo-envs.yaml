@@ -63,7 +63,10 @@ jobs:
       custom_domain: ${{ github.event.inputs.custom_domain_sprint }}
       dt_tenant: ${{ github.event.inputs.dt_tenant_sprint }}
       dt_url_gen3: ${{ github.event.inputs.dt_url_gen3_sprint }}
-
+      dt_oauth_sso_endpoint: ${{ vars.DT_OAUTH_SSO_ENDPOINT }}
+      dt_oauth_client_id: ${{ secrets.DT_OAUTH_CLIENT_ID }}
+      dt_oauth_client_secret: ${{ secrets.DT_OAUTH_CLIENT_SECRET }}
+      dt_oauth_account_urn: ${{ vars.DT_OAUTH_ACCOUNT_URN }}
     secrets:
       dt_api_token: ${{ secrets.DT_API_TOKEN_SPRINT_XXO38725 }}
       gcp_credentials_json: '${{ secrets.GCP_CREDENTIALS_JSON }}'
