@@ -30,32 +30,16 @@ on:
         description: "Dynatrace Tenant"
         required: false
         default: ""
-      dt_api_token:
-        description: "Dynatrace API Token"
-        required: false
-        default: ""
       dt_url_gen3:
         description: "Dynatrace Environment URL Gen3"
         required: false
         default: ""
 
-      # dt_oauth_sso_endpoint:
-      #   description: "Dynatrace OAuth SSO Endpoint"
-      #   required: false
-      #   default: ""
-      # dt_oauth_client_id:
-      #   description: "Dynatrace OAuth Client ID"
-      #   required: false
-      #   default: ""
-      # dt_oauth_client_secret:
-      #   description: "Dynatrace OAuth Client Secret"
-      #   required: false
-      #   default: ""
-      # dt_oauth_account_urn:
-      #   description: "Dynatrace OAuth Account URN"
-      #   required: false
-      #   default: ""
-
+    secrets:
+      dt_api_token:
+        description: "Dynatrace API Token"
+        required: false
+        default: ""
 
 # concurrency:
 #   group: ${{ github.workflow }}-${{ github.run_id }}
