@@ -45,7 +45,7 @@ on:
         description: "Dynatrace API Token"
         required: false
         type: string
-        
+
     secrets:
       gcp_credentials_json:
         description: "GCP Credentials JSON"
@@ -71,6 +71,7 @@ jobs:
     outputs:
       use_cases: ${{ steps.set_outputs.outputs.use_cases }}
       providers: ${{ steps.set_outputs.outputs.providers }}
+      TF_VAR_dt_api_token: ${{ steps.set_outputs.outputs.TF_VAR_dt_api_token }}
     steps:
       - name: Parse Inputs
         id: parse_inputs
@@ -79,6 +80,7 @@ jobs:
           echo ${{ env.DEFAULT_USE_CASES }}
           echo "use_cases=$(echo '${{ inputs.use_cases }}' )" >> "$GITHUB_ENV"
           echo "providers=$(echo '${{ inputs.providers }}' )" >> "$GITHUB_ENV"
+          echo "TF_VAR_dt_api_token=$(echo '${{ inputs.dt_api_token }}' )" >> "$GITHUB_ENV"
         shell: bash
 
       - name: Set Outputs
@@ -86,6 +88,7 @@ jobs:
         run: |
           echo "use_cases=$(echo '${{ inputs.use_cases }}' )" >> "$GITHUB_OUTPUT"
           echo "providers=$(echo '${{ inputs.providers }}' )" >> "$GITHUB_OUTPUT"
+          echo "TF_VAR_dt_api_token=$(echo '${{ inputs.dt_api_token }}' )" >> "$GITHUB_OUTPUT"
         shell: bash
 
   apply:
@@ -95,7 +98,7 @@ jobs:
     env:
       # DESTROY_RESOURCES: ${{ inputs.destroy_resources }} # Set to "true" to enable resource destruction
       TF_VAR_dt_tenant: ${{ inputs.dt_tenant != '' && inputs.dt_tenant || vars.DT_TENANT }}
-      TF_VAR_dt_api_token: ${{ inputs.dt_api_token }}
+      TF_VAR_dt_api_token: ${{ needs.preparation.outputs.TF_VAR_dt_api_token }}
       TF_VAR_custom_domain: ${{ inputs.custom_domain != '' && inputs.custom_domain || '' }}
       TF_VAR_otel_export_enable: "true"
       TF_VAR_name_prefix: "gh-actions-ace-box"
