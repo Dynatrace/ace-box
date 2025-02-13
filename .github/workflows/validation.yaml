@@ -61,7 +61,7 @@ jobs:
         run: |
           echo ${{ github.event.inputs.use_cases }}
           echo ${{ env.DEFAULT_USE_CASES }}
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+          if [[ "${{ github.event_name }}" == "workflow_call" ]]; then
             echo "use_cases=$(echo '${{ github.event.inputs.use_cases }}' )" >> "$GITHUB_ENV"
             echo "providers=$(echo '${{ github.event.inputs.providers }}' )" >> "$GITHUB_ENV"
             echo "destroy_resources=$(echo '${{ github.event.inputs.destroy_resources }}' )" >> "$GITHUB_ENV"
@@ -78,7 +78,7 @@ jobs:
       - name: Set Outputs
         id: set_outputs
         run: |
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+          if [[ "${{ github.event_name }}" == "workflow_call" ]]; then
             echo "use_cases=$(echo '${{ github.event.inputs.use_cases }}' )" >> "$GITHUB_OUTPUT"
             echo "providers=$(echo '${{ github.event.inputs.providers }}' )" >> "$GITHUB_OUTPUT"
             echo "destroy_resources=$(echo '${{ github.event.inputs.destroy_resources }}' )" >> "$GITHUB_OUTPUT"
