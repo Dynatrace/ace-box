@@ -73,21 +73,21 @@ jobs:
         id: set_env
         run: |
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            echo "use_cases=${{ github.event.inputs.use_cases }}" >> $GITHUB_ENV
-            echo "providers=${{ github.event.inputs.providers }}" >> $GITHUB_ENV
-            echo "destroy_resources=${{ github.event.inputs.destroy_resources }}" >> $GITHUB_ENV
-            echo "custom_domain=${{ github.event.inputs.custom_domain }}" >> $GITHUB_ENV
-            echo "dt_tenant=${{ github.event.inputs.dt_tenant != '' && github.event.inputs.dt_tenant || vars.DT_TENANT }}" >> $GITHUB_ENV
-            echo "dt_url_gen3=${{ github.event.inputs.dt_url_gen3 != '' && github.event.inputs.dt_url_gen3 || vars.DT_URL_GEN3 }}" >> $GITHUB_ENV
-            echo "dt_api_token=${{ github.event.inputs.dt_api_token != '' && github.event.inputs.dt_api_token || secrets.DT_API_TOKEN }}" >> $GITHUB_ENV
+          echo "use_cases=${{ github.event.inputs.use_cases }}" >> $GITHUB_ENV
+          echo "providers=${{ github.event.inputs.providers }}" >> $GITHUB_ENV
+          echo "destroy_resources=${{ github.event.inputs.destroy_resources }}" >> $GITHUB_ENV
+          echo "custom_domain=${{ github.event.inputs.custom_domain }}" >> $GITHUB_ENV
+          echo "dt_tenant=${{ github.event.inputs.dt_tenant != '' && github.event.inputs.dt_tenant || env.DT_TENANT }}" >> $GITHUB_ENV
+          echo "dt_url_gen3=${{ github.event.inputs.dt_url_gen3 != '' && github.event.inputs.dt_url_gen3 || env.DT_URL_GEN3 }}" >> $GITHUB_ENV
+          echo "dt_api_token=${{ github.event.inputs.dt_api_token != '' && github.event.inputs.dt_api_token || env.DT_API_TOKEN }}" >> $GITHUB_ENV
           else
-            echo "use_cases=${{ env.DEFAULT_USE_CASES }}" >> $GITHUB_ENV
-            echo "providers=${{ env.DEFAULT_PROVIDERS }}" >> $GITHUB_ENV
-            echo "destroy_resources=${{ env.DESTROY_RESOURCES }}" >> $GITHUB_ENV
-            echo "custom_domain=${{ env.DEFAULT_CUSTOM_DOMAIN }}" >> $GITHUB_ENV
-            echo "dt_tenant=${{ env.DT_TENANT }}" >> $GITHUB_ENV
-            echo "dt_url_gen3=${{ env.DT_URL_GEN3 }}" >> $GITHUB_ENV
-            echo "dt_api_token=${{ env.DT_API_TOKEN }}" >> $GITHUB_ENV
+          echo "use_cases=${{ env.DEFAULT_USE_CASES }}" >> $GITHUB_ENV
+          echo "providers=${{ env.DEFAULT_PROVIDERS }}" >> $GITHUB_ENV
+          echo "destroy_resources=${{ env.DESTROY_RESOURCES }}" >> $GITHUB_ENV
+          echo "custom_domain=${{ env.DEFAULT_CUSTOM_DOMAIN }}" >> $GITHUB_ENV
+          echo "dt_tenant=${{ env.DT_TENANT }}" >> $GITHUB_ENV
+          echo "dt_url_gen3=${{ env.DT_URL_GEN3 }}" >> $GITHUB_ENV
+          echo "dt_api_token=${{ env.DT_API_TOKEN }}" >> $GITHUB_ENV
 
   test_demo_usecases:
     needs: set_env_vars
