@@ -61,32 +61,56 @@ jobs:
   set_env_vars:
     runs-on: spot
     outputs:
-      use_cases: ${{ steps.set_env.outputs.use_cases }}
-      providers: ${{ steps.set_env.outputs.providers }}
-      destroy_resources: ${{ steps.set_env.outputs.destroy_resources }}
-      custom_domain: ${{ steps.set_env.outputs.custom_domain }}
-      dt_tenant: ${{ steps.set_env.outputs.dt_tenant }}
-      dt_url_gen3: ${{ steps.set_env.outputs.dt_url_gen3 }}
-      dt_api_token: ${{ steps.set_env.outputs.dt_api_token }}
+      use_cases: ${{ steps.set_outputs.outputs.use_cases }}
+      providers: ${{ steps.set_outputs.outputs.providers }}
+      destroy_resources: ${{ steps.set_outputs.outputs.destroy_resources }}
+      custom_domain: ${{ steps.set_outputs.outputs.custom_domain }}
+      dt_tenant: ${{ steps.set_outputs.outputs.dt_tenant }}
+      dt_url_gen3: ${{ steps.set_outputs.outputs.dt_url_gen3 }}
+      dt_api_token: ${{ steps.set_outputs.outputs.dt_api_token }}
     steps:
       - name: Set Environment Variables
         id: set_env
-        env:
-          USE_CASES: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.use_cases || env.DEFAULT_USE_CASES }}
-          PROVIDERS: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.providers || env.DEFAULT_PROVIDERS }}
-          DESTROY_RESOURCES: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.destroy_resources || env.DEFAULT_DESTROY_RESOURCES }}
-          CUSTOM_DOMAIN: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.custom_domain || env.DEFAULT_CUSTOM_DOMAIN }}
-          DT_TENANT: ${{ github.event_name == 'workflow_dispatch' && (github.event.inputs.dt_tenant != '' && github.event.inputs.dt_tenant || env.DT_TENANT) || env.DT_TENANT }}
-          DT_URL_GEN3: ${{ github.event_name == 'workflow_dispatch' && (github.event.inputs.dt_url_gen3 != '' && github.event.inputs.dt_url_gen3 || env.DT_URL_GEN3) || env.DT_URL_GEN3 }}
-          DT_API_TOKEN: ${{ github.event_name == 'workflow_dispatch' && (github.event.inputs.dt_api_token != '' && github.event.inputs.dt_api_token || env.DT_API_TOKEN) || env.DT_API_TOKEN }}
         run: |
-          echo "USE_CASES=${USE_CASES}"
-          echo "PROVIDERS=${PROVIDERS}"
-          echo "DESTROY_RESOURCES=${DESTROY_RESOURCES}"
-          echo "CUSTOM_DOMAIN=${CUSTOM_DOMAIN}"
-          echo "DT_TENANT=${DT_TENANT}"
-          echo "DT_URL_GEN3=${DT_URL_GEN3}"
-          echo "DT_API_TOKEN=${DT_API_TOKEN}"
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "use_cases=$(echo '${{ github.event.inputs.use_cases }}' )" >> "$GITHUB_ENV"
+            echo "providers=$(echo '${{ github.event.inputs.providers }}' )" >> "$GITHUB_ENV"
+            echo "destroy_resources=$(echo '${{ github.event.inputs.destroy_resources }}' )" >> "$GITHUB_ENV"
+            echo "custom_domain=$(echo '${{ github.event.inputs.custom_domain }}' )" >> "$GITHUB_ENV"
+            echo "dt_tenant=$(echo '${{ github.event.inputs.dt_tenant }}' )" >> "$GITHUB_ENV"
+            echo "dt_url_gen3=$(echo '${{ github.event.inputs.dt_url_gen3 }}' )" >> "$GITHUB_ENV"
+            echo "dt_api_token=$(echo '${{ github.event.inputs.dt_api_token }}' )" >> "$GITHUB_ENV"
+          else
+            echo "use_cases=${{ env.DEFAULT_USE_CASES }}" >> "$GITHUB_ENV"
+            echo "providers=${{ env.DEFAULT_PROVIDERS }}" >> "$GITHUB_ENV"
+            echo "destroy_resources=${{ env.DESTROY_RESOURCES }}" >> "$GITHUB_ENV"
+            echo "custom_domain=${{ env.DEFAULT_CUSTOM_DOMAIN }}" >> "$GITHUB_ENV"
+            echo "dt_tenant=${{ env.DT_TENANT }}" >> "$GITHUB_ENV"
+            echo "dt_url_gen3=${{ env.DT_URL_GEN3 }}" >> "$GITHUB_ENV"
+            echo "dt_api_token=${{ env.DT_API_TOKEN }}" >> "$GITHUB_ENV"
+          fi
+
+      - name: Set Outputs
+        id: set_outputs
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "use_cases=$(echo '${{ github.event.inputs.use_cases }}' )" >> "$GITHUB_OUTPUT"
+            echo "providers=$(echo '${{ github.event.inputs.providers }}' )" >> "$GITHUB_OUTPUT"
+            echo "destroy_resources=$(echo '${{ github.event.inputs.destroy_resources }}' )" >> "$GITHUB_OUTPUT"
+            echo "custom_domain=$(echo '${{ github.event.inputs.custom_domain }}' )" >> "$GITHUB_OUTPUT"
+            echo "dt_tenant=$(echo '${{ github.event.inputs.dt_tenant }}' )" >> "$GITHUB_OUTPUT"
+            echo "dt_url_gen3=$(echo '${{ github.event.inputs.dt_url_gen3 }}' )" >> "$GITHUB_OUTPUT"
+            echo "dt_api_token=$(echo '${{ github.event.inputs.dt_api_token }}' )" >> "$GITHUB_OUTPUT"
+          else
+            echo "use_cases=${{ env.DEFAULT_USE_CASES }}" >> "$GITHUB_OUTPUT"
+            echo "providers=${{ env.DEFAULT_PROVIDERS }}" >> "$GITHUB_OUTPUT"
+            echo "destroy_resources=${{ env.DESTROY_RESOURCES }}" >> "$GITHUB_OUTPUT"
+            echo "custom_domain=${{ env.DEFAULT_CUSTOM_DOMAIN }}" >> "$GITHUB_OUTPUT"
+            echo "dt_tenant=${{ env.DT_TENANT }}" >> "$GITHUB_OUTPUT"
+            echo "dt_url_gen3=${{ env.DT_URL_GEN3 }}" >> "$GITHUB_OUTPUT"
+            echo "dt_api_token=${{ env.DT_API_TOKEN }}" >> "$GITHUB_OUTPUT"
+          fi
+        shell: bash
 
 
   test_demo_usecases:
