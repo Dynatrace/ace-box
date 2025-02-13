@@ -1,0 +1,169 @@
+name: "Validation workflow with Terraform"
+description: "Validation workflow with Terraform"
+author: Emre Dogan
+inputs:
+  use_cases:
+    description: 'Enter the use cases to run (comma-separated). Example: ["demo_ar_workflows_gitlab","demo_ar_workflows_ansible"]'
+    required: true
+    default: '["demo_all"]'
+    type: string
+  providers:
+    description: 'Select the providers to run (comma-separated). Example: ["gcloud","aws"]'
+    required: true
+    default: '["gcloud"]'
+    type: string
+
+  destroy_resources:
+    description: 'Set to "true" to enable resource destruction'
+    required: true
+    default: 'true'
+    type: string
+  custom_domain:
+    description: "Custom Domain Name"
+    required: false
+    default: ""
+
+  # optional params for manual run
+  dt_tenant:
+    description: "Dynatrace Tenant"
+    required: false
+    default: ""
+  dt_api_token:
+    description: "Dynatrace API Token"
+    required: false
+    default: ""
+  dt_url_gen3:
+    description: "Dynatrace Environment URL Gen3"
+    required: false
+    default: ""
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Install Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y unzip nodejs
+
+    - name: Debug Environment Variables
+      run: |
+        echo "DESTROY_RESOURCES=${{ env.DESTROY_RESOURCES }}"
+        echo "TF_VAR_dt_tenant=${{ env.TF_VAR_dt_tenant }}"
+        echo "TF_VAR_dt_api_token=${{ env.TF_VAR_dt_api_token }}"
+        echo "TF_VAR_custom_domain=${{ env.TF_VAR_custom_domain }}"
+        echo "TF_VAR_otel_export_enable=${{ env.TF_VAR_otel_export_enable }}"
+        echo "TF_VAR_name_prefix=${{ env.TF_VAR_name_prefix }}"
+        echo "TF_VAR_skip_domain_workspace_alignment=${{ env.TF_VAR_skip_domain_workspace_alignment }}"
+        echo "TF_VAR_extra_vars=${{ env.TF_VAR_extra_vars }}"
+
+    # gcloud specific steps
+    - name: 'auth'
+      if: matrix.provider == 'gcloud'
+      uses: 'google-github-actions/auth@v2'
+      with:
+        credentials_json: '${{ secrets.GCP_CREDENTIALS_JSON }}'
+
+    - name: 'Set up Cloud SDK'
+      if: matrix.provider == 'gcloud'
+      uses: 'google-github-actions/setup-gcloud@v2'
+
+    - name: 'Use gcloud CLI'
+      if: matrix.provider == 'gcloud'
+      run: 'gcloud info'
+
+    - name: Create Backend Config for gcloud
+      if: matrix.provider == 'gcloud'
+      run: |
+        if [ ${{ env.DESTROY_RESOURCES }} == 'false' ] || [ -n "${{ github.event.inputs.custom_domain }}" ]; then
+          prefix="${{ matrix.backend_config_prefix }}/${{ matrix.use_case }}/${{ github.event.inputs.custom_domain }}"
+        else
+          prefix="${{ matrix.backend_config_prefix }}/${{ matrix.use_case }}/${{ github.run_id }}"
+        fi
+        echo 'terraform {
+          backend "gcs" {
+            bucket = "${{ matrix.backend_config_bucket }}"
+            prefix = "'$prefix'"
+          }
+        }' > ${{ matrix.working_directory }}/backend.tf
+        echo "backend.tf created"
+        cat ${{ matrix.working_directory }}/backend.tf
+
+
+    # aws specific steps
+    - name: Configure AWS Credentials
+      if: matrix.provider == 'aws'
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ matrix.aws_region }}
+
+    - name: Create Backend Config for aws
+      if: matrix.provider == 'aws'
+      run: |
+        echo 'terraform {
+          backend "s3" {
+            bucket         = "${{ matrix.backend_config_bucket }}"
+            key            = "${{ matrix.backend_config_key }}"
+            region         = "${{ matrix.backend_config_region }}"
+            encrypt        = true
+            dynamodb_table = "${{ matrix.backend_config_dynamodb_table }}"
+          }
+        }' > ${{ matrix.working_directory }}/backend.tf
+        echo "backend.tf created"
+        cat ${{ matrix.working_directory }}/backend.tf
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: 1.9
+
+    - name: Terraform Init
+      run: terraform init 
+      working-directory: ${{ matrix.working_directory }}
+
+    - name: Terraform Plan
+      run: terraform plan -out=tfplan -lock=false -replace="null_resource.provisioner_ace_enable" -var="gcloud_project=${{ matrix.gcloud_project }}" -var="gcloud_zone=${{ matrix.gcloud_zone }}" -var="acebox_size=${{ matrix.acebox_size }}" -var="managed_zone_name=${{ matrix.managed_zone_name }}" -var="use_case=${{ matrix.use_case }}"
+      working-directory: ${{ matrix.working_directory }}
+
+    - name: Terraform Apply
+      run: |
+        retries=2
+        count=0
+        until terraform apply -auto-approve -lock=false tfplan; do
+          exit_code=$?
+          count=$((count + 1))
+          if [ $count -ge $retries ]; then
+            echo "Terraform apply failed after $count attempts."
+            exit $exit_code
+          fi
+          echo "Retrying terraform apply... ($count/$retries)"
+          terraform plan -out=tfplan -lock=false -replace="null_resource.provisioner_ace_enable" -var="gcloud_project=${{ matrix.gcloud_project }}" -var="gcloud_zone=${{ matrix.gcloud_zone }}" -var="acebox_size=${{ matrix.acebox_size }}" -var="managed_zone_name=${{ matrix.managed_zone_name }}" -var="use_case=${{ matrix.use_case }}"
+          sleep 10
+        done
+      working-directory: ${{ matrix.working_directory }}
+
+    - name: Run Tests
+      run: |
+        # Add your test commands here
+        echo "Running tests..."
+        # Example: curl -f http://your-service-url/health || exit 1
+
+    - name: Conditional Terraform Destroy
+      if: always() && env.DESTROY_RESOURCES  == 'true'
+      run: terraform destroy -auto-approve -lock=false  -var="gcloud_project=${{ matrix.gcloud_project }}" -var="gcloud_zone=${{ matrix.gcloud_zone }}" -var="acebox_size=${{ matrix.acebox_size }}" -var="managed_zone_name=${{ matrix.managed_zone_name }}" -var="use_case=${{ matrix.use_case }}"
+      working-directory: ${{ matrix.working_directory }}
+
+    - name: Delete GCS objects with specific prefix
+      if: always() && env.DESTROY_RESOURCES == 'true' && matrix.provider == 'gcloud'
+      run: |
+        if [ -n "${{ github.event.inputs.custom_domain }}" ]; then
+          prefix="${{ matrix.backend_config_prefix }}/${{ matrix.use_case }}/${{ github.event.inputs.custom_domain }}"
+        else
+          prefix="${{ matrix.backend_config_prefix }}/${{ matrix.use_case }}/${{ github.run_id }}"
+        fi
+        gsutil rm -r gs://${{ matrix.backend_config_bucket }}/${prefix}
+      env:
+        GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS_JSON }}

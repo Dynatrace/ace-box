@@ -1,0 +1,60 @@
+name: "Update PR Status"
+description: "Update PR Status"
+author: Emre Dogan
+inputs:
+  use_cases:
+    description: 'Enter the use cases to run (comma-separated). Example: ["demo_ar_workflows_gitlab","demo_ar_workflows_ansible"]'
+    required: true
+    default: '["demo_all"]'
+    type: string
+  providers:
+    description: 'Select the providers to run (comma-separated). Example: ["gcloud","aws"]'
+    required: true
+    default: '["gcloud"]'
+    type: string
+
+  destroy_resources:
+    description: 'Set to "true" to enable resource destruction'
+    required: true
+    default: 'true'
+    type: string
+  custom_domain:
+    description: "Custom Domain Name"
+    required: false
+    default: ""
+
+  # optional params for manual run
+  dt_tenant:
+    description: "Dynatrace Tenant"
+    required: false
+    default: ""
+  dt_api_token:
+    description: "Dynatrace API Token"
+    required: false
+    default: ""
+  dt_url_gen3:
+    description: "Dynatrace Environment URL Gen3"
+    required: false
+    default: ""
+runs:
+  using: "composite"
+  steps:
+    - name: Update PR Status
+    uses: actions/github-script@v4
+    with:
+      script: |
+        const prNumber = context.payload.pull_request.number;
+        const repo = context.repo.repo;
+        const owner = context.repo.owner;
+        await github.issues.createComment({
+          owner,
+          repo,
+          issue_number: prNumber,
+          body: 'demo_all use case validations passed'
+        });
+        await github.pulls.update({
+          owner,
+          repo,
+          pull_number: prNumber,
+          state: 'open'
+        });

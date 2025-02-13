@@ -1,8 +1,13 @@
-name: Reusable usecase validations
+name: Usecase validations
 
 on:
 
-  workflow_call: # Allows manual triggering of the workflow
+  pull_request:
+    branches:
+      - dev
+      # - demo-envs
+  
+  workflow_dispatch: # Allows manual triggering of the workflow
     inputs:
       use_cases:
         description: 'Enter the use cases to run (comma-separated). Example: ["demo_ar_workflows_gitlab","demo_ar_workflows_ansible"]'
@@ -57,9 +62,9 @@ on:
       #   default: ""
 
 
-# concurrency:
-#   group: ${{ github.workflow }}-${{ github.run_id }}
-#   cancel-in-progress: false
+concurrency:
+  group: ${{ github.workflow }}-${{ github.run_id }}
+  cancel-in-progress: false
 
 jobs:
 
