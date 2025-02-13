@@ -39,9 +39,11 @@ on:
         required: false
         type: string
 
+    secrets:
       dt_api_token:
         description: "Dynatrace API Token"
         required: false
+        # type: string
 
 
   workflow_dispatch: # Allows manual triggering of the workflow
