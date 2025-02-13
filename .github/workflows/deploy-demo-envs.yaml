@@ -72,7 +72,7 @@ jobs:
                 "dt_url_gen3": "${{ github.event.inputs.dt_url_gen3_sprint }}"
               }
             }
-EOF
+          EOF
 
   deploy_sprint:
     needs: destroy_sprint
