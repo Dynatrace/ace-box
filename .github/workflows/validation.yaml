@@ -145,7 +145,7 @@ jobs:
             acebox_size: "n2-standard-16"
             managed_zone_name: "ace-innovation-info"
             backend_config_bucket: "ace-box-tf-state"
-            backend_config_prefix: "http"
+            backend_config_prefix: "ace-box"
           # gcloud test with http
         #   - provider: gcloud
         #     working_directory: ./terraform/gcloud
