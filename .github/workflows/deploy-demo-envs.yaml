@@ -47,7 +47,7 @@ on:
 
 jobs:
   destroy_sprint:
-    uses: ./.github/workflows/reusable-validation.yaml
+    uses: ./.github/workflows/validation.yaml
     with:
       use_cases: ${{ github.event.inputs.use_cases_for_both }}
       providers: ${{ github.event.inputs.providers_for_both }}
