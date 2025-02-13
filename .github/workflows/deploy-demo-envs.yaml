@@ -1,0 +1,106 @@
+name: Deploy Demo Environments
+
+on:
+
+  push:
+    tags:
+      - '*'
+
+  workflow_dispatch:
+    inputs:
+      # shared vars for both environments
+      use_cases_for_both:
+        description: 'Enter the use cases to run for initial run (comma-separated). Example: ["demo_ar_workflows_gitlab","demo_ar_workflows_ansible"]'
+        required: true
+        default: '["demo_all"]'
+      providers_for_both:
+        description: 'Select the providers to run for initial run (comma-separated). Example: ["gcloud","aws"]'
+        required: true
+        default: '["gcloud"]'
+      # sprint  
+      custom_domain_sprint:
+        description: "Custom Domain Name for Sprint Environment"
+        required: true
+        default: "demo-sprint.ace-innovation.info"
+      dt_tenant_sprint:
+        description: "Dynatrace tenant (Gen2) for Sprint Environment"
+        required: true
+        default: "https://xxo38725.sprint.dynatracelabs.com"      
+      dt_url_gen3_sprint:
+        description: "Dynatrace tenant (Gen2) for Sprint Environment"
+        required: true
+        default: "https://xxo38725.sprint.apps.dynatracelabs.com"   
+
+      # live
+      custom_domain_live:
+        description: "Custom Domain Name for Live Environment"
+        required: true
+        default: "demo-sprint.ace-innovation.info"
+      dt_tenant_live:
+        description: "Dynatrace tenant (Gen2) for Sprint Environment"
+        required: true
+        default: "https://dhg95339.sprint.dynatracelabs.com"      
+      dt_url_gen3_live:
+        description: "Dynatrace tenant (Gen2) for Sprint Environment"
+        required: true
+        default: "https://dhg95339.sprint.apps.dynatracelabs.com"     
+
+jobs:
+  destroy_sprint:
+    runs-on: spot
+    steps:
+      - name: Call validation workflow for destroying Sprint environment
+        uses: ./.github/workflows/validation.yaml
+        with:
+          use_cases: ${{ github.event.inputs.use_cases_for_both }}
+          providers: ${{ github.event.inputs.providers_for_both }}
+          destroy_resources: 'true'
+          custom_domain: ${{ github.event.inputs.custom_domain_sprint }}
+          dt_tenant: ${{ github.event.inputs.dt_tenant_sprint }}
+          dt_api_token: ${{ secrets.DT_API_TOKEN_SPRINT_xxo38725 }}
+          dt_url_gen3: ${{ github.event.inputs.dt_url_gen3_sprint }}
+
+  deploy_sprint:
+    needs: destroy_sprint
+    runs-on: spot
+    steps:
+      - name: Call validation workflow for provisioning Sprint environment
+        uses: ./.github/workflows/validation.yaml
+        with:
+          use_cases: ${{ github.event.inputs.use_cases_for_both }}
+          providers: ${{ github.event.inputs.providers_for_both }}
+          destroy_resources: 'false'
+          custom_domain: ${{ github.event.inputs.custom_domain_sprint }}
+          dt_tenant: ${{ github.event.inputs.dt_tenant_sprint }}
+          dt_api_token: ${{ secrets.DT_API_TOKEN_SPRINT_xxo38725 }}
+          dt_url_gen3: ${{ github.event.inputs.dt_url_gen3_sprint }}
+
+  destroy_live:
+    needs: deploy_sprint
+    runs-on: spot
+    steps:
+      - name: Call validation workflow for destroying Live environment
+        uses: ./.github/workflows/validation.yaml
+        with:
+          use_cases: ${{ github.event.inputs.use_cases_for_both }}
+          providers: ${{ github.event.inputs.providers_for_both }}
+          destroy_resources: 'true'
+          custom_domain: ${{ github.event.inputs.custom_domain_live }}
+          dt_tenant: ${{ github.event.inputs.dt_tenant_live }}
+          dt_api_token: ${{ secrets.DT_API_TOKEN_LIVE_dhg95339 }}
+          dt_url_gen3: ${{ github.event.inputs.dt_url_gen3_live }}
+
+  deploy_live:
+    needs: destroy_live
+    runs-on: spot
+    steps:
+      - name: Call validation workflow for provisioning Live environment
+        uses: ./.github/workflows/validation.yaml
+        with:
+          use_cases: ${{ github.event.inputs.use_cases_for_both }}
+          providers: ${{ github.event.inputs.providers_for_both }}
+          destroy_resources: 'false'
+          custom_domain: ${{ github.event.inputs.custom_domain_live }}
+          dt_tenant: ${{ github.event.inputs.dt_tenant_live }}
+          dt_api_token: ${{ secrets.DT_API_TOKEN_LIVE_dhg95339 }}
+          dt_url_gen3: ${{ github.event.inputs.dt_url_gen3_live }}
