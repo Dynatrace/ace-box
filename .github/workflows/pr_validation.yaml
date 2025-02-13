@@ -45,20 +45,62 @@ on:
         default: ""
 
 
+env:
+  DEFAULT_USE_CASES: '["demo_all"]'
+  DEFAULT_PROVIDERS: '["gcloud"]'
+  DESTROY_RESOURCES: true
+  DEFAULT_CUSTOM_DOMAIN: ""
+  DT_TENANT: ${{ secrets.DT_TENANT }}
+  DT_URL_GEN3: ${{ secrets.DT_URL_GEN3 }}
+  DT_API_TOKEN: ${{ secrets.DT_API_TOKEN }}
+
 jobs:
+
+  set_env_vars:
+    runs-on: spot
+    outputs:
+      use_cases: ${{ steps.set_env.outputs.use_cases }}
+      providers: ${{ steps.set_env.outputs.providers }}
+      destroy_resources: ${{ steps.set_env.outputs.destroy_resources }}
+      custom_domain: ${{ steps.set_env.outputs.custom_domain }}
+      dt_tenant: ${{ steps.set_env.outputs.dt_tenant }}
+      dt_url_gen3: ${{ steps.set_env.outputs.dt_url_gen3 }}
+      dt_api_token: ${{ steps.set_env.outputs.dt_api_token }}
+    steps:
+      - name: Set Environment Variables
+        id: set_env
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "use_cases=${{ github.event.inputs.use_cases }}" >> $GITHUB_ENV
+            echo "providers=${{ github.event.inputs.providers }}" >> $GITHUB_ENV
+            echo "destroy_resources=${{ github.event.inputs.destroy_resources }}" >> $GITHUB_ENV
+            echo "custom_domain=${{ github.event.inputs.custom_domain }}" >> $GITHUB_ENV
+            echo "dt_tenant=${{ github.event.inputs.dt_tenant != '' && github.event.inputs.dt_tenant || vars.DT_TENANT }}" >> $GITHUB_ENV
+            echo "dt_url_gen3=${{ github.event.inputs.dt_url_gen3 != '' && github.event.inputs.dt_url_gen3 || vars.DT_URL_GEN3 }}" >> $GITHUB_ENV
+            echo "dt_api_token=${{ github.event.inputs.dt_api_token != '' && github.event.inputs.dt_api_token || secrets.DT_API_TOKEN }}" >> $GITHUB_ENV
+          else
+            echo "use_cases=${{ env.DEFAULT_USE_CASES }}" >> $GITHUB_ENV
+            echo "providers=${{ env.DEFAULT_PROVIDERS }}" >> $GITHUB_ENV
+            echo "destroy_resources=${{ env.DESTROY_RESOURCES }}" >> $GITHUB_ENV
+            echo "custom_domain=${{ env.DEFAULT_CUSTOM_DOMAIN }}" >> $GITHUB_ENV
+            echo "dt_tenant=${{ env.DT_TENANT }}" >> $GITHUB_ENV
+            echo "dt_url_gen3=${{ env.DT_URL_GEN3 }}" >> $GITHUB_ENV
+            echo "dt_api_token=${{ env.DT_API_TOKEN }}" >> $GITHUB_ENV
+
   test_demo_usecases:
+    needs: set_env_vars
     uses: ./.github/workflows/validation.yaml
     with:
-      use_cases: ${{ github.event.inputs.use_cases }}
-      providers: ${{ github.event.inputs.providers }}
-      destroy_resources: ${{ github.event.inputs.destroy_resources }}
-      custom_domain: ${{ github.event.inputs.custom_domain }}
-      dt_tenant: ${{  github.event.inputs.dt_tenant != '' && github.event.inputs.dt_tenant || vars.DT_TENANT }}
-      dt_url_gen3: ${{ github.event.inputs.dt_url_gen3 != '' && github.event.inputs.dt_url_gen3 || vars.DT_URL_GEN3 }}
+      use_cases: ${{ needs.set_env_vars.outputs.use_cases }}
+      providers: ${{ needs.set_env_vars.outputs.providers }}
+      destroy_resources: ${{ needs.set_env_vars.outputs.destroy_resources }}
+      custom_domain: ${{ needs.set_env_vars.outputs.custom_domain }}
+      dt_tenant: ${{ needs.set_env_vars.outputs.dt_tenant }}
+      dt_url_gen3: ${{ needs.set_env_vars.outputs.dt_url_gen3 }}
       dt_oauth_sso_endpoint: ${{ vars.DT_OAUTH_SSO_ENDPOINT }}
       dt_oauth_account_urn: ${{ vars.DT_OAUTH_ACCOUNT_URN }}
     secrets:
-      dt_api_token: ${{ github.event.inputs.dt_api_token != '' && github.event.inputs.dt_api_token || secrets.DT_API_TOKEN }}
-      gcp_credentials_json: '${{ secrets.GCP_CREDENTIALS_JSON }}'
+      dt_api_token: ${{ needs.set_env_vars.outputs.dt_api_token }}
+      gcp_credentials_json: ${{ secrets.GCP_CREDENTIALS_JSON }}
       dt_oauth_client_id: ${{ secrets.DT_OAUTH_CLIENT_ID }}
       dt_oauth_client_secret: ${{ secrets.DT_OAUTH_CLIENT_SECRET }}
