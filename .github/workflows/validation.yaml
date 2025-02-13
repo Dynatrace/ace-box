@@ -43,7 +43,7 @@ on:
       dt_api_token:
         description: "Dynatrace API Token"
         required: false
-      credentials_json:
+      gcp_credentials_json:
         description: "GCP Credentials JSON"
         required: false
 
@@ -208,7 +208,7 @@ jobs:
         if: matrix.provider == 'gcloud'
         uses: 'google-github-actions/auth@v2'
         with:
-          credentials_json: '${{ secrets.GCP_CREDENTIALS_JSON }}'
+          credentials_json: ${{ secrets.gcp_credentials_json }}
 
       - name: 'Set up Cloud SDK'
         if: matrix.provider == 'gcloud'

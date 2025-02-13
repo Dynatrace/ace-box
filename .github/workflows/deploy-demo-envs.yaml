@@ -66,7 +66,7 @@ jobs:
 
     secrets:
       dt_api_token: ${{ secrets.DT_API_TOKEN_SPRINT_XXO38725 }}
-      credentials_json: '${{ secrets.GCP_CREDENTIALS_JSON }}'
+      gcp_credentials_json: '${{ secrets.GCP_CREDENTIALS_JSON }}'
 
   # deploy_sprint:
   #   needs: destroy_sprint
