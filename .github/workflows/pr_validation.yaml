@@ -1,11 +1,9 @@
 name: Validate PRs with demo use cases
 
 on:
-
   pull_request:
     branches:
       - dev
-
   workflow_dispatch: # Allows manual triggering of the workflow
     inputs:
       use_cases:
