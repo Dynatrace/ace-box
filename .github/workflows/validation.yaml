@@ -23,23 +23,22 @@ on:
       custom_domain:
         description: "Custom Domain Name"
         required: false
-        default: ""
+        type: string
 
       # optional params for manual run
       dt_tenant:
         description: "Dynatrace Tenant"
         required: false
-        default: ""
+        type: string
       dt_url_gen3:
         description: "Dynatrace Environment URL Gen3"
         required: false
-        default: ""
+        type: string
 
     secrets:
       dt_api_token:
         description: "Dynatrace API Token"
         required: false
-        default: ""
 
 # concurrency:
 #   group: ${{ github.workflow }}-${{ github.run_id }}
