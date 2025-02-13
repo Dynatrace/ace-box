@@ -68,8 +68,8 @@ jobs:
     secrets:
       dt_api_token: ${{ secrets.DT_API_TOKEN_SPRINT_XXO38725 }}
       gcp_credentials_json: '${{ secrets.GCP_CREDENTIALS_JSON }}'
-      dt_oauth_client_id: ${{ secrets.DT_OAUTH_CLIENT_ID }}
-      dt_oauth_client_secret: ${{ secrets.DT_OAUTH_CLIENT_SECRET }}
+      # dt_oauth_client_id: ${{ secrets.DT_OAUTH_CLIENT_ID }}
+      # dt_oauth_client_secret: ${{ secrets.DT_OAUTH_CLIENT_SECRET }}
   # deploy_sprint:
   #   needs: destroy_sprint
   #   uses: ./.github/workflows/validation.yaml
