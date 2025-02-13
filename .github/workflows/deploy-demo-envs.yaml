@@ -54,5 +54,5 @@ jobs:
       destroy_resources: true
       custom_domain: ${{ github.event.inputs.custom_domain_sprint }}
       dt_tenant: ${{ github.event.inputs.dt_tenant_sprint }}
-      dt_api_token: ${{ secrets.DT_API_TOKEN_SPRINT_xxo38725 }}
+      dt_api_token: ${{ secrets.DT_API_TOKEN_SPRINT_XXO38725 }}
       dt_url_gen3: ${{ github.event.inputs.dt_url_gen3_sprint }}
