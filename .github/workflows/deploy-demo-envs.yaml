@@ -89,28 +89,38 @@ jobs:
       dt_oauth_client_id: ${{ secrets.DT_OAUTH_CLIENT_ID }}
       dt_oauth_client_secret: ${{ secrets.DT_OAUTH_CLIENT_SECRET }}
 
-  # destroy_live:
-  #   needs: deploy_sprint
-  #   uses: ./.github/workflows/validation.yaml
-  #   with:
-  #     use_cases: ${{ github.event.inputs.use_cases_for_both }}
-  #     providers: ${{ github.event.inputs.providers_for_both }}
-  #     destroy_resources: true
-  #     custom_domain: ${{ github.event.inputs.custom_domain_live }}
-  #     dt_tenant: ${{ github.event.inputs.dt_tenant_live }}
-  #     dt_url_gen3: ${{ github.event.inputs.dt_url_gen3_live }}
-  #     dt_api_token: ${{ secrets.DT_API_TOKEN_LIVE_dhg95339 }}
-  #   secrets: inherit
+  destroy_live:
+    needs: deploy_sprint
+    uses: ./.github/workflows/validation.yaml
+    with:
+      use_cases: ${{ github.event.inputs.use_cases_for_both }}
+      providers: ${{ github.event.inputs.providers_for_both }}
+      destroy_resources: true
+      custom_domain: ${{ github.event.inputs.custom_domain_live }}
+      dt_tenant: ${{ github.event.inputs.dt_tenant_live }}
+      dt_url_gen3: ${{ github.event.inputs.dt_url_gen3_live }}
+      dt_oauth_sso_endpoint: ${{ vars.DT_OAUTH_SSO_ENDPOINT }}
+      dt_oauth_account_urn: ${{ vars.DT_OAUTH_ACCOUNT_URN }}
+    secrets:
+      dt_api_token: ${{ secrets.DT_API_TOKEN_LIVE_dhg95339 }}
+      gcp_credentials_json: '${{ secrets.GCP_CREDENTIALS_JSON }}'
+      dt_oauth_client_id: ${{ secrets.DT_OAUTH_CLIENT_ID }}
+      dt_oauth_client_secret: ${{ secrets.DT_OAUTH_CLIENT_SECRET }}
 
-  # deploy_live:
-  #   needs: destroy_live
-  #   uses: ./.github/workflows/validation.yaml
-  #   with:
-  #     use_cases: ${{ github.event.inputs.use_cases_for_both }}
-  #     providers: ${{ github.event.inputs.providers_for_both }}
-  #     destroy_resources: false
-  #     custom_domain: ${{ github.event.inputs.custom_domain_live }}
-  #     dt_tenant: ${{ github.event.inputs.dt_tenant_live }}
-  #     dt_url_gen3: ${{ github.event.inputs.dt_url_gen3_live }}
-  #     dt_api_token: ${{ secrets.DT_API_TOKEN_LIVE_dhg95339 }}
-  #   secrets: inherit
+  deploy_live:
+    needs: destroy_live
+    uses: ./.github/workflows/validation.yaml
+    with:
+      use_cases: ${{ github.event.inputs.use_cases_for_both }}
+      providers: ${{ github.event.inputs.providers_for_both }}
+      destroy_resources: false
+      custom_domain: ${{ github.event.inputs.custom_domain_live }}
+      dt_tenant: ${{ github.event.inputs.dt_tenant_live }}
+      dt_url_gen3: ${{ github.event.inputs.dt_url_gen3_live }}
+      dt_oauth_sso_endpoint: ${{ vars.DT_OAUTH_SSO_ENDPOINT }}
+      dt_oauth_account_urn: ${{ vars.DT_OAUTH_ACCOUNT_URN }}
+    secrets:
+      dt_api_token: ${{ secrets.DT_API_TOKEN_LIVE_dhg95339 }}
+      gcp_credentials_json: '${{ secrets.GCP_CREDENTIALS_JSON }}'
+      dt_oauth_client_id: ${{ secrets.DT_OAUTH_CLIENT_ID }}
+      dt_oauth_client_secret: ${{ secrets.DT_OAUTH_CLIENT_SECRET }}

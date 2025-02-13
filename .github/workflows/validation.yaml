@@ -1,4 +1,4 @@
-name: Reusable usecase validations
+name: Reusable usecase provisioning
 
 on:
 
@@ -25,7 +25,6 @@ on:
         required: false
         type: string
 
-      # optional params for manual run
       dt_tenant:
         description: "Dynatrace Tenant"
         required: false
@@ -67,12 +66,11 @@ jobs:
   preparation:
     runs-on: spot #codebuild-acebox-runners-${{ github.run_id }}-${{ github.run_attempt }}
     env:
-      DEFAULT_USE_CASES: '[\"demo_all\"]' # '[\"demo_ar_workflows_gitlab\",\"demo_ar_workflows_ansible\"]'
+      DEFAULT_USE_CASES: '[\"demo_all\"]'
       DEFAULT_PROVIDERS: '[\"gcloud\"]'
     outputs:
       use_cases: ${{ steps.set_outputs.outputs.use_cases }}
       providers: ${{ steps.set_outputs.outputs.providers }}
-      # destroy_resources: ${{ steps.set_outputs.outputs.destroy_resources }}
     steps:
       - name: Parse Inputs
         id: parse_inputs
@@ -81,16 +79,13 @@ jobs:
           echo ${{ env.DEFAULT_USE_CASES }}
           echo "use_cases=$(echo '${{ inputs.use_cases }}' )" >> "$GITHUB_ENV"
           echo "providers=$(echo '${{ inputs.providers }}' )" >> "$GITHUB_ENV"
-      # echo "destroy_resources=$(echo ${{ inputs.destroy_resources }} )" >> "$GITHUB_ENV"
-
         shell: bash
+
       - name: Set Outputs
         id: set_outputs
         run: |
           echo "use_cases=$(echo '${{ inputs.use_cases }}' )" >> "$GITHUB_OUTPUT"
           echo "providers=$(echo '${{ inputs.providers }}' )" >> "$GITHUB_OUTPUT"
-      # echo "destroy_resources=$(echo ${{ inputs.destroy_resources }} )" >> "$GITHUB_OUTPUT"
-
         shell: bash
 
   apply:
@@ -233,6 +228,7 @@ jobs:
           echo "backend.tf created"
           cat ${{ matrix.working_directory }}/backend.tf
 
+      # terraform steps
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v1
         with:
@@ -286,6 +282,7 @@ jobs:
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.gcp_credentials_json }}
 
+# PR status update
   update-pr-status:
     needs: apply
     runs-on: spot #codebuild-acebox-runners-${{ github.run_id }}-${{ github.run_attempt }}
