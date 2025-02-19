@@ -36,6 +36,12 @@ Requires vars:
 Sets facts:
 - dt_app_id
 
+Optional vars:
+
+|Variable name|Description|
+|---|---|
+|app_validation|true/false, false by default. Switch to true if you want to validate if the app already exist in the tenant|
+
 ## validate-app-version
 
 Sets `dt_app_version` if a specific Dynatarce app is installed. `dt_app_version` is undefined if app isn't found. This task can be used to validate installation status of a required app and e.g. fail deployment early.

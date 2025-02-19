@@ -46,13 +46,9 @@
       Content-Type: "application/json"
       Authorization: "Bearer {{ dt_oauth_access_token }}"
   register: get_app_response_raw
-# - set_fact:
-#     dt_app_version: null
-#   when: get_app_response_raw.status == 404
-
-# - set_fact:
-#     dt_app_version: "{{ get_app_response_raw.json.version }}"
-#   when: get_app_response_raw.status == 200
+  until:  get_app_response_raw.json.id == dt_app_id
+  retries: 12          # check 12 times
+  delay: 300           # with 5min delay (total 60min)
 
 - set_fact:
     dt_app_version: "{{ get_app_response_raw.json.version | default(omit) }}"
