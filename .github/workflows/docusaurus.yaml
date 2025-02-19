@@ -2,9 +2,9 @@ name: Deploy Docusaurus to GitHub Pages
 
 on:
   workflow_dispatch:
-  # push:
-  #   branches:
-  #     - 810-feature-static-site-generator-for-project-documentation
+  push:
+    branches:
+      - 810-feature-static-site-generator-for-project-documentation
 
 jobs:
   build:
