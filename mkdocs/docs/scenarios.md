@@ -1,4 +1,4 @@
-# scenarios
+# Scenarios
 
 Already defined scenarios that can be deployed via the ACE-Box
 
