@@ -2,7 +2,7 @@ name: mkdocs
 on:
   push:
     branches:
-      - main
+      - 810-feature-static-site-generator-for-project-documentation
 jobs:
   deploy:
     runs-on: ubuntu-latest
