@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - ignore
-      # - 810-feature-static-site-generator-for-project-documentation
+      # - ignore
+      - 810-feature-static-site-generator-for-project-documentation
 
 jobs:
   build:
