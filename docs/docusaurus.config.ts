@@ -13,14 +13,15 @@ const config: Config = {
   url: 'https://github.com',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/docs/',
+  baseUrl: '/ace-box/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: 'Dynatrace', // Usually your GitHub org/user name.
   projectName: 'ace-box', // Usually your repo name.
   deploymentBranch: 'gh-pages',
-  onBrokenLinks: 'ignore',
+  // onBrokenLinks: 'ignore'
+  onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
 
   // Even if you don't use internationalization, you can use this field to set
