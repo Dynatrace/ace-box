@@ -1,9 +1,9 @@
 name: mkdocs
 on:
-  push:
-    branches:
-      - another-inexisting-branch
-      # - 810-feature-static-site-generator-for-project-documentation
+  workflow_dispatch:
+  # push:
+  #   branches:
+  #     - 810-feature-static-site-generator-for-project-documentation
 jobs:
   deploy:
     runs-on: ubuntu-latest
