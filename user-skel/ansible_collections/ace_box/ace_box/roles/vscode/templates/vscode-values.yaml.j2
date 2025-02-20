@@ -1,0 +1,35 @@
+ingress:
+  enabled: true
+  hosts:
+    - host: "{{ vscode_domain }}"
+      paths:
+        - /
+  ingressClassName: "{{ ingress_class }}"
+extraVolumeMounts:
+  - name: extra-volume
+    mountPath: /mnt/volume
+    readOnly: true
+    #existingClaim: volume-claim
+    hostPath: "{{ role_path }}/files/vscode"
+    #emptyDir: {}
+extraInitContainers: |
+  - name: customization
+    image: {{ '{{' }} .Values.image.repository {{ '}}' }}:{{ '{{' }}  .Values.image.tag {{ '}}' }}
+    imagePullPolicy: IfNotPresent
+    env:
+      - name: SERVICE_URL
+        value: https://open-vsx.org/vscode/gallery
+      - name: ITEM_URL
+        value: https://open-vsx.org/vscode/item
+    command:
+      - sh
+      - -c
+      - |
+{% filter indent(width=8, first=true) %}
+{{ lookup('ansible.builtin.file', '/tmp/vscode_extensions.txt') }}
+{% endfilter %}
+    volumeMounts:
+      - name: data
+        mountPath: /home/coder
+      - name: extra-volume
+        mountPath: /mnt/volume

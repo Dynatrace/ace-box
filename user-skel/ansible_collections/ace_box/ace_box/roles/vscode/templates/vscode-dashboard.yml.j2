@@ -1,0 +1,9 @@
+---
+extRefs:
+  VSCode:
+    url: "{{ ingress_protocol }}://vscode.{{ ingress_domain }}"
+    description: "VSCode is available at <a href=\"{{ ingress_protocol }}://{{ vscode_domain }}\">{{ ingress_protocol }}://{{ vscode_domain }}</a>. This is a fully fledged web IDE"
+    creds:
+    - description: Password
+      type: password
+      value: "{{ vscode_password }}"
