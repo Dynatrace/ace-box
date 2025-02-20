@@ -1,0 +1,17 @@
+- name: Query pipeline result
+  uri:
+    url: "{{ gitlab_internal_endpoint }}/api/v4/projects/{{ gitlab_project_id }}/pipelines/{{ pipeline_id }}"
+    validate_certs: false
+    method: GET
+    status_code: [200]
+    headers:
+      Content-Type: "application/json"
+      Authorization: "Bearer {{ gitlab_oauth_token }}"
+  register: pipeline_result
+  until: pipeline_result.json.status in ['success', 'failed', 'canceled']
+  retries: 60
+  delay: 30
+
+- name: Print pipeline result
+  debug:
+    msg: "Pipeline status: {{ pipeline_result.json.status }}"
