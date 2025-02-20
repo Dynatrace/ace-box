@@ -11,35 +11,32 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'Easy to Use',
-    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
+    title: 'ACE-Box: Your Portable Sandbox for Seamless Testing and Demos!',
+    Svg: require('@site/static/img/blackbox-white.png').default,
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+        Easily create isolated environments for testing, demonstrations, and hands-on training, all in a portable and efficient setup.
       </>
     ),
   },
   {
-    title: 'Focus on What Matters',
-    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
+    title: 'Build Better and Faster with ACE-Box Modular Framework!',
+    Svg: require('@site/static/img/addrowonbottom-white.png').default,
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        Leverage the modular design to quickly deploy resources, integrate new features, and streamline content creation with ease.
       </>
     ),
   },
   {
-    title: 'Powered by React',
-    Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
+    title: 'Master Integrations and Maximize Dynatrace with ACE-Box!',
+    Svg: require('@site/static/img/plugin-connection-white.png').default,
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        Gain hands-on experience in building integrations and fully leverage Dynatrace's capabilities through practical, modular setups.
       </>
     ),
-  },
+  }
 ];
 
 function Feature({title, Svg, description}: FeatureItem) {
