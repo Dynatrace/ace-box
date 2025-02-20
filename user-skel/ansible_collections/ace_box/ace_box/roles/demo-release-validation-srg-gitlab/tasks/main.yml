@@ -294,3 +294,4 @@
 
 - include_tasks:
     file: health-check.yml
+  when: "{{ extra_vars.use_case_validation_tests_enabled == 'true' | default('false') }}"

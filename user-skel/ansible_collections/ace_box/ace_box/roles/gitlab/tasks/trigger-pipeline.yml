@@ -1,6 +1,7 @@
 ---
 
-- include_tasks: source-secret.yml
+# - include_tasks: source-secret.yml
+#   when: gitlab_personal_access_token is not defined or gitlab_username is not defined or gitlab_password is not defined
 
 - name: Gitlab - Ensure Group
   include_role:
