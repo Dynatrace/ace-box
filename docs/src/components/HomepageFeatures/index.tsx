@@ -12,7 +12,7 @@ type FeatureItem = {
 const FeatureList: FeatureItem[] = [
   {
     title: 'ACE-Box: Your Portable Sandbox for Seamless Testing and Demos!',
-    Svg: require('@site/static/img/blackbox-white.png').default,
+    Svg: require('@site/static/img/blackbox-white.svg').default,
     description: (
       <>
         Easily create isolated environments for testing, demonstrations, and hands-on training, all in a portable and efficient setup.
@@ -21,7 +21,7 @@ const FeatureList: FeatureItem[] = [
   },
   {
     title: 'Build Better and Faster with ACE-Box Modular Framework!',
-    Svg: require('@site/static/img/addrowonbottom-white.png').default,
+    Svg: require('@site/static/img/addrowonbottom-white.svg').default,
     description: (
       <>
         Leverage the modular design to quickly deploy resources, integrate new features, and streamline content creation with ease.
@@ -30,7 +30,7 @@ const FeatureList: FeatureItem[] = [
   },
   {
     title: 'Master Integrations and Maximize Dynatrace with ACE-Box!',
-    Svg: require('@site/static/img/plugin-connection-white.png').default,
+    Svg: require('@site/static/img/plugin-connection-white.svg').default,
     description: (
       <>
         Gain hands-on experience in building integrations and fully leverage Dynatrace's capabilities through practical, modular setups.
