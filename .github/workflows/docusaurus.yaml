@@ -28,13 +28,13 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('ace-box/docs/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
-            
+
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-        working-directory: ace-box/docs
+        working-directory: docs
       - name: Build website
         run: yarn build
-        working-directory: ace-box/docs
+        working-directory: docs
 
       # Popular action to deploy to GitHub Pages:
       # Docs: https://github.com/peaceiris/actions-gh-pages#%EF%B8%8F-docusaurus
