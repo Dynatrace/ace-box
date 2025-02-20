@@ -1,4 +1,4 @@
-name: Deploy Docusaurus to GitHub Pages
+name: Update Ace Box Documentation
 
 on:
   workflow_dispatch:
