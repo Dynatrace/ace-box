@@ -5,7 +5,7 @@ on:
   push:
     branches:
       - 810-feature-static-site-generator-for-project-documentation
-    # paths: ['ace-box/docs/**']
+    paths: ['docs/**']
 
 permissions:
   contents: write
