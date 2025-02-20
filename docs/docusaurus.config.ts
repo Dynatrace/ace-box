@@ -8,7 +8,7 @@ const config: Config = {
   title: 'ACE-Box',
   tagline: 'Learn how to get the most out of Dynatrace!',
   // ACE logo
-  favicon: 'img/favicon.ico',
+  favicon: 'img/favicon.png',
 
   // Set the production url of your site here
   url: 'https://github.com',
@@ -80,9 +80,13 @@ const config: Config = {
           type: 'docSidebar',
           sidebarId: 'tutorialSidebar',
           position: 'left',
-          label: 'Tutorial',
+          label: 'Get Started',
         },
-        {to: '/blog', label: 'Blog', position: 'left'},
+        {
+          to: '/blog', 
+          label: 'Use Cases', 
+          position: 'left'
+        },
         {
           href: 'https://github.com/Dynatrace/ace-box',
           label: 'GitHub',
@@ -106,17 +110,9 @@ const config: Config = {
           title: 'Community',
           items: [
             {
-              label: 'Stack Overflow',
-              href: 'https://stackoverflow.com/questions/tagged/docusaurus',
-            },
-            {
-              label: 'Discord',
-              href: 'https://discordapp.com/invite/docusaurus',
-            },
-            {
-              label: 'X',
-              href: 'https://x.com/docusaurus',
-            },
+              label: 'Dynatrace Community',
+              href: 'https://community.dynatrace.com/',
+            }
           ],
         },
         {
@@ -127,8 +123,8 @@ const config: Config = {
               to: '/blog',
             },
             {
-              label: 'GitHub',
-              href: 'https://github.com/facebook/docusaurus',
+              label: 'ACE-Box Repository',
+              href: 'https://github.com/Dynatrace/ace-box',
             },
           ],
         },
