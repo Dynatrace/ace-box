@@ -16,5 +16,3 @@
     name: gitlab
     tasks_from: get-pipeline-status
   when: pipeline_id is defined
-
-

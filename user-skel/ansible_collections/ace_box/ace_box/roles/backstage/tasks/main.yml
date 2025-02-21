@@ -180,5 +180,6 @@
 # health check
 - include_role:
     name: health-check
+    tasks_from: application-availability
   vars:
     application_domain: "{{ backstage_domain }}"

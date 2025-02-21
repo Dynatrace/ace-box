@@ -4,7 +4,7 @@
 
 - name: Trigger pipeline
   include_role:
-    name: gitlab
+    name: jenkins
     tasks_from: trigger-pipeline
   vars:
     usecase_group_name: "{{ gitlab_demo_srg_group }}"
@@ -16,5 +16,3 @@
     name: gitlab
     tasks_from: get-pipeline-status
   when: pipeline_id is defined
-
-
