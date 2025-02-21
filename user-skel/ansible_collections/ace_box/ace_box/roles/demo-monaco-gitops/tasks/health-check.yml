@@ -1,8 +1,7 @@
 # health check for the use case
 - include_role:
     name: health-check
-    tasks_from: usecase-validation-jenkins
+    tasks_from: usecase-health-check-jenkins
   vars:
-    usecase_job_path: "{{ demo_jenkins_folder }}/Onboard Application"
+    usecase_job_path: "{{ demo_monaco_gitops_folder }}/Onboard Application"
     wait_before_trigger_pipeline: 180 # 3 minutes not to override the default pipeline execution
-  when: "{{ extra_vars.use_case_validation_tests_enabled == 'true' | default('false') }}"
