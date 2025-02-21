@@ -134,3 +134,6 @@
 #
 - include_tasks:
     file: deploy-dt-configuration.yml
+
+- include_tasks:
+    file: health-check.yml

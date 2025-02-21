@@ -19,3 +19,13 @@
     tasks_from: get-build-status
   vars:
     jenkins_job_url: "{{ usecase_job_url }}"
+
+- name: Check Jenkins job result
+  fail:
+    msg: "Jenkins job failed with status: {{ job_status_result.json.result }}"
+  when: job_status_result.json.result != 'SUCCESS'
+
+- name: Print Jenkins job result
+  debug:
+    msg: "Jenkins job succeeded with status: {{ job_status_result.json.result }}"
+  when: job_status_result.json.result == 'SUCCESS'

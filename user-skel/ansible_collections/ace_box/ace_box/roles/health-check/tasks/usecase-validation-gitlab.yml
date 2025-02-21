@@ -15,3 +15,13 @@
   include_role:
     name: gitlab
     tasks_from: get-pipeline-status
+
+- name: Check GitLab pipeline result
+  fail:
+    msg: "GitLab pipeline failed with status: {{ pipeline_result.json.status }}"
+  when: pipeline_result.json.status != 'success'
+
+- name: Print GitLab pipeline result
+  debug:
+    msg: "GitLab pipeline succeeded with status: {{ pipeline_result.json.status }}"
+  when: pipeline_result.json.status == 'success'

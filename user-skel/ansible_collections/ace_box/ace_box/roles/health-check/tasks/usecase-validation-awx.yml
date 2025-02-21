@@ -13,3 +13,13 @@
   include_role:
     name: awx
     tasks_from: get-job-status
+
+- name: Check AWX job result
+  fail:
+    msg: "AWX job failed with status: {{ job_status_result.json.status }}"
+  when: job_status_result.json.status != 'successful'
+
+- name: Print AWX job result
+  debug:
+    msg: "AWX job succeeded with status: {{ job_status_result.json.status }}"
+  when: job_status_result.json.status == 'successful'
