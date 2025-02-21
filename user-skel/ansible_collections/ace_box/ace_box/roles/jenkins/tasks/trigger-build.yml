@@ -35,9 +35,46 @@
     status_code: 201
   register: build_trigger_result
 
-- name: Extract Jenkins job URL
+- name: Print Trigger result
+  debug:
+    msg: "Jenkins Trigger result: {{ build_trigger_result }}"
+
+- name: Extract Jenkins queue item URL
   set_fact:
-    jenkins_job_url: "{{ build_trigger_result.location }}api/json"
+    jenkins_queue_item_url: "{{ build_trigger_result.location }}api/json"
+
+- name: Print Jenkins queue item URL
+  debug:
+    msg: "Jenkins queue item URL: {{ jenkins_queue_item_url }}"
+
+- name: Wait for 1 minute before checking queue item
+  ansible.builtin.wait_for:
+    timeout: 60  # 1 minute
+
+- name: Query Jenkins queue item
+  ansible.builtin.uri:
+    url: "{{ jenkins_queue_item_url }}"
+    method: GET
+    url_username: "{{ jenkins_username }}"
+    url_password: "{{ jenkins_api_token }}"
+    force_basic_auth: true
+    status_code: 200
+  register: queue_item_result
+  until: queue_item_result.json.executable.number is defined
+  retries: 10
+  delay: 10
+
+- name: Set Jenkins build number
+  set_fact:
+    jenkins_build_number: "{{ queue_item_result.json.executable.number }}"
+
+- name: Print Jenkins build number
+  debug:
+    msg: "Jenkins build number: {{ jenkins_build_number }}"
+
+- name: Set Jenkins job URL
+  set_fact:
+    jenkins_job_url: "{{ ingress_protocol }}://{{ jenkins_domain }}/job/{{ jenkins_job_path.lstrip('/').rstrip('/') | urlencode }}/{{ jenkins_build_number }}/api/json"
 
 - name: Print Jenkins job URL
   debug:

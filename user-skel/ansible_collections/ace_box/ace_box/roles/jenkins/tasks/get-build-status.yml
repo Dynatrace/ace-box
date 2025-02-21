@@ -9,8 +9,8 @@
     status_code: 200
   register: job_status_result
   until: job_status_result.json.result is defined
-  retries: 60
-  delay: 30
+  retries: 2 #60
+  delay: 10 #30
 
 - name: Print Jenkins job result
   debug:
