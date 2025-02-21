@@ -33,3 +33,12 @@
     body:
       json: "{{ jenkins_build_json_body | to_json }}"
     status_code: 201
+  register: build_trigger_result
+
+- name: Extract Jenkins job URL
+  set_fact:
+    jenkins_job_url: "{{ build_trigger_result.location }}api/json"
+
+- name: Print Jenkins job URL
+  debug:
+    msg: "Jenkins job URL: {{ jenkins_job_url }}"

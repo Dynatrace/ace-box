@@ -1,18 +1,21 @@
 - name: Wait for the pipeline to start. # This is a workaround for the pipeline not starting immediately due to another default pipeline execution
   ansible.builtin.wait_for:
-    timeout: 300  # 5 minutes
+    timeout: "{{ wait_before_trigger_pipeline | default(0) }}" # 0 minute in defaut
 
-- name: Trigger pipeline
+- name: Trigger Jenkins pipeline
   include_role:
     name: jenkins
-    tasks_from: trigger-pipeline
+    tasks_from: trigger-build
   vars:
-    usecase_group_name: "{{ gitlab_demo_srg_group }}"
-    usecase_repo_name: "{{ gitlab_demo_srg_repo_name }}"
-    usecase_git_ref: "main"
+    jenkins_job_path: "{{ usecase_job_path }}"
 
-- name: Get pipeline status
+- name: Extract Jenkins job URL
+  set_fact:
+    usecase_job_url: "{{ jenkins_job_url }}"
+
+- name: Get Jenkins pipeline status
   include_role:
-    name: gitlab
-    tasks_from: get-pipeline-status
-  when: pipeline_id is defined
+    name: jenkins
+    tasks_from: get-build-status
+  vars:
+    jenkins_job_url: "{{ usecase_job_url }}"

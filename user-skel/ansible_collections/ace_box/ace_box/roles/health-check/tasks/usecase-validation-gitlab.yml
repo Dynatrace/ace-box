@@ -1,15 +1,15 @@
 - name: Wait for the pipeline to start. # This is a workaround for the pipeline not starting immediately due to another default pipeline execution
   ansible.builtin.wait_for:
-    timeout: 300  # 5 minutes
+    timeout: "{{ wait_before_trigger_pipeline | default(0) }}" # 0 minute in defaut
 
 - name: Trigger pipeline
   include_role:
     name: gitlab
     tasks_from: trigger-pipeline
   vars:
-    usecase_group_name: "{{ gitlab_demo_srg_group }}"
-    usecase_repo_name: "{{ gitlab_demo_srg_repo_name }}"
-    usecase_git_ref: "main"
+    gitlab_group_name: "{{ usecase_group_name }}"
+    gitlab_repo_name: "{{ usecase_repo_name }}"
+    gitlab_git_ref: "{{ usecase_git_ref }}"
 
 - name: Get pipeline status
   include_role:
