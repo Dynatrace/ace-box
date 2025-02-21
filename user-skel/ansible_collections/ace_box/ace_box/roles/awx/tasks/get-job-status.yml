@@ -17,4 +17,4 @@
 
 - name: Print job status result
   debug:
-    msg: "Job status result: {{ job_status_result.json }}"
+    msg: "Job status result: {{ job_status_result.json.status }}"

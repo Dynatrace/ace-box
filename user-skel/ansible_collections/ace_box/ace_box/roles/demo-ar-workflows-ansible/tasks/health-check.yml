@@ -12,6 +12,6 @@
     name: health-check
     tasks_from: usecase-validation-awx
   vars:
-    usecase_job_template_id: "7"
+    usecase_job_template_id: "Demo Job Template"
     wait_before_trigger_pipeline: 120 # 2 minutes not to override the default pipeline execution
   when: "{{ extra_vars.use_case_validation_tests_enabled == 'true' | default('false') }}"

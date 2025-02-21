@@ -1,5 +1,5 @@
 - name: Launch AWX job template
-  awx.awx.job_template_launch:
+  awx.awx.job_launch:
     job_template: "{{ job_template_id }}"
     wait: true
     controller_host: "{{ awx_internal_endpoint }}"
