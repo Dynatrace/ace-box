@@ -3,6 +3,6 @@
     name: health-check
     tasks_from: usecase-health-check-jenkins
   vars:
-    usecase_job_path: "{{ demo_monaco_gitops_folder }}/Onboard Application"
+    usecase_job_path: "/{{ demo_monaco_gitops_folder }}/job/Onboard Application"
     wait_before_trigger_pipeline: 180 # 3 minutes not to override the default pipeline execution
   when: not jenkins_skip_install
