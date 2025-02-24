@@ -1,9 +1,10 @@
 name: Validate PRs with demo use cases
 
 on:
-  pull_request:
+  push:
     branches:
-      - dev
+      - dev # Trigger after PR is merged to the dev branch
+
   workflow_dispatch: # Allows manual triggering of the workflow
     inputs:
       use_cases:
@@ -25,24 +26,24 @@ on:
         type: boolean
 
       custom_domain:
-        description: "Custom Domain Name. Example: demo.ace-innovation.info"
+        description: "Custom Domain Name. Example: demo.ace-innovation.info. Keep empty for temporary validations."
         required: false
         default: ""
         type: string
 
       # optional params for manual run
       dt_tenant:
-        description: "Dynatrace Tenant"
+        description: "Dynatrace Tenant. Keep empty to use the default tenant configured in the Github variables"
         required: false
         default: ""
         type: string
       dt_api_token:
-        description: "Dynatrace API Token"
+        description: "Dynatrace API Token. Keep empty to use the default tenant configured in the Github secrets"
         required: false
         default: ""
         type: string
       dt_url_gen3:
-        description: "Dynatrace Environment URL Gen3"
+        description: "Dynatrace Environment URL Gen3. Keep empty to use the default tenant configured in the Github variables"
         required: false
         default: ""
         type: string
