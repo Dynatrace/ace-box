@@ -27,3 +27,11 @@ This command generates static content into the `build` directory and can be serv
 ### Deployment
 
 Automatically managed by `.github/workflows/ace-box-doc.yaml`. Using GitHub pages, more info [here](https://docusaurus.io/docs/deployment#deploying-to-github-pages)
+
+## Troubleshooting
+
+A common error, a cache issue:
+
+Module not found: Error: Can't resolve '@site/docs/tutorial-basics/deploy-your-site.md' in '/Users/ignacio.goldman/Library/CloudStorage/OneDrive-Dynatrace/Desktop/Dynatrace/03_ace-box/ace-box/docs/.docusaurus'
+
+Delete the .docusaurus folder adn run yarn start again
