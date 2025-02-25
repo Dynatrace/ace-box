@@ -77,3 +77,4 @@
     tasks_from: application-availability
   vars:
     application_domain: "{{ easytrade_domain }}"
+  when: easytrade_deploy
