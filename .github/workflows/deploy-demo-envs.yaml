@@ -127,7 +127,7 @@ jobs:
       dt_oauth_account_urn: ${{ vars.DT_OAUTH_ACCOUNT_URN }}
       environment_name: demo-live
       environment_url: ${{ github.event.inputs.dt_tenant_live }}
-      environment_reviewers: eemrdog #Dynatrace/ace-box-owners
+      # environment_reviewers: eemrdog #Dynatrace/ace-box-owners
     secrets:
       dt_api_token: ${{ secrets.DT_API_TOKEN_LIVE_dhg95339 }}
       gcp_credentials_json: '${{ secrets.GCP_CREDENTIALS_JSON }}'

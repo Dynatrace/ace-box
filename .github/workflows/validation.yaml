@@ -47,9 +47,9 @@ on:
       environment_url:
         required: false
         type: string
-      environment_reviewers:
-        required: false
-        type: string
+      # environment_reviewers:
+      #   required: false
+      #   type: string
     secrets:
       dt_api_token:
         description: "Dynatrace API Token"
@@ -101,7 +101,7 @@ jobs:
     environment:
       name: ${{ inputs.environment_name }}
       url: ${{ inputs.environment_url }}
-      reviewers: ${{ inputs.environment_reviewers }}
+ #     reviewers: ${{ inputs.environment_reviewers }}
     env:
       # DESTROY_RESOURCES: ${{ inputs.destroy_resources }} # Set to "true" to enable resource destruction
       TF_VAR_dt_tenant: ${{ inputs.dt_tenant != '' && inputs.dt_tenant || vars.DT_TENANT }}
