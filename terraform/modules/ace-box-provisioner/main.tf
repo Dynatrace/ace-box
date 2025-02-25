@@ -28,6 +28,7 @@ locals {
   dashboard_password = var.dashboard_password
   use_case           = var.use_case
   otel_export_enable      = var.otel_export_enable
+  use_case_validation_tests_enabled = var.use_case_validation_tests_enabled
 }
 
 resource "null_resource" "provisioner_home_dir" {
