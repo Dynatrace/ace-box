@@ -29,6 +29,6 @@
 
     
 
-  when: "{{ use_case_validation_tests_enabled == 'true' | default('false') }}"
+  when: "{{ use_case_validation_tests_enabled == true | default(false) }}"
 
 

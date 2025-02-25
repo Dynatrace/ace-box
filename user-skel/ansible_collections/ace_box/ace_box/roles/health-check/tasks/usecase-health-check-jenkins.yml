@@ -33,4 +33,4 @@
       msg: "Jenkins job succeeded with status: {{ job_status_result.json.result }}"
     when: job_status_result.json.result == 'SUCCESS'
 
-  when: "{{ use_case_validation_tests_enabled == 'true' | default('false') }}"
+  when: "{{ use_case_validation_tests_enabled == true | default(false) }}"
