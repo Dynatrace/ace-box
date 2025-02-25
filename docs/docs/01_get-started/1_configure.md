@@ -113,13 +113,13 @@ import TabItem from '@theme/TabItem';
 
     #### Own VM Deployment
     
-    3. Run initialization script. This will install all necessary dependencies including the [ACE-CLI](../04_more/1_ACE-CLI.md).
+    3. Run initialization script. This will install all necessary dependencies including the [ACE-CLI](../05_more/1_ACE-CLI.md).
         ```
         $ cd user-skel
         $ ./init.sh
         ```
     
-    4. Prepare the ACE-Box by running the [ACE-CLI](../04_more/1_ACE-CLI.md) and providing required values when prompted:
+    4. Prepare the ACE-Box by running the [ACE-CLI](../05_more/1_ACE-CLI.md) and providing required values when prompted:
         ```
         $ ace prepare
         ```
@@ -158,8 +158,8 @@ import TabItem from '@theme/TabItem';
     ```
 
   7. Create the respective Dynatrace tokens, with the following scopes. Then add them into the placeholders within your `terraform.tfvars`
-      - [dt_api_token](../04_more/4_dt_tokens_scopes.md#how-to-create-dt_api_token). 
-      - [dt_oauth_client_secret](../04_more/4_dt_tokens_scopes.md#how-to-create-dt_oauth_client_secret). 
+      - [dt_api_token](../05_more/4_dt_tokens_scopes.md#how-to-create-dt_api_token). 
+      - [dt_oauth_client_secret](../05_more/4_dt_tokens_scopes.md#how-to-create-dt_oauth_client_secret). 
   
       > Note: It is recommended to set the sensitive variables as environment variables. More information in the terraform documentation [here](https://developer.hashicorp.com/terraform/language/values/variables#environment-variables)
 
@@ -185,7 +185,7 @@ import TabItem from '@theme/TabItem';
 
 ### (Optional) additional variables
 
-Check out `variables.tf` for a complete list of variables. For example, for AWS, you can add the following [AWS additional variables](../04_more/3_aws_variables_breakdown.md) to the `terraform.tfvars` config file. If you don't add them, they are configured with a default value, there are not mandatory. 
+Check out `variables.tf` for a complete list of variables. For example, for AWS, you can add the following [AWS additional variables](../05_more/3_aws_variables_breakdown.md) to the `terraform.tfvars` config file. If you don't add them, they are configured with a default value, there are not mandatory. 
 
 ### Configuration ready!
 

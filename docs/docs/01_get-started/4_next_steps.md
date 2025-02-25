@@ -11,9 +11,6 @@ Your ACE-Box and Use case should be all set, what you can do next
 - manage your ACE-Box instance -> link to deploy tutorial (in case of they want to destroy)
 - learn how to create your own use case -> link to developer documentation
 
-How to use links
-Have **5 more minutes**? Take a look at **[versioning](../tutorial-extras/manage-docs-versions.md)** and **[i18n](../tutorial-extras/translate-your-site.md)**.
-
 **Notes:**
 
 > This product is not officially supported by Dynatrace.
