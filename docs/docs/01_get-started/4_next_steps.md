@@ -17,4 +17,3 @@ Your ACE-Box and Use case should be all set, what you can do next
 
 > The ACE-Box has been developed and is being actively maintained by the Innovation Services team at Dynatrace. For queries or logging of problems, please use [GitHub Issues](https://github.com/Dynatrace/ace-box/issues).
 
-> We are always looking for contributors, please check the [Guidelines](CONTRIBUTING.md)!
