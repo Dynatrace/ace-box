@@ -242,6 +242,7 @@ You can personalize your ace-box with the following optional variables, by addin
 // dt_owner_team = "<dt_team>" // Follow your organizations cloud cost best practices of tagging resources
 // dt_owner_email = "<dt_owner>" // Format:  name_surname-dynatrace_com. (replace "." with "_" and "@" with "-")
 // use_case = demo_release_validation_srg_gitlab // As described in the use-cases section
+// use_case_validation_tests_enabled = true OR false // Flag to enable or disable use case validation tests
 ```
 
 ## Licensing
