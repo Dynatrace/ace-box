@@ -64,6 +64,7 @@ jobs:
       use_cases: ${{ github.event.inputs.use_cases_for_both }}
       providers: ${{ github.event.inputs.providers_for_both }}
       destroy_resources: true
+      use_case_validation_tests_enabled: false
       custom_domain: ${{ github.event.inputs.custom_domain_sprint }}
       dt_tenant: ${{ github.event.inputs.dt_tenant_sprint }}
       dt_url_gen3: ${{ github.event.inputs.dt_url_gen3_sprint }}
@@ -82,6 +83,7 @@ jobs:
       use_cases: ${{ github.event.inputs.use_cases_for_both }}
       providers: ${{ github.event.inputs.providers_for_both }}
       destroy_resources: false
+      use_case_validation_tests_enabled: true
       custom_domain: ${{ github.event.inputs.custom_domain_sprint }}
       dt_tenant: ${{ github.event.inputs.dt_tenant_sprint }}
       dt_url_gen3: ${{ github.event.inputs.dt_url_gen3_sprint }}
@@ -101,6 +103,7 @@ jobs:
       use_cases: ${{ github.event.inputs.use_cases_for_both }}
       providers: ${{ github.event.inputs.providers_for_both }}
       destroy_resources: true
+      use_case_validation_tests_enabled: false
       custom_domain: ${{ github.event.inputs.custom_domain_live }}
       dt_tenant: ${{ github.event.inputs.dt_tenant_live }}
       dt_url_gen3: ${{ github.event.inputs.dt_url_gen3_live }}
@@ -120,6 +123,7 @@ jobs:
       use_cases: ${{ github.event.inputs.use_cases_for_both }}
       providers: ${{ github.event.inputs.providers_for_both }}
       destroy_resources: false
+      use_case_validation_tests_enabled: true
       custom_domain: ${{ github.event.inputs.custom_domain_live }}
       dt_tenant: ${{ github.event.inputs.dt_tenant_live }}
       dt_url_gen3: ${{ github.event.inputs.dt_url_gen3_live }}
