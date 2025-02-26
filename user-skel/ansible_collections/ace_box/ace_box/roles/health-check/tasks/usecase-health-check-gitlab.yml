@@ -1,3 +1,4 @@
+
 - name: Health Check for a use case containing Gitlab
   block:
 
@@ -28,5 +29,4 @@
     debug:
       msg: "GitLab pipeline succeeded with status: {{ pipeline_result.json.status }}"
     when: pipeline_result.json.status == 'success'
-
-  when: "{{ use_case_validation_tests_enabled == true | default(false) }}"
+  when: "{{ use_case_validation_tests_enabled == True | default(False) }}"

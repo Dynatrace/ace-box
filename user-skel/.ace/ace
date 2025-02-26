@@ -231,6 +231,9 @@ def prepare(
     if not dashboard_password:
         dashboard_password = click.prompt('Please enter your ACE-Box dashboard password')
 
+    if not use_case_validation_tests_enabled:
+        use_case_validation_tests_enabled = click.prompt('Please enter True(default:False) if you want e2e validation tests enabled', default=False)
+
     if ansible_workdir:
         logging.warning('Warning: --ansible-workdir is deprecated and will be removed in a future version.')
 
@@ -456,13 +459,6 @@ def set(
     is_flag=True,
     default=False,
 )
-@click.option(
-    '--use-case-validation-tests-enabled',
-    help='Flag to enable or disable use case validation tests',
-    envvar='USE_CASE_VALIDATION_TESTS_ENABLED',
-    type=bool,
-    default=False,
-)
 @click.argument(
     'target',
     callback=check_enable_targets,
@@ -473,7 +469,6 @@ def enable(
     ansible_workdir,
     user,
     local,
-    use_case_validation_tests_enabled,
 ):
     """Enabling ACE-Box use case"""
     logging.info('Preparing ACE-Box for use case \"%s\"...', target)
@@ -484,7 +479,6 @@ def enable(
     ansible_extra_vars = {
         'ace_box_user': user,
         'ace_config_file_path': f'/home/{user}/.ace/ace.config.yml',
-        'use_case_validation_tests_enabled': use_case_validation_tests_enabled,
     }
 
     if is_external_use_case(target):

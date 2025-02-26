@@ -77,6 +77,7 @@ locals {
     "ACE_HOST_GROUP=${local.host_group}",
     "ACE_DASHBOARD_USER=${local.dashboard_user}",
     "ACE_DASHBOARD_PASSWORD=\"${local.dashboard_password}\"",
+    "USE_CASE_VALIDATION_TESTS_ENABLED=${local.use_case_validation_tests_enabled}",
     "ace prepare --force"
   ]
   ace_extra_vars = [

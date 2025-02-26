@@ -26,9 +26,6 @@
     debug:
       msg: "AWX job succeeded with status: {{ job_status_result.json.status }}"
     when: job_status_result.json.status == 'successful'
-
-    
-
-  when: "{{ use_case_validation_tests_enabled == true | default(false) }}"
+  when: "{{ use_case_validation_tests_enabled == True | default(False) }}"
 
 
