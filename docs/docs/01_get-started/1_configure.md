@@ -6,14 +6,21 @@ sidebar_position: 1
 
 Prepare terraform, cloud provider & authentication
 
+**Notes**
+
+> This product is not officially supported by Dynatrace.
+
+> The ACE-Box has been developed and is being actively maintained by the Innovation Services team at Dynatrace. For queries or logging of problems, please use [GitHub Issues](https://github.com/Dynatrace/ace-box/issues).
+
+
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-### Pre-requisites
+## Pre-requisites
 - Terraform CLI (0.14.9+) installed
 - Dynatrace tenant
 
-### Clone repo
+## Clone repo
 
 1. Clone the [ACE-Box repository](https://github.com/Dynatrace/ace-box)
     
@@ -21,19 +28,19 @@ import TabItem from '@theme/TabItem';
     git clone https://github.com/Dynatrace/ace-box.git
     ```
 
-### Configure cloud provider
+## Configure cloud provider
 
 2. Pick the cloud provider of your preference. The ACE-Box will get deployed in a standard compute resource (VM).
 
 <Tabs>
   <TabItem value="AWS" label="AWS" default>
 
-  #### AWS Requirements
+  ### AWS Requirements
   - AWS Account
   - AWS CLI (AWS SDK) installed
   - AWS Account credentials (Usually set up and sourced by AWS SDK)
 
-  #### AWS Deployment
+  ### AWS Deployment
 
   3. Move to the AWS folder
     
@@ -53,12 +60,12 @@ import TabItem from '@theme/TabItem';
   
   <TabItem value="Azure" label="Azure">
     
-    #### Azure Requirements
+    ### Azure Requirements
 
     - Azure Account
     - Azure CLI
 
-    #### Azure Deployment
+    ### Azure Deployment
 
     3. Move to the Azure folder
 
@@ -77,11 +84,11 @@ import TabItem from '@theme/TabItem';
   </TabItem>
   <TabItem value="GCP" label="GCP">
     
-    #### GCP Requirements
+    ### GCP Requirements
 
     - GCP account
 
-    #### GCP Deployment
+    ### GCP Deployment
 
     3. Move to the GCP folder
 
@@ -103,7 +110,7 @@ import TabItem from '@theme/TabItem';
     
     > Note: we recommend you to deploy the ACE-Box in any of the cloud providers (AWS, Azure or GCP). Bringing your own Ubuntu VM has not been tested, but should be possible:
 
-    #### Own VM Requirements
+    ### Own VM Requirements
     - An `Ubuntu 20.04` virtual machine (`Ubuntu 20.04 LTS` "minimal" tested)
     - Repository cloned to VM
     - At least `16GB RAM` and `8-cores CPU`
@@ -111,7 +118,7 @@ import TabItem from '@theme/TabItem';
     - Port 80 and/or 443 exposed
     - A non-root user to run the script actions needs to be created (e.g. `ace`)
 
-    #### Own VM Deployment
+    ### Own VM Deployment
     
     3. Run initialization script. This will install all necessary dependencies including the [ACE-CLI](../05_more/1_ACE-CLI.md).
         ```
@@ -133,7 +140,7 @@ import TabItem from '@theme/TabItem';
   </TabItem>
 </Tabs>
 
-### Initialize Terraform
+## Initialize Terraform
 
 5. Using the following command
 
@@ -141,7 +148,7 @@ import TabItem from '@theme/TabItem';
     terraform init
     ```
 
-### Configure `terraform.tfvars`
+## Configure `terraform.tfvars`
 
 6. Still under the `terraform/<your_cloud_provider>` folder, create a `terraform.tfvars` with the following structure (next step will guide you on how to fill the placeholders)
 
@@ -158,8 +165,8 @@ import TabItem from '@theme/TabItem';
     ```
 
   7. Create the respective Dynatrace tokens, with the following scopes. Then add them into the placeholders within your `terraform.tfvars`
-      - [dt_api_token](../05_more/4_dt_tokens_scopes.md#how-to-create-dt_api_token). 
-      - [dt_oauth_client_secret](../05_more/4_dt_tokens_scopes.md#how-to-create-dt_oauth_client_secret). 
+      - [dt_api_token](../05_more/5_dt_tokens_scopes.md#how-to-create-dt_api_token). 
+      - [dt_oauth_client_secret](../05_more/5_dt_tokens_scopes.md#how-to-create-dt_oauth_client_secret). 
   
       > Note: It is recommended to set the sensitive variables as environment variables. More information in the terraform documentation [here](https://developer.hashicorp.com/terraform/language/values/variables#environment-variables)
 
@@ -183,10 +190,10 @@ import TabItem from '@theme/TabItem';
   </TabItem>
 </Tabs>
 
-### (Optional) additional variables
+## (Optional) additional variables
 
-Check out `variables.tf` for a complete list of variables. For example, for AWS, you can add the following [AWS additional variables](../05_more/3_aws_variables_breakdown.md) to the `terraform.tfvars` config file. If you don't add them, they are configured with a default value, there are not mandatory. 
+Check out `variables.tf` for a complete list of variables. For example, for AWS, you can add the following [AWS additional variables](../05_more/4_aws_variables_breakdown.md) to the `terraform.tfvars` config file. If you don't add them, they are configured with a default value, there are not mandatory. 
 
-### Configuration ready!
+## Configuration ready!
 
 Well done, next step is to apply the configuration and deploy the ACE-Box
