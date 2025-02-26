@@ -47,7 +47,7 @@ ace --help
 ace enable https://github.com/dynatrace-ace/basic-dt-demo.git
 ```
 
-> Note: you can also define the use case in your `terraform.tfvars` to automatically deploy it after the ACE-Box gets deployed. More info [here](../02_use-cases/2_dynatrace_basic_observability.md#setup)
+> Note: you can also define the use case in your `terraform.tfvars` to automatically deploy it after the ACE-Box gets deployed. More info [here](../02_use-cases/1_dynatrace_basic_observability.md)
 
 5. Check the provisioning output, it should as follows, without `failed` steps:
 
