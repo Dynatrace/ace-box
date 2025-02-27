@@ -1,31 +1,52 @@
 - name: Health Check for a use case containing AWX
+  vars:
+    max_retries: 3
   block:
+    - name: Wait for the job to start. # This is a workaround for the job not starting immediately due to another default job execution
+      ansible.builtin.wait_for:
+        timeout: "{{ wait_before_trigger_job | default(0) }}" # 0 minute in default
 
-  - name: Wait for the job to start. # This is a workaround for the job not starting immediately due to another default job execution
-    ansible.builtin.wait_for:
-      timeout: "{{ wait_before_trigger_job | default(0) }}" # 0 minute in defaut
+    - name: Increment the retry count
+      set_fact:
+        retry_count: "{{ 0 if retry_count is undefined else retry_count | int + 1 }}"
 
-  - name: Launch job template
-    include_role:
-      name: awx
-      tasks_from: launch-job-template
-    vars:
-      job_template_id: "{{ usecase_job_template_id }}"
+    - name: Launch job template
+      include_role:
+        name: awx
+        tasks_from: launch-job-template
+      vars:
+        job_template_id: "{{ usecase_job_template_id }}"
+      register: launch_job_result
 
-  - name: Get job status
-    include_role:
-      name: awx
-      tasks_from: get-job-status
+    - name: Get job status
+      include_role:
+        name: awx
+        tasks_from: get-job-status
+      register: get_job_status_result
 
-  - name: Check AWX job result
-    fail:
-      msg: "AWX job failed with status: {{ job_status_result.json.status }}"
-    when: job_status_result.json.status != 'successful'
+    - name: Check AWX job result
+      fail:
+        msg: "AWX job failed with status: {{ job_status_result.json.status }}"
+      when: job_status_result.json.status != 'successful'
+      register: check_job_result
 
-  - name: Print AWX job result
-    debug:
-      msg: "AWX job succeeded with status: {{ job_status_result.json.status }}"
-    when: job_status_result.json.status == 'successful'
+    - name: Print AWX job result
+      debug:
+        msg: "AWX job succeeded with status: {{ job_status_result.json.status }}"
+      when: job_status_result.json.status == 'successful'
+      register: print_job_result
+
+  rescue:
+    - name: Fail if maximum retries reached
+      fail:
+        msg: Maximum retries of health check tasks reached
+      when: retry_count | int == max_retries | int
+
+    - name: Retry Health Check for a use case containing AWX
+      include_tasks: usecase-health-check-awx.yml
+      vars:
+        retry_count: "{{ retry_count }}"
+        max_retries: "{{ max_retries }}"
+        wait_before_trigger_job: 0
+
   when: "{{ use_case_validation_tests_enabled == True | default(False) }}"
-
-

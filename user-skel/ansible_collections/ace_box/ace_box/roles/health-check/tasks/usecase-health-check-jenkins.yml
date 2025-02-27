@@ -1,35 +1,58 @@
-- name: Health Check for a use case containing Gitlab
+- name: Health Check for a use case containing Jenkins
+  vars:
+    max_retries: 2
   block:
+    - name: Wait for the pipeline to start. # This is a workaround for the pipeline not starting immediately due to another default pipeline execution
+      ansible.builtin.wait_for:
+        timeout: "{{ wait_before_trigger_pipeline | default(0) }}" # 0 minute in default
 
-  - name: Wait for the pipeline to start. # This is a workaround for the pipeline not starting immediately due to another default pipeline execution
-    ansible.builtin.wait_for:
-      timeout: "{{ wait_before_trigger_pipeline | default(0) }}" # 0 minute in defaut
+    - name: Increment the retry count
+      set_fact:
+        retry_count: "{{ 0 if retry_count is undefined else retry_count | int + 1 }}"
 
-  - name: Trigger Jenkins pipeline
-    include_role:
-      name: jenkins
-      tasks_from: trigger-build
-    vars:
-      jenkins_job_path: "{{ usecase_job_path }}"
+    - name: Trigger Jenkins pipeline
+      include_role:
+        name: jenkins
+        tasks_from: trigger-build
+      vars:
+        jenkins_job_path: "{{ usecase_job_path }}"
+      register: trigger_pipeline_result
 
-  - name: Extract Jenkins job URL
-    set_fact:
-      usecase_job_url: "{{ jenkins_job_url }}"
+    - name: Extract Jenkins job URL
+      set_fact:
+        usecase_job_url: "{{ jenkins_job_url }}"
 
-  - name: Get Jenkins pipeline status
-    include_role:
-      name: jenkins
-      tasks_from: get-build-status
-    vars:
-      jenkins_job_url: "{{ usecase_job_url }}"
+    - name: Get Jenkins pipeline status
+      include_role:
+        name: jenkins
+        tasks_from: get-build-status
+      vars:
+        jenkins_job_url: "{{ usecase_job_url }}"
+      register: get_pipeline_status_result
 
-  - name: Check Jenkins job result
-    fail:
-      msg: "Jenkins job failed with status: {{ job_status_result.json.result }}"
-    when: job_status_result.json.result != 'SUCCESS'
+    - name: Check Jenkins job result
+      fail:
+        msg: "Jenkins job failed with status: {{ job_status_result.json.result }}"
+      when: job_status_result.json.result != 'SUCCESS'
+      register: check_pipeline_result
 
-  - name: Print Jenkins job result
-    debug:
-      msg: "Jenkins job succeeded with status: {{ job_status_result.json.result }}"
-    when: job_status_result.json.result == 'SUCCESS'
+    - name: Print Jenkins job result
+      debug:
+        msg: "Jenkins job succeeded with status: {{ job_status_result.json.result }}"
+      when: job_status_result.json.result == 'SUCCESS'
+      register: print_pipeline_result
+
+  rescue:
+    - name: Fail if maximum retries reached
+      fail:
+        msg: Maximum retries of health check tasks reached
+      when: retry_count | int == max_retries | int
+
+    - name: Retry Health Check for a use case containing Jenkins
+      include_tasks: usecase-health-check-jenkins.yml
+      vars:
+        retry_count: "{{ retry_count }}"
+        max_retries: "{{ max_retries }}"
+        wait_before_trigger_pipeline: 0
+
   when: "{{ use_case_validation_tests_enabled == True | default(False) }}"

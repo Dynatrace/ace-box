@@ -14,7 +14,7 @@ on:
         type: string
       
       providers:
-        description: 'Select the providers to run (comma-separated). Example: ["gcloud","aws"]'
+        description: 'Select the providers to run (comma-separated). Example: ["gcloud","aws"]. Gor GCP, provide the GCP_CREDENTIALS_JSON in the Github repository secrets.'
         required: true
         default: '["gcloud"]'
         type: string
@@ -39,17 +39,12 @@ on:
 
       # optional params for manual run
       dt_tenant:
-        description: "Dynatrace Tenant. Keep empty to use the default tenant configured in the Github variables"
-        required: false
-        default: ""
-        type: string
-      dt_api_token:
-        description: "Dynatrace API Token. Keep empty to use the default tenant configured in the Github secrets"
+        description: "Dynatrace Tenant. Keep empty to use the default tenant configured in the Github variables. For API Token, modify the DT_API_TOKEN secret in the Github repository settings."
         required: false
         default: ""
         type: string
       dt_url_gen3:
-        description: "Dynatrace Environment URL Gen3. Keep empty to use the default tenant configured in the Github variables"
+        description: "Dynatrace Environment URL Gen3. Keep empty to use the default tenant configured in the Github variables. For OAuth, modify the DT_OAUTH_CLIENT_ID and DT_OAUTH_CLIENT_SECRET secrets in the Github repository settings."
         required: false
         default: ""
         type: string
@@ -76,7 +71,6 @@ jobs:
       custom_domain: ${{ steps.set_outputs.outputs.custom_domain }}
       dt_tenant: ${{ steps.set_outputs.outputs.dt_tenant }}
       dt_url_gen3: ${{ steps.set_outputs.outputs.dt_url_gen3 }}
-      dt_api_token: ${{ steps.set_outputs.outputs.dt_api_token }}
     steps:
       - name: Set Environment Variables
         id: set_env
@@ -89,7 +83,6 @@ jobs:
             echo "custom_domain=$(echo '${{ github.event.inputs.custom_domain }}' )" >> "$GITHUB_ENV"
             echo "dt_tenant=$(echo '${{ github.event.inputs.dt_tenant }}' )" >> "$GITHUB_ENV"
             echo "dt_url_gen3=$(echo '${{ github.event.inputs.dt_url_gen3 }}' )" >> "$GITHUB_ENV"
-            echo "dt_api_token=$(echo '${{ github.event.inputs.dt_api_token }}' )" >> "$GITHUB_ENV"
           else
             echo "use_cases=${{ env.DEFAULT_USE_CASES }}" >> "$GITHUB_ENV"
             echo "providers=${{ env.DEFAULT_PROVIDERS }}" >> "$GITHUB_ENV"
@@ -98,7 +91,6 @@ jobs:
             echo "custom_domain=${{ env.DEFAULT_CUSTOM_DOMAIN }}" >> "$GITHUB_ENV"
             echo "dt_tenant=${{ env.DT_TENANT }}" >> "$GITHUB_ENV"
             echo "dt_url_gen3=${{ env.DT_URL_GEN3 }}" >> "$GITHUB_ENV"
-            echo "dt_api_token=${{ env.DT_API_TOKEN }}" >> "$GITHUB_ENV"
           fi
 
       - name: Set Outputs
@@ -112,7 +104,6 @@ jobs:
             echo "custom_domain=$(echo '${{ github.event.inputs.custom_domain }}' )" >> "$GITHUB_OUTPUT"
             echo "dt_tenant=$(echo '${{ github.event.inputs.dt_tenant }}' )" >> "$GITHUB_OUTPUT"
             echo "dt_url_gen3=$(echo '${{ github.event.inputs.dt_url_gen3 }}' )" >> "$GITHUB_OUTPUT"
-            echo "dt_api_token=$(echo '${{ github.event.inputs.dt_api_token }}' )" >> "$GITHUB_OUTPUT"
           else
             echo "use_cases=${{ env.DEFAULT_USE_CASES }}" >> "$GITHUB_OUTPUT"
             echo "providers=${{ env.DEFAULT_PROVIDERS }}" >> "$GITHUB_OUTPUT"
@@ -121,7 +112,6 @@ jobs:
             echo "custom_domain=${{ env.DEFAULT_CUSTOM_DOMAIN }}" >> "$GITHUB_OUTPUT"
             echo "dt_tenant=${{ env.DT_TENANT }}" >> "$GITHUB_OUTPUT"
             echo "dt_url_gen3=${{ env.DT_URL_GEN3 }}" >> "$GITHUB_OUTPUT"
-            echo "dt_api_token=${{ env.DT_API_TOKEN }}" >> "$GITHUB_OUTPUT"
           fi
         shell: bash
 

@@ -11,4 +11,4 @@
     tasks_from: usecase-health-check-awx
   vars:
     usecase_job_template_id: "Demo Job Template"
-    wait_before_trigger_pipeline: 120 # 2 minutes not to override the default pipeline execution
+    wait_before_trigger_job: 120 # 2 minutes not to override the default pipeline execution

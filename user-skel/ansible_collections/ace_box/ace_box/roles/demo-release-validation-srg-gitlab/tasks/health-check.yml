@@ -1,5 +1,4 @@
 # health check for the use case
-# health check for the use case
 - include_role:
     name: health-check
     tasks_from: usecase-health-check-gitlab
