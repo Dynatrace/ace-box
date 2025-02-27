@@ -54,12 +54,12 @@ on:
       deploy_live:
         description: "Deploy to live environment"
         required: false
-        default: 'false'
-        type: string
+        default: false
+        type: boolean
 
 jobs:
   destroy_sprint:
-    if: github.event.inputs.deploy_live == 'false'
+    if: github.event.inputs.deploy_live == false
     uses: ./.github/workflows/validation.yaml
     with:
       use_cases: ${{ github.event.inputs.use_cases_for_both }}
@@ -79,7 +79,7 @@ jobs:
 
   deploy_sprint:
     needs: destroy_sprint
-    if:  ${{ github.event.inputs.deploy_live == 'false' }}
+    if:  ${{ github.event.inputs.deploy_live == false }}
     uses: ./.github/workflows/validation.yaml
     with:
       use_cases: ${{ github.event.inputs.use_cases_for_both }}
@@ -98,8 +98,7 @@ jobs:
       dt_oauth_client_secret: ${{ secrets.DT_OAUTH_CLIENT_SECRET }}
 
   destroy_live:
-    needs: deploy_sprint
-    if: github.event.inputs.deploy_live == 'true'
+    if: github.event.inputs.deploy_live == true
     uses: ./.github/workflows/validation.yaml
     with:
       use_cases: ${{ github.event.inputs.use_cases_for_both }}
@@ -119,7 +118,7 @@ jobs:
 
   deploy_live:
     needs: destroy_live
-    if: github.event.inputs.deploy_live == 'true'
+    if: github.event.inputs.deploy_live == true
     uses: ./.github/workflows/validation.yaml
     with:
       use_cases: ${{ github.event.inputs.use_cases_for_both }}
