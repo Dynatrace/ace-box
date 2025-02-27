@@ -79,7 +79,7 @@ jobs:
 
   deploy_sprint:
     needs: destroy_sprint
-    if: github.event.inputs.deploy_live == 'false'
+    if:  ${{ github.event.inputs.deploy_live == 'false' }}
     uses: ./.github/workflows/validation.yaml
     with:
       use_cases: ${{ github.event.inputs.use_cases_for_both }}
