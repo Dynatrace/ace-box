@@ -28,26 +28,26 @@
 
     - name: Check GitLab pipeline result
       fail:
-        msg: "GitLab pipeline failed with status: {{ pipeline_result.json.status }}"
-      when: pipeline_result.json.status != 'success'
+        msg: "GitLab pipeline failed with status: {{ get_pipeline_status_result.json.status }}"
+      when: get_pipeline_status_result.json.status != 'success'
       register: check_pipeline_result
 
     - name: Print GitLab pipeline result
       debug:
-        msg: "GitLab pipeline succeeded with status: {{ pipeline_result.json.status }}"
-      when: pipeline_result.json.status == 'success'
+        msg: "GitLab pipeline succeeded with status: {{ get_pipeline_status_result.json.status }}"
+      when: get_pipeline_status_result.json.status == 'success'
       register: print_pipeline_result
 
   rescue:
     - name: Fail if maximum retries reached
       fail:
         msg: Maximum retries of health check tasks reached
-      when: retry_count | int == max_retries | int
+      when: retry_count | int >= max_retries | int
 
     - name: Retry Health Check for a use case containing Gitlab
       include_tasks: usecase-health-check-gitlab.yml
       vars:
-        retry_count: "{{ retry_count }}"
+        retry_count: "{{ retry_count | default(0) }}"
         max_retries: "{{ max_retries }}"
         wait_before_trigger_pipeline: 0
         
