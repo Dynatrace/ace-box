@@ -1,4 +1,4 @@
-# Backstage
+# backstage
 
 Role allows you to deploy and manage [Backstage](https://backstage.io) on an ACE-Box.
 

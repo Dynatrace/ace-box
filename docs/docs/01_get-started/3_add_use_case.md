@@ -2,7 +2,7 @@
 sidebar_position: 3
 ---
 
-# 3. Enable Use Case
+# 3. Enable an Use Case
 
 Deploy set of curated roles, composing an use case.
 
@@ -12,7 +12,9 @@ A use case in software refers to a detailed description of how users interact wi
 
 Discover Dynatrace use cases in our [documentation](https://docs.dynatrace.com/docs/discover-dynatrace/use-cases)
 
-## Setup a demo use case
+## Setup your first use case
+
+### Access your ACE-Box instance
 
 1. Within your `terraform/<your_cloud_provider>` folder, run the following command to retrieve the output of the ACE-Box:
 
@@ -34,6 +36,8 @@ dashboard_password = <sensitive>
 ```bash
 ssh -i ./key ace@<IP_PLACEHOLDER>
 ```
+
+### Enable use case
 
 3. Check if the ACE-CLI has been successfully installed with the following command:
 

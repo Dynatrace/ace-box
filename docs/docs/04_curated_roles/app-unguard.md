@@ -79,7 +79,7 @@ Dynatrace Configurations List:
       - "conditional-naming-processgroup/MongoDB Naming"
       - "conditional-naming-processgroup/NodeJS Naming"
       - "conditional-naming-processgroup/Postgres Naming"
-      - "conditional-naming-processgroup/ {ProcessGroup:ExeName} {ProcessGroup:KubernetesBasePodName}"
+      - "conditional-naming-processgroup/ \{ProcessGroup:ExeName\} \{ProcessGroup:KubernetesBasePodName\}"
       - "conditional-naming-service/app.environment"
       - "kubernetes-credentials/ACE-BOX"
       - "synthetic-location/ACE-BOX"  # if set skip_synthetic_monitor: "false"

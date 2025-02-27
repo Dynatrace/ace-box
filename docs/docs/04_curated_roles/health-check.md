@@ -1,4 +1,4 @@
-# Health check Role
+# health-check
 
 This role is used to deploy a health check service for the Ace-Box roles
 

@@ -13,32 +13,106 @@ Real world scenario of Dynatrace monitoring an application running in a Kubernet
 
 Using a realistic environment you will run through similar scenarios to the ones provided in the documentation, in order to learn:
 - [Drill-down to service failure causes](https://docs.dynatrace.com/docs/analyze-explore-automate/distributed-traces/use-cases/error-analysis)
-- [Use logs in context to troubleshoot issues](https://docs.dynatrace.com/docs/analyze-explore-automate/logs/lma-use-cases/lma-e2e-troubleshooting)
-- [Assess and troubleshoot cluster health](https://docs.dynatrace.com/docs/observe/infrastructure-monitoring/container-platform-monitoring/use-cases/cluster-health)
-- [Optimize workload resource usage with Kubernetes app and Notebooks](https://docs.dynatrace.com/docs/observe/infrastructure-monitoring/container-platform-monitoring/use-cases/resource-optimization)
-- [Troubleshoot common health problems of Kubernetes workloads](https://docs.dynatrace.com/docs/observe/infrastructure-monitoring/container-platform-monitoring/use-cases/troubleshoot-health-problems)
-- [Visualize and analyze security findings](https://docs.dynatrace.com/docs/secure/use-cases/visualize-and-analyze-security-findings)
+- [Use logs in context to troubleshoot issues](https://docs.dynatrace.com/docs/analyze-explore-automate/logs/lma-use-cases/lma-e2e-troubleshooting) _coming soon..._
+- [Assess and troubleshoot cluster health](https://docs.dynatrace.com/docs/observe/infrastructure-monitoring/container-platform-monitoring/use-cases/cluster-health) _coming soon..._
+- [Optimize workload resource usage with Kubernetes app and Notebooks](https://docs.dynatrace.com/docs/observe/infrastructure-monitoring/container-platform-monitoring/use-cases/resource-optimization) _coming soon..._
+- [Troubleshoot common health problems of Kubernetes workloads](https://docs.dynatrace.com/docs/observe/infrastructure-monitoring/container-platform-monitoring/use-cases/troubleshoot-health-problems) _coming soon..._
+- [Visualize and analyze security findings](https://docs.dynatrace.com/docs/secure/use-cases/visualize-and-analyze-security-findings) _coming soon..._
 
 > Note: there are not exactly the same use cases as in the documentation, but you can see the instructions below
 
 ## Setup
 
-You have 2 options
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
-### Post ACE-Box installation
+You can enable an use case within your ACE-Box in two different ways
 
-Follow the [Enable Use Case](../01_get-started/3_add_use_case.md) instructions to set this use case after creating your ACE-Box instance
+<Tabs>
+  <TabItem value="ACE-CLI" label="ACE-CLI" default>
+  Suitable in the case you have already deployed an empty ACE-Box
 
-### Via terraform.tfvars
+  Follow the [Enable Use Case](../01_get-started/3_add_use_case.md) instructions to set this use case after creating your ACE-Box instance
+  </TabItem>
+  <TabItem value="terraform.tfvars" label="terraform.tfvars" default>
+  Suitable in the case you haven't created any resource (if you haven't run the terraform apply)
 
-You can add the following line to your terraform.tfvars in order to automatically install the use case after executing the `terraform apply` command
+  You can add the following line to your terraform.tfvars in order to automatically install the use case after executing the `terraform apply` command
 
-```bash
-use_case = "https://github.com/dynatrace-ace/basic-dt-demo.git"
-```
-
-> Note: you can also 
+  ```bash
+  use_case = "https://github.com/dynatrace-ace/basic-dt-demo.git"
+  ```
+  </TabItem>
+</Tabs>
 
 ## Instructions
 
-Details to run the use case
+### Drill-down to service failure causes
+
+Goal: we will intentionally break our EasyTrade app, and analyze the failure causes in Dynatrace
+
+1. Within your ACE-Box, run the following command
+
+```bash
+kubectl get ingress -A
+```
+
+> Note: remember that you can access your ACE-Box instance like [this](../01_get-started/3_add_use_case.md#access-your-ace-box-instance)
+
+2. Copy the dashboard URL and paste it in your browser, then click on Links:
+
+```bash
+dashboard.<IP_PLACEHOLDER>.nip.io
+```
+
+![](./img/ace-dashboard.png)
+
+3. Open EasyTrade in your browser, click on the flag button at the top-left corner next, and enable the `DB not responding` feature-flag
+
+![](./img/db-not-responding.png)
+
+4. Open your Dynatrace tenant, and go to the (New) Services app
+
+![](./img/services-app.png)
+
+5. Check for services with a high failure rate, in our case, `broker-service.easytrade`. Depending for how long you had the use case up and running, Dynatrace may open a problem or not. It depends for Davis to have enough datapoints to have a reliable source of data to actually open it.
+
+![](./img/broker-service-fr.png)
+
+6. Click on the `broker-service.easytrade`, go to the `Analyze` tab and click on `View details of failures`
+
+![](./img/view-details-of-failures.png)
+
+7. Check the Easytrade service class and method throwing the exception, exception message and stacktrace
+
+![](./img/exception.png)
+
+8. Scroll up to the top, and click on the traces button
+
+![](./img/traces.png)
+
+9. Open a trace and analyze particularly that case
+
+![](./img/trace.png)
+
+Well done, you manage to detect and understand the root cause of the failure. With the details of the exception, classes & methods, now you can fix the code.
+
+### Use logs in context to troubleshoot issues
+
+Coming soon...
+
+### Assess and troubleshoot cluster health
+
+Coming soon...
+
+### Optimize workload resource usage with Kubernetes app and Notebooks
+
+Coming soon...
+
+### Troubleshoot common health problems of Kubernetes workloads
+
+Coming soon...
+
+### Visualize and analyze security findings
+
+Coming soon...

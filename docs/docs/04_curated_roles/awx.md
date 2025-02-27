@@ -1,4 +1,4 @@
-# AWX
+# awx
 
 This currated role can be used to install AWX on a Kubernetes environment.
 

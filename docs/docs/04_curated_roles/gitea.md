@@ -1,4 +1,4 @@
-# Gitea
+# gitea
 
 This currated role can be used to install Gitea (a git based code hosting solution) on a Kubernetes cluster.
 It also has embedded tasks to create an organization and repository on Gitea.

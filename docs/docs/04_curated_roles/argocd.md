@@ -1,4 +1,4 @@
-# ArgoCD
+# argocd
 
 Roles allows you to deploy and manage ArgoCD on an ACE-Box.
 

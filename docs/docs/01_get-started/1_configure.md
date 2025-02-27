@@ -6,15 +6,15 @@ sidebar_position: 1
 
 Prepare terraform, cloud provider & authentication
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 **Notes**
 
 > This product is not officially supported by Dynatrace.
 
 > The ACE-Box has been developed and is being actively maintained by the Innovation Services team at Dynatrace. For queries or logging of problems, please use [GitHub Issues](https://github.com/Dynatrace/ace-box/issues).
 
-
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
 
 ## Pre-requisites
 - Terraform CLI (0.14.9+) installed

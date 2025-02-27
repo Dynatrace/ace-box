@@ -1,4 +1,4 @@
-# Jenkins
+# jenkins
 
 This currated role can be used to install Jenkins on a Kubernetes cluster.
 

@@ -70,7 +70,7 @@ Dynatrace Configurations List:
       - "auto-tag/app"
       - "auto-tag/environment"
       - "conditional-naming-processgroup/ACE Box - containername.namespace"
-      - "conditional-naming-processgroup/ {ProcessGroup:ExeName} {ProcessGroup:KubernetesBasePodName}"
+      - "conditional-naming-processgroup/ \{ProcessGroup:ExeName\} \{ProcessGroup:KubernetesBasePodName\}"
       - "conditional-naming-service/app.environment"
       - "synthetic-location/ACE-BOX"  # if set skip_synthetic_monitor: "false"
     

@@ -1,4 +1,4 @@
-# Keptn
+# keptn
 
 This currated role can be used to install Keptn on a Kubernetes cluster.
 

@@ -1,3 +1,7 @@
+---
+sidebar_position: 1
+---
+
 # app-easytrade
 
 This currated role can be used to deploy EasyTrade demo application on the ACE-Box.

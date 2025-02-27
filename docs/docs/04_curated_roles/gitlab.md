@@ -1,4 +1,4 @@
-# Gitlab
+# gitlab
 
 This currated role can be used to install Gitlab (an open source code repository and collaborative software development platform) on a Kubernetes cluster.
 It also has embedded tasks to create an organization and repository on Gitlab.

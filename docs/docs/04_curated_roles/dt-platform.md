@@ -1,4 +1,4 @@
-# Role to manage DT Platform
+# dt-platform
 
 ## ensure-app
 
