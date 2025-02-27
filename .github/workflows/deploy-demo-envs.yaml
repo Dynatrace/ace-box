@@ -119,7 +119,7 @@ jobs:
 
   deploy_live:
     needs: destroy_live
-    if: ${{ inputs.deploy_live == true }}
+    if: inputs.deploy_live == true
     uses: ./.github/workflows/validation.yaml
     with:
       use_cases: ${{ github.event.inputs.use_cases_for_both }}
