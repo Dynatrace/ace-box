@@ -115,7 +115,7 @@ jobs:
             echo "use_cases=$(echo '${{ github.event.inputs.use_cases }}' )" >> "$GITHUB_ENV"
             echo "providers=$(echo '${{ github.event.inputs.providers }}' )" >> "$GITHUB_ENV"
             echo "destroy_resources=$(echo '${{ github.event.inputs.destroy_resources }}' )" >> "$GITHUB_ENV"
-            echo "use_case_validation_tests_enabled=$(echo '${{ github.event.inputs.use_case_validation_tests_enabled }}' )" >> "$GITHUB_ENV"
+            echo "use_case_validation_tests_enabled=$(echo ${{ github.event.inputs.use_case_validation_tests_enabled }} )" >> "$GITHUB_ENV"
             echo "custom_domain=$(echo '${{ github.event.inputs.custom_domain }}' )" >> "$GITHUB_ENV"
             echo "dt_tenant=$(echo '${{ github.event.inputs.dt_tenant }}' )" >> "$GITHUB_ENV"
             echo "dt_url_gen3=$(echo '${{ github.event.inputs.dt_url_gen3 }}' )" >> "$GITHUB_ENV"
