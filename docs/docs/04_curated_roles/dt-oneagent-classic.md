@@ -2,7 +2,7 @@
 
 This currated role can be used to deploy the Dynatrace OneAgent on the host.
 
-> Note: For Kubernetes-based environments, it is best to deploy the [Dynatrace Operator](../dt-operator/Readme.md).
+> Note: For Kubernetes-based environments, it is best to deploy the [Dynatrace Operator](../04_curated_roles/dt-operator.md).
 
 
 ## Using the role
