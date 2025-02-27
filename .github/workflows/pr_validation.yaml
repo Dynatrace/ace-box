@@ -50,7 +50,7 @@ on:
         type: string
       
       providers:
-        description: 'Select the providers to run (comma-separated). Example: ["gcloud","aws"]. Gor GCP, provide the GCP_CREDENTIALS_JSON in the Github repository secrets.'
+        description: 'Select the providers to run (comma-separated). Example: ["gcloud","aws"]. For GCP, provide the GCP_CREDENTIALS_JSON in the Github repository secrets.'
         required: true
         default: '["gcloud"]'
         type: string
@@ -127,6 +127,14 @@ jobs:
             echo "custom_domain=${{ env.DEFAULT_CUSTOM_DOMAIN }}" >> "$GITHUB_ENV"
             echo "dt_tenant=${{ env.DT_TENANT }}" >> "$GITHUB_ENV"
             echo "dt_url_gen3=${{ env.DT_URL_GEN3 }}" >> "$GITHUB_ENV"
+          fi
+
+      - name: Convert use_case_validation_tests_enabled to Boolean
+        run: |
+          if [[ "${{ github.event.inputs.use_case_validation_tests_enabled }}" == "true" ]]; then
+            echo "use_case_validation_tests_enabled=true" >> "$GITHUB_ENV"
+          else
+            echo "use_case_validation_tests_enabled=false" >> "$GITHUB_ENV"
           fi
 
       - name: Set Outputs
