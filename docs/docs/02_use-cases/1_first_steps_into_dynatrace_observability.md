@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# Dynatrace Basic Observability
+# First steps into Dynatrace Observability
 
 ## Value
 
@@ -19,6 +19,8 @@ Using a realistic environment you will run through similar scenarios to the ones
 - [Troubleshoot common health problems of Kubernetes workloads](https://docs.dynatrace.com/docs/observe/infrastructure-monitoring/container-platform-monitoring/use-cases/troubleshoot-health-problems) _coming soon..._
 - [Visualize and analyze security findings](https://docs.dynatrace.com/docs/secure/use-cases/visualize-and-analyze-security-findings) _coming soon..._
 
+![](./img/trace.png)
+
 > Note: there are not exactly the same use cases as in the documentation, but you can see the instructions below
 
 ## Setup
@@ -30,20 +32,23 @@ You can enable an use case within your ACE-Box in two different ways
 
 <Tabs>
   <TabItem value="ACE-CLI" label="ACE-CLI" default>
-  Suitable in the case you have already deployed an empty ACE-Box
-
-  Follow the [Enable Use Case](../01_get-started/3_add_use_case.md) instructions to set this use case after creating your ACE-Box instance
+  - Use ACE-CLI if you already have deployed an empty ACE-Box
+  - Follow the [Enable Use Case](../01_get-started/3_add_use_case.md) instructions
   </TabItem>
-  <TabItem value="terraform.tfvars" label="terraform.tfvars" default>
-  Suitable in the case you haven't created any resource (if you haven't run the terraform apply)
+  <TabItem value="terraform.tfvars (Recommended)" label="terraform.tfvars (Recommended)" default>
+  - You can add the following line to your `terraform.tfvars` in order to automatically install the use case after executing the `terraform apply` command
 
-  You can add the following line to your terraform.tfvars in order to automatically install the use case after executing the `terraform apply` command
+    ```bash
+    use_case = "https://github.com/dynatrace-ace/basic-dt-demo.git"
+    ```
 
-  ```bash
-  use_case = "https://github.com/dynatrace-ace/basic-dt-demo.git"
-  ```
+  - This becomes very handy from a provisioning perspective. You don't need to first create the ACE-Box and then enable the use case, but everything happens with a sigle click!
   </TabItem>
 </Tabs>
+
+### Version & Compatibility
+
+ACE-Box version 1.28.8
 
 ## Instructions
 
@@ -116,3 +121,7 @@ Coming soon...
 ### Visualize and analyze security findings
 
 Coming soon...
+
+## Well Done!
+
+Go back to your ACE-Box [management page](../01_get-started/4_manage.md)

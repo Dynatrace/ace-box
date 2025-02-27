@@ -30,3 +30,5 @@ terraform output
 ```bash
 terraform workspace list/new/select/delete
 ```
+
+Go back to your ACE-Box [management page](../01_get-started/4_manage.md)

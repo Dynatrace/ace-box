@@ -9,13 +9,6 @@ Prepare terraform, cloud provider & authentication
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-**Notes**
-
-> This product is not officially supported by Dynatrace.
-
-> The ACE-Box has been developed and is being actively maintained by the Innovation Services team at Dynatrace. For queries or logging of problems, please use [GitHub Issues](https://github.com/Dynatrace/ace-box/issues).
-
-
 ## Pre-requisites
 - Terraform CLI (0.14.9+) installed
 - Dynatrace tenant
@@ -189,10 +182,6 @@ import TabItem from '@theme/TabItem';
     ```
   </TabItem>
 </Tabs>
-
-## (Optional) additional variables
-
-Check out `variables.tf` for a complete list of variables. For example, for AWS, you can add the following [AWS additional variables](../05_more/4_aws_variables_breakdown.md) to the `terraform.tfvars` config file. If you don't add them, they are configured with a default value, there are not mandatory. 
 
 ## Configuration ready!
 

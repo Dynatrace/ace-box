@@ -2,9 +2,9 @@
 sidebar_position: 3
 ---
 
-# 3. Enable an Use Case
+# 3. Enable Use Case
 
-Deploy set of curated roles, composing an use case.
+Build content within your ACE-Box
 
 ## What is an use case?
 
@@ -51,7 +51,7 @@ ace --help
 ace enable https://github.com/dynatrace-ace/basic-dt-demo.git
 ```
 
-> Note: you can also define the use case in your `terraform.tfvars` to automatically deploy it after the ACE-Box gets deployed. More info [here](../02_use-cases/1_dynatrace_basic_observability.md)
+> Note: you can also define the use case in your `terraform.tfvars` to automatically deploy it after the ACE-Box gets deployed. More info [here](../02_use-cases/1_first_steps_into_dynatrace_observability.md)
 
 5. Check the provisioning output, it should as follows, without `failed` steps:
 
@@ -59,5 +59,7 @@ ace enable https://github.com/dynatrace-ace/basic-dt-demo.git
 PLAY RECAP **********************************************************************************************
 localhost                  : ok=28   changed=4    unreachable=0    failed=0    skipped=10   rescued=0    ignored=2
 ```
+
+## ACE-Box with Use case ready!
 
 Well done, your ACE-Box now has a Use Case embedded on it!

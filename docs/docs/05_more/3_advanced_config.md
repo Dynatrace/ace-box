@@ -7,6 +7,10 @@ import TabItem from '@theme/TabItem';
 
 # Advanced config
 
+## additional variables
+
+Check out `variables.tf` for a complete list of variables. For example, for AWS, you can add the following [AWS additional variables](../05_more/4_aws_variables_breakdown.md) to the `terraform.tfvars` config file. If you don't add them, they are configured with a default value, there are not mandatory.
+
 ## (Optional) Custom domain support
 
 <Tabs>
