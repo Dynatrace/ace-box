@@ -1,3 +1,46 @@
+# This GitHub Actions workflow is named "Reusable usecase provisioning".
+# It is triggered by the `workflow_call` event, allowing it to be reused by other workflows.
+
+# Inputs:
+# - use_cases: A comma-separated string of use cases to run. Default is '["demo_all"]'.
+# - providers: A comma-separated string of providers to run. Default is '["gcloud"]'.
+# - destroy_resources: A boolean to enable resource destruction. Default is true.
+# - custom_domain: An optional custom domain name.
+# - dt_tenant: An optional Dynatrace tenant.
+# - dt_url_gen3: An optional Dynatrace Environment URL Gen3.
+# - dt_oauth_sso_endpoint: An optional Dynatrace OAuth SSO Endpoint.
+# - dt_oauth_account_urn: An optional Dynatrace OAuth Account URN.
+# - environment_name: An optional environment name.
+# - environment_url: An optional environment URL.
+# - use_case_validation_tests_enabled: A boolean flag to enable or disable use case validation tests. Default is false.
+
+# Secrets:
+# - dt_api_token: An optional Dynatrace API Token.
+# - gcp_credentials_json: An optional GCP Credentials JSON.
+# - dt_oauth_client_id: An optional Dynatrace OAuth Client ID.
+# - dt_oauth_client_secret: An optional Dynatrace OAuth Client Secret.
+
+# Concurrency:
+# - Ensures that only one instance of the workflow runs at a time for the same group.
+
+# Jobs:
+# 1. preparation:
+#    - Runs on a spot instance.
+#    - Parses inputs and sets outputs for use cases and providers.
+
+# 2. apply:
+#    - Needs the preparation job to complete.
+#    - Runs on a spot instance.
+#    - Sets environment variables and uses a matrix strategy to run for each provider and use case combination.
+#    - Includes steps for checking out the repository, installing dependencies, debugging environment variables, 
+#      configuring cloud provider-specific settings, setting up Terraform, and running Terraform commands.
+#    - Runs tests and conditionally destroys resources based on the `destroy_resources` input.
+
+# 3. update-pr-status:
+#    - Needs the apply job to complete.
+#    - Runs on a spot instance.
+#    - Updates the status of a pull request if the workflow was triggered by a pull request event.
+
 name: Reusable usecase provisioning
 
 on:

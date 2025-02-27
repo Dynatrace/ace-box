@@ -1,3 +1,39 @@
+# This GitHub Actions workflow is designed to validate pull requests (PRs) with demo use cases.
+# 
+# Workflow Name: Validate PRs with demo use cases
+# 
+# Triggers:
+# - on push to the 'dev' branch
+# - manual trigger via workflow_dispatch with the following inputs:
+#   - use_cases: Comma-separated list of use cases to run (default: '["demo_all"]')
+#   - providers: Comma-separated list of providers to run (default: '["gcloud"]')
+#   - destroy_resources: Boolean to enable resource destruction (default: true)
+#   - use_case_validation_tests_enabled: Boolean to enable use case validation tests (default: false)
+#   - custom_domain: Custom domain name for validation (default: "")
+#   - dt_tenant: Dynatrace Tenant (default: "")
+#   - dt_url_gen3: Dynatrace Environment URL Gen3 (default: "")
+# 
+# Environment Variables:
+# - DEFAULT_USE_CASES: Default use cases to run (default: '["demo_all"]')
+# - DEFAULT_PROVIDERS: Default providers to run (default: '["gcloud"]')
+# - DESTROY_RESOURCES: Default value for resource destruction (default: true)
+# - USE_CASE_VALIDATION_TESTS_ENABLED: Default value for use case validation tests (default: false)
+# - DEFAULT_CUSTOM_DOMAIN: Default custom domain name (default: "")
+# - DT_TENANT: Dynatrace Tenant from GitHub variables
+# - DT_URL_GEN3: Dynatrace Environment URL Gen3 from GitHub variables
+# - DT_API_TOKEN: Dynatrace API Token from GitHub secrets
+# 
+# Jobs:
+# 1. set_env_vars:
+#    - Runs on a spot instance
+#    - Sets environment variables based on the trigger event (push or workflow_dispatch)
+#    - Outputs the set environment variables for use in subsequent jobs
+# 
+# 2. test_demo_usecases:
+#    - Needs the set_env_vars job to complete
+#    - Uses the validation.yaml workflow to test demo use cases
+#    - Passes the environment variables and secrets to the validation workflow
+
 name: Validate PRs with demo use cases
 
 on:
