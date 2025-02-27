@@ -54,12 +54,12 @@ on:
       deploy_live:
         description: "Deploy to live environment"
         required: false
-        default: false
+        default: 'false'
         type: boolean
 
 jobs:
   destroy_sprint:
-    if: github.event.inputs.deploy_live == true
+    if: github.event.inputs.deploy_live == 'true'
     uses: ./.github/workflows/validation.yaml
     with:
       use_cases: ${{ github.event.inputs.use_cases_for_both }}
