@@ -55,7 +55,7 @@ on:
         description: "Deploy to live environment"
         required: false
         default: 'false'
-        type: boolean
+        type: string
 
 jobs:
   destroy_sprint:
