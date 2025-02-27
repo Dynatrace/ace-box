@@ -110,7 +110,7 @@ jobs:
       TF_VAR_dt_api_token: ${{ secrets.dt_api_token }}
       TF_VAR_custom_domain: ${{ inputs.custom_domain != '' && inputs.custom_domain || '' }}
       TF_VAR_otel_export_enable: "true"
-      TF_VAR_use_case_validation_tests_enabled: ${{ inputs.use_case_validation_tests_enabled == 'true' }}
+      TF_VAR_use_case_validation_tests_enabled: ${{ inputs.use_case_validation_tests_enabled }}
       TF_VAR_name_prefix: "gh-actions-ace-box"
       TF_VAR_skip_domain_workspace_alignment: "true"
       TF_VAR_extra_vars: |
