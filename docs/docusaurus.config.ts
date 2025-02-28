@@ -114,10 +114,6 @@ const config: Config = {
           title: 'More',
           items: [
             {
-              label: 'Blog',
-              to: '/blog',
-            },
-            {
               label: 'ACE-Box Repository',
               href: 'https://github.com/Dynatrace/ace-box',
             },
