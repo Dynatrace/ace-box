@@ -80,12 +80,7 @@ const config: Config = {
           type: 'docSidebar',
           sidebarId: 'tutorialSidebar',
           position: 'left',
-          label: 'Get Started',
-        },
-        {
-          to: '/blog', 
-          label: 'Use Cases', 
-          position: 'left'
+          label: 'Documentation',
         },
         {
           href: 'https://github.com/Dynatrace/ace-box',

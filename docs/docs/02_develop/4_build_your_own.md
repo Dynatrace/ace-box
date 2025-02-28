@@ -1,10 +1,10 @@
 ---
-sidebar_position: 2
+sidebar_position: 3
 ---
 
-# Create your own use case
+# Build Your Own
 
-How to build a use case from scratch?
+Learn how to build a use case from scratch
 
 ## Your Use Case repository structure
 

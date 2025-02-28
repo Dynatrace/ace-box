@@ -8,8 +8,6 @@ Deploy your ACE-Box instance
 
 ## Deploy
 
-After completing the [1. Configure](../01_get-started/1_configure.md) piece, now you are ready to deploy an instance of the ACE-Box
-
 > Note: if you're deploying your ACE-Box following the [Own VM](../01_get-started/1_configure.md#configure-cloud-provider), you can skip this step and move to [Enable Use Case](../01_get-started/3_add_use_case.md). Terraform is needed just for a cloud provider
 
 1. Verify the configuration and execution plan by running `terraform plan`

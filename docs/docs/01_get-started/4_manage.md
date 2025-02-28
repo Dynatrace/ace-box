@@ -10,10 +10,10 @@ Well done!. Your ACE-Box with the `Basic Dynatrace Observability` use case shoul
 
 ## What's next?
 
-- [Run through the use case](../02_use-cases/1_first_steps_into_dynatrace_observability.md), following the instructions provided. 
+- [Run through the use case](../use_cases.md), following the instructions provided. 
 
 ## Post-installation tasks
 
 Other useful post-installation tasks:
 - [Manage your ACE-Box instance](../05_more/2_destroy_and_other_commands.md), for example, if you need to access again or destroy your instance.
-- [Develop your own use case](../03_develop/1_extending_use_case.md), learn how to use curated & custom roles to build your own scenario.
+- [Develop your own use case](../02_develop/1_architecture.md), learn how to use curated & custom roles to build your own scenario.

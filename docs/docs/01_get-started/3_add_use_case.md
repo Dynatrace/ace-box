@@ -6,12 +6,6 @@ sidebar_position: 3
 
 Build content within your ACE-Box
 
-## What is an use case?
-
-A use case in software refers to a detailed description of how users interact with a system to achieve a specific goal. It outlines the steps involved in completing a task and helps to illustrate the functional requirements of the software.
-
-Discover Dynatrace use cases in our [documentation](https://docs.dynatrace.com/docs/discover-dynatrace/use-cases)
-
 ## Setup your first use case
 
 ### Access your ACE-Box instance
@@ -51,7 +45,7 @@ ace --help
 ace enable https://github.com/dynatrace-ace/basic-dt-demo.git
 ```
 
-> Note: you can also define the use case in your `terraform.tfvars` to automatically deploy it after the ACE-Box gets deployed. More info [here](../02_use-cases/1_first_steps_into_dynatrace_observability.md)
+> Note: you can also define the use case in your `terraform.tfvars` to automatically deploy it after the ACE-Box gets deployed. More info [here](../use_cases.md)
 
 5. Check the provisioning output, it should as follows, without `failed` steps:
 

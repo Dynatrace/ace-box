@@ -1,17 +1,20 @@
 ---
-sidebar_position: 2
+sidebar_position: 1
 ---
 
-# Dive Deep Use Case
+# Architecture
 
-## Exploring
+Explore & extend the demo use case
 
-In this tutorial, we will explore the demo use case and extend it using curated roles and custom functionalities
+### What is it?
 
-### How is an use case defined?
+A use case in software refers to a detailed description of how users interact with a system to achieve a specific goal. It outlines the steps involved in completing a task and helps to illustrate the functional requirements of the software.
 
-Use cases reside in repositories outside of the ACE-Box. For our First Steps into Dynatrace Observability
-https://github.com/dynatrace-ace/basic-dt-demo
+Discover Dynatrace use cases in our [documentation](https://docs.dynatrace.com/docs/discover-dynatrace/use-cases)
+
+### How is it defined?
+
+An use case reside in repositories outside of the ACE-Box. [This](https://github.com/dynatrace-ace/basic-dt-demo) is the repository for our `First Steps into Dynatrace Observability`.
 
 ### How it works?
 
@@ -42,29 +45,6 @@ Each of these roles are curated roles that are part of the ACE-Box. Check out th
 
 :::tip
 
-Before developing anything from scratch, check if there is a curated role that may help you.
+Before developing anything from scratch, check if there is a [curated role](../category/curated-roles)
 
 :::
-
-## Extending
-
-We will use the existing demo to create an extended version of it adding the following
-
-### Preparation
-
-1. SSH into the VM
-
-2. ace enable --local
-
-### Dynatrace configurations & apps
-
-_coming soon..._
-
-### Gitlab CI/CD
-
-_coming soon..._
-
-### Custom Commands
-
-_coming soon..._
-

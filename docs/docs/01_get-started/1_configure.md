@@ -157,9 +157,8 @@ import TabItem from '@theme/TabItem';
     }
     ```
 
-  7. Create the respective Dynatrace tokens, with the following scopes. Then add them into the placeholders within your `terraform.tfvars`
-      - [dt_api_token](../05_more/5_dt_tokens_scopes.md#how-to-create-dt_api_token). 
-      - [dt_oauth_client_secret](../05_more/5_dt_tokens_scopes.md#how-to-create-dt_oauth_client_secret). 
+  7. Create the respective Dynatrace tokens, with the following scopes for each: [dt_api_token](../05_more/5_dt_tokens_scopes.md#how-to-create-dt_api_token) & [dt_oauth_client_secret](../05_more/5_dt_tokens_scopes.md#how-to-create-dt_oauth_client_secret). Then add them into the placeholders within your `terraform.tfvars`
+ 
   
       > Note: It is recommended to set the sensitive variables as environment variables. More information in the terraform documentation [here](https://developer.hashicorp.com/terraform/language/values/variables#environment-variables)
 
