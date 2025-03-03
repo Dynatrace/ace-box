@@ -28,3 +28,21 @@
   --ifm-color-primary-lightest: #fff;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
+
+:root {
+  --color-easy: #4caf50; /* Green */
+  --color-medium: #ff9800; /* Orange */
+  --color-difficult: #f44336; /* Red */
+}
+
+.difficulty-easy {
+  color: var(--color-easy);
+}
+
+.difficulty-medium {
+  color: var(--color-medium);
+}
+
+.difficulty-difficult {
+  color: var(--color-difficult);
+}
