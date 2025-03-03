@@ -5,13 +5,13 @@ sidebar_position: 3
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# Advanced config
+# Cloud Provider custom configuration
 
-## additional variables
+## Additional Variables
 
-Check out `variables.tf` for a complete list of variables. For example, for AWS, you can add the following [AWS additional variables](../05_more/4_aws_variables_breakdown.md) to the `terraform.tfvars` config file. If you don't add them, they are configured with a default value, there are not mandatory.
+Check out `variables.tf` for a complete list of variables, for example for [AWS](https://github.com/Dynatrace/ace-box/blob/dev/terraform/aws/variables.tf). Each one of them can be replaced with a custom value set within the `terraform.tfvars`.
 
-## (Optional) Custom domain support
+## Custom Domain Support
 
 <Tabs>
   <TabItem value="AWS" label="AWS" default>
@@ -56,7 +56,7 @@ Check out `variables.tf` for a complete list of variables. For example, for AWS,
   </TabItem>
 </Tabs>
 
-## (Optional) Send OpenTelemetry Traces to Dynatrace
+## Send OpenTelemetry Traces to Dynatrace
 
 > Note: same for all cloud providers
 

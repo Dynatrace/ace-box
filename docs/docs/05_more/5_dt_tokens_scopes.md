@@ -2,7 +2,7 @@
 sidebar_position: 5
 ---
 
-# Dynatrace Tokens
+# Dynatrace Tokens & Scopes
 
 ### How to create dt_oauth_client_secret?
 

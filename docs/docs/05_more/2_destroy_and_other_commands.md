@@ -2,10 +2,7 @@
 sidebar_position: 2
 ---
 
-# Destroy & useful commands
-
-## Destroy your ACE-Box
-
+# Destroy your ACE-Box
 
 ```bash
 terraform destroy

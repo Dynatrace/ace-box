@@ -2,6 +2,7 @@
   "label": "Curated Roles",
   "position": 4,
   "link": {
-    "type": "generated-index"
+    "type": "generated-index",
+    "description": "Preconfigured roles for common use cases. Each has detailed instructions on how to include them into your use case"
   }
 }

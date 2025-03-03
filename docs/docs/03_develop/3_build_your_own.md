@@ -38,4 +38,4 @@ Well done, now you have your use case within your ACE-Box, now you can start dev
 
 ## Adding the first modules to your use case
 
-Following [these](../02_develop/3_extend.md) steps, now you can start adding curated and custom roles to your use case
+Following [these](../03_develop/2_extend.md) steps, now you can start adding curated and custom roles to your use case
