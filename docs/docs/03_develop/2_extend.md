@@ -2,13 +2,13 @@
 sidebar_position: 2
 ---
 
-# Extending use case
+# Extending Use Case
 
-In the following section we will learn how to extend our initial use case with a step-by-step example. 
+In this section, we will learn how to extend our initial use case with a step-by-step example.
 
-## Access ACE-Box & run --local command
+## Access ACE-Box & Run --local Command
 
-1. If you haven't yet, SSH into your ACE-Box and test the [--local](../03_develop/1_core_principles.md#how-can-i-make-changes-to-my-use-case) command. The output should look as follows
+1. If you haven't yet, SSH into your ACE-Box and test the [--local](../03_develop/1_core_principles.md#how-can-i-make-changes-to-my-use-case) command. The output should look as follows:
 
 ```bash
 PLAY RECAP **********************************************************************************************
@@ -20,7 +20,7 @@ You're welcome!
 
 ## <span class="difficulty-easy">(Easy)</span> Install Dynatrace App from the hub
 
-1. Deploy the app `dynatrace.davis.workflow.actions` directly during the provisioning
+1. In order to install apps from the hub, we can use the [dt-platform](../04_curated_roles/dt-platform.md) role. Follow the role documentation to learn how to use it. For our case, let's install the app [Davis for Workflows](https://docs.dynatrace.com/docs/discover-dynatrace/platform/davis-ai/davis-ai-integrations/davis-for-workflows#install-davis-for-workflows) during the provisioning using the following command:
 
 ```yaml
 - name: Install dt apps from hub
@@ -42,14 +42,14 @@ You're welcome!
 
 ## <span class="difficulty-easy">(Easy)</span> Deploy ChatOps tool - Mattermost 
 
-1. Add Mattermost to have a ChatOps solution embedded within our use case
+1. In order to deploy mattermost, we can use the [mattermost](../04_curated_roles/mattermost.md) role. Follow the role documentation to learn how to use it. For our example, let's add Mattermost, in order to have a ChatOps solution embedded within our use case:
 
 ```yaml
 - include_role:
     name: mattermost
 ```
 
-2. Use sub-tasks from the role to configure it
+2. Use sub-tasks from the role to configure it:
 
 ```yaml
 - name: Mattermost - Create a new channel
@@ -68,10 +68,6 @@ You're welcome!
     mm_channel_name: "development"
     mm_channel_display_name: "development"
 ```
-
-3. Add Mattermost workflow action
-
-_add workflow action within ACE-Box first!_
 
 ## <span class="difficulty-medium">(Medium)</span> Apply a Dynatrace configuration
 
@@ -238,9 +234,4 @@ Now your configuration should be enabled
 
 ### Tips: I have my bash command but I don't know Ansible
 
-- GenAI models are good translators. Please use them with moderation
-
-
-## <span class="difficulty-difficult">(Advanced)</span> Gitlab CI/CD
-
-_coming soon..._
+- GenAI models are excellent translators (e.g., bash to Ansible), but please use them with moderation and responsibility.

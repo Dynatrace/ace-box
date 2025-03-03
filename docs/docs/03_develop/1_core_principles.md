@@ -4,21 +4,21 @@ sidebar_position: 1
 
 # Core Principles
 
-Explore & extend the demo use case
+Explore and extend the demo use case.
 
-## What is an use case?
+## What is a use case?
 
 A use case in software refers to a detailed description of how users interact with a system to achieve a specific goal. It outlines the steps involved in completing a task and helps to illustrate the functional requirements of the software.
 
-Discover Dynatrace use cases in our [documentation](https://docs.dynatrace.com/docs/discover-dynatrace/use-cases)
+Discover Dynatrace use cases in our [documentation](https://docs.dynatrace.com/docs/discover-dynatrace/use-cases).
 
-## How is an use case defined?
+## How is a use case defined?
 
-An use case reside in repositories outside of the ACE-Box. [This](https://github.com/dynatrace-ace/basic-dt-demo) is the repository for our `First Steps into Dynatrace Observability`.
+A use case resides in repositories outside of the ACE-Box. [This](https://github.com/dynatrace-ace/basic-dt-demo) is the repository for our `First Steps into Dynatrace Observability`.
 
 ## Use case structure
 
-With the [ace enable](../01_get-started/3_add_use_case.md#enable-use-case) command, the ACE-Box will execute the [roles/my-use-case/tasks/main.yml](https://github.com/dynatrace-ace/basic-dt-demo/blob/main/roles/my-use-case/tasks/main.yml) following task, that looks as follows:
+With the [ace enable](../01_get-started/3_add_use_case.md#enable-use-case) command, the ACE-Box will execute the [roles/my-use-case/tasks/main.yml](https://github.com/dynatrace-ace/basic-dt-demo/blob/main/roles/my-use-case/tasks/main.yml) task, which looks as follows:
 
 ```yml
 ---
@@ -37,7 +37,7 @@ With the [ace enable](../01_get-started/3_add_use_case.md#enable-use-case) comma
     name: dashboard
 ```
 
-Each of these roles are curated roles that are part of the ACE-Box. Check out the documentation related to each role.
+Each of these is a curated role that is part of the ACE-Box. Check out the documentation related to them:
 - [k3s](../04_curated_roles/k3s.md)
 - [dt-operator](../04_curated_roles/dt-operator.md)
 - [app-easytrade](../04_curated_roles/app-easytrade.md)
