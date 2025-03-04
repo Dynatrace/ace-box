@@ -16,7 +16,7 @@
 
 - name: Set acceptable response codes
   set_fact:
-    acceptable_response_codes: [200, 201, 202, 204, 301, 302, 304, 403]
+    acceptable_response_codes: [200, 201, 202, 204, 301, 302, 304, 403, 401]
 
 - name: Set Application URL
   set_fact:

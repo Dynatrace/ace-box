@@ -186,8 +186,6 @@ def ace(
     '--use-case-validation-tests-enabled',
     help='Flag to enable or disable use case validation tests',
     envvar='USE_CASE_VALIDATION_TESTS_ENABLED',
-    type=bool,
-    default=False,
 )
 @click.option('--extra-var', multiple=True)
 @click.option(
@@ -233,6 +231,8 @@ def prepare(
 
     if not use_case_validation_tests_enabled:
         use_case_validation_tests_enabled = click.prompt('Please enter True(default:False) if you want e2e validation tests enabled', default=False)
+
+    logging.debug(f'use_case_validation_tests_enabled is set to: {use_case_validation_tests_enabled}')
 
     if ansible_workdir:
         logging.warning('Warning: --ansible-workdir is deprecated and will be removed in a future version.')
