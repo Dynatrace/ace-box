@@ -1,0 +1,8 @@
+{
+  "label": "Get Started",
+  "position": 1,
+  "link": {
+    "type": "generated-index",
+    "description": "Follow this guide to have your ACE-Box up and running in no time."
+  }
+}
