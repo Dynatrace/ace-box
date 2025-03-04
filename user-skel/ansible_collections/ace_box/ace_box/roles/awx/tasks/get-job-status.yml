@@ -1,0 +1,20 @@
+- name: Wait before checking job status
+  ansible.builtin.wait_for:
+    timeout: 30  # 30 seconds
+
+- name: Query job status
+  uri:
+    url: "{{ awx_internal_endpoint }}/api/v2/jobs/{{ job_id }}/"
+    method: GET
+    user: "{{ awx_admin_username }}"
+    password: "{{ awx_admin_password }}"
+    force_basic_auth: true
+    status_code: 200
+  register: job_status_result
+  until: job_status_result.json.status in ['successful', 'failed', 'canceled']
+  retries: 10
+  delay: 10
+
+- name: Print job status result
+  debug:
+    msg: "Job status result: {{ job_status_result.json.status }}"

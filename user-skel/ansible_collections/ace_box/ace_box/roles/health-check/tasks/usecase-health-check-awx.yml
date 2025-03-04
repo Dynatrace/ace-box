@@ -1,0 +1,31 @@
+- name: Health Check for a use case containing AWX
+  block:
+
+  - name: Wait for the job to start. # This is a workaround for the job not starting immediately due to another default job execution
+    ansible.builtin.wait_for:
+      timeout: "{{ wait_before_trigger_job | default(0) }}" # 0 minute in defaut
+
+  - name: Launch job template
+    include_role:
+      name: awx
+      tasks_from: launch-job-template
+    vars:
+      job_template_id: "{{ usecase_job_template_id }}"
+
+  - name: Get job status
+    include_role:
+      name: awx
+      tasks_from: get-job-status
+
+  - name: Check AWX job result
+    fail:
+      msg: "AWX job failed with status: {{ job_status_result.json.status }}"
+    when: job_status_result.json.status != 'successful'
+
+  - name: Print AWX job result
+    debug:
+      msg: "AWX job succeeded with status: {{ job_status_result.json.status }}"
+    when: job_status_result.json.status == 'successful'
+  when: "{{ use_case_validation_tests_enabled == True | default(False) }}"
+
+

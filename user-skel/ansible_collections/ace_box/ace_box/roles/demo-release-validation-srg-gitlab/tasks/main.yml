@@ -291,3 +291,6 @@
 
 - set_fact:
     role_path_abs:
+
+- include_tasks:
+    file: health-check.yml

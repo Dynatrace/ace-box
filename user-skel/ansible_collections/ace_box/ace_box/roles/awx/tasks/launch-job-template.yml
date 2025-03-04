@@ -1,0 +1,16 @@
+- name: Launch AWX job template
+  awx.awx.job_launch:
+    job_template: "{{ job_template_id }}"
+    wait: true
+    controller_host: "{{ awx_internal_endpoint }}"
+    controller_password: "{{ awx_admin_password }}"
+    controller_username: "{{ awx_admin_username }}"
+  register: launch_job_template_result
+
+- name: Print launch job template result
+  debug:
+    msg: "Launch job template result: {{ launch_job_template_result }}"
+
+- name: Set job ID
+  set_fact:
+    job_id: "{{ launch_job_template_result.id }}"

@@ -102,3 +102,8 @@ variable "otel_export_enable" {
   description = "Enable openetelemetry export to Dynatrace"
   default     = false
 }
+variable "use_case_validation_tests_enabled" {
+  type        = bool
+  description = "Enable use case validation tests for use case health"
+  default     = false
+}

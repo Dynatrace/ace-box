@@ -1,0 +1,35 @@
+- name: Health Check for a use case containing Gitlab
+  block:
+
+  - name: Wait for the pipeline to start. # This is a workaround for the pipeline not starting immediately due to another default pipeline execution
+    ansible.builtin.wait_for:
+      timeout: "{{ wait_before_trigger_pipeline | default(0) }}" # 0 minute in defaut
+
+  - name: Trigger Jenkins pipeline
+    include_role:
+      name: jenkins
+      tasks_from: trigger-build
+    vars:
+      jenkins_job_path: "{{ usecase_job_path }}"
+
+  - name: Extract Jenkins job URL
+    set_fact:
+      usecase_job_url: "{{ jenkins_job_url }}"
+
+  - name: Get Jenkins pipeline status
+    include_role:
+      name: jenkins
+      tasks_from: get-build-status
+    vars:
+      jenkins_job_url: "{{ usecase_job_url }}"
+
+  - name: Check Jenkins job result
+    fail:
+      msg: "Jenkins job failed with status: {{ job_status_result.json.result }}"
+    when: job_status_result.json.result != 'SUCCESS'
+
+  - name: Print Jenkins job result
+    debug:
+      msg: "Jenkins job succeeded with status: {{ job_status_result.json.result }}"
+    when: job_status_result.json.result == 'SUCCESS'
+  when: "{{ use_case_validation_tests_enabled == True | default(False) }}"

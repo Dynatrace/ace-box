@@ -194,4 +194,5 @@ module "provisioner" {
   dashboard_user     = var.dashboard_user
   dashboard_password = local.dashboard_password
   otel_export_enable = var.otel_export_enable
+  use_case_validation_tests_enabled = var.use_case_validation_tests_enabled
 }

@@ -1,0 +1,17 @@
+
+- name: Query Jenkins job status
+  ansible.builtin.uri:
+    url: "{{ jenkins_job_url }}"
+    method: GET
+    url_username: "{{ jenkins_username }}"
+    url_password: "{{ jenkins_api_token }}"
+    force_basic_auth: true
+    status_code: 200
+  register: job_status_result
+  until: job_status_result.json.result is defined
+  retries: 2 #60
+  delay: 10 #30
+
+- name: Print Jenkins job result
+  debug:
+    msg: "Jenkins job result: {{ job_status_result.json.result }}"

@@ -153,6 +153,7 @@
 # health check
 - include_role:
     name: health-check
+    tasks_from: application-availability
   vars:
     application_domain: "{{ jenkins_domain }}"
   when: not jenkins_skip_install

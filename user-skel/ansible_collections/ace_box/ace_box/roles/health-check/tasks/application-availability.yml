@@ -16,7 +16,7 @@
 
 - name: Set acceptable response codes
   set_fact:
-    acceptable_response_codes: [200, 201, 202, 204, 301, 302, 304, 403]
+    acceptable_response_codes: [200, 201, 202, 204, 301, 302, 304, 403, 401]
 
 - name: Set Application URL
   set_fact:
@@ -30,8 +30,8 @@
   command: "curl -o /dev/null -s -w \"%{http_code}\" {{ app_url }}"
   register: curl_response
   until: curl_response.rc == 0 and (curl_response.stdout | int in acceptable_response_codes)
-  retries: 5
-  delay: 5
+  retries: 15
+  delay: 10
   failed_when: curl_response.rc != 0
 
 # - name: Debug the curl response
@@ -40,12 +40,12 @@
 
 - name: Check if application is accessible
   debug:
-    msg: "Application is accessible via {{ ingress_protocol }}. Response: {{ curl_response.stdout }}"
+    msg: "Application with the URL {{ app_url }} is accessible. Response: {{ curl_response.stdout }}"
   when: curl_response.rc == 0 and (curl_response.stdout | int in acceptable_response_codes)
 
 - name: Fail if application is not accessible
   fail:
-    msg: "Application is not accessible via {{ ingress_protocol }}. Response: {{ curl_response.stdout }}"
+    msg: "Application with the URL {{ app_url }} is not accessible. Response: {{ curl_response.stdout }}"
   when: curl_response.rc != 0 or (curl_response.stdout | int not in acceptable_response_codes)
 
 

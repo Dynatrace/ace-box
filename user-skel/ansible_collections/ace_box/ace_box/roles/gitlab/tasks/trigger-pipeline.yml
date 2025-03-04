@@ -1,0 +1,40 @@
+---
+
+# - include_tasks: source-secret.yml
+#   when: gitlab_personal_access_token is not defined or gitlab_username is not defined or gitlab_password is not defined
+
+- name: Gitlab - Ensure Group
+  include_role:
+    name: gitlab
+    tasks_from: ensure-group
+  vars:
+    gitlab_group_name: "{{ usecase_group_name }}"
+
+- name: Gitlab - Ensure Project
+  include_role:
+    name: gitlab
+    tasks_from: ensure-project
+  vars:
+    gitlab_prj: "{{ usecase_repo_name }}"
+    gitlab_prj_namespace_id: "{{ gitlab_group_id }}"
+
+- name: Trigger pipeline
+  vars:
+    gitlab_ref: "{{ usecase_git_ref | default('main') }}"
+  uri:
+    url: "{{ gitlab_internal_endpoint }}/api/v4/projects/{{ gitlab_project_id }}/pipeline"
+    validate_certs: false
+    method: POST
+    status_code: [200, 201]
+    headers:
+      Content-Type: "application/json"
+      Authorization: "Bearer {{ gitlab_oauth_token }}"
+    body:
+      ref: "{{ gitlab_ref }}"
+    body_format: json
+  register: trigger_pipeline_result
+
+- name: Set Pipeline ID
+  set_fact:
+    pipeline_id: "{{ trigger_pipeline_result.json.id }}"
+

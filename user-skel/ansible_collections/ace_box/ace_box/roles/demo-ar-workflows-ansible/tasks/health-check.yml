@@ -1,0 +1,14 @@
+# health check for the use case
+- include_role:
+    name: health-check
+    tasks_from: usecase-health-check-jenkins
+  vars:
+    usecase_job_path: "/demo-ar-workflows-ansible/job/1. Build images"
+    wait_before_trigger_pipeline: 180 # 3 minutes not to override the default pipeline execution
+    
+- include_role:
+    name: health-check
+    tasks_from: usecase-health-check-awx
+  vars:
+    usecase_job_template_id: "Demo Job Template"
+    wait_before_trigger_job: 120 # 2 minutes not to override the default pipeline execution

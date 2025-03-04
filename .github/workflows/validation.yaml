@@ -41,7 +41,17 @@ on:
         description: "Dynatrace OAuth Account URN"
         required: false
         type: string
-        
+      environment_name:
+        required: false
+        type: string
+      environment_url:
+        required: false
+        type: string
+      use_case_validation_tests_enabled:
+        description: 'Flag to enable or disable use case validation tests'
+        required: false
+        default: false
+        type: boolean
     secrets:
       dt_api_token:
         description: "Dynatrace API Token"
@@ -90,13 +100,17 @@ jobs:
   apply:
     needs: preparation
     runs-on: spot #codebuild-acebox-runners-${{ github.run_id }}-${{ github.run_attempt }}
-
+    environment:
+      name: ${{ inputs.environment_name }}
+      url: ${{ inputs.environment_url }}
+ #     reviewers: ${{ inputs.environment_reviewers }}
     env:
       # DESTROY_RESOURCES: ${{ inputs.destroy_resources }} # Set to "true" to enable resource destruction
       TF_VAR_dt_tenant: ${{ inputs.dt_tenant != '' && inputs.dt_tenant || vars.DT_TENANT }}
       TF_VAR_dt_api_token: ${{ secrets.dt_api_token }}
       TF_VAR_custom_domain: ${{ inputs.custom_domain != '' && inputs.custom_domain || '' }}
       TF_VAR_otel_export_enable: "true"
+      TF_VAR_use_case_validation_tests_enabled: "${{ inputs.use_case_validation_tests_enabled }}"
       TF_VAR_name_prefix: "gh-actions-ace-box"
       TF_VAR_skip_domain_workspace_alignment: "true"
       TF_VAR_extra_vars: |
@@ -166,6 +180,7 @@ jobs:
           echo "TF_VAR_dt_api_token=${{ env.TF_VAR_dt_api_token }}"
           echo "TF_VAR_custom_domain=${{ env.TF_VAR_custom_domain }}"
           echo "TF_VAR_otel_export_enable=${{ env.TF_VAR_otel_export_enable }}"
+          echo "TF_VAR_use_case_validation_tests_enabled=${{ env.TF_VAR_use_case_validation_tests_enabled }}"
           echo "TF_VAR_name_prefix=${{ env.TF_VAR_name_prefix }}"
           echo "TF_VAR_skip_domain_workspace_alignment=${{ env.TF_VAR_skip_domain_workspace_alignment }}"
           echo "TF_VAR_extra_vars=${{ env.TF_VAR_extra_vars }}"

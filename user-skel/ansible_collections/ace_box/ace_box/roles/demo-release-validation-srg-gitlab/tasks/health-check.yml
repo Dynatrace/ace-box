@@ -1,0 +1,9 @@
+# health check for the use case
+- include_role:
+    name: health-check
+    tasks_from: usecase-health-check-gitlab
+  vars:
+    usecase_group_name: "{{ gitlab_demo_srg_group }}"
+    usecase_repo_name: "{{ gitlab_demo_srg_repo_name }}"
+    usecase_git_ref: "main"
+    wait_before_trigger_pipeline: 300 # 5 minutes not to override the default pipeline execution

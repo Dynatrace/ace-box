@@ -87,3 +87,6 @@
 
 - include_role:
     name: dashboard
+
+- include_tasks:
+    file: health-check.yml

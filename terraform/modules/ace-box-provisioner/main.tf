@@ -28,6 +28,7 @@ locals {
   dashboard_password = var.dashboard_password
   use_case           = var.use_case
   otel_export_enable      = var.otel_export_enable
+  use_case_validation_tests_enabled = var.use_case_validation_tests_enabled
 }
 
 resource "null_resource" "provisioner_home_dir" {
@@ -76,6 +77,7 @@ locals {
     "ACE_HOST_GROUP=${local.host_group}",
     "ACE_DASHBOARD_USER=${local.dashboard_user}",
     "ACE_DASHBOARD_PASSWORD=\"${local.dashboard_password}\"",
+    "USE_CASE_VALIDATION_TESTS_ENABLED=${local.use_case_validation_tests_enabled}",
     "ace prepare --force"
   ]
   ace_extra_vars = [

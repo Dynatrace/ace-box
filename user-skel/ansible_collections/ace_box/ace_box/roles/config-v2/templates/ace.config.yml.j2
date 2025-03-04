@@ -21,3 +21,6 @@ dashboard_password: "{{ dashboard_password }}"
 # BEGIN ANSIBLE MANAGED BLOCK - ingress_class
 ingress_class: "{{ ingress_class | default('public') }}"
 # END ANSIBLE MANAGED BLOCK - ingress_class
+# BEGIN ANSIBLE MANAGED BLOCK - validation_tests
+use_case_validation_tests_enabled: {{ use_case_validation_tests_enabled | default(False) }}
+# END ANSIBLE MANAGED BLOCK - validation_tests
