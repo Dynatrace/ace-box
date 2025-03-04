@@ -1,0 +1,41 @@
+/**
+ * CSS files with the .module.css suffix will be treated as CSS modules
+ * and scoped locally.
+ */
+
+ @keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+
+.heroBanner {
+  padding: 4rem 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  /* --ifm-hero-background-color: var(--ifm-color-primary-darkest);
+  --ifm-hero-text-color: var(--ifm-font-color-base-inverse); */
+  background: linear-gradient(270deg, var(--ifm-color-primary-dark), var(--ifm-color-primary-darker), var(--ifm-color-primary-darkest));
+  background-size: 600% 600%;
+  animation: gradient 8s ease infinite;
+}
+
+@media screen and (max-width: 996px) {
+  .heroBanner {
+    padding: 2rem;
+  }
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
