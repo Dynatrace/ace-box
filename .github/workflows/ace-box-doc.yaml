@@ -2,9 +2,9 @@ name: Update Ace Box Documentation
 
 on:
   workflow_dispatch:
-  push:
+  pull_request:
     branches:
-      - 810-feature-static-site-generator-for-project-documentation
+      - dev
 
 permissions:
   contents: write
