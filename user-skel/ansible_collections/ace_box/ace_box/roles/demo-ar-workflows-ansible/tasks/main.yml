@@ -59,7 +59,7 @@
 
 - include_role:
     name: app-simplenode
-    task_from: load-generator
+    tasks_from: load-generator
   vars:
     load_gen_endpoint: "{{ ingress_protocol }}://simplenodeservice-canary-jenkins.{{ ingress_domain }}/api/invoke?url=https://www.dynatrace.com"
     load_gen_namespace: "canary-jenkins-loadgen"
