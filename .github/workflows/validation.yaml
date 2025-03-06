@@ -52,7 +52,7 @@ on:
         required: false
         default: false
         type: boolean
-      github_user:
+      user_github:
         description: "GitHub User"
         required: false
         type: string
@@ -69,7 +69,7 @@ on:
       dt_oauth_client_secret:
         description: "Dynatrace OAuth Client Secret"
         required: false
-      github_token:
+      token_github:
         description: "GitHub Token"
         required: false
 
@@ -106,7 +106,7 @@ jobs:
             external_use_cases=$(echo '${{ env.DEFAULT_EXTERNAL_USE_CASES }}' | tr -d '[]' | tr ',' '\n')
             updated_use_cases=()
             for external_use_case in $external_use_cases; do
-              updated_use_cases+=("https://${{ inputs.github_user }}:${{ secrets.github_token }}@$external_use_case")
+              updated_use_cases+=("https://${{ inputs.user_github }}:${{ secrets.token_github }}@$external_use_case")
             done
             echo "use_cases=$(IFS=,; echo "${updated_use_cases[*]}")" >> "$GITHUB_ENV"
           else
@@ -144,8 +144,8 @@ jobs:
           "dt_oauth_client_id": "${{ secrets.dt_oauth_client_id }}",
           "dt_oauth_client_secret": "${{ secrets.dt_oauth_client_secret }}",
           "dt_oauth_account_urn": "${{ inputs.dt_oauth_account_urn }}",
-          "git_user": "${{ inputs.github_user }}",
-          "git_token": "${{ secrets.github_token }}",
+          "git_user": "${{ inputs.user_github }}",
+          "git_token": "${{ secrets.token_github }}",
         }
 
     strategy:
