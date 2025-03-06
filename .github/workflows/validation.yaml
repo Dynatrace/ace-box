@@ -88,7 +88,7 @@ jobs:
   preparation:
     runs-on: spot #codebuild-acebox-runners-${{ github.run_id }}-${{ github.run_attempt }}
     env:
-      COMMON_PARAMS: https://eemrdog:123333 #https://${{ inputs.user_github }}:${{ secrets.token_github }}
+      COMMON_PARAMS: https:// #https://${{ inputs.user_github }}:${{ secrets.token_github }}
     outputs:
       use_cases: ${{ steps.set_outputs.outputs.use_cases }}
       manual_use_cases: ${{ steps.set_outputs.outputs.manual_use_cases }}
