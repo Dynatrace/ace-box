@@ -103,14 +103,13 @@ jobs:
         id: set_external_use_case_url
         run: |
           if [[ "${{ inputs.use_cases }}" == *"ext_demo_all"* ]]; then
-
-            DEFAULT_EXTERNAL_USE_CASES1=(github.com/dynatrace-ace/ace-box-ext-hot-demo-all.git github.com/dynatrace-ace/basic-dt-demo.git)
+            DEFAULT_EXTERNAL_USE_CASES1=('github.com/dynatrace-ace/ace-box-ext-hot-demo-all.git' 'github.com/dynatrace-ace/basic-dt-demo.git')
             # Initialize an empty array for the updated use cases
             updated_use_cases=()
 
             # Loop through each external use case and add the prefix
             for external_use_case in "${DEFAULT_EXTERNAL_USE_CASES1[@]}"; do
-              updated_use_case=$(echo $external_use_case | sed "s|github.com|https://@github.com|")
+              updated_use_case=$(echo $external_use_case | sed "s|github.com|https://${{ inputs.user_github }}:${{ secrets.token_github }}@github.com|")
               updated_use_cases+=("$updated_use_case")
             done
 
@@ -127,8 +126,8 @@ jobs:
       - name: Set Outputs
         id: set_outputs
         run: |
-          echo use_cases=$use_cases >> $GITHUB_OUTPUT
-          echo providers='${{ inputs.providers }}' >> $GITHUB_OUTPUT
+          echo "use_cases=${{ env.use_cases }}" >> "$GITHUB_OUTPUT"
+          echo "providers=$(echo '${{ inputs.providers }}' )" >> "$GITHUB_OUTPUT"
         shell: bash
 
   apply:
@@ -161,7 +160,7 @@ jobs:
     strategy:
       matrix:
         provider: ${{ fromJson(needs.preparation.outputs.providers) }}
-        use_case: ["https://github.com/dynatrace-ace/ace-box-ext-hot-demo-all.git", "https://github.com/dynatrace-ace/basic-dt-demo.git"] #${{ needs.preparation.outputs.use_cases }}
+        use_case: ${{ fromJson(needs.preparation.outputs.use_cases) }} #["https://github.com/dynatrace-ace/ace-box-ext-hot-demo-all.git", "https://github.com/dynatrace-ace/basic-dt-demo.git"]
         include:
           # - provider: aws
           #   working_directory: ./terraform/aws
