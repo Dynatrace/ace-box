@@ -104,7 +104,7 @@ jobs:
         run: |
           if [[ "${{ inputs.use_cases }}" == *"ext_demo_all"* ]]; then
 
-            DEFAULT_EXTERNAL_USE_CASES1=('github.com/dynatrace-ace/ace-box-ext-hot-demo-all.git' 'github.com/dynatrace-ace/basic-dt-demo.git')
+            DEFAULT_EXTERNAL_USE_CASES1=(github.com/dynatrace-ace/ace-box-ext-hot-demo-all.git github.com/dynatrace-ace/basic-dt-demo.git)
             # Initialize an empty array for the updated use cases
             updated_use_cases=()
 
@@ -161,7 +161,7 @@ jobs:
     strategy:
       matrix:
         provider: ${{ fromJson(needs.preparation.outputs.providers) }}
-        use_case: ${{ fromJson(needs.preparation.outputs.use_cases) }}
+        use_case: ${{ needs.preparation.outputs.use_cases }}
         include:
           # - provider: aws
           #   working_directory: ./terraform/aws
