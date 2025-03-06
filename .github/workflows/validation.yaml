@@ -84,7 +84,7 @@ jobs:
     runs-on: spot #codebuild-acebox-runners-${{ github.run_id }}-${{ github.run_attempt }}
     env:
       DEFAULT_USE_CASES: '[\"demo_all\"]'
-      DEFAULT_EXTERNAL_USE_CASES: ('github.com/dynatrace-ace/ace-box-ext-hot-demo-all.git' 'github.com/dynatrace-ace/basic-dt-demo.git')
+      DEFAULT_EXTERNAL_USE_CASES: '["github.com/dynatrace-ace/ace-box-ext-hot-demo-all.git", "github.com/dynatrace-ace/basic-dt-demo.git"]'
       DEFAULT_PROVIDERS: '[\"gcloud\"]'
     outputs:
       use_cases: ${{ steps.set_outputs.outputs.use_cases }}
@@ -95,7 +95,7 @@ jobs:
         id: parse_inputs
         run: |
           echo ${{ inputs.use_cases }}
-          echo ${{ env.DEFAULT_USE_CASES }}
+          echo ${{ env.DEFAULT_EXTERNAL_USE_CASES }}
           echo "use_cases=$(echo '${{ inputs.use_cases }}' )" >> "$GITHUB_ENV"
           echo "providers=$(echo '${{ inputs.providers }}' )" >> "$GITHUB_ENV"
         shell: bash
@@ -104,12 +104,12 @@ jobs:
         id: set_external_use_case_url
         run: |
           if [[ "${{ inputs.use_cases }}" == *"ext_demo_all"* ]]; then
-            DEFAULT_EXTERNAL_USE_CASES1=('github.com/dynatrace-ace/ace-box-ext-hot-demo-all.git' 'github.com/dynatrace-ace/basic-dt-demo.git')
+            #DEFAULT_EXTERNAL_USE_CASES1=('github.com/dynatrace-ace/ace-box-ext-hot-demo-all.git' 'github.com/dynatrace-ace/basic-dt-demo.git')
             # Initialize an empty array for the updated use cases
             updated_use_cases=()
 
             # Loop through each external use case and add the prefix
-            for external_use_case in "${DEFAULT_EXTERNAL_USE_CASES1[@]}"; do
+            for external_use_case in "${DEFAULT_EXTERNAL_USE_CASES[@]}"; do
               updated_use_case=$(echo $external_use_case | sed "s|github.com|https://${{ inputs.user_github }}:${{ secrets.token_github }}@github.com|")
               updated_use_cases+=("$updated_use_case")
             done
@@ -127,8 +127,9 @@ jobs:
       - name: Set Outputs
         id: set_outputs
         run: |
-          echo "use case listesi: ${{ env.use_cases1 }}"
-          echo "use_cases=${{ env.use_cases1 }}" >> "$GITHUB_OUTPUT"
+          #echo "use case listesi: ${{ env.use_cases1 }}"
+          echo "use_cases=${{ env.DEFAULT_EXTERNAL_USE_CASES }}" >> "$GITHUB_OUTPUT"
+          echo "use case listesi: ${{ env.DEFAULT_EXTERNAL_USE_CASES }}"
           echo 'manual_use_cases=["https://github.com/dynatrace-ace/ace-box-ext-hot-demo-all.git", "https://github.com/dynatrace-ace/basic-dt-demo.git"]' >> "$GITHUB_OUTPUT"
           echo "manual use case listesi: $manual_use_cases"
           #echo 'colors=["red", "green", "blue"]' >> "$GITHUB_OUTPUT"
