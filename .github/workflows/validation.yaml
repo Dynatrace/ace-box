@@ -126,7 +126,10 @@ jobs:
       - name: Set Outputs
         id: set_outputs
         run: |
-          echo 'use_cases=["https://github.com/dynatrace-ace/ace-box-ext-hot-demo-all.git", "https://github.com/dynatrace-ace/basic-dt-demo.git"]' >> "$GITHUB_OUTPUT"
+          echo "use case listesi: ${{ env.use_cases }}""
+          echo 'use_cases=${{ env.use_cases }}' >> "$GITHUB_OUTPUT"
+          echo 'manual_use_cases=["https://github.com/dynatrace-ace/ace-box-ext-hot-demo-all.git", "https://github.com/dynatrace-ace/basic-dt-demo.git"]' >> "$GITHUB_OUTPUT"
+          echo "manual use case listesi: $manual_use_cases"
           #echo 'colors=["red", "green", "blue"]' >> "$GITHUB_OUTPUT"
           echo "providers=$(echo '${{ inputs.providers }}' )" >> "$GITHUB_OUTPUT"
         shell: bash
