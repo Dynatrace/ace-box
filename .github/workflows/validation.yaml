@@ -110,7 +110,7 @@ jobs:
 
             # Loop through each external use case and add the prefix
             for external_use_case in "${DEFAULT_EXTERNAL_USE_CASES1[@]}"; do
-              updated_use_case=$(echo $external_use_case | sed "s|github.com|https://${{ inputs.user_github }}:${{ secrets.token_github }}@github.com|")
+              updated_use_case=$(echo $external_use_case | sed "s|github.com|https://@github.com|")
               updated_use_cases+=("$updated_use_case")
             done
 
