@@ -1,4 +1,8 @@
 # health check for the use case
+
+- set_fact:
+    role_path_abs: "{{ role_path }}"
+    
 - include_role:
     name: health-check
     tasks_from: usecase-health-check-jenkins

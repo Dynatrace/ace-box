@@ -5,7 +5,7 @@ on:
   workflow_call:
     inputs:
       use_cases:
-        description: 'Enter the use cases to run (comma-separated). Example: ["demo_ar_workflows_gitlab","demo_ar_workflows_ansible"]'
+        description: 'Enter the use cases to run (comma-separated for Ace-box core use cases). Example: ["demo_ar_workflows_gitlab","demo_ar_workflows_ansible"]. For custom external use cases, enter ["ext_demo_all"] which will trigger the external use cases from the remote git repositories.'
         required: true
         default: '["demo_all"]'
         type: string
@@ -52,6 +52,10 @@ on:
         required: false
         default: false
         type: boolean
+      github_user:
+        description: "GitHub User"
+        required: false
+        type: string
     secrets:
       dt_api_token:
         description: "Dynatrace API Token"
@@ -65,6 +69,10 @@ on:
       dt_oauth_client_secret:
         description: "Dynatrace OAuth Client Secret"
         required: false
+      github_token:
+        description: "GitHub Token"
+        required: false
+
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.run_id }}
@@ -76,6 +84,7 @@ jobs:
     runs-on: spot #codebuild-acebox-runners-${{ github.run_id }}-${{ github.run_attempt }}
     env:
       DEFAULT_USE_CASES: '[\"demo_all\"]'
+      DEFAULT_EXTERNAL_USE_CASES: '[\"github.com/dynatrace-ace/ace-box-ext-hot-demo-all.git\",\"github.com/dynatrace-ace/basic-dt-demo.git\"]'
       DEFAULT_PROVIDERS: '[\"gcloud\"]'
     outputs:
       use_cases: ${{ steps.set_outputs.outputs.use_cases }}
@@ -90,10 +99,25 @@ jobs:
           echo "providers=$(echo '${{ inputs.providers }}' )" >> "$GITHUB_ENV"
         shell: bash
 
+      - name: Set External Use Case URL
+        id: set_external_use_case_url
+        run: |
+          if [[ "${{ inputs.use_cases }}" == *"ext_demo_all"* ]]; then
+            external_use_cases=$(echo '${{ env.DEFAULT_EXTERNAL_USE_CASES }}' | tr -d '[]' | tr ',' '\n')
+            updated_use_cases=()
+            for external_use_case in $external_use_cases; do
+              updated_use_cases+=("https://${{ inputs.github_user }}:${{ secrets.github_token }}@$external_use_case")
+            done
+            echo "use_cases=$(IFS=,; echo "${updated_use_cases[*]}")" >> "$GITHUB_ENV"
+          else
+            echo "use_cases=$(echo '${{ inputs.use_cases }}' )" >> "$GITHUB_ENV"
+          fi
+        shell: bash
+
       - name: Set Outputs
         id: set_outputs
         run: |
-          echo "use_cases=$(echo '${{ inputs.use_cases }}' )" >> "$GITHUB_OUTPUT"
+          echo "use_cases=$(echo '${use_cases}' )" >> "$GITHUB_OUTPUT"
           echo "providers=$(echo '${{ inputs.providers }}' )" >> "$GITHUB_OUTPUT"
         shell: bash
 
@@ -120,6 +144,8 @@ jobs:
           "dt_oauth_client_id": "${{ secrets.dt_oauth_client_id }}",
           "dt_oauth_client_secret": "${{ secrets.dt_oauth_client_secret }}",
           "dt_oauth_account_urn": "${{ inputs.dt_oauth_account_urn }}",
+          "git_user": "${{ inputs.github_user }}",
+          "git_token": "${{ secrets.github_token }}",
         }
 
     strategy:
