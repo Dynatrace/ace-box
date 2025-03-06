@@ -108,7 +108,7 @@ jobs:
             for external_use_case in $external_use_cases; do
               updated_use_cases+=("https://${{ inputs.user_github }}:${{ secrets.token_github }}@$external_use_case")
             done
-            echo "use_cases=$(IFS=,; echo "${updated_use_cases[*]}")" >> "$GITHUB_ENV"
+            echo "use_cases=$(printf '[\"%s\"]' \"$(IFS=\",\"; echo \"${updated_use_cases[*]}\")\")" >> "$GITHUB_ENV"
           else
             echo "use_cases=$(echo '${{ inputs.use_cases }}' )" >> "$GITHUB_ENV"
           fi
