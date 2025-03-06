@@ -107,6 +107,19 @@ jobs:
           fi
         shell: bash
 
+      - name: Set External Use Case URL
+        id: set_external_use_case_url
+        run: |
+          if [[ "${{ inputs.use_cases }}" == *"ext_demo_all"* ]]; then
+            external_use_cases=$(echo '${{ env.DEFAULT_EXTERNAL_USE_CASES }}' | tr -d '[]' | tr ',' '\n')
+            updated_use_cases=()
+            for external_use_case in $external_use_cases; do
+              updated_use_cases+=("https://${{ inputs.user_github }}:${{ secrets.token_github }}@$external_use_case")
+            done
+            echo "use_cases=$(printf '[\"%s\"]' \"$(IFS=\",\"; echo \"${updated_use_cases[*]}\")\")" >> "$GITHUB_ENV"
+          fi
+        shell: bash
+
       - name: Set Outputs
         id: set_outputs
         run: |
