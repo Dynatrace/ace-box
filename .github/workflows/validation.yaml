@@ -103,7 +103,7 @@ jobs:
         id: set_external_use_case_url
         run: |
           if [[ "${{ inputs.use_cases }}" == *"ext_demo_all"* ]]; then
-            DEFAULT_EXTERNAL_USE_CASE=[\"https://${{ inputs.user_github }}:${{ secrets.token_github }}@github.com/dynatrace-ace/ace-box-ext-hot-demo-all.git\"]
+            DEFAULT_EXTERNAL_USE_CASE=[\"https://github.com/dynatrace-ace/ace-box-ext-hot-demo-all.git\"]
             echo "use_cases=$(echo $DEFAULT_EXTERNAL_USE_CASE )" >> "$GITHUB_ENV"
           fi
         shell: bash
