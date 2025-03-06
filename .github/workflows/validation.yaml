@@ -84,7 +84,7 @@ jobs:
     runs-on: spot #codebuild-acebox-runners-${{ github.run_id }}-${{ github.run_attempt }}
     env:
       DEFAULT_USE_CASES: '[\"demo_all\"]'
-      DEFAULT_EXTERNAL_USE_CASES: '["https://github.com/dynatrace-ace/ace-box-ext-hot-demo-all.git","https://github.com/dynatrace-ace/basic-dt-demo.git"]'
+      DEFAULT_EXTERNAL_USE_CASES: ('github.com/dynatrace-ace/ace-box-ext-hot-demo-all.git' 'github.com/dynatrace-ace/basic-dt-demo.git')
       DEFAULT_PROVIDERS: '[\"gcloud\"]'
     outputs:
       use_cases: ${{ steps.set_outputs.outputs.use_cases }}
@@ -103,12 +103,22 @@ jobs:
         id: set_external_use_case_url
         run: |
           if [[ "${{ inputs.use_cases }}" == *"ext_demo_all"* ]]; then
-            external_use_cases=$(echo '${{ env.DEFAULT_EXTERNAL_USE_CASES }}' | tr -d '[]' | tr ',' '\n')
+            # Initialize an empty array for the updated use cases
             updated_use_cases=()
-            for external_use_case in $external_use_cases; do
-              updated_use_cases+=("https://${{ inputs.user_github }}:${{ secrets.token_github }}@$external_use_case")
+
+            # Loop through each external use case and add the prefix
+            for external_use_case in "${DEFAULT_EXTERNAL_USE_CASES[@]}"; do
+              updated_use_case=$(echo $external_use_case | sed "s|github.com|https://${{ inputs.user_github }}:${{ secrets.token_github }}@github.com|")
+              updated_use_cases+=("$updated_use_case")
             done
-            echo "use_cases=$(printf '[\"%s\"]' \"$(IFS=\",\"; echo \"${updated_use_cases[*]}\")\")" >> "$GITHUB_ENV"
+
+            # Convert the updated use cases array to a comma-separated string
+            updated_use_cases_string=$(printf ",\"%s\"" "${updated_use_cases[@]}")
+            updated_use_cases_string="[${updated_use_cases_string:1}]"
+
+            # Print the updated use cases
+            echo "Updated use cases: $updated_use_cases_string"
+            echo "use_cases=$updated_use_cases_string" >> "$GITHUB_ENV"
           fi
         shell: bash
 
