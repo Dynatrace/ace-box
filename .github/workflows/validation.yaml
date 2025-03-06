@@ -78,14 +78,17 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.run_id }}
   cancel-in-progress: false
 
+env:
+  DEFAULT_USE_CASES: '[\"demo_all\"]'
+  DEFAULT_EXTERNAL_USE_CASES: '[\"github.com/dynatrace-ace/ace-box-ext-hot-demo-all.git\", \"github.com/dynatrace-ace/basic-dt-demo.git\"]'
+  DEFAULT_PROVIDERS: '[\"gcloud\"]'
+
 jobs:
 
   preparation:
     runs-on: spot #codebuild-acebox-runners-${{ github.run_id }}-${{ github.run_attempt }}
     env:
-      DEFAULT_USE_CASES: '[\"demo_all\"]'
-      DEFAULT_EXTERNAL_USE_CASES: '[\"github.com/dynatrace-ace/ace-box-ext-hot-demo-all.git\", \"github.com/dynatrace-ace/basic-dt-demo.git\"]'
-      DEFAULT_PROVIDERS: '[\"gcloud\"]'
+      COMMON_PARAMS: https://${{ inputs.user_github }}:${{ secrets.token_github }}
     outputs:
       use_cases: ${{ steps.set_outputs.outputs.use_cases }}
       manual_use_cases: ${{ steps.set_outputs.outputs.manual_use_cases }}
@@ -104,34 +107,19 @@ jobs:
         id: set_external_use_case_url
         run: |
           if [[ "${{ inputs.use_cases }}" == *"ext_demo_all"* ]]; then
-            #DEFAULT_EXTERNAL_USE_CASES1=('github.com/dynatrace-ace/ace-box-ext-hot-demo-all.git' 'github.com/dynatrace-ace/basic-dt-demo.git')
-            # Initialize an empty array for the updated use cases
-            updated_use_cases=()
-
-            # Loop through each external use case and add the prefix
-            for external_use_case in "${DEFAULT_EXTERNAL_USE_CASES[@]}"; do
-              updated_use_case=$(echo $external_use_case | sed "s|github.com|https://${{ inputs.user_github }}:${{ secrets.token_github }}@github.com|")
-              updated_use_cases+=("$updated_use_case")
-            done
-
-            # Convert the updated use cases array to a comma-separated string
-            updated_use_cases_string=$(printf ",\"%s\"" "${updated_use_cases[@]}")
-            updated_use_cases_string="[${updated_use_cases_string:1}]"
-
-            # Print the updated use cases
-            echo "Updated use cases: $updated_use_cases_string"
-            echo "use_cases1=$updated_use_cases_string" >> "$GITHUB_ENV"
+            echo "use_cases=${{ env.DEFAULT_EXTERNAL_USE_CASES }}" >> "$GITHUB_ENV"
           fi
         shell: bash
 
       - name: Set Outputs
+        env:
+          GITHUB_OUTPUT: ${{ github.workspace }}/outputs.txt
         id: set_outputs
         run: |
-          #echo "use case listesi: ${{ env.use_cases1 }}"
-          echo "use_cases=${{ env.DEFAULT_EXTERNAL_USE_CASES }}" >> "$GITHUB_OUTPUT"
-          echo "use case listesi: ${{ env.DEFAULT_EXTERNAL_USE_CASES }}"
-          echo 'manual_use_cases=["https://github.com/dynatrace-ace/ace-box-ext-hot-demo-all.git", "https://github.com/dynatrace-ace/basic-dt-demo.git"]' >> "$GITHUB_OUTPUT"
-          echo "manual use case listesi: $manual_use_cases"
+          echo "use_cases={{ env.use_cases }}" >> "$GITHUB_OUTPUT"
+          echo "use case listesi: ${{ env.use_cases }}"
+          #echo 'manual_use_cases=["https://github.com/dynatrace-ace/ace-box-ext-hot-demo-all.git", "https://github.com/dynatrace-ace/basic-dt-demo.git"]' >> "$GITHUB_OUTPUT"
+          #echo "manual use case listesi: $manual_use_cases"
           #echo 'colors=["red", "green", "blue"]' >> "$GITHUB_OUTPUT"
           echo "providers=$(echo '${{ inputs.providers }}' )" >> "$GITHUB_OUTPUT"
         shell: bash
