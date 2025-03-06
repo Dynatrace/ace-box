@@ -161,7 +161,7 @@ jobs:
     strategy:
       matrix:
         provider: ${{ fromJson(needs.preparation.outputs.providers) }}
-        use_case: [https://github.com/dynatrace-ace/ace-box-ext-hot-demo-all.git, https://github.com/dynatrace-ace/basic-dt-demo.git] #${{ needs.preparation.outputs.use_cases }}
+        use_case: ["https://github.com/dynatrace-ace/ace-box-ext-hot-demo-all.git", "https://github.com/dynatrace-ace/basic-dt-demo.git"] #${{ needs.preparation.outputs.use_cases }}
         include:
           # - provider: aws
           #   working_directory: ./terraform/aws
