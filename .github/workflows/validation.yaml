@@ -120,14 +120,14 @@ jobs:
 
             # Print the updated use cases
             echo "Updated use cases: $updated_use_cases_string"
-            echo "use_cases=$updated_use_cases_string" >> "$GITHUB_ENV"
+            echo "use_cases='$updated_use_cases_string'" >> "$GITHUB_ENV"
           fi
         shell: bash
 
       - name: Set Outputs
         id: set_outputs
         run: |
-          echo "use_cases=$(echo '${use_cases}' )" >> "$GITHUB_OUTPUT"
+          echo "use_cases=$(echo ${use_cases} )" >> "$GITHUB_OUTPUT"
           echo "providers=$(echo '${{ inputs.providers }}' )" >> "$GITHUB_OUTPUT"
         shell: bash
 
