@@ -88,6 +88,7 @@ jobs:
       DEFAULT_PROVIDERS: '[\"gcloud\"]'
     outputs:
       use_cases: ${{ steps.set_outputs.outputs.use_cases }}
+      manual_use_cases: ${{ steps.set_outputs.outputs.manual_use_cases }}
       providers: ${{ steps.set_outputs.outputs.providers }}
     steps:
       - name: Parse Inputs
@@ -127,9 +128,9 @@ jobs:
         id: set_outputs
         run: |
           echo "use case listesi: ${{ env.use_cases1 }}"
-          echo 'use_cases=${{ env.use_cases1 }}' >> "$GITHUB_OUTPUT"
+          echo "use_cases=${{ env.use_cases1 }}" >> "$GITHUB_OUTPUT"
           echo 'manual_use_cases=["https://github.com/dynatrace-ace/ace-box-ext-hot-demo-all.git", "https://github.com/dynatrace-ace/basic-dt-demo.git"]' >> "$GITHUB_OUTPUT"
-          echo "manual use case listesi: ${{ env.manual_use_cases }}"
+          echo "manual use case listesi: $manual_use_cases"
           #echo 'colors=["red", "green", "blue"]' >> "$GITHUB_OUTPUT"
           echo "providers=$(echo '${{ inputs.providers }}' )" >> "$GITHUB_OUTPUT"
         shell: bash
