@@ -111,7 +111,7 @@ jobs:
             updated_use_cases=()
             for external_use_case in $external_use_cases; do
               echo "external_use_case=$external_use_case"
-              updated_use_case="${{ env.COMMON_PARAMS }}@${external_use_case}"
+              updated_use_case="\"${{ env.COMMON_PARAMS }}@${external_use_case}\""
               updated_use_cases+=("$updated_use_case")
             done
             updated_use_cases_string=$(printf ",%s" "${updated_use_cases[@]}")
