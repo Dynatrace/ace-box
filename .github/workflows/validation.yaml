@@ -80,7 +80,7 @@ concurrency:
 
 env:
   DEFAULT_USE_CASES: '[\"demo_all\"]'
-  DEFAULT_EXTERNAL_USE_CASES: '[\"github.com/dynatrace-ace/ace-box-ext-hot-demo-all.git\", \"github.com/dynatrace-ace/basic-dt-demo.git\"]'
+  DEFAULT_EXTERNAL_USE_CASES: '["github.com/dynatrace-ace/ace-box-ext-hot-demo-all.git", "github.com/dynatrace-ace/basic-dt-demo.git"]'
   DEFAULT_PROVIDERS: '[\"gcloud\"]'
 
 jobs:
