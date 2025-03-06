@@ -161,7 +161,7 @@ jobs:
     strategy:
       matrix:
         provider: ${{ fromJson(needs.preparation.outputs.providers) }}
-        use_case: ${{ fromJson(needs.preparation.outputs.use_cases) }}
+        use_case: ${{ needs.preparation.outputs.use_cases }}
         include:
           # - provider: aws
           #   working_directory: ./terraform/aws
