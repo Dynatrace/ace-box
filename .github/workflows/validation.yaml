@@ -115,12 +115,12 @@ jobs:
             done
 
             # Convert the updated use cases array to a comma-separated string
-            updated_use_cases_string=$(printf ",\"%s\"" "${updated_use_cases[@]}")
+            updated_use_cases_string=$(printf ",%s" "${updated_use_cases[@]}")
             updated_use_cases_string="[${updated_use_cases_string:1}]"
 
             # Print the updated use cases
             echo "Updated use cases: $updated_use_cases_string"
-            echo "use_cases='$updated_use_cases_string'" >> "$GITHUB_ENV"
+            echo "use_cases=$updated_use_cases_string" >> "$GITHUB_ENV"
           fi
         shell: bash
 
@@ -161,7 +161,7 @@ jobs:
     strategy:
       matrix:
         provider: ${{ fromJson(needs.preparation.outputs.providers) }}
-        use_case: ${{ fromJson(needs.preparation.outputs.use_cases) }}
+        use_case: ${{ needs.preparation.outputs.use_cases }}
         include:
           # - provider: aws
           #   working_directory: ./terraform/aws
