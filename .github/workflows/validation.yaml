@@ -127,8 +127,8 @@ jobs:
       - name: Set Outputs
         id: set_outputs
         run: |
-          echo "use_cases=$(echo $use_cases )" >> "$GITHUB_OUTPUT"
-          echo "providers=$(echo '${{ inputs.providers }}' )" >> "$GITHUB_OUTPUT"
+          echo use_cases=$use_cases >> $GITHUB_OUTPUT
+          echo providers=${{ inputs.providers }} >> $GITHUB_OUTPUT
         shell: bash
 
   apply:
