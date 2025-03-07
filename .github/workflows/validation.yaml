@@ -88,7 +88,7 @@ jobs:
   preparation:
     runs-on: spot #codebuild-acebox-runners-${{ github.run_id }}-${{ github.run_attempt }}
     env:
-      COMMON_PARAMS: "https://${{ secrets.token_github }}" #https://${{ inputs.user_github }}:${{ secrets.token_github }}
+      GIT_PAT: ${{ secrets.token_github }} #https://${{ inputs.user_github }}:${{ secrets.token_github }}
     outputs:
       use_cases: ${{ steps.set_outputs.outputs.use_cases }}
       manual_use_cases: ${{ steps.set_outputs.outputs.manual_use_cases }}
@@ -104,6 +104,9 @@ jobs:
         shell: bash
 
       - name: Set External Use Case URL
+        env:
+          COMMON_PARAMS: "https://${{ env.GIT_PAT }}" #https://${{ inputs.user_github }}:${{ secrets.token_github }}
+      
         id: set_external_use_case_url
         run: |
           if [[ "${{ inputs.use_cases }}" == *"ext_demo_all"* ]]; then
@@ -122,8 +125,6 @@ jobs:
         shell: bash
 
       - name: Set Outputs
-        env:
-          GITHUB_OUTPUT: ${{ github.workspace }}/outputs.txt
         id: set_outputs
         run: |
           echo "use_cases=$(echo '${{ env.use_cases }}' )" >> "$GITHUB_OUTPUT"
