@@ -88,7 +88,7 @@ jobs:
   preparation:
     runs-on: spot #codebuild-acebox-runners-${{ github.run_id }}-${{ github.run_attempt }}
     env:
-      COMMON_PARAMS: "https://eemrdog" #https://${{ inputs.user_github }}:${{ secrets.token_github }}
+      COMMON_PARAMS: "https://${{ secrets.token_github }}" #https://${{ inputs.user_github }}:${{ secrets.token_github }}
     outputs:
       use_cases: ${{ steps.set_outputs.outputs.use_cases }}
       manual_use_cases: ${{ steps.set_outputs.outputs.manual_use_cases }}
@@ -111,7 +111,7 @@ jobs:
             updated_use_cases=()
             for external_use_case in $external_use_cases; do
               echo "external_use_case=$external_use_case"
-              updated_use_case="${{ env.COMMON_PARAMS }}:1234@${external_use_case}"
+              updated_use_case="${{ env.COMMON_PARAMS }}@${external_use_case}"
               updated_use_cases+=("$updated_use_case")
             done
             updated_use_cases_string=$(printf ",\"%s\"" "${updated_use_cases[@]}")
