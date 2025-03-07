@@ -80,7 +80,7 @@ concurrency:
 
 env:
   DEFAULT_USE_CASES: '[\"demo_all\"]'
-  DEFAULT_EXTERNAL_USE_CASES: '["github.com/dynatrace-ace/ace-box-ext-hot-demo-all.git", "github.com/dynatrace-ace/basic-dt-demo.git"]'
+  DEFAULT_EXTERNAL_USE_CASES: '["github.com/dynatrace-ace/ace-box-ext-hot-demo-all.git"]' #, "github.com/dynatrace-ace/basic-dt-demo.git"
   DEFAULT_PROVIDERS: '[\"gcloud\"]'
 
 jobs:
@@ -126,8 +126,8 @@ jobs:
           GITHUB_OUTPUT: ${{ github.workspace }}/outputs.txt
         id: set_outputs
         run: |
-          echo "use_cases=$(echo ${{ env.use_cases }} )" >> "$GITHUB_OUTPUT"
-          echo "use case listesi: $(echo ${{ env.use_cases }})"
+          echo "use_cases=$(echo '${{ env.use_cases }}' )" >> "$GITHUB_OUTPUT"
+          echo "use case listesi: $(echo '${{ env.use_cases }}')"
           #echo 'manual_use_cases=["https://github.com/dynatrace-ace/ace-box-ext-hot-demo-all.git", "https://github.com/dynatrace-ace/basic-dt-demo.git"]' >> "$GITHUB_OUTPUT"
           #echo "manual use case listesi: $manual_use_cases"
           #echo 'colors=["red", "green", "blue"]' >> "$GITHUB_OUTPUT"
