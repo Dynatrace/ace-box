@@ -1,5 +1,8 @@
 # microk8s
 
+**DEPRECATION NOTICE:** This role is deprecated and will be removed in a future release. You can use k3s role to install k3s kubernetes cluster.
+
+
 This currated role installs microk8s on the ACE-Box along with the required addons and packages.
 It also configures kube config to automatically connect to the cluster via kubectl and helm.
 

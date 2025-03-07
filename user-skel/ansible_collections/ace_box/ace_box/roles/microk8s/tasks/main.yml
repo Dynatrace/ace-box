@@ -13,6 +13,13 @@
 # limitations under the License.
 
 ---
+
+# DEPRECATION NOTICE: This role is deprecated and will be removed in a future release. Please use an alternative solution like k3s role.
+
+- name: Deprecation warning
+  ansible.builtin.debug:
+    msg: "WARNING: This role is deprecated and will be removed in a future release. Please use an alternative solution like k3s role."
+
 - include_role:
     name: config-v2
     tasks_from: set-var
