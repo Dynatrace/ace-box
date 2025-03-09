@@ -1,10 +1,45 @@
+# This GitHub Actions workflow is designed to validate pull requests (PRs) with demo use cases.
+# 
+# Workflow Name: Validate PRs with demo use cases
+# 
+# Triggers:
+# - on push to the 'dev' branch
+# - manual trigger via workflow_dispatch with the following inputs:
+#   - use_cases: Comma-separated list of use cases to run (default: '["demo_all"]')
+#   - providers: Comma-separated list of providers to run (default: '["gcloud"]')
+#   - destroy_resources: Boolean to enable resource destruction (default: true)
+#   - use_case_validation_tests_enabled: Boolean to enable use case validation tests (default: false)
+#   - custom_domain: Custom domain name for validation (default: "")
+#   - dt_tenant: Dynatrace Tenant (default: "")
+#   - dt_url_gen3: Dynatrace Environment URL Gen3 (default: "")
+# 
+# Environment Variables:
+# - DEFAULT_USE_CASES: Default use cases to run (default: '["demo_all"]')
+# - DEFAULT_PROVIDERS: Default providers to run (default: '["gcloud"]')
+# - DESTROY_RESOURCES: Default value for resource destruction (default: true)
+# - USE_CASE_VALIDATION_TESTS_ENABLED: Default value for use case validation tests (default: false)
+# - DEFAULT_CUSTOM_DOMAIN: Default custom domain name (default: "")
+# - DT_TENANT: Dynatrace Tenant from GitHub variables
+# - DT_URL_GEN3: Dynatrace Environment URL Gen3 from GitHub variables
+# - DT_API_TOKEN: Dynatrace API Token from GitHub secrets
+# 
+# Jobs:
+# 1. set_env_vars:
+#    - Runs on a spot instance
+#    - Sets environment variables based on the trigger event (push or workflow_dispatch)
+#    - Outputs the set environment variables for use in subsequent jobs
+# 
+# 2. test_demo_usecases:
+#    - Needs the set_env_vars job to complete
+#    - Uses the validation.yaml workflow to test demo use cases
+#    - Passes the environment variables and secrets to the validation workflow
 
-name: Deploy External Demo All
+name: Validate PRs with demo use cases
 
 on:
-  # push:
-  #   branches:
-  #     - dev # Trigger after PR is merged to the dev branch
+  push:
+    branches:
+      - dev # Trigger after PR is merged to the dev branch
 
   workflow_dispatch: # Allows manual triggering of the workflow
     inputs:
@@ -51,8 +86,7 @@ on:
         type: string
 
 env:
-  # DEFAULT_USE_CASES: '[\"demo_all\"]'
-  DEFAULT_EXTERNAL_USE_CASES: '[\"github.com/dynatrace-ace/basic-dt-demo.git\",\"github.com/dynatrace-ace/ace-box-ext-hot-demo-all.git\"]'
+  DEFAULT_USE_CASES: '[\"demo_all\"]'
   DEFAULT_PROVIDERS: '[\"gcloud\"]'
   DESTROY_RESOURCES: true
   USE_CASE_VALIDATION_TESTS_ENABLED: false
@@ -78,7 +112,7 @@ jobs:
         id: set_env
         run: |
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            # echo "use_cases=${{ env.DEFAULT_EXTERNAL_USE_CASES }}" >> "$GITHUB_ENV"
+            echo "use_cases=$(echo '${{ github.event.inputs.use_cases }}' )" >> "$GITHUB_ENV"
             echo "providers=$(echo '${{ github.event.inputs.providers }}' )" >> "$GITHUB_ENV"
             echo "destroy_resources=$(echo '${{ github.event.inputs.destroy_resources }}' )" >> "$GITHUB_ENV"
             echo "use_case_validation_tests_enabled=$(echo ${{ github.event.inputs.use_case_validation_tests_enabled }} )" >> "$GITHUB_ENV"
@@ -86,7 +120,7 @@ jobs:
             echo "dt_tenant=$(echo '${{ github.event.inputs.dt_tenant }}' )" >> "$GITHUB_ENV"
             echo "dt_url_gen3=$(echo '${{ github.event.inputs.dt_url_gen3 }}' )" >> "$GITHUB_ENV"
           else
-            # echo "use_cases=${{ env.DEFAULT_EXTERNAL_USE_CASES }}" >> "$GITHUB_ENV"
+            echo "use_cases=${{ env.DEFAULT_USE_CASES }}" >> "$GITHUB_ENV"
             echo "providers=${{ env.DEFAULT_PROVIDERS }}" >> "$GITHUB_ENV"
             echo "destroy_resources=${{ env.DESTROY_RESOURCES }}" >> "$GITHUB_ENV"
             echo "use_case_validation_tests_enabled=${{ env.USE_CASE_VALIDATION_TESTS_ENABLED }}" >> "$GITHUB_ENV"
@@ -103,27 +137,11 @@ jobs:
             echo "use_case_validation_tests_enabled=false" >> "$GITHUB_ENV"
           fi
 
-      - name: set_external_use_case_url
-        env:
-          COMMON_PARAMS: "https://${{ vars.USER_GITHUB }}:${{ secrets.TOKEN_GITHUB }}"
-        run: |
-          external_use_cases=$(echo '${{ env.DEFAULT_EXTERNAL_USE_CASES }}' | tr -d '[]' | tr ',' '\n' | tr -d '"')
-          updated_use_cases=()
-          for external_use_case in $external_use_cases; do
-            echo "external_use_case=$external_use_case"
-            updated_use_case="${{ env.COMMON_PARAMS }}@${external_use_case}"
-            updated_use_cases+=("$updated_use_case")
-          done
-          updated_use_cases_string=$(printf ",\"%s\"" "${updated_use_cases[@]}")
-          updated_use_cases_string="[${updated_use_cases_string:1}]"
-          echo "updated_use_cases_string=$updated_use_cases_string"
-          echo "external_use_cases_formatted=$updated_use_cases_string" >> "$GITHUB_ENV"
-
       - name: Set Outputs
         id: set_outputs
         run: |
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            echo "use_cases=${{ env.external_use_cases_formatted }}" >> "$GITHUB_OUTPUT"
+            echo "use_cases=$(echo '${{ github.event.inputs.use_cases }}' )" >> "$GITHUB_OUTPUT"
             echo "providers=$(echo '${{ github.event.inputs.providers }}' )" >> "$GITHUB_OUTPUT"
             echo "destroy_resources=$(echo '${{ github.event.inputs.destroy_resources }}' )" >> "$GITHUB_OUTPUT"
             echo "use_case_validation_tests_enabled=$(echo '${{ github.event.inputs.use_case_validation_tests_enabled }}' )" >> "$GITHUB_OUTPUT"
@@ -131,7 +149,7 @@ jobs:
             echo "dt_tenant=$(echo '${{ github.event.inputs.dt_tenant }}' )" >> "$GITHUB_OUTPUT"
             echo "dt_url_gen3=$(echo '${{ github.event.inputs.dt_url_gen3 }}' )" >> "$GITHUB_OUTPUT"
           else
-            echo "use_cases=${{ env.external_use_cases_formatted }}" >> "$GITHUB_OUTPUT"
+            echo "use_cases=${{ env.DEFAULT_USE_CASES }}" >> "$GITHUB_OUTPUT"
             echo "providers=${{ env.DEFAULT_PROVIDERS }}" >> "$GITHUB_OUTPUT"
             echo "destroy_resources=${{ env.DESTROY_RESOURCES }}" >> "$GITHUB_OUTPUT"
             echo "use_case_validation_tests_enabled=${{ env.USE_CASE_VALIDATION_TESTS_ENABLED }}" >> "$GITHUB_OUTPUT"
