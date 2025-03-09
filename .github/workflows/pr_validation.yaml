@@ -52,7 +52,7 @@ on:
 
 env:
   # DEFAULT_USE_CASES: '[\"demo_all\"]'
-  DEFAULT_EXTERNAL_USE_CASES: '["dynatrace-ace/basic-dt-demo.git","dynatrace-ace/basic-dt-demo.git"]'
+  DEFAULT_EXTERNAL_USE_CASES: '["dynatrace-ace/basic-dt-demo.git","dynatrace-ace/ace-box-ext-demo-all.git"]'
   DEFAULT_PROVIDERS: '[\"gcloud\"]'
   DESTROY_RESOURCES: true
   USE_CASE_VALIDATION_TESTS_ENABLED: false
