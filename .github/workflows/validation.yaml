@@ -147,7 +147,7 @@ jobs:
     strategy:
       matrix:
         provider: ${{ fromJson(needs.preparation.outputs.providers) }}
-        use_case: ${{ needs.preparation.outputs.is_external_use_case == 'true' && env.DEFAULT_EXTERNAL_USE_CASES || env.DEFAULT_USE_CASES }}
+        use_case: ${{ needs.preparation.outputs.is_external_use_case == 'true' && env.DEFAULT_EXTERNAL_USE_CASES || inputs.use_cases }}
         include:
           - provider: gcloud
             working_directory: ./terraform/gcloud
