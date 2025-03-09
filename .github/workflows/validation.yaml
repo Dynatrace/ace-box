@@ -79,9 +79,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  DEFAULT_USE_CASES: '["demo_all"]'
-  IS_EXTERNAL_USE_CASE: false
-  DEFAULT_EXTERNAL_USE_CASES: '["github.com/dynatrace-ace/ace-box-ext-hot-demo-all.git", "github.com/dynatrace-ace/basic-dt-demo.git"]'
+  #DEFAULT_USE_CASES: '["demo_all"]'
   DEFAULT_PROVIDERS: '["gcloud"]'
 
 jobs:
@@ -93,29 +91,26 @@ jobs:
     outputs:
       use_cases: ${{ steps.set_outputs.outputs.use_cases }}
       providers: ${{ steps.set_outputs.outputs.providers }}
-      is_external_use_case: ${{ steps.set_outputs.outputs.is_external_use_case }}
+      #is_external_use_case: ${{ steps.set_outputs.outputs.is_external_use_case }}
     steps:
       - name: Parse Inputs
         id: parse_inputs
         run: |
           echo ${{ inputs.use_cases }}
-          echo ${{ env.DEFAULT_EXTERNAL_USE_CASES }}
+          #echo ${{ env.DEFAULT_EXTERNAL_USE_CASES }}
           echo "use_cases=$(echo '${{ inputs.use_cases }}' )" >> "$GITHUB_ENV"
           echo "providers=$(echo '${{ inputs.providers }}' )" >> "$GITHUB_ENV"
-          if [[ "${{ inputs.use_cases }}" == *"ext_demo_all"* ]]; then
-            echo "IS_EXTERNAL_USE_CASE=true" >> "$GITHUB_ENV"
-            echo "is_external_use_case=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "IS_EXTERNAL_USE_CASE=false" >> "$GITHUB_ENV"
-            echo "is_external_use_case=false" >> "$GITHUB_OUTPUT"
-          fi
+          # if [[ "${{ inputs.use_cases }}" == *"ext_demo_all"* ]]; then
+          #   echo "is_external_use_case=true" >> "$GITHUB_OUTPUT"
+          # else
+          #   echo "is_external_use_case=false" >> "$GITHUB_OUTPUT"
+          # fi
         shell: bash
 
       - name: Set Outputs
         id: set_outputs
         run: |
-          echo "use_cases=$(echo '${{ env.use_cases }}' )" >> "$GITHUB_OUTPUT"
-          echo "use case listesi: $(echo '${{ env.use_cases }}')"
+          echo "use_cases=$(echo '${{ inputs.use_cases }}' )" >> "$GITHUB_OUTPUT"
           echo "providers=$(echo '${{ inputs.providers }}' )" >> "$GITHUB_OUTPUT"
         shell: bash
 
@@ -126,6 +121,7 @@ jobs:
       name: ${{ inputs.environment_name }}
       url: ${{ inputs.environment_url }}
     env:
+      DEFAULT_EXTERNAL_USE_CASES: '["github.com/dynatrace-ace/ace-box-ext-hot-demo-all.git", "github.com/dynatrace-ace/basic-dt-demo.git"]'      
       TF_VAR_dt_tenant: ${{ inputs.dt_tenant != '' && inputs.dt_tenant || vars.DT_TENANT }}
       TF_VAR_dt_api_token: ${{ secrets.dt_api_token }}
       TF_VAR_custom_domain: ${{ inputs.custom_domain != '' && inputs.custom_domain || '' }}
@@ -147,7 +143,7 @@ jobs:
     strategy:
       matrix:
         provider: ${{ fromJson(needs.preparation.outputs.providers) }}
-        use_case: ${{ needs.preparation.outputs.is_external_use_case == 'true' && env.DEFAULT_EXTERNAL_USE_CASES || inputs.use_cases }}
+        use_case: ${{ fromJson(needs.preparation.outputs.use_cases) }}
         include:
           - provider: gcloud
             working_directory: ./terraform/gcloud
@@ -157,6 +153,8 @@ jobs:
             managed_zone_name: "ace-innovation-info"
             backend_config_bucket: "ace-box-tf-state"
             backend_config_prefix: "ace-box"
+        exclude:
+          - use_case: ext_demo_all
           # gcloud test with http
         #   - provider: gcloud
         #     working_directory: ./terraform/gcloud
@@ -187,6 +185,25 @@ jobs:
           echo "TF_VAR_name_prefix=${{ env.TF_VAR_name_prefix }}"
           echo "TF_VAR_skip_domain_workspace_alignment=${{ env.TF_VAR_skip_domain_workspace_alignment }}"
           echo "TF_VAR_extra_vars=${{ env.TF_VAR_extra_vars }}"
+          echo "is external use case: ${{ needs.preparation.outputs.is_external_use_case }}"
+          echo "external use case list: ${{ env.DEFAULT_EXTERNAL_USE_CASES }}"
+
+      - name: set_external_use_case_url
+        env:
+          COMMON_PARAMS: "https://${{ inputs.user_github }}:${{ secrets.token_github }}"
+        run: |
+          if [[ "${{ inputs.use_cases }}" == *"ext_demo_all"* ]]; then
+            external_use_cases=$(echo '${{ env.DEFAULT_EXTERNAL_USE_CASES }}' | tr -d '[]' | tr ',' '\n' | tr -d '"')
+            updated_use_cases=()
+            for external_use_case in $external_use_cases; do
+              echo "external_use_case=$external_use_case"
+              updated_use_case="${{ env.COMMON_PARAMS }}@${external_use_case}"
+              updated_use_cases+=("$updated_use_case")
+            done
+            updated_use_cases_string=$(printf ",\"%s\"" "${updated_use_cases[@]}")
+            updated_use_cases_string="[${updated_use_cases_string:1}]"
+            echo "updated_use_cases_string=$updated_use_cases_string"
+          fi
 
       # gcloud specific steps
       - name: 'auth'
