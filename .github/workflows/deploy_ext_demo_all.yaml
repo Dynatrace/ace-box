@@ -8,11 +8,11 @@ on:
 
   workflow_dispatch: # Allows manual triggering of the workflow
     inputs:
-      use_cases:
-        description: 'Enter the use cases to run (comma-separated). Example: ["demo_ar_workflows_gitlab","demo_ar_workflows_ansible"]'
-        required: true
-        default: '["demo_all"]'
-        type: string
+      # use_cases:
+      #   description: 'Enter the use cases to run (comma-separated). Example: ["demo_ar_workflows_gitlab","demo_ar_workflows_ansible"]'
+      #   required: true
+      #   default: '["demo_all"]'
+      #   type: string
       
       providers:
         description: 'Select the providers to run (comma-separated). Example: ["gcloud","aws"]. For GCP, provide the GCP_CREDENTIALS_JSON in the Github repository secrets.'
