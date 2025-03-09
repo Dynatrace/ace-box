@@ -79,20 +79,21 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  DEFAULT_USE_CASES: '[\"demo_all\"]'
-  DEFAULT_EXTERNAL_USE_CASES: '["github.com/dynatrace-ace/ace-box-ext-hot-demo-all.git"]' #, "github.com/dynatrace-ace/basic-dt-demo.git"
-  DEFAULT_PROVIDERS: '[\"gcloud\"]'
+  DEFAULT_USE_CASES: '["demo_all"]'
+  IS_EXTERNAL_USE_CASE: false
+  DEFAULT_EXTERNAL_USE_CASES: '["github.com/dynatrace-ace/ace-box-ext-hot-demo-all.git", "github.com/dynatrace-ace/basic-dt-demo.git"]'
+  DEFAULT_PROVIDERS: '["gcloud"]'
 
 jobs:
 
   preparation:
     runs-on: spot #codebuild-acebox-runners-${{ github.run_id }}-${{ github.run_attempt }}
     env:
-      GIT_PAT: ${{ secrets.token_github }} #https://${{ inputs.user_github }}:${{ secrets.token_github }}
+      GIT_PAT: ${{ secrets.token_github }}
     outputs:
       use_cases: ${{ steps.set_outputs.outputs.use_cases }}
-      manual_use_cases: ${{ steps.set_outputs.outputs.manual_use_cases }}
       providers: ${{ steps.set_outputs.outputs.providers }}
+      is_external_use_case: ${{ steps.set_outputs.outputs.is_external_use_case }}
     steps:
       - name: Parse Inputs
         id: parse_inputs
@@ -101,26 +102,12 @@ jobs:
           echo ${{ env.DEFAULT_EXTERNAL_USE_CASES }}
           echo "use_cases=$(echo '${{ inputs.use_cases }}' )" >> "$GITHUB_ENV"
           echo "providers=$(echo '${{ inputs.providers }}' )" >> "$GITHUB_ENV"
-        shell: bash
-
-      - name: Set External Use Case URL
-        env:
-          COMMON_PARAMS: "https://${{ env.GIT_PAT }}" #https://${{ inputs.user_github }}:${{ secrets.token_github }}
-      
-        id: set_external_use_case_url
-        run: |
           if [[ "${{ inputs.use_cases }}" == *"ext_demo_all"* ]]; then
-            external_use_cases=$(echo '${{ env.DEFAULT_EXTERNAL_USE_CASES }}' | tr -d '[]' | tr ',' '\n' | tr -d '"')
-            updated_use_cases=()
-            for external_use_case in $external_use_cases; do
-              echo "external_use_case=$external_use_case"
-              updated_use_case="${{ env.COMMON_PARAMS }}@${external_use_case}"
-              updated_use_cases+=("$updated_use_case")
-            done
-            updated_use_cases_string=$(printf ",\"%s\"" "${updated_use_cases[@]}")
-            updated_use_cases_string="[${updated_use_cases_string:1}]"
-            echo "updated_use_cases_string=$updated_use_cases_string"
-            echo "use_cases=$updated_use_cases_string" >> "$GITHUB_ENV"
+            echo "IS_EXTERNAL_USE_CASE=true" >> "$GITHUB_ENV"
+            echo "is_external_use_case=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "IS_EXTERNAL_USE_CASE=false" >> "$GITHUB_ENV"
+            echo "is_external_use_case=false" >> "$GITHUB_OUTPUT"
           fi
         shell: bash
 
@@ -129,9 +116,6 @@ jobs:
         run: |
           echo "use_cases=$(echo '${{ env.use_cases }}' )" >> "$GITHUB_OUTPUT"
           echo "use case listesi: $(echo '${{ env.use_cases }}')"
-          #echo 'manual_use_cases=["https://github.com/dynatrace-ace/ace-box-ext-hot-demo-all.git", "https://github.com/dynatrace-ace/basic-dt-demo.git"]' >> "$GITHUB_OUTPUT"
-          #echo "manual use case listesi: $manual_use_cases"
-          #echo 'colors=["red", "green", "blue"]' >> "$GITHUB_OUTPUT"
           echo "providers=$(echo '${{ inputs.providers }}' )" >> "$GITHUB_OUTPUT"
         shell: bash
 
@@ -141,9 +125,7 @@ jobs:
     environment:
       name: ${{ inputs.environment_name }}
       url: ${{ inputs.environment_url }}
- #     reviewers: ${{ inputs.environment_reviewers }}
     env:
-      # DESTROY_RESOURCES: ${{ inputs.destroy_resources }} # Set to "true" to enable resource destruction
       TF_VAR_dt_tenant: ${{ inputs.dt_tenant != '' && inputs.dt_tenant || vars.DT_TENANT }}
       TF_VAR_dt_api_token: ${{ secrets.dt_api_token }}
       TF_VAR_custom_domain: ${{ inputs.custom_domain != '' && inputs.custom_domain || '' }}
@@ -165,31 +147,12 @@ jobs:
     strategy:
       matrix:
         provider: ${{ fromJson(needs.preparation.outputs.providers) }}
-        use_case: ${{ fromJson(needs.preparation.outputs.use_cases) }} #["https://github.com/dynatrace-ace/ace-box-ext-hot-demo-all.git", "https://github.com/dynatrace-ace/basic-dt-demo.git"]
+        use_case: ${{ needs.preparation.outputs.is_external_use_case == 'true' && env.DEFAULT_EXTERNAL_USE_CASES || env.DEFAULT_USE_CASES }}
         include:
-          # - provider: aws
-          #   working_directory: ./terraform/aws
-          #   aws_region: "us-east-2"
-          #   aws_instance_type: "t3.xlarge" 
-          #   disk_size: 60
-          #   acebox_user: "ubuntu"           
-          #   associate_eip: "false"
-          #   ingress_protocol: "https"
-          #   route53_zone_name: "gtm-innovation.com"
-          #   route53_private_zone: "false"
-          #   skip_domain_workspace_alignment: "true"
-          #   backend_config: |
-          #     bucket         = "your-terraform-state-bucket"
-          #     key            = "path/to/terraform.tfstate"
-          #     region         = "us-east-2"
-          #     encrypt        = true
-          #     dynamodb_table = "your-lock-table"
-          
-          # gcloud test with https and SSL certificates
           - provider: gcloud
             working_directory: ./terraform/gcloud
-            gcloud_project: "acl-gsi" #"myGCPProject" # GCP Project you want to use
-            gcloud_zone: "europe-west1-b" # zone
+            gcloud_project: "acl-gsi"
+            gcloud_zone: "europe-west1-b"
             acebox_size: "n2-standard-16"
             managed_zone_name: "ace-innovation-info"
             backend_config_bucket: "ace-box-tf-state"
@@ -197,8 +160,8 @@ jobs:
           # gcloud test with http
         #   - provider: gcloud
         #     working_directory: ./terraform/gcloud
-        #     gcloud_project: "acl-gsi" #"myGCPProject" # GCP Project you want to use
-        #     gcloud_zone: "europe-west1-b" # zone
+        #     gcloud_project: "acl-gsi"
+        #     gcloud_zone: "europe-west1-b"
         #     acebox_size: "n2-standard-16"
         #     backend_config_bucket: "ace-box-tf-state"
         #     backend_config_prefix: "ace-box/http"
