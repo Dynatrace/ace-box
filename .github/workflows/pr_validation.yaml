@@ -78,7 +78,7 @@ jobs:
         id: set_env
         run: |
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            # echo "use_cases=${{ env.DEFAULT_EXTERNAL_USE_CASES }}" >> "$GITHUB_ENV"
+            echo "use_cases=${{ env.DEFAULT_EXTERNAL_USE_CASES }}" >> "$GITHUB_ENV"
             echo "providers=$(echo '${{ github.event.inputs.providers }}' )" >> "$GITHUB_ENV"
             echo "destroy_resources=$(echo '${{ github.event.inputs.destroy_resources }}' )" >> "$GITHUB_ENV"
             echo "use_case_validation_tests_enabled=$(echo ${{ github.event.inputs.use_case_validation_tests_enabled }} )" >> "$GITHUB_ENV"
@@ -86,7 +86,7 @@ jobs:
             echo "dt_tenant=$(echo '${{ github.event.inputs.dt_tenant }}' )" >> "$GITHUB_ENV"
             echo "dt_url_gen3=$(echo '${{ github.event.inputs.dt_url_gen3 }}' )" >> "$GITHUB_ENV"
           else
-            # echo "use_cases=${{ env.DEFAULT_EXTERNAL_USE_CASES }}" >> "$GITHUB_ENV"
+            echo "use_cases=${{ env.DEFAULT_EXTERNAL_USE_CASES }}" >> "$GITHUB_ENV"
             echo "providers=${{ env.DEFAULT_PROVIDERS }}" >> "$GITHUB_ENV"
             echo "destroy_resources=${{ env.DESTROY_RESOURCES }}" >> "$GITHUB_ENV"
             echo "use_case_validation_tests_enabled=${{ env.USE_CASE_VALIDATION_TESTS_ENABLED }}" >> "$GITHUB_ENV"
@@ -117,13 +117,13 @@ jobs:
           updated_use_cases_string=$(printf ",\"%s"\" "${updated_use_cases[@]}")
           updated_use_cases_string="[${updated_use_cases_string:1}]"
           echo "updated_use_cases_string=$updated_use_cases_string"
-          echo "external_use_cases_formatted=$updated_use_cases_string" >> "$GITHUB_ENV"
+          echo "use_cases=$updated_use_cases_string" >> "$GITHUB_ENV"
 
       - name: Set Outputs
         id: set_outputs
         run: |
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            echo "use_cases=$(echo '${{ env.external_use_cases_formatted }}' )" >> "$GITHUB_OUTPUT"
+            echo "use_cases=$(echo '${{ env.use_cases }}' )" >> "$GITHUB_OUTPUT"
             echo "providers=$(echo '${{ github.event.inputs.providers }}' )" >> "$GITHUB_OUTPUT"
             echo "destroy_resources=$(echo '${{ github.event.inputs.destroy_resources }}' )" >> "$GITHUB_OUTPUT"
             echo "use_case_validation_tests_enabled=$(echo '${{ github.event.inputs.use_case_validation_tests_enabled }}' )" >> "$GITHUB_OUTPUT"
@@ -131,7 +131,7 @@ jobs:
             echo "dt_tenant=$(echo '${{ github.event.inputs.dt_tenant }}' )" >> "$GITHUB_OUTPUT"
             echo "dt_url_gen3=$(echo '${{ github.event.inputs.dt_url_gen3 }}' )" >> "$GITHUB_OUTPUT"
           else
-            echo "use_cases=$(echo '${{ env.external_use_cases_formatted }}' )" >> "$GITHUB_OUTPUT"
+            echo "use_cases=$(echo '${{ env.use_cases }}' )" >> "$GITHUB_OUTPUT"
             echo "providers=${{ env.DEFAULT_PROVIDERS }}" >> "$GITHUB_OUTPUT"
             echo "destroy_resources=${{ env.DESTROY_RESOURCES }}" >> "$GITHUB_OUTPUT"
             echo "use_case_validation_tests_enabled=${{ env.USE_CASE_VALIDATION_TESTS_ENABLED }}" >> "$GITHUB_OUTPUT"
