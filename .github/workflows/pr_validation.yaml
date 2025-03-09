@@ -105,7 +105,7 @@ jobs:
 
       - name: set_external_use_case_url
         env:
-          COMMON_PARAMS: "https://${{ vars.USER_GITHUB }}:${{ secrets.TOKEN_GITHUB }}"
+          COMMON_PARAMS: "https://" #"https://${{ vars.USER_GITHUB }}:${{ secrets.TOKEN_GITHUB }}"
         run: |
           external_use_cases=$(echo '${{ env.DEFAULT_EXTERNAL_USE_CASES }}' | tr -d '[]' | tr ',' '\n' | tr -d '"')
           updated_use_cases=()
