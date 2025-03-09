@@ -203,10 +203,18 @@ jobs:
       - name: Create Backend Config for gcloud
         if: matrix.provider == 'gcloud'
         run: |
-          if [ ${{ inputs.destroy_resources }} == false ] || [ -n "${{ inputs.custom_domain }}" ]; then
-            prefix="${{ matrix.backend_config_prefix }}/${{ matrix.use_case }}/${{ inputs.custom_domain }}"
+          if [[ "${{ matrix.use_case }}" == https://* ]]; then
+            repo_name=$(basename "${{ matrix.use_case }}" .git)
           else
-            prefix="${{ matrix.backend_config_prefix }}/${{ matrix.use_case }}/${{ github.run_id }}"
+            repo_name="${{ matrix.use_case }}"
+          fi
+
+          echo "REPO_NAME=$repo_name" >> $GITHUB_ENV
+
+          if [ ${{ inputs.destroy_resources }} == false ] || [ -n "${{ inputs.custom_domain }}" ]; then
+            prefix="${{ matrix.backend_config_prefix }}/${repo_name}/${{ inputs.custom_domain }}"
+          else
+            prefix="${{ matrix.backend_config_prefix }}/${repo_name}/${{ github.run_id }}"
           fi
           echo 'terraform {
             backend "gcs" {
@@ -288,9 +296,9 @@ jobs:
         if: always() && inputs.destroy_resources != false && matrix.provider == 'gcloud'
         run: |
           if [ -n "${{ inputs.custom_domain }}" ]; then
-            prefix="${{ matrix.backend_config_prefix }}/${{ matrix.use_case }}/${{ inputs.custom_domain }}"
+            prefix="${{ matrix.backend_config_prefix }}/${{ env.REPO_NAME }}/${{ inputs.custom_domain }}"
           else
-            prefix="${{ matrix.backend_config_prefix }}/${{ matrix.use_case }}/${{ github.run_id }}"
+            prefix="${{ matrix.backend_config_prefix }}/${{ env.REPO_NAME }}/${{ github.run_id }}"
           fi
           gsutil rm -r gs://${{ matrix.backend_config_bucket }}/${prefix}
         env:
