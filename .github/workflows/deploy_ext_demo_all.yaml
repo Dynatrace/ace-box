@@ -114,7 +114,7 @@ jobs:
             updated_use_case="${{ env.COMMON_PARAMS }}@${external_use_case}"
             updated_use_cases+=("$updated_use_case")
           done
-          updated_use_cases_string=$(printf ",\"%s\"" "${updated_use_cases[@]}")
+          updated_use_cases_string=$(printf ","%s"" "${updated_use_cases[@]}")
           updated_use_cases_string="[${updated_use_cases_string:1}]"
           echo "updated_use_cases_string=$updated_use_cases_string"
           echo "external_use_cases_formatted=$updated_use_cases_string" >> "$GITHUB_ENV"
