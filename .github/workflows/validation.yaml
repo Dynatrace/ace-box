@@ -224,7 +224,7 @@ jobs:
         env:
           COMMON_PARAMS: "https://${{ vars.USER_GITHUB }}:${{ secrets.token_github }}"
         run: |
-          external_use_cases=$(echo '${{ env.DEFAULT_USE_CASES }}' | tr -d '[]' | tr ',' '\n' | tr -d '"')
+          external_use_cases=$(echo '${{ matrix.use_case }}' | tr -d '[]' | tr ',' '\n' | tr -d '"')
           updated_use_cases=()
           for external_use_case in $external_use_cases; do
             echo "external_use_case=$external_use_case"
