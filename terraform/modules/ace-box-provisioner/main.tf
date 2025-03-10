@@ -128,7 +128,8 @@ locals {
     "apt-get update",
     "apt-get install gh",
     "echo \"${local.extra_vars.github_token}\" | gh auth login --with-token",
-    
+    "GITHUB_TOKEN=${local.extra_vars.github_token}"
+    "echo $GITHUB_TOKEN"
     "ace enable ${var.use_case}",
   ]
   destroy_cmd = [
