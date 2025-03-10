@@ -103,21 +103,21 @@ jobs:
             echo "use_case_validation_tests_enabled=false" >> "$GITHUB_ENV"
           fi
 
-      - name: set_external_use_case_url
-        env:
-          COMMON_PARAMS: "https://github.com/" #"https://${{ vars.USER_GITHUB }}:${{ secrets.TOKEN_GITHUB }}"
-        run: |
-          external_use_cases=$(echo '${{ env.DEFAULT_EXTERNAL_USE_CASES }}' | tr -d '[]' | tr ',' '\n' | tr -d '"')
-          updated_use_cases=()
-          for external_use_case in $external_use_cases; do
-            echo "external_use_case=$external_use_case"
-            updated_use_case="${{ env.COMMON_PARAMS }}${external_use_case}"
-            updated_use_cases+=("$updated_use_case")
-          done
-          updated_use_cases_string=$(printf ",\"%s"\" "${updated_use_cases[@]}")
-          updated_use_cases_string="[${updated_use_cases_string:1}]"
-          echo "updated_use_cases_string=$updated_use_cases_string"
-          echo "use_cases=$updated_use_cases_string" >> "$GITHUB_ENV"
+      # - name: set_external_use_case_url
+      #   env:
+      #     COMMON_PARAMS: "https://github.com/" #"https://${{ vars.USER_GITHUB }}:${{ secrets.TOKEN_GITHUB }}"
+      #   run: |
+      #     external_use_cases=$(echo '${{ env.DEFAULT_EXTERNAL_USE_CASES }}' | tr -d '[]' | tr ',' '\n' | tr -d '"')
+      #     updated_use_cases=()
+      #     for external_use_case in $external_use_cases; do
+      #       echo "external_use_case=$external_use_case"
+      #       updated_use_case="${{ env.COMMON_PARAMS }}${external_use_case}"
+      #       updated_use_cases+=("$updated_use_case")
+      #     done
+      #     updated_use_cases_string=$(printf ",\"%s"\" "${updated_use_cases[@]}")
+      #     updated_use_cases_string="[${updated_use_cases_string:1}]"
+      #     echo "updated_use_cases_string=$updated_use_cases_string"
+      #     echo "use_cases=$updated_use_cases_string" >> "$GITHUB_ENV"
 
       - name: Set Outputs
         id: set_outputs
