@@ -170,6 +170,8 @@ jobs:
 
       - name: Install Dependencies
         run: |
+          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 2C6106201985B60E6C7AC87323F3D4EA75716059
+          sudo apt-add-repository https://cli.github.com/packages
           sudo apt-get update
           sudo apt-get install -y unzip nodejs
 
