@@ -481,16 +481,6 @@ def enable(
         'ace_config_file_path': f'/home/{user}/.ace/ace.config.yml',
     }
 
-    # Ensure GitHub CLI is authenticated
-    github_token = os.getenv('GITHUB_TOKEN')
-    if github_token:
-        subprocess.run((
-            f'echo "{github_token}" | gh auth login --with-token'
-        ), shell=True, check=True)
-        subprocess.run((
-            'gh auth status'
-        ), shell=True, check=True)
-
     if is_external_use_case(target):
         logging.info('Detected external use case')
 
