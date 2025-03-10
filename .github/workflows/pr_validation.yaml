@@ -1,11 +1,6 @@
 
 name: Deploy External Demo All
 
-on:
-  # push:
-  #   branches:
-  #     - dev # Trigger after PR is merged to the dev branch
-
 env:
   DEFAULT_EXTERNAL_USE_CASES: '[\"dynatrace-ace/basic-dt-demo.git\",\"dynatrace-ace/ace-box-ext-demo-all.git\"]' #"dynatrace-ace/basic-dt-demo.git",
   DEFAULT_PROVIDERS: '[\"gcloud\"]'
@@ -16,6 +11,10 @@ env:
   DT_URL_GEN3: ${{ vars.DT_URL_GEN3 }}
   DT_API_TOKEN: ${{ secrets.DT_API_TOKEN }}
 
+on:
+  # push:
+  #   branches:
+  #     - dev # Trigger after PR is merged to the dev branch
   workflow_dispatch: # Allows manual triggering of the workflow
     inputs:
      
