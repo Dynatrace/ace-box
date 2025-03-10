@@ -2,7 +2,7 @@
 name: Deploy External Demo All
 
 env:
-  DEFAULT_EXTERNAL_USE_CASES: '[\"dynatrace-ace/basic-dt-demo.git\",\"dynatrace-ace/ace-box-ext-demo-all.git\"]' #"dynatrace-ace/basic-dt-demo.git",
+  DEFAULT_EXTERNAL_USE_CASES: '[\"dynatrace-ace/basic-dt-demo.git\",\"dynatrace-ace/ace-box-ext-demo-well-architected\"]' #"dynatrace-ace/basic-dt-demo.git",
   DEFAULT_PROVIDERS: '[\"gcloud\"]'
   DESTROY_RESOURCES: true
   USE_CASE_VALIDATION_TESTS_ENABLED: false
