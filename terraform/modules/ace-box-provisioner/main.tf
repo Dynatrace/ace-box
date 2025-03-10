@@ -121,15 +121,14 @@ locals {
     "ANSIBLE_OPENTELEMETRY_ENABLED=${local.otel_export_enable}",
     "OTEL_EXPORTER_OTLP_TRACES_PROTOCOL=http/protobuf",
     "ANSIBLE_OPENTELEMETRY_ENABLE_FROM_ENVIRONMENT=ANSIBLE_OPENTELEMETRY_ENABLED",
-
     "curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg",
     "chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg",
     "echo \"deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main\" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null",
     "apt-get update",
     "apt-get install gh",
-    "echo \"${local.extra_vars.github_token}\" | gh auth login --with-token",
-    "GITHUB_TOKEN=${local.extra_vars.github_token}"
-    "echo $GITHUB_TOKEN"
+    "echo \"${local.extra_vars.git_token}\" | gh auth login --with-token",
+    "GITHUB_TOKEN=${local.extra_vars.git_token}",
+    "echo $GITHUB_TOKEN",
     "ace enable ${var.use_case}",
   ]
   destroy_cmd = [

@@ -120,6 +120,7 @@ jobs:
           "dt_oauth_client_id": "${{ secrets.dt_oauth_client_id }}",
           "dt_oauth_client_secret": "${{ secrets.dt_oauth_client_secret }}",
           "dt_oauth_account_urn": "${{ inputs.dt_oauth_account_urn }}",
+          "git_token" : "${{ secrets.TOKEN_GITHUB }}"
         }
 
     strategy:
