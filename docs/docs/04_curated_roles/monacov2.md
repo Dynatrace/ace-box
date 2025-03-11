@@ -17,7 +17,7 @@ Variables that can be set are as follows:
 
 ```yaml
 ---
-monaco_version: "v2.6.0"
+monaco_version: "v2.17.4"
 ```
 
 ### Other Tasks in the Role
