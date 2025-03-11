@@ -53,3 +53,6 @@ override.tf.json
 # Nodejs
 *.env*
 **/id_rsa
+
+# VS Code specific config
+.vscode/
