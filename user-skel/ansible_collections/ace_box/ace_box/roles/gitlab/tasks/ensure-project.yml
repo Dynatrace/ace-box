@@ -30,10 +30,15 @@
           Content-Type: "application/json"
           Authorization: "Bearer {{ gitlab_personal_access_token }}"
       register: gitlab_get_projects_result
-    - set_fact:
+      ignore_errors: true
+
+    - name: Set GitLab project ID
+      set_fact:
         gitlab_project_id: "{{ gitlab_get_projects_result.json | selectattr('name', 'equalto', gitlab_prj) | map(attribute='id') | first() }}"
+      when: gitlab_get_projects_result.json | selectattr('name', 'equalto', gitlab_prj) | map(attribute='id') | first() is defined
+
   rescue:
-    - name: Gitlab - Create project"
+    - name: Gitlab - Create project
       uri:
         url: "{{ gitlab_internal_endpoint }}/api/v4/projects"
         validate_certs: false
@@ -48,6 +53,8 @@
           visibility: "public"
         body_format: json
       register: gitlab_post_projects_result
-    - set_fact:
+
+    - name: Set GitLab project ID after creation
+      set_fact:
         gitlab_project_id: "{{ gitlab_post_projects_result.json.id }}"
         new_gitlab_project_created: "{{ gitlab_post_projects_result.status is defined and gitlab_post_projects_result.status == 201 }}"
