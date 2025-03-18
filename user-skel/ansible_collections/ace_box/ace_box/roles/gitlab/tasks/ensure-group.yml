@@ -31,10 +31,15 @@
           Content-Type: "application/json"
           Authorization: "Bearer {{ gitlab_personal_access_token }}"
       register: gitlab_get_groups_result
-    - set_fact:
+      ignore_errors: true
+
+    - name: Set GitLab group ID
+      set_fact:
         gitlab_group_id: "{{ gitlab_get_groups_result.json | selectattr('name', 'equalto', gitlab_group_name) | map(attribute='id') | first() }}"
+      when: gitlab_get_groups_result.json | selectattr('name', 'equalto', gitlab_group_name) | map(attribute='id') | first() is defined
+
   rescue:
-    - name: Gitlab - Create group"
+    - name: Gitlab - Create group
       uri:
         url: "{{ gitlab_internal_endpoint }}/api/v4/groups"
         validate_certs: false
@@ -48,6 +53,8 @@
           name: "{{ gitlab_group_name }}"
         body_format: json
       register: gitlab_post_groups_result
-    - set_fact:
+
+    - name: Set GitLab group ID after creation
+      set_fact:
         gitlab_group_id: "{{ gitlab_post_groups_result.json.id }}"
         new_gitlab_group_created: "{{ gitlab_post_groups_result.status is defined and gitlab_post_groups_result.status == 201 }}"
