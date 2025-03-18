@@ -19,11 +19,13 @@
     name: "{{ gitlab_root_pat_secret_name }}"
     namespace: "{{ gitlab_namespace }}"
   register: gitlab_root_pat_data
+  ignore_errors: true
 
 - block:
     - name: Set secrets facts
       set_fact:
         gitlab_personal_access_token: "{{ gitlab_root_pat_data.resources[0].data.personalAccessToken | b64decode }}"
+      when: gitlab_root_pat_data.resources is defined and gitlab_root_pat_data.resources | length > 0
   rescue:
     - name: Ensure namespace
       kubernetes.core.k8s:
@@ -31,8 +33,10 @@
         api_version: v1
         kind: Namespace
         state: present
+
     - include_tasks: source-endpoints.yml
       when: gitlab_internal_endpoint is not defined
+
     - name: Generate new OAuth token
       uri:
         url: "{{ gitlab_internal_endpoint }}/oauth/token"
@@ -47,6 +51,7 @@
           password: "{{ gitlab_password }}"
         body_format: json
       register: gitlab_oauth_token_result
+
     - name: Gitlab - Create a Personal Access Token
       uri:
         url: "{{ gitlab_internal_endpoint }}/api/v4/users/1/personal_access_tokens"
@@ -76,6 +81,7 @@
             ]
         body_format: json
       register: gitlab_personal_access_token_result
+
     - name: Persist Gitlab root PAT
       kubernetes.core.k8s:
         name: "{{ gitlab_root_pat_secret_name }}"
