@@ -38,6 +38,7 @@
           masked: false
           environment_scope: "*"
         body_format: json
+      ignore_errors: true
   rescue:
     - name: Create var
       uri:
