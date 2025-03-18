@@ -56,14 +56,15 @@
       ansible.builtin.command: "git remote add {{ git_remote }} http://{{ git_username }}:{{ git_password }}@{{ git_endpoint }}/{{ git_org }}/{{ git_repo }}.git"
       args:
         chdir: "{{ repo_src }}"
+      ignore_errors: true
+      register: add_remote_result
+      failed_when: add_remote_result.rc != 0 and "remote {{ git_remote }} already exists" not in add_remote_result.stderr
+
   rescue:
     - name: "Set remote {{ git_remote }}"
       ansible.builtin.command: "git remote set-url {{ git_remote }} http://{{ git_username }}:{{ git_password }}@{{ git_endpoint }}/{{ git_org }}/{{ git_repo }}.git"
       args:
         chdir: "{{ repo_src }}"
-      ignore_errors: true
-      register: add_remote_result
-      failed_when: add_remote_result.rc != 0 and "remote {{ git_remote }} already exists" not in add_remote_result.stderr
 
 - name: "Publish repo"
   ansible.builtin.command: "git push {{ git_remote }} main"
