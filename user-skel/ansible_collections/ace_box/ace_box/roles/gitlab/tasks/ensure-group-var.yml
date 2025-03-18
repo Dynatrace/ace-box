@@ -19,7 +19,7 @@
 - ansible.builtin.include_tasks: source-personal-access-token.yml
   when: gitlab_personal_access_token is not defined
 
-- name: Gitlab - Ensure group variable "{{ gitlab_var_key }} exists"
+- name: Gitlab - Ensure group variable "{{ gitlab_var_key }}" exists
   block:
     - name: Update var
       uri:
@@ -38,8 +38,15 @@
           masked: false
           environment_scope: "*"
         body_format: json
-      ignore_errors: true
+      register: update_var_result
+      failed_when: update_var_result.status not in [200, 201, 404]
+
   rescue:
+    - name: Check if update failed due to variable not found
+      debug:
+        msg: "Variable {{ gitlab_var_key }} not found, creating it."
+      when: update_var_result.status == 404
+
     - name: Create var
       uri:
         url: "{{ gitlab_internal_endpoint }}/api/v4/groups/{{ gitlab_group_id }}/variables"
@@ -57,4 +64,5 @@
           masked: false
           environment_scope: "*"
         body_format: json
+      when: update_var_result.status == 404
       register: gitlab_post_groups_result
