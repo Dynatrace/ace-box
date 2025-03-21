@@ -51,7 +51,7 @@
       - set_fact:
           dt_app_id: "{{ dt_app_id }}"
     when: dt_app_version is defined and dt_app_version is not none
-  when: app_validation == true
+  when: app_validation
 
 - block:
     - name: "Install app {{ dt_app_id }}"
