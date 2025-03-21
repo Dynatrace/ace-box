@@ -66,7 +66,10 @@
           Authorization: "Bearer {{ dt_oauth_access_token }}"
         src: "{{ dt_app_artifact_path }}"
       register: post_apps_response_raw
- 
+      until: post_apps_response_raw.status == 202
+      retries: 5
+      delay: 10
+
     - set_fact:
         dt_app_id: "{{ post_apps_response_raw.json.id }}"
   when: dt_app_version is not defined or dt_app_version is none
