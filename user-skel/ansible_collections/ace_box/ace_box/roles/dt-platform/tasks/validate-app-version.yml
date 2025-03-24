@@ -37,6 +37,11 @@
     - set_fact:
         dt_oauth_access_token: "{{ auth_response_raw.json.access_token }}"
 
+- name: Validate app version debug
+  debug:
+    msg: "Validate app version debug: {{ dt_app_id }}"
+
+
 - name: "Get app {{ dt_app_id }}"
   ansible.builtin.uri:
     url: "{{ dt_environment_url_gen3.rstrip('/') }}/platform/app-engine/registry/v1/apps/{{ dt_app_id }}"
@@ -46,9 +51,23 @@
       Content-Type: "application/json"
       Authorization: "Bearer {{ dt_oauth_access_token }}"
   register: get_app_response_raw
-  until:  get_app_response_raw.json.id == dt_app_id
-  retries: 12          # check 12 times
-  delay: 300           # with 5min delay (total 60min)
+
+- name: Get App response debug
+  debug:
+    msg: "Get app debug: {{ get_app_response_raw.json }} and dt_app_id: {{ dt_app_id }}"
+
 
 - set_fact:
-    dt_app_version: "{{ get_app_response_raw.json.version | default(omit) }}"
+    validated_dt_app_version: null
+  when: get_app_response_raw.status == 404
+
+- set_fact:
+    validated_dt_app_version: "{{ get_app_response_raw.json.version }}"
+  when: get_app_response_raw.status == 200
+
+- name: debug dt_app_Version
+  debug:
+    msg: "Set app version in validate-app: {{ validated_dt_app_version }}"
+
+# - set_fact:
+#     dt_app_version: "{{ get_app_response_raw.json.version | default(omit) }}"
