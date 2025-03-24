@@ -58,13 +58,16 @@
 
 
 - set_fact:
-    dt_app_version: null
+    validated_dt_app_version: null
   when: get_app_response_raw.status == 404
 
 - set_fact:
-    dt_app_version: "{{ get_app_response_raw.json.version }}"
+    validated_dt_app_version: "{{ get_app_response_raw.json.version }}"
   when: get_app_response_raw.status == 200
 
+- name: debug dt_app_Version
+  debug:
+    msg: "Set app version in validate-app: {{ validated_dt_app_version }}"
 
 # - set_fact:
 #     dt_app_version: "{{ get_app_response_raw.json.version | default(omit) }}"
