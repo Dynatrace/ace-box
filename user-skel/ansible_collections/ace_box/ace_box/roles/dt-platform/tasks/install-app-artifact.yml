@@ -70,3 +70,4 @@
     - set_fact:
         dt_app_id: "{{ post_apps_response_raw.json.id }}"
   when: dt_app_version is not defined or dt_app_version is none
+  
