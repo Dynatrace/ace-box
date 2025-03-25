@@ -52,4 +52,3 @@
 
 - set_fact:
     dt_app_version: "{{ get_app_response_raw.json.version | default(omit) }}"
-    
