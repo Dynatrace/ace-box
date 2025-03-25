@@ -2,9 +2,7 @@
 
 ## ensure-app
 
-> Attention: `ensure-app` uses a non-supported API. Use at your own risk, it might break at any point!
-
-Makes sure an App available in the Hub is installed.
+Ensure the latest version of an App from the Hub is installed.
 
 Requires vars:
 
@@ -17,9 +15,11 @@ Requires vars:
 |dt_oauth_account_urn|Dynatrace OAuth account URN|
 |dt_app_id|Dynatrace app id, e.g. `dynatrace.site.reliability.guardian`|
 
+> `dt_app_version` variable is not needed as the latest version will be installed automatically.
+
 ## install-app-artifact
 
-Installs an App from the provided artifact (zip file) or skips installation if the specified app is already installed.
+Installs an App from the provided artifact (zip file) or skips the installation if the specified app is already installed with a given application version.
 
 Requires vars:
 
@@ -33,18 +33,19 @@ Requires vars:
 |dt_app_artifact_path|Path to App artifact (zip)|
 |dt_app_id|Dynatrace app id, e.g. `my.dynatrace.jenkins.tobias.gremmer`|
 
+
+Optional vars:
+|Variable name|Description|
+|---|---|
+|dt_app_version|Dynatrace app version, e.g. `0.0.3`|
+
 Sets facts:
 - dt_app_id
 
-Optional vars:
-
-|Variable name|Description|
-|---|---|
-|app_validation|true/false, false by default. Switch to true if you want to validate if the app already exist in the tenant|
-
 ## validate-app-version
 
-Sets `dt_app_version` if a specific Dynatarce app is installed. `dt_app_version` is undefined if app isn't found. This task can be used to validate installation status of a required app and e.g. fail deployment early.
+Sets `dt_app_version` if a specific Dynatarce app is installed. This is used with `install-app-artifact` role as the `ensure-app` role installs the latest version.
+`dt_app_version` is undefined if app isn't found. This task can be used to validate installation status of a required app and e.g. fail deployment early.
 
 Requires vars:
 
