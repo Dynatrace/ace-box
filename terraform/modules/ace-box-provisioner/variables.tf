@@ -66,5 +66,5 @@ variable "otel_export_enable" {
 }
 
 variable "use_case_validation_tests_enabled" {
-
+  default = false
 }
