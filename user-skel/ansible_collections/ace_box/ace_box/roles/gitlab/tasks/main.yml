@@ -38,8 +38,6 @@
       nginx.ingress.kubernetes.io/x-forwarded-proto: "https"
       {% elif ingress_class == 'traefik' %}
       traefik.ingress.kubernetes.io/forwarded-proto: "https"
-      traefik.ingress.kubernetes.io/router.tls: "true"
-      traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
       {% endif %}
 
 - name: Debug gitlab_annotations
