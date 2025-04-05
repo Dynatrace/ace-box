@@ -32,7 +32,7 @@
 - name: Set annotations based on ingress class
   set_fact:
     gitlab_annotations: |
-      {% if ingress_class == 'public' %}
+      {% if ingress_class == 'public' and ingress_protocol == 'https' %}
       nginx.ingress.kubernetes.io/rewrite-target: /
       nginx.ingress.kubernetes.io/ssl-redirect: "false"
       nginx.ingress.kubernetes.io/use-forwarded-headers: "true"
@@ -41,8 +41,14 @@
         proxy_set_header X-Forwarded-Ssl on;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
-      {% elif ingress_class == 'traefik' %}
+      {% elif ingress_class == 'public' and ingress_protocol == 'http' %}
+      nginx.ingress.kubernetes.io/rewrite-target: /
+      nginx.ingress.kubernetes.io/ssl-redirect: "false"
+      nginx.ingress.kubernetes.io/use-forwarded-headers: "true"
+      {% elif ingress_class == 'traefik' and ingress_protocol == 'https' %}
       traefik.ingress.kubernetes.io/forwarded-proto: "https"
+      kubernetes.io/ingress.class: traefik
+      {% elif ingress_class == 'traefik' and ingress_protocol == 'http' %}
       kubernetes.io/ingress.class: traefik
       {% endif %}
 
