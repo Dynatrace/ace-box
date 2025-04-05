@@ -70,8 +70,8 @@
         hosts:
           domain: "{{ ingress_domain }}"
           https: false
-        gitlab:
-          externalUrl: "{{ ingress_protocol }}://gitlab.{{ ingress_domain }}"  
+        # gitlab:
+        #   externalUrl: "{{ ingress_protocol }}://gitlab.{{ ingress_domain }}"  
         appConfig:
           initialDefaults:
             signupEnabled: false
