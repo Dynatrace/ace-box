@@ -33,10 +33,14 @@
   set_fact:
     gitlab_annotations: |
       {% if ingress_class == 'public' %}
-      nginx.ingress.kubernetes.io/ssl-redirect: "true"
-      #nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-      nginx.ingress.kubernetes.io/x-forwarded-proto: "https"
-      nginx.ingress.kubernetes.io/x-forwarded-ssl: "on"
+      nginx.ingress.kubernetes.io/rewrite-target: /
+      nginx.ingress.kubernetes.io/ssl-redirect: "false"
+      nginx.ingress.kubernetes.io/use-forwarded-headers: "true"
+      nginx.ingress.kubernetes.io/configuration-snippet: |
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_set_header X-Forwarded-Ssl on;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
       {% elif ingress_class == 'traefik' %}
       traefik.ingress.kubernetes.io/forwarded-proto: "https"
       kubernetes.io/ingress.class: traefik
@@ -59,7 +63,9 @@
       global:
         hosts:
           domain: "{{ ingress_domain }}"
-          https: "{{ (ingress_protocol == 'https') | bool }}"
+          https: false
+        gitlab:
+          externalUrl: "{{ ingress_protocol }}://gitlab.{{ ingress_domain }}"  
         appConfig:
           initialDefaults:
             signupEnabled: false
