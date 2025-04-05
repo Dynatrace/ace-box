@@ -33,8 +33,8 @@
   set_fact:
     gitlab_annotations: |
       {% if ingress_class == 'public' %}
-      nginx.ingress.kubernetes.io/ssl-redirect: "true"
-      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      #nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      #nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
       nginx.ingress.kubernetes.io/x-forwarded-proto: "https"
       {% elif ingress_class == 'traefik' %}
       traefik.ingress.kubernetes.io/forwarded-proto: "https"
