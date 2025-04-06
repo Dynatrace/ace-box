@@ -36,6 +36,7 @@
       nginx.ingress.kubernetes.io/rewrite-target: /
       nginx.ingress.kubernetes.io/ssl-redirect: "false"
       nginx.ingress.kubernetes.io/use-forwarded-headers: "true"
+      nginx.ingress.kubernetes.io/x-forwarded-proto: https
       nginx.ingress.kubernetes.io/configuration-snippet: |
         proxy_set_header X-Forwarded-Proto https;
         proxy_set_header X-Forwarded-Ssl on;
@@ -70,8 +71,8 @@
         hosts:
           domain: "{{ ingress_domain }}"
           https: false
-        # gitlab:
-        #   externalUrl: "{{ ingress_protocol }}://gitlab.{{ ingress_domain }}"  
+        gitlab:
+          externalUrl: "https://gitlab.{{ ingress_domain }}"  
         appConfig:
           initialDefaults:
             signupEnabled: false
