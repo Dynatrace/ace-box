@@ -71,8 +71,8 @@
         hosts:
           domain: "{{ ingress_domain }}"
           https: false
-        gitlab:
-          https: true 
+          gitlab:
+            https: true 
         appConfig:
           initialDefaults:
             signupEnabled: false
