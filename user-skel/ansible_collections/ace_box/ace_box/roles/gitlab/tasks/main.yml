@@ -72,7 +72,7 @@
           domain: "{{ ingress_domain }}"
           https: false
         gitlab:
-          externalUrl: "https://gitlab.{{ ingress_domain }}"  
+          https: true 
         appConfig:
           initialDefaults:
             signupEnabled: false
