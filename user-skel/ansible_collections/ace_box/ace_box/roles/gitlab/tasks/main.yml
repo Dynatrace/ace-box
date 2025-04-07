@@ -70,9 +70,9 @@
           create: true
           clusterWideAccess: true
           rules:
-          - apiGroups: ["*"]
-            resources: ["*"]
-            verbs: ["*"]
+            - apiGroups: ["*"]
+              resources: ["*"]
+              verbs: ["*"]
         gitlabUrl: "{{ ingress_protocol }}://gitlab.{{ ingress_domain }}"
         # https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#docker-in-docker-with-tls-enabled-in-kubernetes
         runners:
@@ -89,7 +89,7 @@
                 mount_path = "/certs/client"
                 medium = "Memory"
       nginx-ingress:
-        enabled: false
+        enabled: true
   register: gitlab_helm
 
 - ansible.builtin.include_tasks: source-endpoints.yml
