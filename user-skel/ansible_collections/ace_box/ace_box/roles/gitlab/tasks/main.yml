@@ -87,6 +87,8 @@
         extraEnv:
           GITLAB_HTTPS:
             value: "true"
+      workhorse:
+        scheme: https
       certmanager:
         install: false
       # certmanager-issuer:
