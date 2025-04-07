@@ -84,10 +84,14 @@
         initialRootPassword:
           secret: "{{ gitlab_root_creds_secret_name }}"
           key: password
+        extraEnv:
+          GITLAB_HTTPS:
+            value: "true"
       certmanager:
         install: false
       # certmanager-issuer:
       #   email: dogan.emre@gmail.com
+
       gitlab-runner:
         rbac:
           create: true
