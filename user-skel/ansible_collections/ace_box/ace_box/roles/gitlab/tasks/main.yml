@@ -79,7 +79,7 @@
           configureCertmanager: false
           class: "{{ ingress_class }}"
           tls:
-            enabled: false
+            enabled: "{{ (ingress_protocol == 'https') | bool }}"
           annotations: "{{ gitlab_annotations | from_yaml }}"
         initialRootPassword:
           secret: "{{ gitlab_root_creds_secret_name }}"
