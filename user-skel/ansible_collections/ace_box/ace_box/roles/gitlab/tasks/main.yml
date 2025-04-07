@@ -85,9 +85,9 @@
           secret: "{{ gitlab_root_creds_secret_name }}"
           key: password
       certmanager:
-        install: true
-      certmanager-issuer:
-        email: dogan.emre@gmail.com
+        install: false
+      # certmanager-issuer:
+      #   email: dogan.emre@gmail.com
       gitlab-runner:
         rbac:
           create: true
