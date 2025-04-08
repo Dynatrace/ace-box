@@ -89,7 +89,7 @@
                 mount_path = "/certs/client"
                 medium = "Memory"
       nginx-ingress:
-        enabled: true
+        enabled: false
   register: gitlab_helm
 
 - ansible.builtin.include_tasks: source-endpoints.yml
