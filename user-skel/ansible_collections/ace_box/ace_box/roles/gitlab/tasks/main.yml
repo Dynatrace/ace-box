@@ -40,6 +40,8 @@
       {% elif ingress_class == 'traefik' and ingress_protocol == 'https' %}
       traefik.ingress.kubernetes.io/forwarded-proto: "https"
       kubernetes.io/ingress.class: traefik
+      {% else %}
+      {}
       {% endif %}
 
 - name: Debug gitlab_annotations
@@ -69,7 +71,7 @@
           class: "{{ ingress_class }}"
           tls:
             enabled: false
-          annotations: "{{ gitlab_annotations | from_yaml }}"
+          annotations: "{{ gitlab_annotations | from_yaml | default({}) }}"
         initialRootPassword:
           secret: "{{ gitlab_root_creds_secret_name }}"
           key: password
