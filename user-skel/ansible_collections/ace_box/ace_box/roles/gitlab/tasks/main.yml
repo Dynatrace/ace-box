@@ -65,7 +65,6 @@
           initialDefaults:
             signupEnabled: false
         ingress:
-          provider: "{{ 'nginx' if ingress_class == 'public' else 'traefik' if ingress_class == 'traefik' }}"
           configureCertmanager: false
           class: "{{ ingress_class }}"
           tls:
