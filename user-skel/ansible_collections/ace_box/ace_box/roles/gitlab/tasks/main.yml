@@ -33,23 +33,13 @@
   set_fact:
     gitlab_annotations: |
       {% if ingress_class == 'public' and ingress_protocol == 'https' %}
-      nginx.ingress.kubernetes.io/rewrite-target: /
-      nginx.ingress.kubernetes.io/ssl-redirect: "false"
       nginx.ingress.kubernetes.io/use-forwarded-headers: "true"
       nginx.ingress.kubernetes.io/x-forwarded-proto: https
       nginx.ingress.kubernetes.io/configuration-snippet: |
         proxy_set_header X-Forwarded-Proto https;
         proxy_set_header X-Forwarded-Ssl on;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-      {% elif ingress_class == 'public' and ingress_protocol == 'http' %}
-      nginx.ingress.kubernetes.io/rewrite-target: /
-      nginx.ingress.kubernetes.io/ssl-redirect: "false"
-      nginx.ingress.kubernetes.io/use-forwarded-headers: "true"
       {% elif ingress_class == 'traefik' and ingress_protocol == 'https' %}
       traefik.ingress.kubernetes.io/forwarded-proto: "https"
-      kubernetes.io/ingress.class: traefik
-      {% elif ingress_class == 'traefik' and ingress_protocol == 'http' %}
       kubernetes.io/ingress.class: traefik
       {% endif %}
 
@@ -76,24 +66,16 @@
             signupEnabled: false
         ingress:
           provider: "{{ 'nginx' if ingress_class == 'public' else 'traefik' if ingress_class == 'traefik' }}"
-          configureCertmanager: "{{ (ingress_protocol == 'https') | bool }}"
+          configureCertmanager: false
           class: "{{ ingress_class }}"
           tls:
-            enabled: "{{ (ingress_protocol == 'https') | bool }}"
+            enabled: false
           annotations: "{{ gitlab_annotations | from_yaml }}"
         initialRootPassword:
           secret: "{{ gitlab_root_creds_secret_name }}"
           key: password
-        extraEnv:
-          GITLAB_HTTPS:
-            value: "true"
-      workhorse:
-        scheme: https
       certmanager:
         install: false
-      # certmanager-issuer:
-      #   email: dogan.emre@gmail.com
-
       gitlab-runner:
         rbac:
           create: true
