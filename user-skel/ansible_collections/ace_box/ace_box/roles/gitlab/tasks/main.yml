@@ -29,6 +29,25 @@
     name: gitlab
     repo_url: "https://charts.gitlab.io/"
 
+- name: Set annotations based on ingress class
+  set_fact:
+    gitlab_annotations: |
+      {% if ingress_class == 'public' and ingress_protocol == 'https' %}
+      nginx.ingress.kubernetes.io/use-forwarded-headers: "true"
+      nginx.ingress.kubernetes.io/x-forwarded-proto: https
+      nginx.ingress.kubernetes.io/configuration-snippet: |
+        proxy_set_header X-Forwarded-Proto https;
+      {% elif ingress_class == 'traefik' and ingress_protocol == 'https' %}
+      traefik.ingress.kubernetes.io/forwarded-proto: "https"
+      kubernetes.io/ingress.class: traefik
+      {% else %}
+      {}
+      {% endif %}
+
+- name: Debug gitlab_annotations
+  debug:
+    var: gitlab_annotations
+
 - name: Install GitLab
   kubernetes.core.helm:
     name: gitlab
@@ -47,19 +66,12 @@
           initialDefaults:
             signupEnabled: false
         ingress:
+          provider: "{{ 'nginx' if ingress_class == 'public' else 'traefik' if ingress_class == 'traefik' }}"
           configureCertmanager: false
           class: "{{ ingress_class }}"
           tls:
             enabled: false
-          # annotations:
-          #   # If GitLab is ran behind TLS-terminating load balancer, the following
-          #   # headers need to be provided either as ingress annotations or the
-          #   # external load balancer.
-          #   nginx.ingress.kubernetes.io/configuration-snippet: |
-          #     proxy_set_header x-forwarded-port 443;
-          #     proxy_set_header x-forwarded-scheme https;
-          #     proxy_set_header x-forwarded-proto https;
-          #     proxy_set_header x-forwarded-ssl on;
+          annotations: "{{ gitlab_annotations | from_yaml | default({}) }}"
         initialRootPassword:
           secret: "{{ gitlab_root_creds_secret_name }}"
           key: password
