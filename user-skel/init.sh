@@ -49,7 +49,7 @@ python3 -m pip install --upgrade pip -q
 
 # Ansible
 echo "INIT - Installing Ansible..."
-python3 -m pip install ansible passlib
+python3 -m pip install ansible
 ln -s /home/$ACE_BOX_USER/.local/bin/ansible /usr/bin/ansible
 ln -s /home/$ACE_BOX_USER/.local/bin/ansible-galaxy /usr/bin/ansible-galaxy
 ln -s /home/$ACE_BOX_USER/.local/bin/ansible-playbook /usr/bin/ansible-playbook
