@@ -73,12 +73,6 @@ on:
         default: ""
         type: string
 
-      ace_box_name_prefix:
-        description: "Ace-Box Name Prefix to identify the resources created by this workflow. Example: demo-ace-box."
-        required: false
-        default: "ace-box-gh-pr-validate"
-        type: string
-
       # optional params for manual run
       dt_tenant:
         description: "Dynatrace Tenant. Keep empty to use the default tenant configured in the Github variables. For API Token, modify the DT_API_TOKEN secret in the Github repository settings."
@@ -125,7 +119,7 @@ jobs:
             echo "destroy_resources=$(echo '${{ github.event.inputs.destroy_resources }}' )" >> "$GITHUB_ENV"
             echo "use_case_validation_tests_enabled=$(echo ${{ github.event.inputs.use_case_validation_tests_enabled }} )" >> "$GITHUB_ENV"
             echo "custom_domain=$(echo '${{ github.event.inputs.custom_domain }}' )" >> "$GITHUB_ENV"
-            echo "ace_box_name_prefix=$(echo '${{ github.event.inputs.ace_box_name_prefix }}' )" >> "$GITHUB_ENV"
+            echo "ace_box_name_prefix=${{ env.DEFAULT_ACE_BOX_NAME_PREFIX }}" >> "$GITHUB_ENV"
             echo "dt_tenant=$(echo '${{ github.event.inputs.dt_tenant }}' )" >> "$GITHUB_ENV"
             echo "dt_url_gen3=$(echo '${{ github.event.inputs.dt_url_gen3 }}' )" >> "$GITHUB_ENV"
           else
@@ -156,7 +150,7 @@ jobs:
             echo "destroy_resources=$(echo '${{ github.event.inputs.destroy_resources }}' )" >> "$GITHUB_OUTPUT"
             echo "use_case_validation_tests_enabled=$(echo '${{ github.event.inputs.use_case_validation_tests_enabled }}' )" >> "$GITHUB_OUTPUT"
             echo "custom_domain=$(echo '${{ github.event.inputs.custom_domain }}' )" >> "$GITHUB_OUTPUT"
-            echo "ace_box_name_prefix=$(echo '${{ github.event.inputs.ace_box_name_prefix }}' )" >> "$GITHUB_OUTPUT"
+            echo "ace_box_name_prefix=${{ env.DEFAULT_ACE_BOX_NAME_PREFIX }}" >> "$GITHUB_OUTPUT"
             echo "dt_tenant=$(echo '${{ github.event.inputs.dt_tenant }}' )" >> "$GITHUB_OUTPUT"
             echo "dt_url_gen3=$(echo '${{ github.event.inputs.dt_url_gen3 }}' )" >> "$GITHUB_OUTPUT"
           else
