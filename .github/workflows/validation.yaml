@@ -189,13 +189,21 @@ jobs:
           echo "TF_VAR_skip_domain_workspace_alignment=${{ env.TF_VAR_skip_domain_workspace_alignment }}"
           echo "TF_VAR_extra_vars=${{ env.TF_VAR_extra_vars }}"
 
-      - name: Set External Use Case URL
+      - name: Set Use Case URL
         env:
           COMMON_PARAMS: "https://${{ vars.USER_GITHUB }}:${{ secrets.token_github }}@github.com/"
         run: |
           initial_use_case=$(echo '${{ matrix.use_case }}' | tr -d '[]' | tr ',' '\n' | tr -d '"')
-          external_use_case="${{ env.COMMON_PARAMS }}${initial_use_case}"
-          echo "external_use_case=$external_use_case" >> "$GITHUB_ENV"
+          if [[ "${initial_use_case}" == *"dynatrace-ace/"* ]]; then
+            # External use case
+            final_use_case="${{ env.COMMON_PARAMS }}${initial_use_case}"
+          else
+            # Core use case
+            final_use_case="${initial_use_case}"
+          fi
+          echo "final_use_case=$final_use_case" >> "$GITHUB_ENV"
+          echo "final use case= ${{ env.final_use_case }}""
+
 
       # gcloud specific steps
       - name: 'auth'
@@ -273,7 +281,7 @@ jobs:
         working-directory: ${{ matrix.working_directory }}
 
       - name: Terraform Plan
-        run: terraform plan -out=tfplan -lock=false -replace="null_resource.provisioner_ace_enable" -var="gcloud_project=${{ matrix.gcloud_project }}" -var="gcloud_zone=${{ matrix.gcloud_zone }}" -var="acebox_size=${{ matrix.acebox_size }}" -var="managed_zone_name=${{ matrix.managed_zone_name }}" -var="use_case=${{ env.external_use_case }}"
+        run: terraform plan -out=tfplan -lock=false -replace="null_resource.provisioner_ace_enable" -var="gcloud_project=${{ matrix.gcloud_project }}" -var="gcloud_zone=${{ matrix.gcloud_zone }}" -var="acebox_size=${{ matrix.acebox_size }}" -var="managed_zone_name=${{ matrix.managed_zone_name }}" -var="use_case=${{ env.final_use_case }}"
         working-directory: ${{ matrix.working_directory }}
 
       - name: Terraform Apply
@@ -288,7 +296,7 @@ jobs:
               exit $exit_code
             fi
             echo "Retrying terraform apply... ($count/$retries)"
-            terraform plan -out=tfplan -lock=false -replace="null_resource.provisioner_ace_enable" -var="gcloud_project=${{ matrix.gcloud_project }}" -var="gcloud_zone=${{ matrix.gcloud_zone }}" -var="acebox_size=${{ matrix.acebox_size }}" -var="managed_zone_name=${{ matrix.managed_zone_name }}" -var="use_case=${{ env.external_use_case }}"
+            terraform plan -out=tfplan -lock=false -replace="null_resource.provisioner_ace_enable" -var="gcloud_project=${{ matrix.gcloud_project }}" -var="gcloud_zone=${{ matrix.gcloud_zone }}" -var="acebox_size=${{ matrix.acebox_size }}" -var="managed_zone_name=${{ matrix.managed_zone_name }}" -var="use_case=${{ env.final_use_case }}"
             sleep 10
           done
         working-directory: ${{ matrix.working_directory }}
@@ -301,7 +309,7 @@ jobs:
 
       - name: Conditional Terraform Destroy
         if: always() && inputs.destroy_resources != false
-        run: terraform destroy -auto-approve -lock=false  -var="gcloud_project=${{ matrix.gcloud_project }}" -var="gcloud_zone=${{ matrix.gcloud_zone }}" -var="acebox_size=${{ matrix.acebox_size }}" -var="managed_zone_name=${{ matrix.managed_zone_name }}" -var="use_case=${{ env.external_use_case }}"
+        run: terraform destroy -auto-approve -lock=false  -var="gcloud_project=${{ matrix.gcloud_project }}" -var="gcloud_zone=${{ matrix.gcloud_zone }}" -var="acebox_size=${{ matrix.acebox_size }}" -var="managed_zone_name=${{ matrix.managed_zone_name }}" -var="use_case=${{ env.final_use_case }}"
         working-directory: ${{ matrix.working_directory }}
 
       - name: Delete GCS objects with specific prefix
