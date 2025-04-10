@@ -73,6 +73,12 @@ on:
         default: ""
         type: string
 
+      ace_box_name_prefix:
+        description: "Ace-Box Name Prefix to identify the resources created by this workflow. Example: demo-ace-box."
+        required: false
+        default: "ace-box-gh-pr-validate"
+        type: string
+
       # optional params for manual run
       dt_tenant:
         description: "Dynatrace Tenant. Keep empty to use the default tenant configured in the Github variables. For API Token, modify the DT_API_TOKEN secret in the Github repository settings."
@@ -91,6 +97,7 @@ env:
   DESTROY_RESOURCES: true
   USE_CASE_VALIDATION_TESTS_ENABLED: true
   DEFAULT_CUSTOM_DOMAIN: ""
+  DEFAULT_ACE_BOX_NAME_PREFIX: "ace-box-gh-pr-validate"
   DT_TENANT: ${{ vars.DT_TENANT }}
   DT_URL_GEN3: ${{ vars.DT_URL_GEN3 }}
   DT_API_TOKEN: ${{ secrets.DT_API_TOKEN }}
@@ -105,6 +112,7 @@ jobs:
       destroy_resources: ${{ steps.set_outputs.outputs.destroy_resources }}
       use_case_validation_tests_enabled: ${{ steps.set_outputs.outputs.use_case_validation_tests_enabled }}
       custom_domain: ${{ steps.set_outputs.outputs.custom_domain }}
+      ace_box_name_prefix: ${{ steps.set_outputs.outputs.ace_box_name_prefix }}
       dt_tenant: ${{ steps.set_outputs.outputs.dt_tenant }}
       dt_url_gen3: ${{ steps.set_outputs.outputs.dt_url_gen3 }}
     steps:
@@ -117,6 +125,7 @@ jobs:
             echo "destroy_resources=$(echo '${{ github.event.inputs.destroy_resources }}' )" >> "$GITHUB_ENV"
             echo "use_case_validation_tests_enabled=$(echo ${{ github.event.inputs.use_case_validation_tests_enabled }} )" >> "$GITHUB_ENV"
             echo "custom_domain=$(echo '${{ github.event.inputs.custom_domain }}' )" >> "$GITHUB_ENV"
+            echo "ace_box_name_prefix=$(echo '${{ github.event.inputs.ace_box_name_prefix }}' )" >> "$GITHUB_ENV"
             echo "dt_tenant=$(echo '${{ github.event.inputs.dt_tenant }}' )" >> "$GITHUB_ENV"
             echo "dt_url_gen3=$(echo '${{ github.event.inputs.dt_url_gen3 }}' )" >> "$GITHUB_ENV"
           else
@@ -125,6 +134,7 @@ jobs:
             echo "destroy_resources=${{ env.DESTROY_RESOURCES }}" >> "$GITHUB_ENV"
             echo "use_case_validation_tests_enabled=${{ env.USE_CASE_VALIDATION_TESTS_ENABLED }}" >> "$GITHUB_ENV"
             echo "custom_domain=${{ env.DEFAULT_CUSTOM_DOMAIN }}" >> "$GITHUB_ENV"
+            echo "ace_box_name_prefix=${{ env.DEFAULT_ACE_BOX_NAME_PREFIX }}" >> "$GITHUB_ENV"
             echo "dt_tenant=${{ env.DT_TENANT }}" >> "$GITHUB_ENV"
             echo "dt_url_gen3=${{ env.DT_URL_GEN3 }}" >> "$GITHUB_ENV"
           fi
@@ -146,6 +156,7 @@ jobs:
             echo "destroy_resources=$(echo '${{ github.event.inputs.destroy_resources }}' )" >> "$GITHUB_OUTPUT"
             echo "use_case_validation_tests_enabled=$(echo '${{ github.event.inputs.use_case_validation_tests_enabled }}' )" >> "$GITHUB_OUTPUT"
             echo "custom_domain=$(echo '${{ github.event.inputs.custom_domain }}' )" >> "$GITHUB_OUTPUT"
+            echo "ace_box_name_prefix=$(echo '${{ github.event.inputs.ace_box_name_prefix }}' )" >> "$GITHUB_OUTPUT"
             echo "dt_tenant=$(echo '${{ github.event.inputs.dt_tenant }}' )" >> "$GITHUB_OUTPUT"
             echo "dt_url_gen3=$(echo '${{ github.event.inputs.dt_url_gen3 }}' )" >> "$GITHUB_OUTPUT"
           else
@@ -154,6 +165,7 @@ jobs:
             echo "destroy_resources=${{ env.DESTROY_RESOURCES }}" >> "$GITHUB_OUTPUT"
             echo "use_case_validation_tests_enabled=${{ env.USE_CASE_VALIDATION_TESTS_ENABLED }}" >> "$GITHUB_OUTPUT"
             echo "custom_domain=${{ env.DEFAULT_CUSTOM_DOMAIN }}" >> "$GITHUB_OUTPUT"
+            echo "ace_box_name_prefix=${{ env.DEFAULT_ACE_BOX_NAME_PREFIX }}" >> "$GITHUB_OUTPUT"
             echo "dt_tenant=${{ env.DT_TENANT }}" >> "$GITHUB_OUTPUT"
             echo "dt_url_gen3=${{ env.DT_URL_GEN3 }}" >> "$GITHUB_OUTPUT"
           fi
@@ -169,6 +181,7 @@ jobs:
       destroy_resources: ${{ needs.set_env_vars.outputs.destroy_resources == 'true' }}
       use_case_validation_tests_enabled: ${{ needs.set_env_vars.outputs.use_case_validation_tests_enabled  == 'true' }}
       custom_domain: ${{ needs.set_env_vars.outputs.custom_domain }}
+      ace_box_name_prefix: ${{ needs.set_env_vars.outputs.ace_box_name_prefix }}
       dt_tenant: ${{ needs.set_env_vars.outputs.dt_tenant }}
       dt_url_gen3: ${{ needs.set_env_vars.outputs.dt_url_gen3 }}
       dt_oauth_sso_endpoint: ${{ vars.DT_OAUTH_SSO_ENDPOINT }}
