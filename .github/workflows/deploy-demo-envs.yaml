@@ -11,7 +11,7 @@ on:
       use_cases_for_both:
         description: 'Enter the use cases to run for initial run (comma-separated). Example: ["demo_ar_workflows_gitlab","demo_ar_workflows_ansible"]'
         required: true
-        default: '[\"dynatrace-ace/ace-box-ext-hot-aiops-2025.git@demo\",\"demo_ar_workflows_gitlab\"]'
+        default: '["dynatrace-ace/ace-box-ext-hot-aiops-2025.git@demo","demo_ar_workflows_gitlab"]'
         type: string
       providers_for_both:
         description: 'Select the providers to run for initial run (comma-separated). Example: ["gcloud","aws"]'
