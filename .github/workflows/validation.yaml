@@ -202,7 +202,7 @@ jobs:
             final_use_case="${initial_use_case}"
           fi
           echo "final_use_case=$final_use_case" >> "$GITHUB_ENV"
-          echo "final use case= ${{ env.final_use_case }}""
+          echo "final use case= ${{ env.final_use_case }}"
 
 
       # gcloud specific steps
