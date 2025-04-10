@@ -5,7 +5,7 @@ env:
   DEFAULT_EXTERNAL_USE_CASES: '[\"dynatrace-ace/basic-dt-demo.git\",\"dynatrace-ace/ace-box-ext-hot-srg\"]'
   DEFAULT_PROVIDERS: '[\"gcloud\"]'
   DESTROY_RESOURCES: true
-  USE_CASE_VALIDATION_TESTS_ENABLED: false
+  USE_CASE_VALIDATION_TESTS_ENABLED: true
   DEFAULT_CUSTOM_DOMAIN: ""
   DT_TENANT: ${{ vars.DT_TENANT }}
   DT_URL_GEN3: ${{ vars.DT_URL_GEN3 }}
