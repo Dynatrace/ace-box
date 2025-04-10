@@ -64,7 +64,7 @@ on:
       use_case_validation_tests_enabled:
         description: 'Select to enable use case validation tests'
         required: false
-        default: false
+        default: true
         type: boolean
 
       custom_domain:
