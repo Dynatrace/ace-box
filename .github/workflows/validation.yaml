@@ -70,9 +70,9 @@ on:
       dt_oauth_client_secret:
         description: "Dynatrace OAuth Client Secret"
         required: false
-      token_github:
-        description: "GitHub Token"
-        required: false
+      # token_github:
+      #   description: "GitHub Token"
+      #   required: false
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.run_id }}
@@ -128,7 +128,7 @@ jobs:
           "dt_oauth_client_id": "${{ secrets.dt_oauth_client_id }}",
           "dt_oauth_client_secret": "${{ secrets.dt_oauth_client_secret }}",
           "dt_oauth_account_urn": "${{ inputs.dt_oauth_account_urn }}",
-          "git_token" : "${{ secrets.token_github }}"
+          "git_token" : "${{ secrets.TOKEN_GITHUB }}"
         }
 
     strategy:
@@ -163,10 +163,10 @@ jobs:
 
       - name: Set Use Case URL
         env:
-          COMMON_PARAMS: "https://${{ vars.USER_GITHUB }}:${{ secrets.token_github }}@github.com/"
+          COMMON_PARAMS: "https://${{ vars.USER_GITHUB }}:${{ secrets.TOKEN_GITHUB }}@github.com/"
         run: |
           echo "github user=${{ vars.USER_GITHUB }}"
-          echo "github token=${{ secrets.token_github }}"
+          echo "github token=${{ secrets.TOKEN_GITHUB }}"
           initial_use_case=$(echo '${{ matrix.use_case }}' | tr -d '[]' | tr ',' '\n' | tr -d '"')
           if [[ "${initial_use_case}" == *"dynatrace-ace/"* ]]; then
             # External use case
