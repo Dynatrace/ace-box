@@ -2,7 +2,7 @@
 name: Validate External Demo Use Cases
 
 env:
-  DEFAULT_EXTERNAL_USE_CASES: '[\"dynatrace-ace/ace-box-ext-hot-aiops-2025.git@demo\",\"dynatrace-ace/basic-dt-demo.git\"]'
+  DEFAULT_EXTERNAL_USE_CASES: '[\"dynatrace-ace/ace-box-ext-hot-aiops-2025.git@demo\"]'
   DEFAULT_PROVIDERS: '[\"gcloud\"]'
   DESTROY_RESOURCES: true
   USE_CASE_VALIDATION_TESTS_ENABLED: true
