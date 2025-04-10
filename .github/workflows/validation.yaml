@@ -76,7 +76,7 @@ concurrency:
 jobs:
 
   preparation:
-    runs-on: spot #codebuild-acebox-runners-${{ github.run_id }}-${{ github.run_attempt }}
+    runs-on: spot
     env:
       DEFAULT_USE_CASES: '[\"demo_all\"]'
       DEFAULT_PROVIDERS: '[\"gcloud\"]'
@@ -102,13 +102,11 @@ jobs:
 
   apply:
     needs: preparation
-    runs-on: spot #codebuild-acebox-runners-${{ github.run_id }}-${{ github.run_attempt }}
+    runs-on: spot
     environment:
       name: ${{ inputs.environment_name }}
       url: ${{ inputs.environment_url }}
- #     reviewers: ${{ inputs.environment_reviewers }}
     env:
-      # DESTROY_RESOURCES: ${{ inputs.destroy_resources }} # Set to "true" to enable resource destruction
       TF_VAR_dt_tenant: ${{ inputs.dt_tenant != '' && inputs.dt_tenant || vars.DT_TENANT }}
       TF_VAR_dt_api_token: ${{ secrets.dt_api_token }}
       TF_VAR_custom_domain: ${{ inputs.custom_domain != '' && inputs.custom_domain || '' }}
@@ -130,26 +128,8 @@ jobs:
       matrix:
         provider: ${{ fromJson(needs.preparation.outputs.providers) }}
         use_case: ${{ fromJson(needs.preparation.outputs.use_cases) }}
-        include:
-          # - provider: aws
-          #   working_directory: ./terraform/aws
-          #   aws_region: "us-east-2"
-          #   aws_instance_type: "t3.xlarge" 
-          #   disk_size: 60
-          #   acebox_user: "ubuntu"           
-          #   associate_eip: "false"
-          #   ingress_protocol: "https"
-          #   route53_zone_name: "gtm-innovation.com"
-          #   route53_private_zone: "false"
-          #   skip_domain_workspace_alignment: "true"
-          #   backend_config: |
-          #     bucket         = "your-terraform-state-bucket"
-          #     key            = "path/to/terraform.tfstate"
-          #     region         = "us-east-2"
-          #     encrypt        = true
-          #     dynamodb_table = "your-lock-table"
-          
-          # gcloud test with https and SSL certificates
+        include:        
+          # gcloud test
           - provider: gcloud
             working_directory: ./terraform/gcloud
             gcloud_project: "acl-gsi" #"myGCPProject" # GCP Project you want to use
@@ -158,24 +138,9 @@ jobs:
             managed_zone_name: "ace-innovation-info"
             backend_config_bucket: "ace-box-tf-state"
             backend_config_prefix: "ace-box"
-          # gcloud test with http
-        #   - provider: gcloud
-        #     working_directory: ./terraform/gcloud
-        #     gcloud_project: "acl-gsi" #"myGCPProject" # GCP Project you want to use
-        #     gcloud_zone: "europe-west1-b" # zone
-        #     acebox_size: "n2-standard-16"
-        #     backend_config_bucket: "ace-box-tf-state"
-        #     backend_config_prefix: "ace-box/http"
-
     steps:
-
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      # - name: Install Dependencies
-      #   run: |
-      #     sudo apt-get update || true
-      #     sudo apt-get install -y unzip nodejs
 
       - name: Debug Environment Variables
         run: |
@@ -202,8 +167,6 @@ jobs:
             final_use_case="${initial_use_case}"
           fi
           echo "final_use_case=$final_use_case" >> "$GITHUB_ENV"
-          echo "final use case= ${{ env.final_use_case }}"
-
 
       # gcloud specific steps
       - name: 'auth'
@@ -327,7 +290,7 @@ jobs:
 # PR status update
   update-pr-status:
     needs: apply
-    runs-on: spot #codebuild-acebox-runners-${{ github.run_id }}-${{ github.run_attempt }}
+    runs-on: spot
     if: github.event_name == 'pull_request'
     steps:
       - name: Update PR Status
