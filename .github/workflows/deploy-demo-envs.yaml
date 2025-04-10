@@ -99,7 +99,7 @@ jobs:
       gcp_credentials_json: '${{ secrets.GCP_CREDENTIALS_JSON }}'
       dt_oauth_client_id: ${{ secrets.DT_OAUTH_CLIENT_ID }}
       dt_oauth_client_secret: ${{ secrets.DT_OAUTH_CLIENT_SECRET }}
-
+      token_github_input: ${{ secrets.TOKEN_GITHUB }}
   destroy_live:
     if: github.event.inputs.deploy_live == 'true'
     uses: ./.github/workflows/validation.yaml
@@ -119,7 +119,7 @@ jobs:
       gcp_credentials_json: '${{ secrets.GCP_CREDENTIALS_JSON }}'
       dt_oauth_client_id: ${{ secrets.DT_OAUTH_CLIENT_ID }}
       dt_oauth_client_secret: ${{ secrets.DT_OAUTH_CLIENT_SECRET }}
-
+      token_github_input: ${{ secrets.TOKEN_GITHUB }}
   deploy_live:
     needs: destroy_live
     if: github.event.inputs.deploy_live == 'true'
@@ -143,3 +143,4 @@ jobs:
       gcp_credentials_json: '${{ secrets.GCP_CREDENTIALS_JSON }}'
       dt_oauth_client_id: ${{ secrets.DT_OAUTH_CLIENT_ID }}
       dt_oauth_client_secret: ${{ secrets.DT_OAUTH_CLIENT_SECRET }}
+      token_github_input: ${{ secrets.TOKEN_GITHUB }}
