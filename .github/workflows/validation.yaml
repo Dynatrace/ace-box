@@ -165,8 +165,6 @@ jobs:
         env:
           COMMON_PARAMS: "https://${{ vars.USER_GITHUB }}:${{ secrets.token_github }}@github.com/"
         run: |
-          echo "github user=${{ vars.USER_GITHUB }}"
-          echo "github token=${{ secrets.token_github }}"
           initial_use_case=$(echo '${{ matrix.use_case }}' | tr -d '[]' | tr ',' '\n' | tr -d '"')
           if [[ "${initial_use_case}" == *"dynatrace-ace/"* ]]; then
             # External use case
