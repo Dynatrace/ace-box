@@ -1,9 +1,14 @@
-- name: Health Check for a use case containing Gitlab
+- name: Health Check for a use case containing Jenkins pipeline
   block:
 
   - name: Wait for the pipeline to start. # This is a workaround for the pipeline not starting immediately due to another default pipeline execution
     ansible.builtin.wait_for:
       timeout: "{{ wait_before_trigger_pipeline | default(0) }}" # 0 minute in defaut
+
+  - name: Source Jenkins secrets
+    include_role:
+      name: jenkins
+      tasks_from: source-secret
 
   - name: Trigger Jenkins pipeline
     include_role:
