@@ -24,11 +24,6 @@ on:
         required: true
         default: "demo-sprint.ace-innovation.info"
         type: string
-      ace_box_name_prefix_sprint:
-        description: "Ace-Box Name Prefix for sprint environment"
-        required: false
-        default: "ace-box-demo-sprint"
-        type: string
       dt_tenant_sprint:
         description: "Dynatrace tenant (Gen2) for Sprint Environment"
         required: true
@@ -45,11 +40,6 @@ on:
         description: "Custom Domain Name for Live Environment"
         required: true
         default: "demo-live.ace-innovation.info"
-        type: string
-      ace_box_name_prefix_live:
-        description: "Ace-Box Name Prefix for sprint environment"
-        required: false
-        default: "ace-box-demo-live"
         type: string
       dt_tenant_live:
         description: "Dynatrace tenant (Gen2) for Live Environment"
@@ -77,7 +67,7 @@ jobs:
       destroy_resources: true
       use_case_validation_tests_enabled: false
       custom_domain: ${{ github.event.inputs.custom_domain_sprint }}
-      ace_box_name_prefix: ${{ github.event.inputs.ace_box_name_prefix_sprint }}
+      ace_box_name_prefix: "ace-box-demo-sprint"
       dt_tenant: ${{ github.event.inputs.dt_tenant_sprint }}
       dt_url_gen3: ${{ github.event.inputs.dt_url_gen3_sprint }}
       dt_oauth_sso_endpoint: ${{ vars.DT_OAUTH_SSO_ENDPOINT }}
@@ -98,7 +88,7 @@ jobs:
       destroy_resources: false
       use_case_validation_tests_enabled: true
       custom_domain: ${{ github.event.inputs.custom_domain_sprint }}
-      ace_box_name_prefix: ${{ github.event.inputs.ace_box_name_prefix_sprint }}
+      ace_box_name_prefix: "ace-box-demo-sprint"
       dt_tenant: ${{ github.event.inputs.dt_tenant_sprint }}
       dt_url_gen3: ${{ github.event.inputs.dt_url_gen3_sprint }}
       dt_oauth_sso_endpoint: ${{ vars.DT_OAUTH_SSO_ENDPOINT }}
@@ -118,7 +108,7 @@ jobs:
       destroy_resources: true
       use_case_validation_tests_enabled: false
       custom_domain: ${{ github.event.inputs.custom_domain_live }}
-      ace_box_name_prefix: ${{ github.event.inputs.ace_box_name_prefix_live }}
+      ace_box_name_prefix: "ace-box-demo-live"
       dt_tenant: ${{ github.event.inputs.dt_tenant_live }}
       dt_url_gen3: ${{ github.event.inputs.dt_url_gen3_live }}
       dt_oauth_sso_endpoint: ${{ vars.DT_OAUTH_SSO_ENDPOINT }}
@@ -139,7 +129,7 @@ jobs:
       destroy_resources: false
       use_case_validation_tests_enabled: true
       custom_domain: ${{ github.event.inputs.custom_domain_live }}
-      ace_box_name_prefix: ${{ github.event.inputs.ace_box_name_prefix_live }}
+      ace_box_name_prefix: "ace-box-demo-live"
       dt_tenant: ${{ github.event.inputs.dt_tenant_live }}
       dt_url_gen3: ${{ github.event.inputs.dt_url_gen3_live }}
       dt_oauth_sso_endpoint: ${{ vars.DT_OAUTH_SSO_ENDPOINT }}
