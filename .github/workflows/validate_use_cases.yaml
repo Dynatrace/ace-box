@@ -7,7 +7,7 @@ env:
   DESTROY_RESOURCES: true
   USE_CASE_VALIDATION_TESTS_ENABLED: true
   DEFAULT_CUSTOM_DOMAIN: ""
-  DEFAULT_ACE_BOX_NAME_PREFIX: "ace-box-gh-ext-demo"
+  DEFAULT_ACE_BOX_NAME_PREFIX: "ace-box-gh-validate"
   DT_TENANT: ${{ vars.DT_TENANT }}
   DT_URL_GEN3: ${{ vars.DT_URL_GEN3 }}
   DT_API_TOKEN: ${{ secrets.DT_API_TOKEN }}
@@ -119,7 +119,7 @@ jobs:
             echo "dt_tenant=$(echo '${{ github.event.inputs.dt_tenant }}' )" >> "$GITHUB_OUTPUT"
             echo "dt_url_gen3=$(echo '${{ github.event.inputs.dt_url_gen3 }}' )" >> "$GITHUB_OUTPUT"
           else
-            echo "use_cases=$(echo '${{ env.use_cases }}' )" >> "$GITHUB_OUTPUT"
+            echo "use_cases=${{ env.DEFAULT_USE_CASES }}" >> "$GITHUB_OUTPUT"
             echo "providers=${{ env.DEFAULT_PROVIDERS }}" >> "$GITHUB_OUTPUT"
             echo "destroy_resources=${{ env.DESTROY_RESOURCES }}" >> "$GITHUB_OUTPUT"
             echo "use_case_validation_tests_enabled=${{ env.USE_CASE_VALIDATION_TESTS_ENABLED }}" >> "$GITHUB_OUTPUT"
@@ -131,7 +131,7 @@ jobs:
         shell: bash
 
 
-  deploy_external_usecases:
+  validate_usecases:
     needs: set_env_vars
     uses: ./.github/workflows/validation.yaml
     with:
