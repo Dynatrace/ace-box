@@ -37,9 +37,9 @@
 name: Validate PRs with demo use cases
 
 on:
-  push:
-    branches:
-      - dev # Trigger after PR is merged to the dev branch
+  # push:
+  #   branches:
+  #     - dev # Trigger after PR is merged to the dev branch
 
   workflow_dispatch: # Allows manual triggering of the workflow
     inputs:
