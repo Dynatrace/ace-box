@@ -2,7 +2,7 @@
 name: Validate Use Cases
 
 env:
-  DEFAULT_USE_CASES: '[\"demo_all\"]'
+  DEFAULT_USE_CASES: '[\"dynatrace-ace/ace-box-ext-core-validations.git\"]'
   DEFAULT_PROVIDERS: '[\"gcloud\"]'
   DESTROY_RESOURCES: true
   USE_CASE_VALIDATION_TESTS_ENABLED: true
@@ -22,7 +22,7 @@ on:
       use_cases:
         description: 'Enter the use cases to run (comma-separated). Example: ["demo_ar_workflows_gitlab","dynatrace-ace/ace-box-ext-hot-aiops-2025.git"]'
         required: true
-        default: '["demo_all"]'
+        default: '["dynatrace-ace/ace-box-ext-core-validations.git"]'
         type: string
 
       providers:
