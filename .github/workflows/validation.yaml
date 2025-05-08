@@ -14,6 +14,10 @@ on:
         required: true
         default: '["gcloud"]'
         type: string
+      acebox_size:
+        description: "The size of the Ace-Box instance (e.g., n2-standard-16)"
+        required: false
+        default: "n2-standard-8"
 
       destroy_resources:
         description: 'Set to "true" to enable resource destruction'
@@ -141,7 +145,7 @@ jobs:
             working_directory: ./terraform/gcloud
             gcloud_project: "acl-gsi" #"myGCPProject" # GCP Project you want to use
             gcloud_zone: "europe-west1-b" # zone
-            acebox_size: "n2-standard-16"
+            acebox_size: ${{ inputs.acebox_size }}
             managed_zone_name: "ace-innovation-info"
             backend_config_bucket: "ace-box-tf-state"
             backend_config_prefix: "ace-box"
