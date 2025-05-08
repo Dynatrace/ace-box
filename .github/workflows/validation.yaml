@@ -16,9 +16,9 @@ on:
         type: string
       acebox_size:
         description: "The size of the Ace-Box instance (e.g., n2-standard-16)"
-        required: false
+        required: true
         default: "n2-standard-8"
-
+        type: string
       destroy_resources:
         description: 'Set to "true" to enable resource destruction'
         required: true
