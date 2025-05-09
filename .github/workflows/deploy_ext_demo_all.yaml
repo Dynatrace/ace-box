@@ -137,7 +137,8 @@ jobs:
     with:
       use_cases: ${{ needs.set_env_vars.outputs.use_cases }}
       providers: ${{ needs.set_env_vars.outputs.providers }}
-      acebox_size: "n2-standard-16"
+      gcp_acebox_size: "n2-standard-16"
+      gcp_disk_size: "200"
       destroy_resources: ${{ needs.set_env_vars.outputs.destroy_resources == 'true' }}
       use_case_validation_tests_enabled: ${{ needs.set_env_vars.outputs.use_case_validation_tests_enabled  == 'true' }}
       custom_domain: ${{ needs.set_env_vars.outputs.custom_domain }}

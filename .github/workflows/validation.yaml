@@ -14,10 +14,15 @@ on:
         required: true
         default: '["gcloud"]'
         type: string
-      acebox_size:
+      gcp_acebox_size:
         description: "The size of the Ace-Box instance (e.g., n2-standard-16)"
         required: true
         default: "n2-standard-8"
+        type: string
+      gcp_disk_size:
+        description: "The disk size of the Ace-Box instance (e.g., 100GB)"
+        required: false
+        default: "100"
         type: string
       destroy_resources:
         description: 'Set to "true" to enable resource destruction'
@@ -145,7 +150,8 @@ jobs:
             working_directory: ./terraform/gcloud
             gcloud_project: "acl-gsi" #"myGCPProject" # GCP Project you want to use
             gcloud_zone: "europe-west1-b" # zone
-            acebox_size: ${{ inputs.acebox_size }}
+            acebox_size: ${{ inputs.gcp_acebox_size }}
+            disk_size: ${{ inputs.gcp_disk_size }}
             managed_zone_name: "ace-innovation-info"
             backend_config_bucket: "ace-box-tf-state"
             backend_config_prefix: "ace-box"
@@ -257,7 +263,7 @@ jobs:
         working-directory: ${{ matrix.working_directory }}
 
       - name: Terraform Plan
-        run: terraform plan -out=tfplan -lock=false -replace="null_resource.provisioner_ace_enable" -var="gcloud_project=${{ matrix.gcloud_project }}" -var="gcloud_zone=${{ matrix.gcloud_zone }}" -var="acebox_size=${{ matrix.acebox_size }}" -var="managed_zone_name=${{ matrix.managed_zone_name }}" -var="use_case=${{ env.final_use_case }}"
+        run: terraform plan -out=tfplan -lock=false -replace="null_resource.provisioner_ace_enable" -var="gcloud_project=${{ matrix.gcloud_project }}" -var="gcloud_zone=${{ matrix.gcloud_zone }}" -var="acebox_size=${{ matrix.acebox_size }}" -var="disk_size=${{ matrix.disk_size }}" -var="managed_zone_name=${{ matrix.managed_zone_name }}" -var="use_case=${{ env.final_use_case }}"
         working-directory: ${{ matrix.working_directory }}
 
       - name: Terraform Apply
@@ -272,7 +278,7 @@ jobs:
               exit $exit_code
             fi
             echo "Retrying terraform apply... ($count/$retries)"
-            terraform plan -out=tfplan -lock=false -replace="null_resource.provisioner_ace_enable" -var="gcloud_project=${{ matrix.gcloud_project }}" -var="gcloud_zone=${{ matrix.gcloud_zone }}" -var="acebox_size=${{ matrix.acebox_size }}" -var="managed_zone_name=${{ matrix.managed_zone_name }}" -var="use_case=${{ env.final_use_case }}"
+            terraform plan -out=tfplan -lock=false -replace="null_resource.provisioner_ace_enable" -var="gcloud_project=${{ matrix.gcloud_project }}" -var="gcloud_zone=${{ matrix.gcloud_zone }}" -var="acebox_size=${{ matrix.acebox_size }}" -var="disk_size=${{ matrix.disk_size }}" -var="managed_zone_name=${{ matrix.managed_zone_name }}" -var="use_case=${{ env.final_use_case }}"
             sleep 10
           done
         working-directory: ${{ matrix.working_directory }}
