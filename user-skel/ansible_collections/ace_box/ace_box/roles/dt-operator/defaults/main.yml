@@ -16,6 +16,7 @@
 operator_mode: "applicationMonitoring"  # default & prefered deployment option
 dt_operator_release: "1.4.0"            # format without v for helm
 log_monitoring: "off"
+kspm: "off"
 
 # operator_mode: "classicFullStack"  
 # dt_operator_release: "v1.2.2"         # format with v

@@ -89,6 +89,8 @@
       owner: "{{ ace_box_user }}"
       group: "{{ ace_box_user }}"
       mode: "0644"
+    vars:
+      kspm: "{{ kspm }}"
   - name: Apply Dynakube manifest
     kubernetes.core.k8s:
       state: present

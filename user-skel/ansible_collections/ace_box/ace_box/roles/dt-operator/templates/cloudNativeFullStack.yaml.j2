@@ -9,7 +9,7 @@ metadata:
   namespace: dynatrace
 type: Opaque
 ---
-apiVersion: dynatrace.com/v1beta1
+apiVersion: dynatrace.com/v1beta3
 kind: DynaKube
 metadata:
   name: dynakube
@@ -283,3 +283,19 @@ spec:
     # For more information on TopologySpreadConstraints, see https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/
     #
     # topologySpreadConstraints: []
+
+{% if kspm == "on" %}
+  kspm: {}
+  templates:
+    kspmNodeConfigurationCollector:
+      imageRef:
+        repository: public.ecr.aws/dynatrace/dynatrace-k8s-node-config-collector
+        tag: latest
+      tolerations:
+        - effect: NoSchedule
+          key: node-role.kubernetes.io/master
+          operator: Exists
+        - effect: NoSchedule
+          key: node-role.kubernetes.io/control-plane
+          operator: Exists
+{% endif %}
