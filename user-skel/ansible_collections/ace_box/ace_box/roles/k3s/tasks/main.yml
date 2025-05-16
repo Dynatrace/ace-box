@@ -45,6 +45,24 @@
     dest: "/etc/rancher/k3s/kubelet.config"
     mode: 0600
 
+- block:
+  - name: Template k3s config
+    become: true
+    become_user: root
+    ansible.builtin.template:
+      src: config.j2
+      dest: "/etc/rancher/k3s/config.yaml"
+      mode: 0600
+
+  - name: Template k3s audit config
+    become: true
+    become_user: root
+    ansible.builtin.template:
+      src: audit.j2
+      dest: "/etc/rancher/k3s/audit.yaml"
+      mode: 0600
+  when: k3s_audit_log == "on"
+
 - name: Install k3s
   become: true
   become_user: root

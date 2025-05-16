@@ -15,3 +15,4 @@
 ---
 k3s_version: "v1.29.10+k3s1"
 k3s_pod_limit: 110 #Change node pod limit. WARNING: ONLY CHANGE IF NEEDED - Experimental Feature
+k3s_audit_log: "off"

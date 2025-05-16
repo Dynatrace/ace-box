@@ -24,6 +24,14 @@ config:
         Mem_Buf_Limit 15MB
         Skip_Long_Lines On
 
+    [INPUT]
+        Name tail
+        Tag kube_audit.*
+        Path /var/log/kubernetes/audit/audit.log
+        Parser json
+        DB /fluent-bit/tail/kube_audit.db
+        Refresh_Interval 10
+
   filters: |
     [FILTER]
         Name kubernetes
@@ -111,6 +119,9 @@ daemonSetVolumes:
   - hostPath:
       path: /var/log/pods
     name: pods
+  - hostPath:
+      path: /var/log/kubernetes/audit
+    name: audit
 
 daemonSetVolumeMounts:
   - mountPath: /fluent-bit/tail
@@ -120,6 +131,9 @@ daemonSetVolumeMounts:
     readOnly: true
   - mountPath: /var/log/pods
     name: pods
+    readOnly: true
+  - mountPath: /var/log/kubernetes/audit
+    name: audit
     readOnly: true
 
 podAnnotations:

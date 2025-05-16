@@ -1,0 +1,41 @@
+apiVersion: audit.k8s.io/v1
+kind: Policy
+rules:
+  - level: RequestResponse
+    verbs: ["get", "list"]
+    resources:
+    - group: ""
+      resources: ["secrets", "configmaps"]
+
+  - level: RequestResponse
+    verbs: ["create", "update", "delete"]
+    resources:
+    - group: "rbac.authorization.k8s.io"
+      resources: ["clusterroles", "clusterrolebindings"]
+    - group: "rbac.authorization.k8s.io"
+      resources: ["rolebindings", "clusterrolebindings"]
+
+  - level: RequestResponse
+    verbs: ["create"]
+    resources:
+    - group: ""
+      resources: ["pods"]
+    - group: ""
+      resources: ["pods/exec", "pods/attach"]
+
+  - level: Metadata
+    verbs: ["create", "update", "delete"]
+    resources:
+    - group: "" # Fix: Empty string instead of wildcard
+      resources: ["nodes", "services", "deployments", "configmaps", "secrets"]
+    omitStages: ["RequestReceived"]
+
+  - level: RequestResponse
+    verbs: ["create"]
+    resources:
+    - group: "authentication.k8s.io"
+      resources: ["tokenreviews"]
+
+  - level: RequestResponse
+    users:
+    - "system:serviceaccount:*"
