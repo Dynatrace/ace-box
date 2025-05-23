@@ -1,0 +1,42 @@
+
+- name: Download Helm binary
+  become: true
+  become_user: root
+  ansible.builtin.get_url:
+    url: "https://get.helm.sh/helm-v{{ helm_version }}-linux-amd64.tar.gz"
+    dest: "/tmp/helm-v{{ helm_version }}-linux-amd64.tar.gz"
+    mode: '0644'
+
+- name: Extract Helm binary
+  become: true
+  become_user: root
+  ansible.builtin.unarchive:
+    src: "/tmp/helm-v{{ helm_version }}-linux-amd64.tar.gz"
+    dest: "/tmp/"
+    remote_src: yes
+
+- name: Move Helm binary to /usr/local/bin
+  become: true
+  become_user: root
+  ansible.builtin.copy:
+    src: "/tmp/linux-amd64/helm"
+    dest: "/usr/local/bin/helm"
+    mode: '0755'
+    owner: root
+    group: root
+
+- name: Remove Helm temp files
+  become: true
+  become_user: root
+  ansible.builtin.file:
+    path: "/tmp/helm-v{{ helm_version }}-linux-amd64.tar.gz"
+    state: absent
+  ignore_errors: yes
+
+- name: Remove Helm extracted directory
+  become: true
+  become_user: root
+  ansible.builtin.file:
+    path: "/tmp/linux-amd64"
+    state: absent
+  ignore_errors: yes

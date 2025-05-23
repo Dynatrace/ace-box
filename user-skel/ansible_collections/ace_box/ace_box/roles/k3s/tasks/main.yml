@@ -70,16 +70,7 @@
     src: /etc/rancher/k3s/k3s.yaml
     dest: /home/{{ ace_box_user }}/.kube/config
 
-#################
-# Installs helm #
-#################
-- name: Install Helm
-  become: true
-  become_user: root
-  community.general.snap:
-    name:
-    - helm
-    classic: yes
+- include_tasks: install-helm.yml
 
 - include_role:
     name: docker
