@@ -43,13 +43,10 @@ apt-get update && apt-get dist-upgrade -y
 echo "INIT - Setting up Python..."
 apt-get install python3-pip -y
 
-# Upgrade pip
-python3 -m pip --version
-python3 -m pip install --upgrade pip -q
 
 # Ansible
 echo "INIT - Installing Ansible..."
-python3 -m pip install ansible
+python3 -m pip install --break-system-packages ansible
 ln -s /home/$ACE_BOX_USER/.local/bin/ansible /usr/bin/ansible
 ln -s /home/$ACE_BOX_USER/.local/bin/ansible-galaxy /usr/bin/ansible-galaxy
 ln -s /home/$ACE_BOX_USER/.local/bin/ansible-playbook /usr/bin/ansible-playbook
@@ -65,7 +62,7 @@ sudo rm -rf /home/$ACE_BOX_USER/ansible_collections
 echo "INIT - Setting up ACE-CLI..."
 
 # Install as root. Packages will be available for all users
-python3 -m pip install -r /home/$ACE_BOX_USER/.ace/requirements.txt
+python3 -m pip install --break-system-packages -r /home/$ACE_BOX_USER/.ace/requirements.txt
 
 cp /home/$ACE_BOX_USER/.ace/ace /usr/local/bin/ace
 chmod 0755 /usr/local/bin/ace

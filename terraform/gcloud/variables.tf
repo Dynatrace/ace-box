@@ -37,7 +37,7 @@ variable "acebox_user" {
 
 variable "acebox_os" {
   description = "Ubuntu version to use"
-  default     = "ubuntu-minimal-2004-lts"
+  default     = "ubuntu-minimal-2404-lts-amd64"
 }
 
 variable "custom_domain" {
