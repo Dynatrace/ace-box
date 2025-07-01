@@ -16,66 +16,65 @@
 - include_vars:
     file: "{{ ace_config_file_path }}"
   tags:
-  - always
+    - always
 
 - set_fact:
     is_unconfig: True
   tags:
-  - unconfig
-  - never
+    - unconfig
+    - never
 
 - name: Enable "demo_default"
   include_tasks: set-var.yml
   vars:
-  - var_key_to_set: "demo_default"
-  - var_value_to_set: "{{ not is_unconfig }}"
+    var_key_to_set: "demo_default"
+    var_value_to_set: "{{ not is_unconfig }}"
   args:
     apply:
       tags:
         - demo_default
   tags:
-  - demo_default
-  - never
+    - demo_default
+    - never
 
 - name: Enable "demo_appsec"
   include_tasks: set-var.yml
   vars:
-  - var_key_to_set: "demo_appsec"
-  - var_value_to_set: "{{ not is_unconfig }}"
+    var_key_to_set: "demo_appsec"
+    var_value_to_set: "{{ not is_unconfig }}"
   args:
     apply:
       tags:
         - demo_appsec
   tags:
-  - demo_appsec
-  - never
+    - demo_appsec
+    - never
 
 - name: Enable "demo_autorem"
   include_tasks: set-var.yml
   vars:
-  - var_key_to_set: "demo_autorem"
-  - var_value_to_set: "{{ not is_unconfig }}"
+    var_key_to_set: "demo_autorem"
+    var_value_to_set: "{{ not is_unconfig }}"
   args:
     apply:
       tags:
         - demo_autorem
   tags:
-  - demo_autorem
-  - never
+    - demo_autorem
+    - never
 
 - name: Enable "hot_appsec"
   include_tasks: set-var.yml
   vars:
-  - var_key_to_set: "hot_appsec"
-  - var_value_to_set: "{{ not is_unconfig }}"
+    var_key_to_set: "hot_appsec"
+    var_value_to_set: "{{ not is_unconfig }}"
   args:
     apply:
       tags:
         - hot_appsec
   tags:
-  - hot_appsec
-  - never
-
+    - hot_appsec
+    - never
 # - name: Enable "monaco_gitops"
 #   include_tasks: set-var.yml
 #   vars:
