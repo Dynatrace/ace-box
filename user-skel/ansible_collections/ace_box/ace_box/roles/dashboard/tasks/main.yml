@@ -15,16 +15,20 @@
 ---
 - name: Create BasicAuth for NGINX Ingress
   block:
-  - set_fact:
-      password_encrypted: "{{ dashboard_password | password_hash('md5') }}"
-  - set_fact:
-      authb64encoded: "{{ [dashboard_user, password_encrypted] | join(':') | b64encode }}"
+    - name: Generate password hash using htpasswd
+      shell: echo "{{ dashboard_password }}" | openssl passwd -apr1 -stdin
+      register: password_hash_result
+      no_log: true
+    - set_fact:
+        password_encrypted: "{{ password_hash_result.stdout }}"
+    - set_fact:
+        authb64encoded: "{{ [dashboard_user, password_encrypted] | join(':') | b64encode }}"
   when: ingress_class != "istio"
 
 - name: Create BasicAuth for Istio Ingress
   block:
-  - set_fact:
-      authb64encoded: "{{ [dashboard_user, dashboard_password] | join(':') | b64encode }}"
+    - set_fact:
+        authb64encoded: "{{ [dashboard_user, dashboard_password] | join(':') | b64encode }}"
   when: ingress_class == "istio"
 
 # Include Dashboard default values
