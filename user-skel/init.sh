@@ -42,7 +42,8 @@ apt-get update && apt-get dist-upgrade -y
 
 echo "INIT - Setting up Python..."
 apt-get install python3-pip -y
-
+# if using ubuntu 22 we need to upgrade pip 
+pip3 install --upgrade pip
 
 # Ansible
 echo "INIT - Installing Ansible..."
