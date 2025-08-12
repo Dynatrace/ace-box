@@ -41,16 +41,24 @@ echo "INIT - Update apt-get and upgrade already install packages..."
 apt-get update && apt-get dist-upgrade -y
 
 echo "INIT - Setting up Python..."
-apt-get install python3-pip -y
+apt-get install software-properties-common -y
+add-apt-repository --yes --update ppa:ansible/ansible
+apt-get install python3 python3-pip python3-venv -y
 # if using ubuntu 22 we need to upgrade pip 
 pip3 install --upgrade pip
 
 # Ansible
 echo "INIT - Installing Ansible..."
-python3 -m pip install --break-system-packages ansible
+apt-get install ansible -y
 ln -s /home/$ACE_BOX_USER/.local/bin/ansible /usr/bin/ansible
 ln -s /home/$ACE_BOX_USER/.local/bin/ansible-galaxy /usr/bin/ansible-galaxy
 ln -s /home/$ACE_BOX_USER/.local/bin/ansible-playbook /usr/bin/ansible-playbook
+
+# Python deps for Ansible Kubernetes modules
+echo "INIT - Installing Python Kubernetes clients (kubernetes, openshift)..."
+apt-get install -y python3-kubernetes python3-openshift || true
+# Ensure availability even if apt packages are missing or outdated
+python3 -m pip install --break-system-packages -U kubernetes openshift || true
 
 echo "INIT - Installing Ansible requirements..."
 sudo -u $ACE_BOX_USER ansible-galaxy install -r /home/$ACE_BOX_USER/.ace/ansible_requirements.yml
