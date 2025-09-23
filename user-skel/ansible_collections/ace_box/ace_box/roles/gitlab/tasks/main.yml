@@ -75,16 +75,15 @@
         initialRootPassword:
           secret: "{{ gitlab_root_creds_secret_name }}"
           key: password
-      certmanager:
-        install: false
+      installCertmanager: false
       gitlab-runner:
         rbac:
           create: true
           clusterWideAccess: true
           rules:
-          - apiGroups: ["*"]
-            resources: ["*"]
-            verbs: ["*"]
+            - apiGroups: ["*"]
+              resources: ["*"]
+              verbs: ["*"]
         gitlabUrl: "{{ ingress_protocol }}://gitlab.{{ ingress_domain }}"
         # https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#docker-in-docker-with-tls-enabled-in-kubernetes
         runners:
