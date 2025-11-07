@@ -14,8 +14,7 @@
 
 ---
 - set_fact:
-    var_data:
-      "{ \"{{ var_key_to_set }}\": {{ var_value_to_set | to_json }} }"
+    var_data: "{{ { var_key_to_set: var_value_to_set } }}"
 
 - blockinfile:
     marker: "# {mark} ANSIBLE MANAGED BLOCK - {{ var_key_to_set }}"
