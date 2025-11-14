@@ -40,7 +40,7 @@
 - name: Dynatrace - Register API token id
   block:
     - set_fact:
-        newTokenId: "{ \"{{ access_token_var_name }}\": \"{{ api_token_creation_result.json.id }}\" }"
+        newTokenId: "{{ {access_token_var_name: api_token_creation_result.json.id} }}"
     - set_fact:
         dt_api_token_ids: "{{ dt_api_token_ids | default({}) | combine(newTokenId, recursive=True) }}"
     - include_role:
