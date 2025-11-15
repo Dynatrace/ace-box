@@ -35,6 +35,8 @@
     create_namespace: true
     wait: true
     wait_timeout: 10m
+    disable_hook: false
+    force: false
     values:
       ingress:
         domain: "{{ easytravel_domain }}"
@@ -42,7 +44,6 @@
       easytravel:
         images:
           tag: "{{ easytravel_image_tag }}"
-    state: present
 
 - name: Add dashboard links
   include_tasks: add-dashboard-links.yml
