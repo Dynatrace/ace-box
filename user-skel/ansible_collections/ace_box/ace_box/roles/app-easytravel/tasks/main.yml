@@ -12,6 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+- name: Set collections path to prioritize user installation
+  ansible.builtin.set_fact:
+    ansible_collections_path: "{{ lookup('env', 'HOME') }}/.ansible/collections"
+
 - name: Ensure the easytravel namespace exists
   kubernetes.core.k8s:
     kind: Namespace
