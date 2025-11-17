@@ -31,23 +31,18 @@
     namespace: "{{ easytravel_namespace }}"
     state: present
 
-- name: Deploy Easytravel
-  kubernetes.core.helm:
-    name: easytravel
-    chart_ref: "{{ role_path }}/files/helm/easytravel"
-    release_namespace: "{{ easytravel_namespace }}"
-    create_namespace: true
-    wait: true
-    wait_timeout: 10m
-    disable_hook: false
-    force: false
-    values:
-      ingress:
-        domain: "{{ easytravel_domain }}"
-        class: "{{ ingress_class }}"
-      easytravel:
-        images:
-          tag: "{{ easytravel_image_tag }}"
+- name: Deploy Easytravel using Helm via curl
+  ansible.builtin.shell: |
+    helm upgrade --install easytravel "{{ role_path }}/files/helm/easytravel" \
+      --namespace "{{ easytravel_namespace }}" \
+      --create-namespace \
+      --wait \
+      --timeout 10m \
+      --set ingress.domain="{{ easytravel_domain }}" \
+      --set ingress.class="{{ ingress_class }}" \
+      --set easytravel.images.tag="{{ easytravel_image_tag }}"
+  args:
+    executable: /bin/bash
 
 - name: Add dashboard links
   include_tasks: add-dashboard-links.yml
