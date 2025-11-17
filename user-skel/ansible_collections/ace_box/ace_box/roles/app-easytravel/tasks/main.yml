@@ -30,7 +30,8 @@
     name: default
     namespace: "{{ easytravel_namespace }}"
     state: present
-
+  #To make it compatible with older versions of kubernetes.core collection in ext use cases
+  ignore_errors: yes
 - name: Deploy Easytravel using Helm via curl
   ansible.builtin.shell: |
     helm upgrade --install easytravel "{{ role_path }}/files/helm/easytravel" \
