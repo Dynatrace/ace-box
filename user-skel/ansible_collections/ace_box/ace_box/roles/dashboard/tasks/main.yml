@@ -58,24 +58,24 @@
       metadata:
         labels:
           monitor: exclude
-
-- name: Install
-  kubernetes.core.helm:
-    name: ace-dashboard
-    chart_ref: "{{ role_path }}/files/chart"
-    release_namespace: "{{ dashboard_namespace }}"
-    wait: true
-    wait_timeout: 15m
-    values:
-      domain: "{{ ingress_domain }}"
-      authb64encoded: "{{ authb64encoded }}"
-      image: "{{ dashboard_image }}"
-      ingress:
-        enabled: "{{ ingress_class != 'istio' }}"
-        class: "{{ ingress_class }}"
-      virtualservice:
-        enabled: "{{ ingress_class == 'istio' }}"
-    values_files: "{{ dashboard_helm_value_files | json_query('files[*].path') }}"
+  #To make it compatible with older versions of kubernetes.core collection in ext use cases
+- name: Install using Helm via shell
+  ansible.builtin.shell: |
+    helm upgrade --install ace-dashboard "{{ role_path }}/files/chart" \
+      --namespace "{{ dashboard_namespace }}" \
+      --wait \
+      --timeout 15m \
+      --set domain="{{ ingress_domain }}" \
+      --set authb64encoded="{{ authb64encoded }}" \
+      --set image="{{ dashboard_image }}" \
+      --set ingress.enabled="{{ ingress_class != 'istio' }}" \
+      --set ingress.class="{{ ingress_class }}" \
+      --set virtualservice.enabled="{{ ingress_class == 'istio' }}" \
+      {% for file in dashboard_helm_value_files.files %}
+      --values "{{ file.path }}" \
+      {% endfor %}
+  args:
+    executable: /bin/bash
   when: not dashboard_skip_install
 
 - name: Print some dashboard config

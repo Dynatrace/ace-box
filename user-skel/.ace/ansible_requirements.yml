@@ -14,6 +14,8 @@
 
 ---
 collections:
+- name: kubernetes.core
+  version: "5.0.0"
 - name: awx.awx
   version: "24.6.1"
 - name: community.docker
