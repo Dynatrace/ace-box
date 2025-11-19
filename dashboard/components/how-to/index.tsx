@@ -17,7 +17,6 @@
 import React, { useState, FunctionComponent, useEffect } from "react";
 import { useExtRefs } from "../ext-refs/lib";
 import Awx from "./awx";
-import Keptn from "./keptn";
 import Dynatrace from "./dynatrace";
 import Gitea from "./gitea";
 import Gitlab from "./gitlab";
@@ -41,7 +40,6 @@ const ToolTabs: FunctionComponent<ToolTabsProps> = () => {
 
   const howTos: { [key: string]: any } = {
     AWX: <Awx />,
-    KEPTN: <Keptn />,
     DYNATRACE: <Dynatrace />,
     GITEA: <Gitea />,
     GITLAB: <Gitlab />,

@@ -20,36 +20,32 @@ The `pages/api` directory is mapped to `/api/*`. Files in this directory are tre
 
 ## Environment Variables
 
-| Variable | Relates to | Description |
-| - | - | - |
-| SIMPLENODEAPP_URL_STAGING  | Simplenodeapp  | URL of Simplenodeapp in staging  |
-| SIMPLENODEAPP_URL_PRODUCTION  | Simplenodeapp  | URL of Simplenodeapp in staging  |
-| SIMPLENODEAPP_URL_CANARY | Simplenodeapp | URL of Simplenodeapp in staging  |
-| JENKINS_URL | Jenkins | URL  |
-| JENKINS_USER | Jenkins | Username  |
-| JENKINS_PASSWORD | Jenkins | Password  |
-| GITEA_URL | Gitea | URL  |
-| GITEA_USER | Gitea | Username  |
-| GITEA_PASSWORD | Gitea | Password  |
-| GITEA_PAT | Gitea | Personal Access Token  |
-| GITLAB_URL | Gitlab | URL  |
-| GITLAB_USER | Gitlab | Username  |
-| GITLAB_PASSWORD | Gitlab | Password  |
-| GITLAB_OAUTH | Gitlab | OAuth Token  |
-| AWX_URL | AWX | URL  |
-| AWX_USER | AWX | Username  |
-| AWX_PASSWORD | AWX | Password  |
-| KEPTN_API_URL | Keptn API | API URL  |
-| KEPTN_API_TOKEN | Keptn API | API Token  |
-| KEPTN_BRIDGE_URL | Keptn Bridge | Bridge URL  |
-| KEPTN_BRIDGE_USER | Keptn Bridge | Bridge Username  |
-| KEPTN_BRIDGE_PASSWORD | Keptn Bridge | Bridge Password  |
-| DT_TENANT_URL | Dynatrace | Tenant URL  |
-| CLOUD_AUTOMATION_API_URL | Cloud Automation API | API URL  |
-| CLOUD_AUTOMATION_API_TOKEN | Cloud Automation API | API Token  |
-| CLOUD_AUTOMATION_BRIDGE_URL | Cloud Automation Bridge | Bridge URL  |
-| QUALITY_GATES_PROVIDER | Set to KEPTN or CLOUD_AUTOMATION | Define what to use for quality gates  |
-| K8S_PROVIDER | Set to MICROK8S | Define what Kubernetes povider is used  |
+| Variable                     | Relates to    | Description                     |
+| ---------------------------- | ------------- | ------------------------------- |
+| SIMPLENODEAPP_URL_STAGING    | Simplenodeapp | URL of Simplenodeapp in staging |
+| SIMPLENODEAPP_URL_PRODUCTION | Simplenodeapp | URL of Simplenodeapp in staging |
+| SIMPLENODEAPP_URL_CANARY     | Simplenodeapp | URL of Simplenodeapp in staging |
+| JENKINS_URL                  | Jenkins       | URL                             |
+| JENKINS_USER                 | Jenkins       | Username                        |
+| JENKINS_PASSWORD             | Jenkins       | Password                        |
+| GITEA_URL                    | Gitea         | URL                             |
+| GITEA_USER                   | Gitea         | Username                        |
+| GITEA_PASSWORD               | Gitea         | Password                        |
+| GITEA_PAT                    | Gitea         | Personal Access Token           |
+| GITLAB_URL                   | Gitlab        | URL                             |
+| GITLAB_USER                  | Gitlab        | Username                        |
+| GITLAB_PASSWORD              | Gitlab        | Password                        |
+| GITLAB_OAUTH                 | Gitlab        | OAuth Token                     |
+| AWX_URL                      | AWX           | URL                             |
+| AWX_USER                     | AWX           | Username                        |
+| AWX_PASSWORD                 | AWX           | Password                        |
+
+| DT_TENANT_URL | Dynatrace | Tenant URL |
+| CLOUD_AUTOMATION_API_URL | Cloud Automation API | API URL |
+| CLOUD_AUTOMATION_API_TOKEN | Cloud Automation API | API Token |
+| CLOUD_AUTOMATION_BRIDGE_URL | Cloud Automation Bridge | Bridge URL |
+| QUALITY_GATES_PROVIDER | Set to CLOUD_AUTOMATION | Define what to use for quality gates |
+| K8S_PROVIDER | Set to MICROK8S | Define what Kubernetes povider is used |
 
 ## Build and push
 

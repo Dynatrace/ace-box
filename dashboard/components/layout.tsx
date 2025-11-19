@@ -14,22 +14,23 @@
  * limitations under the License.
  */
 
-import { FunctionComponent } from 'react'
+import { FunctionComponent } from "react";
 
-import Navbar from './nav'
+import Navbar from "./nav";
 
-type LayoutProps = {}
+type LayoutProps = {
+  children: React.ReactNode;
+};
 
-const Layout: FunctionComponent<LayoutProps> = ({ children }) =>
+const Layout: FunctionComponent<LayoutProps> = ({ children }) => (
   <>
     <Navbar />
     <main>
       <div className="layout__container">
-        <div className="island">
-          {children}
-        </div>
+        <div className="island">{children}</div>
       </div>
     </main>
   </>
+);
 
-export { Layout as default }
+export { Layout as default };
