@@ -14,6 +14,6 @@
 
 ---
 dashboard_namespace: "ace"
-dashboard_image: "dynatraceace/ace-box-dashboard:1.4.0"
+dashboard_image: "us-west2-docker.pkg.dev/acl-gsi/ace-box-public-v2/dashboard-v2:v0.1"
 dashboard_skip_install: False
 dashboard_domain: "dashboard.{{ ingress_domain }}"

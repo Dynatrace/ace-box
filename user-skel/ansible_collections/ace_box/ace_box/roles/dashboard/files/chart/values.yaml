@@ -28,7 +28,4 @@ extRefs: {}
 
 ingress:
   enabled: true
-  class: public # microk8s >1.20 expects class "public"
-
-virtualservice:
-  enabled: false
+  class: public # microk8s >1.20 expects class "public", use "traefik" for k3s
