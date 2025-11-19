@@ -191,9 +191,9 @@ spec:
     # - dynatrace-api
     #
     capabilities:
-      - routing
-      - kubernetes-monitoring
-      - dynatrace-api
+{% for capability in activegate_capabilities %}
+      - {{ capability }}
+{% endfor %}
 
     # Optional: Sets how many ActiveGate pods are spawned by the StatefulSet
     # Defaults to "1"
