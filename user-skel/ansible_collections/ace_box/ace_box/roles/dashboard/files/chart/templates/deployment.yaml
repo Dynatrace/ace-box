@@ -38,6 +38,7 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           image: {{ .Values.image }}
+          imagePullPolicy: Always
           env:
             {{- range $key, $value := $.Values.env }}
             - name: {{ $key }}

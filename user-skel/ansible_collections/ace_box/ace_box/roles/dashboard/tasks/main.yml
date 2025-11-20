@@ -13,35 +13,6 @@
 # limitations under the License.
 
 ---
-- name: Create BasicAuth for NGINX Ingress
-  block:
-    - name: Generate password hash using htpasswd
-      shell: echo "{{ dashboard_password }}" | openssl passwd -apr1 -stdin
-      register: password_hash_result
-      no_log: true
-    - set_fact:
-        password_encrypted: "{{ password_hash_result.stdout }}"
-    - set_fact:
-        authb64encoded: "{{ [dashboard_user, password_encrypted] | join(':') | b64encode }}"
-  when: ingress_class != "istio"
-
-- name: Create BasicAuth for Istio Ingress
-  block:
-    - set_fact:
-        authb64encoded: "{{ [dashboard_user, dashboard_password] | join(':') | b64encode }}"
-  when: ingress_class == "istio"
-
-# Include Dashboard default values
-- set_fact:
-    include_dashboard_value_file: "{{ role_path }}/templates/default-ext-refs.yml.j2"
-
-- include_tasks: template-values-file.yml
-
-- name: Find all Dashboard Helm values files
-  find:
-    paths: "{{ role_path }}/files/helm-values"
-  register: dashboard_helm_value_files
-
 - name: Create ace namespace
   kubernetes.core.k8s:
     name: ace
@@ -58,24 +29,53 @@
       metadata:
         labels:
           monitor: exclude
-  #To make it compatible with older versions of kubernetes.core collection in ext use cases
-- name: Install using Helm via shell
-  ansible.builtin.shell: |
-    helm upgrade --install ace-dashboard "{{ role_path }}/files/chart" \
-      --namespace "{{ dashboard_namespace }}" \
-      --wait \
-      --timeout 15m \
-      --set domain="{{ ingress_domain }}" \
-      --set authb64encoded="{{ authb64encoded }}" \
-      --set image="{{ dashboard_image }}" \
-      --set ingress.enabled="{{ ingress_class != 'istio' }}" \
-      --set ingress.class="{{ ingress_class }}" \
-      --set virtualservice.enabled="{{ ingress_class == 'istio' }}" \
-      {% for file in dashboard_helm_value_files.files %}
-      --values "{{ file.path }}" \
-      {% endfor %}
-  args:
-    executable: /bin/bash
+
+- name: Create BasicAuth for Ingress
+  block:
+    - name: Generate password hash using htpasswd
+      shell: echo "{{ dashboard_password }}" | openssl passwd -apr1 -stdin
+      register: password_hash_result
+      no_log: true
+    - set_fact:
+        password_encrypted: "{{ password_hash_result.stdout }}"
+    - set_fact:
+        authb64encoded: "{{ [dashboard_user, password_encrypted] | join(':') | b64encode }}"
+
+# Include Dashboard default values
+- set_fact:
+    include_dashboard_value_file: "{{ role_path }}/templates/default-ext-refs.yml.j2"
+
+- include_tasks: template-values-file.yml
+
+- name: Find all Dashboard Helm values files
+  find:
+    paths: "{{ role_path }}/files/helm-values"
+  register: dashboard_helm_value_files
+
+- name: Remove existing basic-auth secret if it exists (to allow Helm to manage it)
+  kubernetes.core.k8s:
+    state: absent
+    api_version: v1
+    kind: Secret
+    name: basic-auth
+    namespace: "{{ dashboard_namespace }}"
+  ignore_errors: true
+
+- name: Install
+  kubernetes.core.helm:
+    name: ace-dashboard
+    chart_ref: "{{ role_path }}/files/chart"
+    release_namespace: "{{ dashboard_namespace }}"
+    wait: true
+    wait_timeout: 5m
+    values:
+      domain: "{{ ingress_domain }}"
+      authb64encoded: "{{ authb64encoded }}"
+      image: "{{ dashboard_image }}"
+      ingress:
+        enabled: true
+        class: "{{ ingress_class }}"
+    values_files: "{{ dashboard_helm_value_files | json_query('files[*].path') }}"
   when: not dashboard_skip_install
 
 - name: Print some dashboard config
