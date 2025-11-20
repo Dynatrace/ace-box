@@ -39,7 +39,6 @@ The `pages/api` directory is mapped to `/api/*`. Files in this directory are tre
 | AWX_URL                      | AWX           | URL                             |
 | AWX_USER                     | AWX           | Username                        |
 | AWX_PASSWORD                 | AWX           | Password                        |
-
 | DT_TENANT_URL | Dynatrace | Tenant URL |
 | CLOUD_AUTOMATION_API_URL | Cloud Automation API | API URL |
 | CLOUD_AUTOMATION_API_TOKEN | Cloud Automation API | API Token |
