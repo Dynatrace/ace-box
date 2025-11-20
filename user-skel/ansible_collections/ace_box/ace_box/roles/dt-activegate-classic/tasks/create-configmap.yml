@@ -1,4 +1,4 @@
-# Copyright 2024 Dynatrace LLC
+# Copyright 2024 Dynatrace LLC .
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@
       return_content: no
       status_code: 200, 201, 204
     register: nodes_response_raw
-    until: "{{ nodes_response_raw.json | json_query(synthetic_nodes_query) }}"
+    until: "{{ (nodes_response_raw.json | json_query(synthetic_nodes_query) | length) > 0 }}"
     retries: 15
     delay: 10
   - set_fact:
