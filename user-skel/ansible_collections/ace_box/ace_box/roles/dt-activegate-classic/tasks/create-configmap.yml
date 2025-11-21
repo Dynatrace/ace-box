@@ -15,27 +15,29 @@
 ---
 - set_fact:
     dt_synthetic_node_id: ""
-      
+
 - name: ActiveGate - Get all Synthetic nodes
   when: activegate_install_synthetic
   block:
-  - uri:
-      url: "{{ dynatrace_tenant_url }}/api/v1/synthetic/nodes"
-      method: GET
-      headers:
-        Content-Type: "application/json"
-        Authorization: "Api-token {{ ace_box_activegate_installer_api_token }}"
-      return_content: no
-      status_code: 200, 201, 204
-    register: nodes_response_raw
-    until: "{{ (nodes_response_raw.json | json_query(synthetic_nodes_query) | length) > 0 }}"
-    retries: 15
-    delay: 10
-  - set_fact:
-      dt_synthetic_node_id: "{{ nodes_response_raw.json | json_query(synthetic_nodes_query) | first }}"
+    - uri:
+        url: "{{ dynatrace_tenant_url }}/api/v1/synthetic/nodes"
+        method: GET
+        headers:
+          Content-Type: "application/json"
+          Authorization: "Api-token {{ ace_box_activegate_installer_api_token }}"
+        return_content: no
+        status_code: 200, 201, 204
+      register: nodes_response_raw
+      until: nodes_response_raw.json | json_query(synthetic_nodes_query) | length > 0
+      retries: 15
+      delay: 10
+
+    - set_fact:
+        dt_synthetic_node_id: "{{ nodes_response_raw.json | json_query(synthetic_nodes_query) | first }}"
+
   rescue:
-  - set_fact:
-      dt_synthetic_node_id: ""
+    - set_fact:
+        dt_synthetic_node_id: ""
 
 - name: Create namespace for ActiveGate Config
   become: true
@@ -58,3 +60,4 @@
     resource_definition:
       data:
         dt_synthetic_node_id: "{{ dt_synthetic_node_id }}"
+
