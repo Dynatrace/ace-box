@@ -17,11 +17,19 @@
 module.exports = {
   reactStrictMode: true,
   images: {
-    domains: ['assets.dynatrace.com'],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "assets.dynatrace.com",
+      },
+    ],
   },
-  publicRuntimeConfig: {
-    jenkinsUrl: process.env.JENKINS_URL,
-    jenkinsUser: process.env.JENKINS_USER,
-    jenkinsPassword: process.env.JENKINS_PASSWORD,
-  }
-}
+  env: {
+    JENKINS_URL: process.env.JENKINS_URL,
+    JENKINS_USER: process.env.JENKINS_USER,
+    JENKINS_PASSWORD: process.env.JENKINS_PASSWORD,
+  },
+  turbopack: {
+    root: __dirname,
+  },
+};
