@@ -141,7 +141,7 @@
       dt_activegate_pods.resources | selectattr('status.phase', 'equalto', 'Running') | map(attribute='status.containerStatuses') | selectattr('0.ready', 'equalto', true) | length == dt_activegate_pods.resources | length
     retries: 20
     delay: 20
-  when: operator_mode == "classicFullStack"
+  when: operator_mode != "applicationMonitoring"
 
 - include_role:
     name: fluentbit
