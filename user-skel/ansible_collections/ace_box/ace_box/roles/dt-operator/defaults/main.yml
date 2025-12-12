@@ -14,8 +14,8 @@
 
 ---
 operator_mode: "applicationMonitoring"  # default & prefered deployment option
-dt_operator_release: "1.7.0"            # format without v for helm
-dynakube_api_version: "dynatrace.com/v1beta5"
+dt_operator_release: "1.7.2"            # format without v for helm
+dynakube_api_version: "dynatrace.com/v1beta3"
 log_monitoring: "off"
 
 # operator_mode: "classicFullStack"  
