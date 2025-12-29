@@ -16,6 +16,10 @@
 - name: Restart Docker
   become: true
   become_user: root
-  service:
+  ansible.builtin.systemd:
     name: docker
     state: restarted
+  register: docker_restart_result
+  retries: 3
+  delay: 5
+  until:  docker_restart_result is succeeded
