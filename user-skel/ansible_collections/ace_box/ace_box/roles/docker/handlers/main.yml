@@ -21,5 +21,5 @@
     state: restarted
   register: docker_restart_result
   retries: 3
-  delay: 5
+  delay: 30  # Increased to 15 seconds to avoid systemd rate limiting
   until:  docker_restart_result is succeeded
