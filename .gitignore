@@ -53,3 +53,6 @@ override.tf.json
 # Nodejs
 *.env*
 **/id_rsa
+
+# Google Cloud credentials
+acl-gsi-*
