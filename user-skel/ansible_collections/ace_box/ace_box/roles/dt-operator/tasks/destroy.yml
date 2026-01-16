@@ -13,21 +13,73 @@
 # limitations under the License.
 
 ---
-- set_fact:
-    dt_operator_dt_access_token_id: "{{ dt_api_token_ids[dt_operator_dt_access_token_name] }}"
-    dt_operator_dt_data_ingest_token_id: "{{ dt_api_token_ids[dt_operator_dt_data_ingest_token_name] }}"
-  ignore_errors: true
+# Detect Dynatrace operator image (works for Helm or manifest installs)
+- name: Detect installed Dynatrace operator image
+  ansible.builtin.shell: >
+    kubectl get deploy -A -l app.kubernetes.io/name=dynatrace-operator
+    -o jsonpath='{.items[0].spec.template.spec.containers[0].image}'
+  args:
+    executable: /bin/bash
+  register: dt_operator_image
+  failed_when: false
+  changed_when: false
 
-- include_role:
-    name: dt-access-token
-    tasks_from: delete
-  vars:
-    dynatrace_api_token_id: "{{ dt_operator_dt_access_token_id }}"
-  when: dt_operator_dt_access_token_id is defined
+# Extract version (vX.Y.Z) from image
+- name: Set dt_operator_release from detected image
+  ansible.builtin.set_fact:
+    dt_operator_release: "{{ dt_operator_image.stdout | regex_search('v[0-9]+\\.[0-9]+\\.[0-9]+') }}"
+  when: dt_operator_image.stdout is defined and dt_operator_image.stdout != ""
 
-- include_role:
-    name: dt-access-token
-    tasks_from: delete
-  vars:
-    dynatrace_api_token_id: "{{ dt_operator_dt_data_ingest_token_id }}"
-  when: dt_operator_dt_data_ingest_token_id is defined
+# Fallback if not detected
+- name: Default dt_operator_release if not detected
+  ansible.builtin.set_fact:
+    dt_operator_release: "v1.7.2"
+  when: dt_operator_release is not defined
+
+- name: Show detected operator release
+  ansible.builtin.debug:
+    msg: "Using Dynatrace operator release: {{ dt_operator_release }}"
+    
+- name: Delete all DynaKubes in dynatrace namespace
+  ansible.builtin.shell: >
+    kubectl delete dynakube -n dynatrace --all
+  args:
+    executable: /bin/bash
+  register: delete_dynakube
+  changed_when: "'deleted' in (delete_dynakube.stdout | lower) or 'deleted' in (delete_dynakube.stderr | lower)"
+  failed_when: false
+
+# 2) Wait for operator-managed pods to be deleted (official label)
+- name: Wait for Dynatrace operator-managed pods to be deleted
+  ansible.builtin.shell: >
+    kubectl -n dynatrace wait pod
+    --for=delete -l app.kubernetes.io/managed-by=dynatrace-operator
+    --timeout=300s
+  args:
+    executable: /bin/bash
+  register: wait_pods
+  changed_when: false
+  failed_when: false
+
+# 2) Delete operator + CSI manifests
+- name: Delete Dynatrace Operator manifest
+  ansible.builtin.shell: >
+    kubectl delete -f https://github.com/Dynatrace/dynatrace-operator/releases/download/{{dt_operator_release}}/kubernetes.yaml
+  args:
+    executable: /bin/bash
+  failed_when: false
+
+- name: Delete Dynatrace CSI manifest
+  ansible.builtin.shell: >
+    kubectl delete -f https://github.com/Dynatrace/dynatrace-operator/releases/download/{{dt_operator_release}}/kubernetes-csi.yaml
+  args:
+    executable: /bin/bash
+  failed_when: false
+
+# 3) Delete the namespace to wipe remaining secrets/configs
+- name: Delete dynatrace namespace
+  ansible.builtin.shell: >
+    kubectl delete namespace dynatrace
+  args:
+    executable: /bin/bash
+  failed_when: false
