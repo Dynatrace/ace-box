@@ -147,7 +147,7 @@ jobs:
             backend_config_prefix: "ace-box"
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Debug Environment Variables
         run: |
