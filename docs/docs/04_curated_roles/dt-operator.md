@@ -1,65 +1,73 @@
 # dt-operator
 
-This currated role deploys the Dynatrace Operator to monitor your Kubernetes cluster. Dynatrace provides different deployment options: `application-only + k8s-api`, `cloudNativeFullStack`, and `classicFullStack`. Notice that the prerequisites for each are different
+This currated role deploys the Dynatrace Operator to monitor your Kubernetes cluster. Dynatrace provides different deployment options: `cloudNativeFullStack`, `applicationMonitoring`, `classicFullStack` (deprecated). Notice that the prerequisites for each are different
 
-## Prerequisites
+### (RECOMMENDED) Deploy cloudNativeFullStack
 
-### (RECOMMENDED) application-only + k8s-api or cloudNativeFullStack
-
-This role depends on the following roles to be deployed beforehand:
+1. Install k3s
 
 ```yaml
 - include_role:
     name: k3s
 ```
 
-> Note: if you deploy k3s, you don't need to deploy microk8s and viceversa
+2. Deploy Operator in `cloudNativeFullStack`
 
-### classicFullStack
+```yaml
+- include_role:
+    name: dt-operator
+  vars:
+    operator_mode: "cloudNativeFullStack"
+    dt_operator_release: "v1.7.2"
+    host_group: k8s_multi_prod
+    cluster_name: ace-box
+```
 
-This role depends on the following roles to be deployed beforehand:
+### Destroy
+
+Destroy your Operator with 
+
+```yaml
+- include_role:
+    name: dt-operator
+    tasks_from: destroy
+```
+
+> Note: match the destroy with the operator release that has been deployed
+
+### Other Modes
+
+#### Deploy applicationMonitoring
+
+1. Install k3s
+
+```yaml
+- include_role:
+    name: k3s
+```
+
+2. Deploy Operator in `applicationMonitoring`
+
+```yaml
+- include_role:
+    name: dt-operator
+  vars:
+    operator_mode: "applicationMonitoring"
+    dt_operator_release: "v1.7.2"
+    host_group: k8s_multi_prod
+    cluster_name: ace-box
+```
+
+#### (DEPRECATED) Deploy classicFullStack
+
+1. Install microk8s
+
 ```yaml
 - include_role:
     name: microk8s
 ```
 
-> Note: if you deploy microk8s, you don't need to deploy k3s and viceversa
-
-Dynatrace Operator manages classic full-stack injection after the following resources are deployed.
-
-- OneAgent, deployed as a DaemonSet, collects host metrics from Kubernetes nodes. It also detects new containers and injects OneAgent code modules into application pods.
-
-- Dynatrace Activegate is used for routing, as well as for monitoring Kubernetes objects by collecting data (metrics, events, status) from the Kubernetes API.
-
-- Dynatrace webhook server validates Dynakube definitions for correctness.
-
-For the details, please check this link: https://www.dynatrace.com/support/help/shortlink/dto-deploy-options-k8s#classic
-
-
-## Deploying Dynatrace K8s Operator
-
-```yaml
-- include_role:
-    name: dt-operator
-```
-The Operator gets deployed in application only mode approach, check the `roles/dt-operator/defaults/main.yml`:
-
-```yaml
-operator_mode: "applicationMonitoring"  # default & prefered deployment option
-dt_operator_release: "1.4.0"       # operator release should be linked with the right operator mode
-log_monitoring: "off"
-```
-
-> Note: log monitoring is disabled by default, using the fluentbit collector. You can change the value of `log_monitoring` to `fluentbit`, in order to add the deployent of the fluentbit collector.
-
-To deploy the Operator in application only mode (and default approach), variables can be set as follow:
-
-```yaml
-- include_role:
-    name: dt-operator
-```
-
-If you decide to use the classicFullStack approach, you need to specify the variables as follow:
+2. Deploy classic Operator
 
 ```yaml
 - include_role:
@@ -67,25 +75,9 @@ If you decide to use the classicFullStack approach, you need to specify the vari
   vars:
     operator_mode: "classicFullStack"  
     dt_operator_release: "v1.2.2"
-    log_monitoring: "oneagent"
 ```
 
-> Note: by switching the `log_monitoring` variable to oneagent, it will skip the fluentbit collector deployment, as the logs are getting collected by the OneAgent itself.
-
-## Extra variables
-
-You can configure the cluster name and host group as follows:
-
-```yaml
-- include_role:
-    name: dt-operator
-  vars:
-    host_group: custom_host_group
-    cluster_name: custom_cluster_name
-```
-
-
-## Other Tasks in the Role
+### Other Tasks in the Role
 
 "source-secrets" retrieves the Operator bearer token and stores it in the following variable:
 - `dt_operator_kube_bearer_token`
@@ -95,10 +87,3 @@ You can configure the cluster name and host group as follows:
     name: dt-operator
     tasks_from: source-secrets
 ```
-
-"uninstall" task deletes the Dynatrace operator namespace
-
-```yaml
-- include_role:
-    name: dt-operator
-    tasks_from: uninstall
