@@ -301,7 +301,7 @@ jobs:
     if: github.event_name == 'pull_request'
     steps:
       - name: Update PR Status
-        uses: actions/github-script@v4
+        uses: actions/github-script@v9
         with:
           script: |
             const prNumber = context.payload.pull_request.number;
