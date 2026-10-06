@@ -178,13 +178,13 @@ jobs:
       # gcloud specific steps
       - name: 'auth'
         if: matrix.provider == 'gcloud'
-        uses: 'google-github-actions/auth@v2'
+        uses: 'google-github-actions/auth@v3'
         with:
           credentials_json: ${{ secrets.gcp_credentials_json }}
 
       - name: 'Set up Cloud SDK'
         if: matrix.provider == 'gcloud'
-        uses: 'google-github-actions/setup-gcloud@v2'
+        uses: 'google-github-actions/setup-gcloud@v3'
 
       - name: 'Use gcloud CLI'
         if: matrix.provider == 'gcloud'
@@ -219,7 +219,7 @@ jobs:
       # aws specific steps
       - name: Configure AWS Credentials
         if: matrix.provider == 'aws'
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -242,7 +242,7 @@ jobs:
 
       # terraform steps
       - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v4
         with:
           terraform_version: 1.9
 
